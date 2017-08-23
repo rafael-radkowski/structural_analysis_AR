@@ -7,27 +7,33 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0B483BFB1F4DDB6F007A1D29 /* skywalk.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0B483BFA1F4DDB6F007A1D29 /* skywalk.jpg */; };
+		0B99FF611F47A79D00431996 /* View.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B99FF601F47A79D00431996 /* View.xib */; };
 		0BB1643C1F4732DC0053CA3B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0BB1643B1F4732DC0053CA3B /* main.m */; };
 		0BB1643F1F4732DC0053CA3B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0BB1643E1F4732DC0053CA3B /* AppDelegate.m */; };
-		0BB164411F4732DC0053CA3B /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 0BB164401F4732DC0053CA3B /* art.scnassets */; };
 		0BB164441F4732DC0053CA3B /* GameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0BB164431F4732DC0053CA3B /* GameViewController.m */; };
 		0BB164471F4732DC0053CA3B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0BB164451F4732DC0053CA3B /* Main.storyboard */; };
 		0BB164491F4732DC0053CA3B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0BB164481F4732DC0053CA3B /* Assets.xcassets */; };
 		0BB1644C1F4732DC0053CA3B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0BB1644A1F4732DC0053CA3B /* LaunchScreen.storyboard */; };
+		0BDF88E41F4B22750014BFB7 /* arrow.obj in Resources */ = {isa = PBXBuildFile; fileRef = 0BDF88E31F4B22750014BFB7 /* arrow.obj */; };
+		0BDF88E61F4B3BAE0014BFB7 /* testScene.scn in Resources */ = {isa = PBXBuildFile; fileRef = 0BDF88E51F4B3BAE0014BFB7 /* testScene.scn */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0BB164371F4732DC0053CA3B /* sceneKitTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = sceneKitTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0B483BFA1F4DDB6F007A1D29 /* skywalk.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = skywalk.jpg; path = image_assets/skywalk.jpg; sourceTree = "<group>"; };
+		0B99FF601F47A79D00431996 /* View.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = View.xib; sourceTree = "<group>"; };
+		0BB164371F4732DC0053CA3B /* StructuralAnalysisAR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StructuralAnalysisAR.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0BB1643B1F4732DC0053CA3B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		0BB1643D1F4732DC0053CA3B /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		0BB1643E1F4732DC0053CA3B /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		0BB164401F4732DC0053CA3B /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
 		0BB164421F4732DC0053CA3B /* GameViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameViewController.h; sourceTree = "<group>"; };
 		0BB164431F4732DC0053CA3B /* GameViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GameViewController.m; sourceTree = "<group>"; };
 		0BB164461F4732DC0053CA3B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		0BB164481F4732DC0053CA3B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0BB1644B1F4732DC0053CA3B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		0BB1644D1F4732DC0053CA3B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0BDF88E31F4B22750014BFB7 /* arrow.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = arrow.obj; sourceTree = "<group>"; };
+		0BDF88E51F4B3BAE0014BFB7 /* testScene.scn */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = testScene.scn; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,10 +47,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0B483BFC1F4DDB89007A1D29 /* image_assets */ = {
+			isa = PBXGroup;
+			children = (
+				0B483BFA1F4DDB6F007A1D29 /* skywalk.jpg */,
+			);
+			name = image_assets;
+			sourceTree = "<group>";
+		};
 		0BB1642E1F4732DC0053CA3B = {
 			isa = PBXGroup;
 			children = (
-				0BB164391F4732DC0053CA3B /* sceneKitTest */,
+				0BB164391F4732DC0053CA3B /* StructuralAnalysisAR */,
 				0BB164381F4732DC0053CA3B /* Products */,
 			);
 			sourceTree = "<group>";
@@ -52,17 +66,18 @@
 		0BB164381F4732DC0053CA3B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				0BB164371F4732DC0053CA3B /* sceneKitTest.app */,
+				0BB164371F4732DC0053CA3B /* StructuralAnalysisAR.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		0BB164391F4732DC0053CA3B /* sceneKitTest */ = {
+		0BB164391F4732DC0053CA3B /* StructuralAnalysisAR */ = {
 			isa = PBXGroup;
 			children = (
+				0B483BFC1F4DDB89007A1D29 /* image_assets */,
+				0BDF88E21F4B22750014BFB7 /* 3d_assets */,
 				0BB1643D1F4732DC0053CA3B /* AppDelegate.h */,
 				0BB1643E1F4732DC0053CA3B /* AppDelegate.m */,
-				0BB164401F4732DC0053CA3B /* art.scnassets */,
 				0BB164421F4732DC0053CA3B /* GameViewController.h */,
 				0BB164431F4732DC0053CA3B /* GameViewController.m */,
 				0BB164451F4732DC0053CA3B /* Main.storyboard */,
@@ -70,8 +85,10 @@
 				0BB1644A1F4732DC0053CA3B /* LaunchScreen.storyboard */,
 				0BB1644D1F4732DC0053CA3B /* Info.plist */,
 				0BB1643A1F4732DC0053CA3B /* Supporting Files */,
+				0B99FF601F47A79D00431996 /* View.xib */,
+				0BDF88E51F4B3BAE0014BFB7 /* testScene.scn */,
 			);
-			path = sceneKitTest;
+			path = StructuralAnalysisAR;
 			sourceTree = "<group>";
 		};
 		0BB1643A1F4732DC0053CA3B /* Supporting Files */ = {
@@ -82,12 +99,20 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		0BDF88E21F4B22750014BFB7 /* 3d_assets */ = {
+			isa = PBXGroup;
+			children = (
+				0BDF88E31F4B22750014BFB7 /* arrow.obj */,
+			);
+			path = 3d_assets;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		0BB164361F4732DC0053CA3B /* sceneKitTest */ = {
+		0BB164361F4732DC0053CA3B /* StructuralAnalysisAR */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 0BB164501F4732DC0053CA3B /* Build configuration list for PBXNativeTarget "sceneKitTest" */;
+			buildConfigurationList = 0BB164501F4732DC0053CA3B /* Build configuration list for PBXNativeTarget "StructuralAnalysisAR" */;
 			buildPhases = (
 				0BB164331F4732DC0053CA3B /* Sources */,
 				0BB164341F4732DC0053CA3B /* Frameworks */,
@@ -97,9 +122,9 @@
 			);
 			dependencies = (
 			);
-			name = sceneKitTest;
+			name = StructuralAnalysisAR;
 			productName = sceneKitTest;
-			productReference = 0BB164371F4732DC0053CA3B /* sceneKitTest.app */;
+			productReference = 0BB164371F4732DC0053CA3B /* StructuralAnalysisAR.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -118,7 +143,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 0BB164321F4732DC0053CA3B /* Build configuration list for PBXProject "sceneKitTest" */;
+			buildConfigurationList = 0BB164321F4732DC0053CA3B /* Build configuration list for PBXProject "StructuralAnalysisAR" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -131,7 +156,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				0BB164361F4732DC0053CA3B /* sceneKitTest */,
+				0BB164361F4732DC0053CA3B /* StructuralAnalysisAR */,
 			);
 		};
 /* End PBXProject section */
@@ -141,10 +166,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0BB164411F4732DC0053CA3B /* art.scnassets in Resources */,
+				0B99FF611F47A79D00431996 /* View.xib in Resources */,
 				0BB1644C1F4732DC0053CA3B /* LaunchScreen.storyboard in Resources */,
 				0BB164491F4732DC0053CA3B /* Assets.xcassets in Resources */,
+				0BDF88E41F4B22750014BFB7 /* arrow.obj in Resources */,
 				0BB164471F4732DC0053CA3B /* Main.storyboard in Resources */,
+				0BDF88E61F4B3BAE0014BFB7 /* testScene.scn in Resources */,
+				0B483BFB1F4DDB6F007A1D29 /* skywalk.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -280,7 +308,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = LD3D66957R;
-				INFOPLIST_FILE = sceneKitTest/Info.plist;
+				INFOPLIST_FILE = StructuralAnalysisAR/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = vrac.sceneKitTest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -292,7 +320,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = LD3D66957R;
-				INFOPLIST_FILE = sceneKitTest/Info.plist;
+				INFOPLIST_FILE = StructuralAnalysisAR/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = vrac.sceneKitTest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -302,7 +330,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		0BB164321F4732DC0053CA3B /* Build configuration list for PBXProject "sceneKitTest" */ = {
+		0BB164321F4732DC0053CA3B /* Build configuration list for PBXProject "StructuralAnalysisAR" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				0BB1644E1F4732DC0053CA3B /* Debug */,
@@ -311,13 +339,14 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		0BB164501F4732DC0053CA3B /* Build configuration list for PBXNativeTarget "sceneKitTest" */ = {
+		0BB164501F4732DC0053CA3B /* Build configuration list for PBXNativeTarget "StructuralAnalysisAR" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				0BB164511F4732DC0053CA3B /* Debug */,
 				0BB164521F4732DC0053CA3B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
