@@ -1,20 +1,113 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11134" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BV1-FR-VrT">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="u2E-5y-GEk">
+    <device id="ipad9_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11106"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
+        <!--Main Page View Controller-->
+        <scene sceneID="1EN-a0-Wpb">
+            <objects>
+                <viewController id="u2E-5y-GEk" customClass="MainPageViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="9mz-Z1-1nZ"/>
+                        <viewControllerLayoutGuide type="bottom" id="OF5-L5-cTT"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="XPL-Kj-Yfd">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFill" image="campanile_stock_cropped.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="K1Y-Uf-KEo">
+                                <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PiW-8Y-TNW">
+                                <rect key="frame" x="295" y="483" width="178" height="58"/>
+                                <color key="backgroundColor" red="0.90794807369999997" green="0.91693765859999998" blue="0.91693765859999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="178" id="l3p-rU-ABa"/>
+                                    <constraint firstAttribute="height" constant="58" id="rDa-rq-rC8"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="26"/>
+                                <state key="normal" title="Water Tower"/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nVW-Dc-2xU">
+                                <rect key="frame" x="295" y="569" width="178" height="58"/>
+                                <color key="backgroundColor" red="0.90794807374091779" green="0.91693765862944165" blue="0.91693765862944165" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="26"/>
+                                <state key="normal" title="Campanile"/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jhw-Bh-1Ip">
+                                <rect key="frame" x="295" y="397" width="178" height="58"/>
+                                <color key="backgroundColor" red="0.90794807369999997" green="0.91693765859999998" blue="0.91693765859999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="26"/>
+                                <state key="normal" title="Skywalk"/>
+                                <connections>
+                                    <segue destination="BV1-FR-VrT" kind="presentation" modalTransitionStyle="crossDissolve" id="ERb-dM-F7t"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="AR Structural Analysis" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7Ts-Uw-9To">
+                                <rect key="frame" x="155" y="28" width="458" height="55"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="458" id="036-re-oeg"/>
+                                    <constraint firstAttribute="height" constant="55" id="g5c-iJ-PX4"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name=".SFUIDisplay-Light" family=".SF UI Display" pointSize="45"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" image="isuofficallogo_light.png" translatesAutoresizingMaskIntoConstraints="NO" id="Lbb-nN-uRn">
+                                <rect key="frame" x="487" y="974" width="281" height="65"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="281" id="S0y-pY-aQZ"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="jhw-Bh-1Ip" firstAttribute="centerX" secondItem="PiW-8Y-TNW" secondAttribute="centerX" id="0sV-i6-oJL"/>
+                            <constraint firstAttribute="trailing" secondItem="Lbb-nN-uRn" secondAttribute="trailing" id="1ST-Cc-wi2"/>
+                            <constraint firstAttribute="trailing" secondItem="Lbb-nN-uRn" secondAttribute="trailing" id="9fZ-q8-9oE"/>
+                            <constraint firstItem="OF5-L5-cTT" firstAttribute="top" secondItem="Lbb-nN-uRn" secondAttribute="bottom" constant="-15" id="9mC-qi-Geg"/>
+                            <constraint firstItem="K1Y-Uf-KEo" firstAttribute="top" secondItem="XPL-Kj-Yfd" secondAttribute="top" id="B3V-4M-5Cj"/>
+                            <constraint firstItem="7Ts-Uw-9To" firstAttribute="centerX" secondItem="XPL-Kj-Yfd" secondAttribute="centerX" id="Czh-uA-ShQ"/>
+                            <constraint firstItem="nVW-Dc-2xU" firstAttribute="height" secondItem="PiW-8Y-TNW" secondAttribute="height" id="Gfx-Iv-Sad"/>
+                            <constraint firstItem="OF5-L5-cTT" firstAttribute="top" secondItem="K1Y-Uf-KEo" secondAttribute="bottom" id="HRC-TE-kyx"/>
+                            <constraint firstItem="OF5-L5-cTT" firstAttribute="top" secondItem="Lbb-nN-uRn" secondAttribute="bottom" constant="-15" id="Hbo-pl-2Q5"/>
+                            <constraint firstItem="PiW-8Y-TNW" firstAttribute="centerY" secondItem="XPL-Kj-Yfd" secondAttribute="centerY" id="Pgw-gq-ria"/>
+                            <constraint firstItem="PiW-8Y-TNW" firstAttribute="centerX" secondItem="XPL-Kj-Yfd" secondAttribute="centerX" id="RcT-06-lFT"/>
+                            <constraint firstItem="nVW-Dc-2xU" firstAttribute="top" secondItem="PiW-8Y-TNW" secondAttribute="bottom" constant="28" id="UlF-O1-5mL"/>
+                            <constraint firstItem="K1Y-Uf-KEo" firstAttribute="leading" secondItem="XPL-Kj-Yfd" secondAttribute="leading" id="Ut4-RC-ok2"/>
+                            <constraint firstItem="PiW-8Y-TNW" firstAttribute="centerX" secondItem="XPL-Kj-Yfd" secondAttribute="centerX" id="Wyx-3r-gZX"/>
+                            <constraint firstAttribute="trailing" secondItem="K1Y-Uf-KEo" secondAttribute="trailing" id="XlE-eK-A9v"/>
+                            <constraint firstItem="jhw-Bh-1Ip" firstAttribute="width" secondItem="PiW-8Y-TNW" secondAttribute="width" id="ZtN-EE-0dA"/>
+                            <constraint firstItem="PiW-8Y-TNW" firstAttribute="top" secondItem="jhw-Bh-1Ip" secondAttribute="bottom" constant="28" id="aFe-X6-0Ui"/>
+                            <constraint firstItem="jhw-Bh-1Ip" firstAttribute="height" secondItem="PiW-8Y-TNW" secondAttribute="height" id="e6w-Cc-4vo"/>
+                            <constraint firstItem="nVW-Dc-2xU" firstAttribute="centerX" secondItem="PiW-8Y-TNW" secondAttribute="centerX" id="eni-av-q5W"/>
+                            <constraint firstItem="7Ts-Uw-9To" firstAttribute="top" secondItem="9mz-Z1-1nZ" secondAttribute="bottom" constant="8" id="fho-7b-kJZ"/>
+                            <constraint firstItem="PiW-8Y-TNW" firstAttribute="centerY" secondItem="XPL-Kj-Yfd" secondAttribute="centerY" id="l8L-5G-szD"/>
+                            <constraint firstItem="nVW-Dc-2xU" firstAttribute="width" secondItem="PiW-8Y-TNW" secondAttribute="width" id="pj2-9K-N36"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="btnCampanile" destination="nVW-Dc-2xU" id="Aex-pW-fDk"/>
+                        <outlet property="btnSkywalk" destination="jhw-Bh-1Ip" id="F63-6F-AKw"/>
+                        <outlet property="btnWaterTower" destination="PiW-8Y-TNW" id="TEC-zt-IlK"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="UwD-tb-cF7" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-744.7265625" y="39.84375"/>
+        </scene>
         <!--Game View Controller-->
         <scene sceneID="tXr-a1-R10">
             <objects>
-                <viewController id="BV1-FR-VrT" customClass="GameViewController" customModuleProvider="" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="Cei-gA-s71"/>
-                        <viewControllerLayoutGuide type="bottom" id="O1X-57-Ctf"/>
-                    </layoutGuides>
+                <viewController id="BV1-FR-VrT" customClass="GameViewController" sceneMemberID="viewController">
                     <sceneKitView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="3se-qz-xqx">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </sceneKitView>
@@ -23,4 +116,8 @@
             </objects>
         </scene>
     </scenes>
+    <resources>
+        <image name="campanile_stock_cropped.jpg" width="1696" height="1272"/>
+        <image name="isuofficallogo_light.png" width="784" height="65"/>
+    </resources>
 </document>
