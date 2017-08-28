@@ -6,17 +6,24 @@
 //  Copyright © 2017 David Wehr. All rights reserved.
 //
 
+#import "grabbableArrow.h"
 #import <UIKit/UIKit.h>
 #import <SceneKit/SceneKit.h>
 
 @interface GameViewController : UIViewController {
     // Private vars
     SCNNode *cameraNode;
-    SCNNode *arrowNode;
-    SCNNode *arrowBase;
+//    SCNNode *arrowNode;
+//    SCNNode *arrowBase;
+    SCNNode *targetSphere;
     double arrowScale;
     double arrowWidthFactor;
     bool arrowTop;
+    
+    double baseRotation;
+    double subRotation;
+    
+    GrabbableArrow arrow;
 }
 
 // MARK: Properties
@@ -39,5 +46,11 @@
 - (IBAction)wideSwitchToggled:(id)sender;
 
 - (IBAction)colorChanged:(id)sender;
+
+// override
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event;
+- (void)touchesMoved:(NSSet<UITouch *> *) touches withEvent:(UIEvent *)event;
+- (void)touchesEnded:(NSSet<UITouch *> *) touches withEvent:(UIEvent *)event;
+- (void)touchesCancelled:(NSSet<UITouch *> *) touches withEvent:(UIEvent *)event;
 
 @end

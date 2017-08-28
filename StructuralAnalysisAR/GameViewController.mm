@@ -22,22 +22,13 @@
     SCNScene *scene = [SCNScene scene];
     scene.background.contents = [UIImage imageNamed:@"skywalk.jpg"];
     
+    [scene.rootNode addChildNode:arrow.root];
     
-    // Import the arrow object
-    NSString *arrowPath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"arrow"] ofType:@"obj"];
-    NSURL *arrowUrl = [NSURL fileURLWithPath:arrowPath];
-    MDLAsset *arrowAsset = [[MDLAsset alloc] initWithURL:arrowUrl];
-    arrowNode = [SCNNode nodeWithMDLObject:[arrowAsset objectAtIndex:0]];
-    
-    // Make material for arrow
-    SCNMaterial *arrowMat = [SCNMaterial material];
-    arrowMat.diffuse.contents = [UIColor colorWithRed:1.0 green:0 blue:0 alpha:1.0];
-    arrowNode.geometry.firstMaterial = arrowMat;
-    
-    // Create a parent object for the arrow
-    arrowBase = [SCNNode node];
-    [scene.rootNode addChildNode:arrowBase];
-    [arrowBase addChildNode:arrowNode];
+//    // Make a sphere
+//    targetSphere = [SCNNode nodeWithGeometry:[SCNSphere sphereWithRadius:0.3]];
+//    targetSphere.geometry.firstMaterial = [SCNMaterial material];
+//    targetSphere.geometry.firstMaterial.diffuse.contents = [UIColor blueColor];
+//    [scene.rootNode addChildNode:targetSphere];
     
     // Make a camera
     cameraNode = [SCNNode node];
@@ -180,18 +171,18 @@
     // Release any cached data, images, etc that aren't in use.
 }
 
-- (IBAction)buttonPressed:(id)sender
-{
-    GLKQuaternion movement = GLKQuaternionMakeWithAngleAndAxis(0.2, 0, 0, 1.0);
-    SCNQuaternion curOrientation = arrowNode.orientation;
-    GLKQuaternion curOrientationQuat = GLKQuaternionMake(curOrientation.x, curOrientation.y, curOrientation.z, curOrientation.w);
-    
-    GLKQuaternion newOrientation = GLKQuaternionMultiply(curOrientationQuat, movement);
-    arrowNode.orientation = SCNVector4Make(newOrientation.x, newOrientation.y, newOrientation.z, newOrientation.w);
-    
-    printf("Position: %f, %f, %f\n", arrowNode.position.x, arrowNode.position.y, arrowNode.position.z);
-    printf("Pivot: %f, %f, %f\n", arrowNode.pivot.m14, arrowNode.pivot.m24, arrowNode.pivot.m34);
-}
+//- (IBAction)buttonPressed:(id)sender
+//{
+//    GLKQuaternion movement = GLKQuaternionMakeWithAngleAndAxis(0.2, 0, 0, 1.0);
+//    SCNQuaternion curOrientation = arrow.root.orientation;
+//    GLKQuaternion curOrientationQuat = GLKQuaternionMake(curOrientation.x, curOrientation.y, curOrientation.z, curOrientation.w);
+//    
+//    GLKQuaternion newOrientation = GLKQuaternionMultiply(curOrientationQuat, movement);
+//    arrow.root.orientation = SCNVector4Make(newOrientation.x, newOrientation.y, newOrientation.z, newOrientation.w);
+//    
+//    printf("Position: %f, %f, %f\n", arrow.root.position.x, arrow.root.position.y, arrow.root.position.z);
+//    printf("Pivot: %f, %f, %f\n", arrow.root.pivot.m14, arrow.root.pivot.m24, arrow.root.pivot.m34);
+//}
 
 - (IBAction)stepperChanged:(id)sender {
     double new_value = self.stepperControl.value;
@@ -201,39 +192,36 @@
 //    GLKQuaternion curOrientationQuat = GLKQuaternionMake(curOrientation.x, curOrientation.y, curOrientation.z, curOrientation.w);
     
 //    GLKQuaternion newOrientation = GLKQuaternionMultiply(curOrientationQuat, movement);
-    GLKQuaternion newOrientation = GLKQuaternionMakeWithAngleAndAxis(-new_value, 0, 0, 1.0);
+    subRotation = -new_value;
+    GLKQuaternion newOrientation = GLKQuaternionMakeWithAngleAndAxis(subRotation + baseRotation, 0, 0, 1.0);
     
-    arrowNode.orientation = SCNVector4Make(newOrientation.x, newOrientation.y, newOrientation.z, newOrientation.w);
+    [SCNTransaction begin];
+    arrow.root.orientation = SCNVector4Make(newOrientation.x, newOrientation.y, newOrientation.z, newOrientation.w);
+    [SCNTransaction commit];
 }
 
 - (IBAction)sliderChanged:(id)sender {
     double new_value = self.sliderControl.value;
-    
-    // adjust scale
-    arrowScale = ((new_value - 0.5) * 0.6) + 1;
-    arrowNode.scale = SCNVector3Make(arrowScale * arrowWidthFactor, arrowScale, arrowScale * arrowWidthFactor);
-    
-    // adjust color
-    double reverse_value = 1 - new_value;
-    double hue = 0.667 * reverse_value;
-    arrowNode.geometry.firstMaterial.diffuse.contents = [[UIColor alloc] initWithHue:hue saturation:1.0 brightness:0.8 alpha:1.0];
+    arrow.setIntensity(new_value);
 }
 
 - (IBAction)posBtnPressed:(id)sender {
     arrowTop = !arrowTop;
     if (arrowTop) {
-        arrowBase.rotation = SCNVector4Make(0, 0, 1, 0);
-        arrowBase.position = SCNVector3Make(0, 1, 0);
+        baseRotation = 0;
+        arrow.root.position = SCNVector3Make(0, 1, 0);
     }
     else {
-        arrowBase.rotation = SCNVector4Make(0, 0, 1, 3.1415);
-        arrowBase.position = SCNVector3Make(0, -0.15, 0);
+        baseRotation = 3.1415;
+        arrow.root.position = SCNVector3Make(0, -0.15, 0);
     }
+    arrow.root.rotation = SCNVector4Make(0, 0, 1, subRotation + baseRotation);
 }
 
 - (IBAction)wideSwitchToggled:(id)sender {
-    arrowWidthFactor = self.toggleControl.on ? 1.5 : 1.0;
-    arrowNode.scale = SCNVector3Make(arrowScale * arrowWidthFactor, arrowScale, arrowScale * arrowWidthFactor);
+    arrow.setWide(self.toggleControl.on);
+//    arrowWidthFactor = self.toggleControl.on ? 1.5 : 1.0;
+    // Make scale change part of an animation
 }
 
 - (IBAction)colorChanged:(id)sender {
@@ -251,4 +239,49 @@
             break;
     }
 }
+
+// Touch handling
+
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    // retrieve the SCNView
+    SCNView *scnView = (SCNView *)self.view;
+    
+    NSAssert(touches.count == 1, @"number of touches != 1");
+    
+    CGPoint p = [[touches anyObject] locationInView:scnView];
+    // check what nodes are tapped
+//    CGPoint p = [gestureRecognize locationInView:scnView];
+    NSArray *hitResults = [scnView hitTest:p options:nil];
+//    for (SCNHitTestResult *hit in hitResults) {
+//        const char* the_name = hit.node.name != nil ? [hit.node.name UTF8String] : "<unknown>";
+//        printf("Hit node %s\n", the_name);
+//    }
+    arrow.touchBegan(hitResults.firstObject);
+    return;
+}
+
+
+- (void)touchesMoved:(NSSet<UITouch *> *) touches withEvent:(UIEvent *)event {
+    SCNView *scnView = (SCNView *)self.view;
+    
+    NSAssert(touches.count == 1, @"number of touches != 1");
+    
+    CGPoint p = [[touches anyObject] locationInView:scnView];
+    GLKVector3 farClipHit = SCNVector3ToGLKVector3([scnView unprojectPoint:SCNVector3Make(p.x, p.y, 1.0)]);
+    GLKVector3 cameraPos = SCNVector3ToGLKVector3(cameraNode.position);
+    GLKVector3  touchRay = GLKVector3Normalize(GLKVector3Subtract(farClipHit, cameraPos));
+    
+    GLKVector3 cameraDir = GLKVector3Make(cameraNode.transform.m13, cameraNode.transform.m23, cameraNode.transform.m33);
+    float dragValue = arrow.getDragValue(cameraPos, touchRay, cameraDir);
+    arrow.setIntensity(dragValue);
+    self.sliderControl.value = dragValue;
+}
+
+- (void)touchesEnded:(NSSet<UITouch *> *) touches withEvent:(UIEvent *)event {
+    arrow.touchEnded();
+}
+- (void)touchesCancelled:(NSSet<UITouch *> *) touches withEvent:(UIEvent *)event {
+    arrow.touchCancelled();
+}
+
 @end
