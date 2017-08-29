@@ -26,6 +26,8 @@ public:
     void setWide(bool wide);
     float widthScale = 1.0;
     
+    float lastArrowValue = 0.5;
+    
     // Root node for entire arrow
     SCNNode* root;
     

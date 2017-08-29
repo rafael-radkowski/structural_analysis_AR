@@ -45,14 +45,17 @@ GrabbableArrow::GrabbableArrow() {
 
 
 void GrabbableArrow::touchBegan(SCNHitTestResult* hitTestResult) {
+//    GLKMatrix4 moveToEnd = GLKMatrix4MakeTranslation(lastArrowValue * -root.transform.m12, lastArrowValue * root.transform.m22, lastArrowValue * root.transform.m32);
+//    GLKMatrix4 endTransform = GLKMatrix4Multiply(moveToEnd, SCNMatrix4ToGLKMatrix4(root.transform));
+//    GLKVector4 endPos4 = GLKMatrix4GetColumn(endTransform, 3);
+    
     if (hitTestResult.node == arrowBase || hitTestResult.node == arrowHead) {
         dragging = true;
     }
 }
 
 float GrabbableArrow::getDragValue(GLKVector3 origin, GLKVector3 touchRay, GLKVector3 cameraDir) {
-    static double last_value = 0.5;
-    double value = last_value;
+    double value = lastArrowValue;
     if (dragging) {
         GLKMatrix4 arrowBaseGlobal = GLKMatrix4Multiply(
                                                         SCNMatrix4ToGLKMatrix4(root.transform),
@@ -72,10 +75,10 @@ float GrabbableArrow::getDragValue(GLKVector3 origin, GLKVector3 touchRay, GLKVe
         GLKVector3 hitDir = GLKVector3Subtract(hitPoint, arrowPos);
         double value = GLKVector3DotProduct(arrowDir, hitDir);
         value = MIN(1.0, MAX(0, value));
-        last_value = value;
+        lastArrowValue = value;
     }
     else {
-        value = last_value;
+        value = lastArrowValue;
     }
     
     return value;

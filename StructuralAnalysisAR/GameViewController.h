@@ -7,6 +7,7 @@
 //
 
 #import "grabbableArrow.h"
+#import "line3d.h"
 #import <UIKit/UIKit.h>
 #import <SceneKit/SceneKit.h>
 

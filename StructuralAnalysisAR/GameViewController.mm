@@ -51,6 +51,10 @@
     ambientLightNode.light.intensity = 0.7;
     [scene.rootNode addChildNode:ambientLightNode];
     
+    // Add a test line
+    Line3d aLine;
+    aLine.move(GLKVector3Make(0, 0, 0), GLKVector3Make(2, 1, 0));
+    aLine.addAsChild(scene.rootNode);
     
     // Get the view and set our scene to it
     SCNView *scnView = (SCNView *)self.view;
