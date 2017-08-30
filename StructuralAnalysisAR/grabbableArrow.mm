@@ -36,13 +36,42 @@ GrabbableArrow::GrabbableArrow() {
     arrowHead.geometry.firstMaterial = arrowMat;
     arrowBase.geometry.firstMaterial = arrowMat;
     
-    arrowBase.position = SCNVector3Make(0, 0.3, 0);
+    setTipSize(defaultTipSize);
+    
     // Create a parent object for the arrow
     root = [SCNNode node];
     [root addChildNode:arrowHead];
     [root addChildNode:arrowBase];
 }
 
+void GrabbableArrow::addAsChild(SCNNode* node) {
+    [node addChildNode:root];
+}
+
+void GrabbableArrow::setPosition(GLKVector3 pos) {
+    root.position = SCNVector3FromGLKVector3(pos);
+}
+
+void GrabbableArrow::setTipSize(float newTipSize) {
+    float tipScale = newTipSize / defaultTipSize;
+    arrowHead.scale = SCNVector3Make(tipScale, tipScale, tipScale);
+    arrowBase.position = SCNVector3Make(0, newTipSize, 0);
+    
+    tipSize = newTipSize;
+}
+
+float GrabbableArrow::getTipSize() {
+    return tipSize;
+}
+
+void GrabbableArrow::setMaxLength(float newLength) {
+    maxLength = newLength;
+    setIntensity(lastArrowValue);
+}
+
+float GrabbableArrow::getMaxLength() {
+    return maxLength;
+}
 
 void GrabbableArrow::touchBegan(SCNHitTestResult* hitTestResult) {
 //    GLKMatrix4 moveToEnd = GLKMatrix4MakeTranslation(lastArrowValue * -root.transform.m12, lastArrowValue * root.transform.m22, lastArrowValue * root.transform.m32);
@@ -97,7 +126,7 @@ void GrabbableArrow::setIntensity(float value) {
     // adjust scale
 //    arrowScale = ((new_value - 0.5) * 0.6) + 1;
 //    arrow.root.scale = SCNVector3Make(arrowScale * arrowWidthFactor, arrowScale, arrowScale * arrowWidthFactor);
-    arrowBase.scale = SCNVector3Make(1, value, 1);
+    arrowBase.scale = SCNVector3Make(1, maxLength * value, 1);
     
     // adjust color
     double reverse_value = 1 - value;

@@ -8,6 +8,7 @@
 
 #import "grabbableArrow.h"
 #import "line3d.h"
+#include "loadMarker.h"
 #import <UIKit/UIKit.h>
 #import <SceneKit/SceneKit.h>
 
@@ -25,6 +26,8 @@
     double subRotation;
     
     GrabbableArrow arrow;
+    
+    LoadMarker peopleLoad;
 }
 
 // MARK: Properties

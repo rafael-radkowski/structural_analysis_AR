@@ -13,6 +13,7 @@
 		0B1573531F54615D004CE1BE /* campanile_stock_cropped.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0B1573521F54615D004CE1BE /* campanile_stock_cropped.jpg */; };
 		0B1573551F5463A4004CE1BE /* isuofficallogo_light.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B1573541F5463A4004CE1BE /* isuofficallogo_light.png */; };
 		0B1573581F55BE3C004CE1BE /* line3d.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B1573561F55BE3C004CE1BE /* line3d.mm */; };
+		0B15735B1F5621C9004CE1BE /* loadMarker.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B1573591F5621C9004CE1BE /* loadMarker.mm */; };
 		0B483BFB1F4DDB6F007A1D29 /* skywalk.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0B483BFA1F4DDB6F007A1D29 /* skywalk.jpg */; };
 		0B483C001F4F8AF9007A1D29 /* arrow_base.obj in Resources */ = {isa = PBXBuildFile; fileRef = 0B483BFE1F4F8AF9007A1D29 /* arrow_base.obj */; };
 		0B483C011F4F8AF9007A1D29 /* arrow_tip.obj in Resources */ = {isa = PBXBuildFile; fileRef = 0B483BFF1F4F8AF9007A1D29 /* arrow_tip.obj */; };
@@ -38,6 +39,8 @@
 		0B1573541F5463A4004CE1BE /* isuofficallogo_light.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = isuofficallogo_light.png; path = ../../assets/isuofficallogo_light.png; sourceTree = "<group>"; };
 		0B1573561F55BE3C004CE1BE /* line3d.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = line3d.mm; sourceTree = "<group>"; };
 		0B1573571F55BE3C004CE1BE /* line3d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = line3d.h; sourceTree = "<group>"; };
+		0B1573591F5621C9004CE1BE /* loadMarker.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = loadMarker.mm; sourceTree = "<group>"; };
+		0B15735A1F5621C9004CE1BE /* loadMarker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = loadMarker.h; sourceTree = "<group>"; };
 		0B483BFA1F4DDB6F007A1D29 /* skywalk.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = skywalk.jpg; path = image_assets/skywalk.jpg; sourceTree = "<group>"; };
 		0B483BFD1F4F1016007A1D29 /* grabbableArrow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = grabbableArrow.h; sourceTree = "<group>"; };
 		0B483BFE1F4F8AF9007A1D29 /* arrow_base.obj */ = {isa = PBXFileReference; lastKnownFileType = text; path = arrow_base.obj; sourceTree = "<group>"; };
@@ -132,6 +135,8 @@
 				0B483C021F4F8BF5007A1D29 /* grabbableArrow.mm */,
 				0B1573561F55BE3C004CE1BE /* line3d.mm */,
 				0B1573571F55BE3C004CE1BE /* line3d.h */,
+				0B1573591F5621C9004CE1BE /* loadMarker.mm */,
+				0B15735A1F5621C9004CE1BE /* loadMarker.h */,
 			);
 			path = StructuralAnalysisAR;
 			sourceTree = "<group>";
@@ -234,6 +239,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0B15735B1F5621C9004CE1BE /* loadMarker.mm in Sources */,
 				0B15734B1F5451BF004CE1BE /* MainPageViewController.m in Sources */,
 				0B483C031F4F8BF5007A1D29 /* grabbableArrow.mm in Sources */,
 				0B1573581F55BE3C004CE1BE /* line3d.mm in Sources */,

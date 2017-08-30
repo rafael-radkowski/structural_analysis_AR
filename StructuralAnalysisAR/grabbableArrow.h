@@ -17,6 +17,13 @@
 class GrabbableArrow {
 public:
     GrabbableArrow();
+    void addAsChild(SCNNode* node);
+    void setPosition(GLKVector3 pos);
+    void setTipSize(float newTipSize);
+    float getTipSize();
+    void setMaxLength(float newLength);
+    float getMaxLength();
+    
     void touchBegan(SCNHitTestResult* hitTestResult);
     float getDragValue(GLKVector3 origin, GLKVector3 touchRay, GLKVector3 cameraDir);
     void touchEnded();
@@ -36,6 +43,12 @@ public:
 private:
     SCNNode* arrowHead;
     SCNNode* arrowBase;
+    
+    // Default tip size from .obj file is 0.3 units tall
+    float defaultTipSize = 0.3;
+    float tipSize = defaultTipSize;
+    
+    float maxLength = 1;
 };
 
 #endif /* grabbableArrow_h */

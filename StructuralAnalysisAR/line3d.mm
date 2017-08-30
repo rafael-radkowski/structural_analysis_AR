@@ -9,8 +9,10 @@
 #include "line3d.h"
 
 Line3d::Line3d() {
-    boxNode = [SCNNode nodeWithGeometry:[SCNBox boxWithWidth:1 height:1 length:1 chamferRadius:0]];
-    boxNode.pivot = SCNMatrix4MakeTranslation(0, 0, -0.5);
+//    boxNode = [SCNNode nodeWithGeometry:[SCNBox boxWithWidth:1 height:1 length:1 chamferRadius:0]];
+//    boxNode.pivot = SCNMatrix4MakeTranslation(0, 0, 0.5);
+    boxNode = [SCNNode nodeWithGeometry:[SCNCylinder cylinderWithRadius:0.5 height:1]];
+    boxNode.pivot = SCNMatrix4Mult(SCNMatrix4MakeTranslation(0, 0, 0.5), SCNMatrix4MakeRotation(GLKMathDegreesToRadians(90), 1, 0, 0));
     
     // Containing node that the constraint will be applied to. If we didn't use this, the lookAt constraint would interfere with setting the scale
     boxContainer = [SCNNode node];
@@ -36,7 +38,7 @@ void Line3d::move(GLKVector3 start, GLKVector3 end) {
     // Move endpoints
     boxContainer.position = SCNVector3FromGLKVector3(start);
     // Put at the negative direction, since the lookAt constraint points the -z axis toward the target
-    boxLookAt.position = SCNVector3Make(-end.x, -end.y, -end.z);
+    boxLookAt.position = SCNVector3Make(end.x, end.y, end.z);
     
     double distance = GLKVector3Length(GLKVector3Subtract(end, start));
     // Scale to the correct length
