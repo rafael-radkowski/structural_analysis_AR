@@ -22,7 +22,6 @@ LoadMarker::LoadMarker(size_t nLoads) {
     rootNode = [SCNNode node];
     for (int i = 0; i < nLoads; ++i) {
         loadArrows[i].addAsChild(rootNode);
-        loadArrows[i].setTipSize(0.25);
         loadArrows[i].setMaxLength(maxHeight);
         
         if (i != 0) {
@@ -68,4 +67,18 @@ void LoadMarker::setMaxHeight(float h) {
         loadArrows[i].setMaxLength(h);
     }
     // TODO: Readjust positions
+}
+
+
+void LoadMarker::setInputRange(float minValue, float maxValue) {
+    minInput = minValue;
+    maxInput = maxValue;
+    
+    for (int i = 0; i < loadArrows.size(); ++i) {
+        loadArrows[i].setInputRange(minValue, maxValue);
+    }
+}
+
+std::pair<float, float> LoadMarker::getInputRange() {
+    return std::make_pair(minInput, maxInput);
 }

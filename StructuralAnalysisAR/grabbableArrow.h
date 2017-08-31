@@ -14,6 +14,8 @@
 #import <Scenekit/ModelIO.h>
 #import <GLKit/GLKit.h>
 
+#include <utility>
+
 class GrabbableArrow {
 public:
     GrabbableArrow();
@@ -21,8 +23,13 @@ public:
     void setPosition(GLKVector3 pos);
     void setTipSize(float newTipSize);
     float getTipSize();
+    
     void setMaxLength(float newLength);
     float getMaxLength();
+    
+    // Ranges of inputs that will map to the arrow length
+    void setInputRange(float minValue, float maxValue);
+    std::pair<float,float> getInputRange();
     
     void touchBegan(SCNHitTestResult* hitTestResult);
     float getDragValue(GLKVector3 origin, GLKVector3 touchRay, GLKVector3 cameraDir);
@@ -49,6 +56,8 @@ private:
     float tipSize = defaultTipSize;
     
     float maxLength = 1;
+    float minInput = 0;
+    float maxInput = 1;
 };
 
 #endif /* grabbableArrow_h */

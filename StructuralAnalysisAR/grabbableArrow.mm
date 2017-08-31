@@ -73,6 +73,18 @@ float GrabbableArrow::getMaxLength() {
     return maxLength;
 }
 
+void GrabbableArrow::setInputRange(float minValue, float maxValue) {
+    minInput = minValue;
+    maxInput = maxValue;
+    
+    setIntensity(lastArrowValue);
+}
+
+std::pair<float, float> GrabbableArrow::getInputRange() {
+    return std::make_pair(minInput, maxInput);
+}
+
+
 void GrabbableArrow::touchBegan(SCNHitTestResult* hitTestResult) {
 //    GLKMatrix4 moveToEnd = GLKMatrix4MakeTranslation(lastArrowValue * -root.transform.m12, lastArrowValue * root.transform.m22, lastArrowValue * root.transform.m32);
 //    GLKMatrix4 endTransform = GLKMatrix4Multiply(moveToEnd, SCNMatrix4ToGLKMatrix4(root.transform));
@@ -115,7 +127,6 @@ float GrabbableArrow::getDragValue(GLKVector3 origin, GLKVector3 touchRay, GLKVe
 
 void GrabbableArrow::touchEnded() {
     dragging = false;
-    
 }
 
 void GrabbableArrow::touchCancelled() {
@@ -123,17 +134,19 @@ void GrabbableArrow::touchCancelled() {
 }
 
 void GrabbableArrow::setIntensity(float value) {
+    float normalizedValue = (value - minInput) / (maxInput - minInput);
+    
     // adjust scale
 //    arrowScale = ((new_value - 0.5) * 0.6) + 1;
 //    arrow.root.scale = SCNVector3Make(arrowScale * arrowWidthFactor, arrowScale, arrowScale * arrowWidthFactor);
-    arrowBase.scale = SCNVector3Make(1, maxLength * value, 1);
+    arrowBase.scale = SCNVector3Make(1, maxLength * normalizedValue, 1);
     
     // adjust color
-    double reverse_value = 1 - value;
-    double hue = 0.667 * reverse_value;
-    UIColor* color = [[UIColor alloc] initWithHue:hue saturation:1.0 brightness:0.8 alpha:1.0];
-    arrowHead.geometry.firstMaterial.diffuse.contents = color;
-    arrowBase.geometry.firstMaterial.diffuse.contents = color;
+//    double reverse_value = 1 - normalizedValue ;
+//    double hue = 0.667 * reverse_value;
+//    UIColor* color = [[UIColor alloc] initWithHue:hue saturation:1.0 brightness:0.8 alpha:1.0];
+//    arrowHead.geometry.firstMaterial.diffuse.contents = color;
+//    arrowBase.geometry.firstMaterial.diffuse.contents = color;
 }
 
 void GrabbableArrow::setWide(bool wide) {

@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <vector>
+#include <utility>
 
 
 class LoadMarker {
@@ -30,6 +31,10 @@ public:
     void setPosition(GLKVector3 start, GLKVector3 end);
     void setMaxHeight(float h);
     
+    // Ranges of inputs that will map to the arrow length
+    void setInputRange(float minValue, float maxValue);
+    std::pair<float,float> getInputRange();
+    
 private:
     SCNNode* rootNode;
     std::vector<double> loadValues;
@@ -37,6 +42,8 @@ private:
     std::vector<Line3d> loadLines;
     
     float maxHeight = 1.5;
+    float minInput = 0;
+    float maxInput = 1;
 };
 
 #endif /* loadMarker_hpp */
