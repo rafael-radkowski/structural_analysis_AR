@@ -22,6 +22,7 @@ public:
     void setColor(float r, float g, float b);
     void move(GLKVector3 start, GLKVector3 end);
     void addAsChild(SCNNode *scene);
+    void setHidden(bool hidden);
     
 private:
     SCNNode *boxNode;

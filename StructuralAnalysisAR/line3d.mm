@@ -26,12 +26,16 @@ Line3d::Line3d() {
     boxNode.geometry.firstMaterial = [SCNMaterial material];
     boxNode.geometry.firstMaterial.diffuse.contents = [UIColor redColor];
     
-    setThickness(0.1);
+    setThickness(1);
 }
 
 void Line3d::addAsChild(SCNNode *scene) {
     [scene addChildNode:boxContainer];
     [scene addChildNode:boxLookAt];
+}
+
+void Line3d::setHidden(bool hidden) {
+    boxContainer.hidden = hidden;
 }
 
 void Line3d::move(GLKVector3 start, GLKVector3 end) {

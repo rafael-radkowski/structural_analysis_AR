@@ -10,6 +10,7 @@
 #define grabbableArrow_h
 
 #import <Scenekit/Scenekit.h>
+#import <SpriteKit/SpriteKit.h>
 #import <ModelIO/ModelIO.h>
 #import <Scenekit/ModelIO.h>
 #import <GLKit/GLKit.h>
@@ -19,13 +20,18 @@
 class GrabbableArrow {
 public:
     GrabbableArrow();
+    void setScenes(SKScene* scene2d, SCNView* view3d);
     void addAsChild(SCNNode* node);
+    void setHidden(bool hidden);
     void setPosition(GLKVector3 pos);
+    void setRotationAxisAngle(GLKVector4 axisAngle);
     void setTipSize(float newTipSize);
     float getTipSize();
     
     void setMaxLength(float newLength);
     float getMaxLength();
+    
+    void setThickness(float thickness);
     
     // Ranges of inputs that will map to the arrow length
     void setInputRange(float minValue, float maxValue);
@@ -48,16 +54,24 @@ public:
     bool dragging = false;
     
 private:
+    // Moves text label to correct position
+    void placeLabel();
     SCNNode* arrowHead;
     SCNNode* arrowBase;
     
     // Default tip size from .obj file is 0.3 units tall
     float defaultTipSize = 0.3;
     float tipSize = defaultTipSize;
+    float defaultWidth = 0.2;
+    float width = defaultWidth;
     
     float maxLength = 1;
     float minInput = 0;
     float maxInput = 1;
+    
+    SKScene* textScene = nullptr;
+    SCNView* objectView = nullptr;
+    SKLabelNode* valueLabel;
 };
 
 #endif /* grabbableArrow_h */

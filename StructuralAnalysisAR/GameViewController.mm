@@ -17,7 +17,7 @@
 {
     [super viewDidLoad];
     
-    SCNScene *scene = [SCNScene scene];
+    scene = [SCNScene scene];
     scene.background.contents = [UIImage imageNamed:@"skywalk.jpg"];
     
 //    [scene.rootNode addChildNode:arrow.root];
@@ -27,12 +27,16 @@
     cameraNode.camera = [SCNCamera camera];
     [scene.rootNode addChildNode:cameraNode];
     // move the camera
-    cameraNode.position = SCNVector3Make(0, 0, 5);
+    cameraNode.position = SCNVector3Make(0, 5, 184);
+    cameraNode.camera.zFar = 500;
+//    cameraNode.camera.focalLength = 0.0108268; // 3.3mm
+    cameraNode.camera.xFov = 45.12;
+    cameraNode.camera.yFov = 57.96;
     
     SCNNode *lightNode = [SCNNode node];
     lightNode.light = [SCNLight light];
     lightNode.light.type = SCNLightTypeOmni;
-    lightNode.position = SCNVector3Make(0, 10, 10);
+    lightNode.position = SCNVector3Make(100, 50, 30);
     [scene.rootNode addChildNode:lightNode];
     
     // create and add an ambient light to the scene
@@ -43,24 +47,69 @@
     ambientLightNode.light.intensity = 0.7;
     [scene.rootNode addChildNode:ambientLightNode];
     
-    // Create load bar
-    peopleLoad = LoadMarker(3);
-    peopleLoad.setLoad(0, 0.2);
-    peopleLoad.setLoad(1, 0.5);
-    peopleLoad.setPosition(GLKVector3Make(-2, 0.95, 0), GLKVector3Make(2, 1.1, 0));
-    peopleLoad.addAsChild(scene.rootNode);
-    
     // Get the view and set our scene to it
     SCNView *scnView = (SCNView *)self.view;
     scnView.scene = scene;
+    CGRect screenRect = [[UIScreen mainScreen] bounds];
     
+    // Create SpriteKit scene
+    scene2d = [SKScene sceneWithSize:screenRect.size];
+    scnView.overlaySKScene = scene2d;
     
     [[NSBundle mainBundle] loadNibNamed:@"View" owner:self options: nil];
-    CGRect screenRect = [[UIScreen mainScreen] bounds];
     self.viewFromNib.frame = screenRect;
     printf("w: %f, h: %f\n", screenRect.size.width, screenRect.size.height);
     self.viewFromNib.contentMode = UIViewContentModeScaleToFill;
     [scnView addSubview:self.viewFromNib];
+    
+    [self setupVisualizations];
+    
+    // Set load visibilities to the default values
+    [self setVisibilities];
+}
+
+- (void)setupVisualizations {
+    SCNView *scnView = (SCNView*)self.view;
+    float defaultThickness = 4;
+    
+    // Create live load bar
+    peopleLoad = LoadMarker(3);
+    peopleLoad.setInputRange(0, 1000);
+    peopleLoad.setLoad(0, 250);
+    peopleLoad.setLoad(1, 250);
+    peopleLoad.setLoad(2, 250);
+    peopleLoad.setPosition(GLKVector3Make(-95, 26, 0), GLKVector3Make(85, 28, 0));
+    peopleLoad.setMaxHeight(20);
+    peopleLoad.setThickness(defaultThickness);
+    peopleLoad.addAsChild(scene.rootNode);
+    
+    // Create dead load bar
+    deadLoad = LoadMarker(4);
+    deadLoad.setInputRange(0, 1000);
+    deadLoad.setLoad(0, 550);
+    deadLoad.setLoad(1, 550);
+    deadLoad.setLoad(2, 550);
+    deadLoad.setLoad(3, 550);
+    deadLoad.setPosition(GLKVector3Make(-95, 26, 0), GLKVector3Make(85, 28, 0));
+    deadLoad.setMaxHeight(20);
+    deadLoad.setThickness(defaultThickness);
+    deadLoad.addAsChild(scene.rootNode);
+    
+    reactionArrows.resize(4);
+    reactionArrows[0].setPosition(GLKVector3Make(-95, 3, 0));
+    reactionArrows[1].setPosition(GLKVector3Make(-24, 3, 0));
+    reactionArrows[2].setPosition(GLKVector3Make(80, 3, 0));
+    reactionArrows[3].setPosition(GLKVector3Make(120, 3, 0));
+    for (int i = 0; i < reactionArrows.size(); ++i) {
+        reactionArrows[i].addAsChild(scene.rootNode);
+        reactionArrows[i].setThickness(defaultThickness);
+        reactionArrows[i].setMaxLength(20);
+        reactionArrows[i].setRotationAxisAngle(GLKVector4Make(0, 0, 1, 3.1416));
+        reactionArrows[i].setScenes(scene2d, scnView);
+    }
+    
+    peopleLoad.setScenes(scene2d, scnView);
+    deadLoad.setScenes(scene2d, scnView);
 }
 
 - (void) handleTap:(UIGestureRecognizer*)gestureRecognize
@@ -102,7 +151,7 @@
 
 - (BOOL)shouldAutorotate
 {
-    return YES;
+    return NO;
 }
 
 - (BOOL)prefersStatusBarHidden {
@@ -179,6 +228,21 @@
 //        default:
 //            break;
 //    }
+}
+
+- (IBAction)visSwitchToggled:(id)sender {
+    [self setVisibilities];
+}
+
+- (void)setVisibilities {
+    peopleLoad.setHidden(!self.liveLoadSwitch.on);
+    deadLoad.setHidden(!self.deadLoadSwitch.on);
+    for (int i = 0; i < reactionArrows.size(); ++i) {
+        reactionArrows[i].setHidden(!self.rcnForceSwitch.on);
+    }
+}
+
+- (IBAction)loadPresetSet:(id)sender {
 }
 
 // Touch handling

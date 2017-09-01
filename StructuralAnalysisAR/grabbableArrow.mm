@@ -42,14 +42,49 @@ GrabbableArrow::GrabbableArrow() {
     root = [SCNNode node];
     [root addChildNode:arrowHead];
     [root addChildNode:arrowBase];
+    
+    // Create text label
+//    valueLabel = [SKLabelNode labelNodeWithText:[NSString stringWithFormat:@"%f", lastArrowValue]];
+    valueLabel = [SKLabelNode labelNodeWithFontNamed:@"Helvetica"];
+    valueLabel.horizontalAlignmentMode = SKLabelHorizontalAlignmentModeLeft;
+//    valueLabel.fontName = @"Cochin";
+    valueLabel.fontColor = [UIColor blackColor];
+    valueLabel.fontSize = 26;
+}
+
+void GrabbableArrow::setScenes(SKScene* scene2d, SCNView* view3d) {
+    textScene = scene2d;
+    objectView = view3d;
+    [textScene addChild:valueLabel];
+    placeLabel();
 }
 
 void GrabbableArrow::addAsChild(SCNNode* node) {
     [node addChildNode:root];
 }
 
+void GrabbableArrow::setHidden(bool hidden) {
+    root.hidden = hidden;
+    valueLabel.hidden = hidden;
+}
+
+
 void GrabbableArrow::setPosition(GLKVector3 pos) {
     root.position = SCNVector3FromGLKVector3(pos);
+    placeLabel();
+}
+
+void GrabbableArrow::setRotationAxisAngle(GLKVector4 axisAngle) {
+    root.rotation = SCNVector4FromGLKVector4(axisAngle);
+}
+
+void GrabbableArrow::placeLabel() {
+    if (objectView) {
+        SCNVector3 screenCoords = [objectView projectPoint:root.position];
+        // Spritekit uses bottom-left as (0,0), while screen coordinates use top-right
+        int reversedY = objectView.frame.size.height - screenCoords.y;
+        valueLabel.position = CGPointMake(12 + screenCoords.x, reversedY);
+    }
 }
 
 void GrabbableArrow::setTipSize(float newTipSize) {
@@ -63,6 +98,13 @@ void GrabbableArrow::setTipSize(float newTipSize) {
 float GrabbableArrow::getTipSize() {
     return tipSize;
 }
+
+void GrabbableArrow::setThickness(float thickness) {
+    float widthScale = thickness / defaultWidth;
+    arrowBase.scale = SCNVector3Make(widthScale, arrowBase.scale.y, widthScale);
+    setTipSize(2.4 * thickness);
+}
+
 
 void GrabbableArrow::setMaxLength(float newLength) {
     maxLength = newLength;
@@ -139,7 +181,7 @@ void GrabbableArrow::setIntensity(float value) {
     // adjust scale
 //    arrowScale = ((new_value - 0.5) * 0.6) + 1;
 //    arrow.root.scale = SCNVector3Make(arrowScale * arrowWidthFactor, arrowScale, arrowScale * arrowWidthFactor);
-    arrowBase.scale = SCNVector3Make(1, maxLength * normalizedValue, 1);
+    arrowBase.scale = SCNVector3Make(arrowBase.scale.x, maxLength * normalizedValue, arrowBase.scale.z);
     
     // adjust color
 //    double reverse_value = 1 - normalizedValue ;
@@ -147,6 +189,8 @@ void GrabbableArrow::setIntensity(float value) {
 //    UIColor* color = [[UIColor alloc] initWithHue:hue saturation:1.0 brightness:0.8 alpha:1.0];
 //    arrowHead.geometry.firstMaterial.diffuse.contents = color;
 //    arrowBase.geometry.firstMaterial.diffuse.contents = color;
+    
+    valueLabel.text = [NSString stringWithFormat:@"%.1 flbf", value];
 }
 
 void GrabbableArrow::setWide(bool wide) {

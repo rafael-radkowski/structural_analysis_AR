@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "StructuralAnalysisAR/grabbableArrow.mm"
-            timestampString = "525906597.634136"
+            timestampString = "525995078.611496"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "126"
-            endingLineNumber = "126"
+            startingLineNumber = "168"
+            endingLineNumber = "168"
             landmarkName = "GrabbableArrow::getDragValue(GLKVector3 origin, GLKVector3 touchRay, GLKVector3 cameraDir)"
             landmarkType = "7">
          </BreakpointContent>
@@ -25,13 +25,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "StructuralAnalysisAR/GameViewController.mm"
-            timestampString = "525801925.471258"
+            filePath = "StructuralAnalysisAR/line3d.mm"
+            timestampString = "525984606.325239"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "54"
-            endingLineNumber = "54"
-            landmarkName = "-viewDidLoad"
+            startingLineNumber = "47"
+            endingLineNumber = "47"
+            landmarkName = "Line3d::move(GLKVector3 start, GLKVector3 end)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -41,13 +41,29 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "StructuralAnalysisAR/line3d.mm"
-            timestampString = "525804272.019904"
+            filePath = "StructuralAnalysisAR/grabbableArrow.mm"
+            timestampString = "525911220.082302"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "43"
-            endingLineNumber = "43"
-            landmarkName = "Line3d::move(GLKVector3 start, GLKVector3 end)"
+            startingLineNumber = "58"
+            endingLineNumber = "58"
+            landmarkName = "GrabbableArrow::setScenes(SKScene* scene2d, SCNView* view3d)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "StructuralAnalysisAR/grabbableArrow.mm"
+            timestampString = "525995078.611496"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "86"
+            endingLineNumber = "86"
+            landmarkName = "GrabbableArrow::placeLabel()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

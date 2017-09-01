@@ -14,6 +14,7 @@
 
 #import <GLKit/GLKit.h>
 #import <Scenekit/Scenekit.h>
+#import <SpriteKit/SpriteKit.h>
 #import <Scenekit/ModelIO.h>
 
 #include <stdio.h>
@@ -26,16 +27,25 @@ class LoadMarker {
 public:
     LoadMarker();
     LoadMarker(size_t nLoads);
+    void setScenes(SKScene* scene2d, SCNView* view3d);
     void addAsChild(SCNNode *node);
     void setLoad(size_t loadIndex, double value);
     void setPosition(GLKVector3 start, GLKVector3 end);
     void setMaxHeight(float h);
+    void setThickness(float thickness);
+    
+    void setHidden(bool hidden);
     
     // Ranges of inputs that will map to the arrow length
     void setInputRange(float minValue, float maxValue);
     std::pair<float,float> getInputRange();
     
 private:
+    void refreshPositions();
+    
+    GLKVector3 startPos;
+    GLKVector3 endPos;
+    
     SCNNode* rootNode;
     std::vector<double> loadValues;
     std::vector<GrabbableArrow> loadArrows;

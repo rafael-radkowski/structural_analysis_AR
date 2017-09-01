@@ -11,10 +11,15 @@
 #include "loadMarker.h"
 #import <UIKit/UIKit.h>
 #import <SceneKit/SceneKit.h>
+#import <SpriteKit/SpriteKit.h>
+
+#include <vector>
 
 @interface GameViewController : UIViewController {
     // Private vars
     SCNNode *cameraNode;
+    SCNScene *scene;
+    SKScene *scene2d;
 //    SCNNode *arrowNode;
 //    SCNNode *arrowBase;
     SCNNode *targetSphere;
@@ -28,28 +33,28 @@
     GrabbableArrow arrow;
     
     LoadMarker peopleLoad;
+    LoadMarker deadLoad;
+    std::vector<GrabbableArrow> reactionArrows;
 }
+
+- (void)setVisibilities;
+- (void)setupVisualizations;
 
 // MARK: Properties
 @property (nonatomic, retain) IBOutlet UIView *viewFromNib;
-@property (weak, nonatomic) IBOutlet UIStepper *stepperControl;
-@property (weak, nonatomic) IBOutlet UISlider *sliderControl;
-@property (weak, nonatomic) IBOutlet UISwitch *toggleControl;
-@property (weak, nonatomic) IBOutlet UIButton *buttonControl;
-@property (weak, nonatomic) IBOutlet UISegmentedControl *colorSelector;
-@property (weak, nonatomic) IBOutlet UILabel *topTitle;
+
+@property (weak, nonatomic) IBOutlet UISwitch *liveLoadSwitch;
+@property (weak, nonatomic) IBOutlet UISwitch *deadLoadSwitch;
+@property (weak, nonatomic) IBOutlet UISwitch *rcnForceSwitch;
+@property (weak, nonatomic) IBOutlet UISegmentedControl *loadPresetBtn;
+
 
 
 // MARK: Actions
-- (IBAction)stepperChanged:(id)sender;
+// One of the visualization switches was toggled
+- (IBAction)visSwitchToggled:(id)sender;
+- (IBAction)loadPresetSet:(id)sender;
 
-- (IBAction)sliderChanged:(id)sender;
-
-- (IBAction)posBtnPressed:(id)sender;
-
-- (IBAction)wideSwitchToggled:(id)sender;
-
-- (IBAction)colorChanged:(id)sender;
 
 // override
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event;
