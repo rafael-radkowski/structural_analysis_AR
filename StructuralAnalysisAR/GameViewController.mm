@@ -79,6 +79,7 @@
     peopleLoad.setLoad(1, 250);
     peopleLoad.setLoad(2, 250);
     peopleLoad.setPosition(GLKVector3Make(-95, 26, 0), GLKVector3Make(85, 28, 0));
+    peopleLoad.setMinHeight(5);
     peopleLoad.setMaxHeight(20);
     peopleLoad.setThickness(defaultThickness);
     peopleLoad.addAsChild(scene.rootNode);
@@ -91,6 +92,7 @@
     deadLoad.setLoad(2, 550);
     deadLoad.setLoad(3, 550);
     deadLoad.setPosition(GLKVector3Make(-95, 26, 0), GLKVector3Make(85, 28, 0));
+    deadLoad.setMinHeight(5);
     deadLoad.setMaxHeight(20);
     deadLoad.setThickness(defaultThickness);
     deadLoad.addAsChild(scene.rootNode);
@@ -243,6 +245,36 @@
 }
 
 - (IBAction)loadPresetSet:(id)sender {
+    switch (self.loadPresetBtn.selectedSegmentIndex) {
+        case 0:
+            peopleLoad.setPosition(GLKVector3Make(-95, 26, 0), GLKVector3Make(85, 28, 0));
+            peopleLoad.setLoad(0, 0);
+            peopleLoad.setLoad(1, 0);
+            peopleLoad.setLoad(2, 0);
+            break;
+        case 1:
+            peopleLoad.setPosition(GLKVector3Make(-95, 26, 0), GLKVector3Make(85, 28, 0));
+            peopleLoad.setLoad(0, 800);
+            peopleLoad.setLoad(1, 800);
+            peopleLoad.setLoad(2, 800);
+            break;
+        case 2:
+            peopleLoad.setPosition(GLKVector3Make(-95, 26, 0), GLKVector3Make(0, 26.5, 0));
+            peopleLoad.setLoad(0, 200);
+            peopleLoad.setLoad(1, 200);
+            peopleLoad.setLoad(2, 200);
+            break;
+        case 3:
+            peopleLoad.setPosition(GLKVector3Make(0, 26.5, 0), GLKVector3Make(85, 28, 0));
+            peopleLoad.setLoad(0, 200);
+            peopleLoad.setLoad(1, 200);
+            peopleLoad.setLoad(2, 200);
+            break;
+        case 4:
+            break;
+        default:
+            break;
+    }
 }
 
 // Touch handling

@@ -25,11 +25,13 @@ public:
     void setHidden(bool hidden);
     void setPosition(GLKVector3 pos);
     void setRotationAxisAngle(GLKVector4 axisAngle);
-    void setTipSize(float newTipSize);
-    float getTipSize();
     
     void setMaxLength(float newLength);
     float getMaxLength();
+    void setMinLength(float newLength);
+    
+    // The length of the arrow when it is at minimum range. Includes tip length and minLength
+    float getStartLength();
     
     void setThickness(float thickness);
     
@@ -66,6 +68,7 @@ private:
     float width = defaultWidth;
     
     float maxLength = 1;
+    float minLength = 1;
     float minInput = 0;
     float maxInput = 1;
     

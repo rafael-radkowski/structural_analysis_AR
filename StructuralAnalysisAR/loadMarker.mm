@@ -43,6 +43,7 @@ void LoadMarker::addAsChild(SCNNode *node) {
 void LoadMarker::setLoad(size_t loadIndex, double value) {
     assert(loadIndex < loadValues.size() && loadIndex >= 0);
     loadValues[loadIndex] = value;
+    refreshPositions();
 }
 
 void LoadMarker::setPosition(GLKVector3 start, GLKVector3 end) {
@@ -58,6 +59,15 @@ void LoadMarker::setMaxHeight(float h) {
     }
     refreshPositions();
 }
+
+void LoadMarker::setMinHeight(float h) {
+    minHeight = h;
+    for (int i = 0; i < loadArrows.size(); ++i) {
+        loadArrows[i].setMinLength(h);
+    }
+    refreshPositions();
+}
+
 void LoadMarker::setThickness(float thickness) {
     for (int i = 0; i < loadArrows.size(); ++i) {
         loadArrows[i].setThickness(thickness);
@@ -72,6 +82,7 @@ void LoadMarker::setThickness(float thickness) {
 void LoadMarker::refreshPositions() {
     GLKVector3 lineDirection = GLKVector3Subtract(endPos, startPos);
     
+    float lengthRange = maxHeight - minHeight;
     GLKVector3 lastPos;
     for (int i = 0; i < loadArrows.size(); ++i) {
         float proportion = (float)i / (loadArrows.size() - 1);
@@ -83,10 +94,9 @@ void LoadMarker::refreshPositions() {
         float thisNormalizedValue = (loadValues[i] - minInput) / (maxInput - minInput);
         // Move load line
         if (i != 0) {
-            GLKVector3 adjusted_start = GLKVector3Make(lastPos.x, lastPos.y + loadArrows[i-1].getTipSize() + maxHeight*prevNormalizedValue, lastPos.z);
-            GLKVector3 adjusted_end = GLKVector3Make(interpolatedPos.x, interpolatedPos.y + loadArrows[i].getTipSize() + maxHeight*thisNormalizedValue, interpolatedPos.z);
+            GLKVector3 adjusted_start = GLKVector3Make(lastPos.x, lastPos.y + loadArrows[i-1].getStartLength() + lengthRange*prevNormalizedValue, lastPos.z);
+            GLKVector3 adjusted_end = GLKVector3Make(interpolatedPos.x, interpolatedPos.y + loadArrows[i].getStartLength() + lengthRange*thisNormalizedValue, interpolatedPos.z);
             loadLines[i - 1].move(adjusted_start, adjusted_end);
-//            loadLines[i - 1].move(lastPos, interpolatedPos);
         }
         
         lastPos = interpolatedPos;

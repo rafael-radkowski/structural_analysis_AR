@@ -32,6 +32,7 @@ public:
     void setLoad(size_t loadIndex, double value);
     void setPosition(GLKVector3 start, GLKVector3 end);
     void setMaxHeight(float h);
+    void setMinHeight(float h);
     void setThickness(float thickness);
     
     void setHidden(bool hidden);
@@ -52,6 +53,7 @@ private:
     std::vector<Line3d> loadLines;
     
     float maxHeight = 1.5;
+    float minHeight = 0;
     float minInput = 0;
     float maxInput = 1;
 };

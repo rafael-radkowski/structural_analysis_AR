@@ -36,7 +36,7 @@ GrabbableArrow::GrabbableArrow() {
     arrowHead.geometry.firstMaterial = arrowMat;
     arrowBase.geometry.firstMaterial = arrowMat;
     
-    setTipSize(defaultTipSize);
+    setThickness(defaultWidth);
     
     // Create a parent object for the arrow
     root = [SCNNode node];
@@ -87,32 +87,34 @@ void GrabbableArrow::placeLabel() {
     }
 }
 
-void GrabbableArrow::setTipSize(float newTipSize) {
-    float tipScale = newTipSize / defaultTipSize;
-    arrowHead.scale = SCNVector3Make(tipScale, tipScale, tipScale);
-    arrowBase.position = SCNVector3Make(0, newTipSize, 0);
-    
-    tipSize = newTipSize;
-}
-
-float GrabbableArrow::getTipSize() {
-    return tipSize;
-}
-
 void GrabbableArrow::setThickness(float thickness) {
     float widthScale = thickness / defaultWidth;
     arrowBase.scale = SCNVector3Make(widthScale, arrowBase.scale.y, widthScale);
-    setTipSize(2.4 * thickness);
+    
+    // Set the tip scale to be proportional
+    float newTipSize = 2.4 * thickness;
+    float tipScale = newTipSize / defaultTipSize;
+    arrowHead.scale = SCNVector3Make(tipScale, tipScale, tipScale);
+    arrowBase.position = SCNVector3Make(0, newTipSize, 0);
+    tipSize = newTipSize;
 }
-
 
 void GrabbableArrow::setMaxLength(float newLength) {
     maxLength = newLength;
     setIntensity(lastArrowValue);
 }
 
+void GrabbableArrow::setMinLength(float newLength) {
+    minLength = newLength;
+    setIntensity(lastArrowValue);
+}
+
 float GrabbableArrow::getMaxLength() {
     return maxLength;
+}
+
+float GrabbableArrow::getStartLength() {
+    return tipSize + minLength;
 }
 
 void GrabbableArrow::setInputRange(float minValue, float maxValue) {
@@ -181,7 +183,9 @@ void GrabbableArrow::setIntensity(float value) {
     // adjust scale
 //    arrowScale = ((new_value - 0.5) * 0.6) + 1;
 //    arrow.root.scale = SCNVector3Make(arrowScale * arrowWidthFactor, arrowScale, arrowScale * arrowWidthFactor);
-    arrowBase.scale = SCNVector3Make(arrowBase.scale.x, maxLength * normalizedValue, arrowBase.scale.z);
+    float lengthRange = maxLength - minLength;
+    float desiredLength = minLength + lengthRange * normalizedValue;
+    arrowBase.scale = SCNVector3Make(arrowBase.scale.x, desiredLength, arrowBase.scale.z);
     
     // adjust color
 //    double reverse_value = 1 - normalizedValue ;
