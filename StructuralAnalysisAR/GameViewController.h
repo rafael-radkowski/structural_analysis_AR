@@ -35,6 +35,7 @@
     LoadMarker peopleLoad;
     LoadMarker deadLoad;
     std::vector<GrabbableArrow> reactionArrows;
+    int activeScenario;
 }
 
 - (void)setVisibilities;

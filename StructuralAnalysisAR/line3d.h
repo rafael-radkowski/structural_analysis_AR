@@ -23,6 +23,8 @@ public:
     void move(GLKVector3 start, GLKVector3 end);
     void addAsChild(SCNNode *scene);
     void setHidden(bool hidden);
+    // Returns true if this line contains the given node
+    bool hasNode(SCNNode* node);
     
 private:
     SCNNode *boxNode;

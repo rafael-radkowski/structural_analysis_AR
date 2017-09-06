@@ -8,6 +8,7 @@
 
 #include <assert.h>
 #include "loadMarker.h"
+#include <algorithm>
 
 LoadMarker::LoadMarker() : LoadMarker(2) { }
 
@@ -42,7 +43,16 @@ void LoadMarker::addAsChild(SCNNode *node) {
 
 void LoadMarker::setLoad(size_t loadIndex, double value) {
     assert(loadIndex < loadValues.size() && loadIndex >= 0);
+    lastIntensity = value;
     loadValues[loadIndex] = value;
+    refreshPositions();
+}
+
+void LoadMarker::setLoad(double value) {
+    lastIntensity = value;
+    for (int i = 0; i < loadValues.size(); ++i) {
+        loadValues[i] = value;
+    }
     refreshPositions();
 }
 
@@ -94,8 +104,8 @@ void LoadMarker::refreshPositions() {
         float thisNormalizedValue = (loadValues[i] - minInput) / (maxInput - minInput);
         // Move load line
         if (i != 0) {
-            GLKVector3 adjusted_start = GLKVector3Make(lastPos.x, lastPos.y + loadArrows[i-1].getStartLength() + lengthRange*prevNormalizedValue, lastPos.z);
-            GLKVector3 adjusted_end = GLKVector3Make(interpolatedPos.x, interpolatedPos.y + loadArrows[i].getStartLength() + lengthRange*thisNormalizedValue, interpolatedPos.z);
+            GLKVector3 adjusted_start = GLKVector3Make(lastPos.x, lastPos.y + minHeight + lengthRange*prevNormalizedValue, lastPos.z);
+            GLKVector3 adjusted_end = GLKVector3Make(interpolatedPos.x, interpolatedPos.y + minHeight + lengthRange*thisNormalizedValue, interpolatedPos.z);
             loadLines[i - 1].move(adjusted_start, adjusted_end);
         }
         
@@ -124,4 +134,88 @@ void LoadMarker::setInputRange(float minValue, float maxValue) {
 
 std::pair<float, float> LoadMarker::getInputRange() {
     return std::make_pair(minInput, maxInput);
+}
+
+void LoadMarker::touchBegan(GLKVector3 origin, SCNHitTestResult* hitTestResult) {
+//    GLKMatrix4 moveToEnd = GLKMatrix4MakeTranslation(lastArrowValue * -root.transform.m12, lastArrowValue * root.transform.m22, lastArrowValue * root.transform.m32);
+//    GLKMatrix4 endTransform = GLKMatrix4Multiply(moveToEnd, SCNMatrix4ToGLKMatrix4(root.transform));
+//    GLKVector4 endPos4 = GLKMatrix4GetColumn(endTransform, 3);
+    
+    // Check if the hit node was a load line
+    for (Line3d& loadLine : loadLines) {
+        if (loadLine.hasNode(hitTestResult.node)) {
+            dragState = vertically;
+        }
+    }
+    if (loadArrows[0].hasNode(hitTestResult.node)) {
+        dragState = horizontallyL;
+    }
+    else if (loadArrows[loadArrows.size() - 1].hasNode(hitTestResult.node)) {
+        dragState = horizontallyR;
+    }
+    GLKVector3 hitPoint = SCNVector3ToGLKVector3(hitTestResult.worldCoordinates);
+    dragStartPos = projectRay(origin, GLKVector3Subtract(hitPoint, origin));
+}
+
+GLKVector3 LoadMarker::projectRay(const GLKVector3 origin, const GLKVector3 touchRay) {
+        GLKVector3 planeNormal = GLKVector3Make(rootNode.transform.m13, rootNode.transform.m23, rootNode.transform.m33);
+        double numerator = GLKVector3DotProduct(planeNormal, GLKVector3Subtract(startPos, origin));
+        double denominator = GLKVector3DotProduct(planeNormal, touchRay);
+        
+        assert(denominator != 0);
+        double d = numerator / denominator;
+        GLKVector3 hitPoint = GLKVector3Add(GLKVector3MultiplyScalar(touchRay, d), origin);
+        return hitPoint;
+}
+
+float LoadMarker::getDragValue(GLKVector3 origin, GLKVector3 touchRay) {
+    double value = lastIntensity;
+    if (dragState == vertically) {
+        GLKVector3 hitPoint = projectRay(origin, touchRay);
+        
+        GLKVector3 lineDir = GLKVector3Normalize(GLKVector3Subtract(endPos, startPos));
+        GLKVector3 loadDir = GLKVector3CrossProduct(GLKVector3Make(rootNode.transform.m13, rootNode.transform.m23, rootNode.transform.m33), lineDir);
+        // Unsure about the negative on the x-axis, but it works?
+//        GLKVector3 loadDir = GLKVector3Make(-rootNode.transform.m12, rootNode.transform.m22, rootNode.transform.m32);
+        // Position of startPos + arrow min length along load direction
+        GLKVector3 loadPos = GLKVector3Add(startPos, GLKVector3MultiplyScalar(loadDir, minHeight));
+        GLKVector3 hitDir = GLKVector3Subtract(hitPoint, loadPos);
+        double normalizedValue = GLKVector3DotProduct(loadDir, hitDir);
+        double heightRange = maxHeight - minHeight;
+        normalizedValue = MIN(heightRange, MAX(0, normalizedValue));
+        normalizedValue = normalizedValue / heightRange;
+        value = minInput + normalizedValue * (maxInput - minInput);
+    }
+    else {
+        value = lastIntensity;
+    }
+   
+    return value;
+}
+
+std::pair<float, float> LoadMarker::getDragPosition(GLKVector3 origin, GLKVector3 touchRay) {
+    if (dragState == horizontallyR || dragState == horizontallyL) {
+        GLKVector3 hitPoint = projectRay(origin, touchRay);
+        GLKVector3 lineDir = GLKVector3Normalize(GLKVector3Subtract(endPos, startPos));
+        GLKVector3 hitDir = GLKVector3Subtract(hitPoint, dragStartPos);
+        printf("hitDir: %f, %f %f\n", hitDir.x, hitDir.y, hitDir.z);
+        printf("dragStartPos: %f, %f %f\n", dragStartPos.x, dragStartPos.y, dragStartPos.z);
+        double dragDistance = GLKVector3DotProduct(lineDir, hitDir);
+        
+        if (dragState == horizontallyL) {
+            return std::make_pair(dragDistance, 0);
+        }
+        if (dragState == horizontallyR) {
+            return std::make_pair(0, dragDistance);
+        }
+    }
+    return std::make_pair(0, 0);
+}
+
+void LoadMarker::touchEnded() {
+    dragState = none;
+}
+
+void LoadMarker::touchCancelled() {
+    dragState = none;
 }

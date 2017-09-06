@@ -29,9 +29,11 @@ public:
     void setMaxLength(float newLength);
     float getMaxLength();
     void setMinLength(float newLength);
+    float getMinLength();
+
+    // True if the passed in node is part of the arrow
+    bool hasNode(SCNNode* node);
     
-    // The length of the arrow when it is at minimum range. Includes tip length and minLength
-    float getStartLength();
     
     void setThickness(float thickness);
     

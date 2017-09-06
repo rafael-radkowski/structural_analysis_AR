@@ -56,3 +56,7 @@ void Line3d::setColor(float r, float g, float b) {
 void Line3d::setThickness(float thickness) {
     boxNode.scale = SCNVector3Make(thickness, thickness, boxNode.scale.z);
 }
+
+bool Line3d::hasNode(SCNNode* node) {
+    return node == boxNode;
+}

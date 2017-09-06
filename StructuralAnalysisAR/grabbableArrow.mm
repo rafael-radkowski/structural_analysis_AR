@@ -68,6 +68,9 @@ void GrabbableArrow::setHidden(bool hidden) {
     valueLabel.hidden = hidden;
 }
 
+bool GrabbableArrow::hasNode(SCNNode* node) {
+    return node == arrowBase || node == arrowHead;
+}
 
 void GrabbableArrow::setPosition(GLKVector3 pos) {
     root.position = SCNVector3FromGLKVector3(pos);
@@ -88,15 +91,17 @@ void GrabbableArrow::placeLabel() {
 }
 
 void GrabbableArrow::setThickness(float thickness) {
-    float widthScale = thickness / defaultWidth;
-    arrowBase.scale = SCNVector3Make(widthScale, arrowBase.scale.y, widthScale);
-    
     // Set the tip scale to be proportional
     float newTipSize = 2.4 * thickness;
     float tipScale = newTipSize / defaultTipSize;
     arrowHead.scale = SCNVector3Make(tipScale, tipScale, tipScale);
     arrowBase.position = SCNVector3Make(0, newTipSize, 0);
     tipSize = newTipSize;
+    
+    // Update arrow base length, since tip size is different
+    float widthScale = thickness / defaultWidth;
+    float baseLength = minLength - tipSize;
+    arrowBase.scale = SCNVector3Make(widthScale, baseLength, widthScale);
 }
 
 void GrabbableArrow::setMaxLength(float newLength) {
@@ -113,9 +118,15 @@ float GrabbableArrow::getMaxLength() {
     return maxLength;
 }
 
-float GrabbableArrow::getStartLength() {
-    return tipSize + minLength;
+float GrabbableArrow::getMinLength() {
+    return minLength;
 }
+
+//
+//void GrabbableArrow::setStartLength(float length) {
+//    minLength = length - tipSize;
+//    setIntensity(lastArrowValue);
+//}
 
 void GrabbableArrow::setInputRange(float minValue, float maxValue) {
     minInput = minValue;
@@ -178,13 +189,14 @@ void GrabbableArrow::touchCancelled() {
 }
 
 void GrabbableArrow::setIntensity(float value) {
+    lastArrowValue = value;
     float normalizedValue = (value - minInput) / (maxInput - minInput);
     
     // adjust scale
 //    arrowScale = ((new_value - 0.5) * 0.6) + 1;
 //    arrow.root.scale = SCNVector3Make(arrowScale * arrowWidthFactor, arrowScale, arrowScale * arrowWidthFactor);
-    float lengthRange = maxLength - minLength;
-    float desiredLength = minLength + lengthRange * normalizedValue;
+    float lengthRange = maxLength - minLength; // The length range for the arrow base
+    float desiredLength = (minLength - tipSize) + lengthRange * normalizedValue;
     arrowBase.scale = SCNVector3Make(arrowBase.scale.x, desiredLength, arrowBase.scale.z);
     
     // adjust color
@@ -194,7 +206,7 @@ void GrabbableArrow::setIntensity(float value) {
 //    arrowHead.geometry.firstMaterial.diffuse.contents = color;
 //    arrowBase.geometry.firstMaterial.diffuse.contents = color;
     
-    valueLabel.text = [NSString stringWithFormat:@"%.1 flbf", value];
+    valueLabel.text = [NSString stringWithFormat:@"%.1f k", value];
 }
 
 void GrabbableArrow::setWide(bool wide) {
@@ -204,3 +216,4 @@ void GrabbableArrow::setWide(bool wide) {
     arrowHead.scale = SCNVector3Make(widthScale, arrowHead.scale.y, widthScale);
     [SCNTransaction commit];
 }
+

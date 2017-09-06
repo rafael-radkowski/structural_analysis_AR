@@ -11,6 +11,14 @@
 #import <SceneKit/ModelIO.h>
 #import <GLKit/GLKQuaternion.h>
 
+#define COL1_POS -80
+#define COL2_POS -25
+#define COL3_POS 74
+#define COL4_POS 118
+
+// IDs of UISegmentedControl for scenario selection
+#define SCENARIO_VARIABLE 4
+
 @implementation GameViewController
 
 - (void)viewDidLoad
@@ -27,7 +35,7 @@
     cameraNode.camera = [SCNCamera camera];
     [scene.rootNode addChildNode:cameraNode];
     // move the camera
-    cameraNode.position = SCNVector3Make(0, 5, 184);
+    cameraNode.position = SCNVector3Make(-5.5, 5, 147);
     cameraNode.camera.zFar = 500;
 //    cameraNode.camera.focalLength = 0.0108268; // 3.3mm
     cameraNode.camera.xFov = 45.12;
@@ -55,6 +63,7 @@
     // Create SpriteKit scene
     scene2d = [SKScene sceneWithSize:screenRect.size];
     scnView.overlaySKScene = scene2d;
+    scene2d.userInteractionEnabled = NO;
     
     [[NSBundle mainBundle] loadNibNamed:@"View" owner:self options: nil];
     self.viewFromNib.frame = screenRect;
@@ -66,6 +75,7 @@
     
     // Set load visibilities to the default values
     [self setVisibilities];
+    [self.loadPresetBtn sendActionsForControlEvents:UIControlEventValueChanged];
 }
 
 - (void)setupVisualizations {
@@ -74,38 +84,33 @@
     
     // Create live load bar
     peopleLoad = LoadMarker(3);
-    peopleLoad.setInputRange(0, 1000);
-    peopleLoad.setLoad(0, 250);
-    peopleLoad.setLoad(1, 250);
-    peopleLoad.setLoad(2, 250);
-    peopleLoad.setPosition(GLKVector3Make(-95, 26, 0), GLKVector3Make(85, 28, 0));
-    peopleLoad.setMinHeight(5);
-    peopleLoad.setMaxHeight(20);
+    peopleLoad.setInputRange(0, 300);
+    peopleLoad.setMinHeight(15);
+    peopleLoad.setMaxHeight(40);
     peopleLoad.setThickness(defaultThickness);
     peopleLoad.addAsChild(scene.rootNode);
     
     // Create dead load bar
-    deadLoad = LoadMarker(4);
-    deadLoad.setInputRange(0, 1000);
-    deadLoad.setLoad(0, 550);
-    deadLoad.setLoad(1, 550);
-    deadLoad.setLoad(2, 550);
-    deadLoad.setLoad(3, 550);
-    deadLoad.setPosition(GLKVector3Make(-95, 26, 0), GLKVector3Make(85, 28, 0));
-    deadLoad.setMinHeight(5);
-    deadLoad.setMaxHeight(20);
+    deadLoad = LoadMarker(7);
+    deadLoad.setInputRange(0, 300);
+    deadLoad.setLoad(1.2 * (COL4_POS - COL1_POS)); // 1.2 k/ft
+    deadLoad.setPosition(GLKVector3Make(COL1_POS, 22, 0), GLKVector3Make(COL4_POS, 24, 0));
+    deadLoad.setMinHeight(15);
+    deadLoad.setMaxHeight(25);
     deadLoad.setThickness(defaultThickness);
     deadLoad.addAsChild(scene.rootNode);
     
     reactionArrows.resize(4);
-    reactionArrows[0].setPosition(GLKVector3Make(-95, 3, 0));
-    reactionArrows[1].setPosition(GLKVector3Make(-24, 3, 0));
-    reactionArrows[2].setPosition(GLKVector3Make(80, 3, 0));
-    reactionArrows[3].setPosition(GLKVector3Make(120, 3, 0));
+    reactionArrows[0].setPosition(GLKVector3Make(COL1_POS, 3, 0));
+    reactionArrows[1].setPosition(GLKVector3Make(COL2_POS, 3, 0));
+    reactionArrows[2].setPosition(GLKVector3Make(COL3_POS, 3, 0));
+    reactionArrows[3].setPosition(GLKVector3Make(COL4_POS, 3, 0));
     for (int i = 0; i < reactionArrows.size(); ++i) {
         reactionArrows[i].addAsChild(scene.rootNode);
         reactionArrows[i].setThickness(defaultThickness);
-        reactionArrows[i].setMaxLength(20);
+        reactionArrows[i].setMinLength(10);
+        reactionArrows[i].setMaxLength(30);
+        reactionArrows[i].setInputRange(0, 150);
         reactionArrows[i].setRotationAxisAngle(GLKVector4Make(0, 0, 1, 3.1416));
         reactionArrows[i].setScenes(scene2d, scnView);
     }
@@ -245,36 +250,52 @@
 }
 
 - (IBAction)loadPresetSet:(id)sender {
+    [SCNTransaction begin];
+    [SCNTransaction setAnimationDuration:0.5];
+    const float top_posL = 22;
+    const float top_posR = 24;
+    activeScenario = self.loadPresetBtn.selectedSegmentIndex;
+
     switch (self.loadPresetBtn.selectedSegmentIndex) {
-        case 0:
-            peopleLoad.setPosition(GLKVector3Make(-95, 26, 0), GLKVector3Make(85, 28, 0));
-            peopleLoad.setLoad(0, 0);
-            peopleLoad.setLoad(1, 0);
-            peopleLoad.setLoad(2, 0);
+        case 0: // none
+            peopleLoad.setPosition(GLKVector3Make(COL1_POS, top_posL, 0), GLKVector3Make(COL4_POS, top_posR, 0));
+            peopleLoad.setLoad(0);
+            reactionArrows[0].setIntensity(17.644);
+            reactionArrows[1].setIntensity(108.071);
+            reactionArrows[2].setIntensity(103.97);
+            reactionArrows[3].setIntensity(7.914);
             break;
-        case 1:
-            peopleLoad.setPosition(GLKVector3Make(-95, 26, 0), GLKVector3Make(85, 28, 0));
-            peopleLoad.setLoad(0, 800);
-            peopleLoad.setLoad(1, 800);
-            peopleLoad.setLoad(2, 800);
+        case 1: // uniform
+            peopleLoad.setPosition(GLKVector3Make(COL1_POS, top_posL, 0), GLKVector3Make(COL4_POS, top_posR, 0));
+            peopleLoad.setLoad(0.8 * (COL4_POS - COL1_POS));
+            reactionArrows[0].setIntensity(29.407);
+            reactionArrows[1].setIntensity(180.118);
+            reactionArrows[2].setIntensity(173.284);
+            reactionArrows[3].setIntensity(13.191);
             break;
-        case 2:
-            peopleLoad.setPosition(GLKVector3Make(-95, 26, 0), GLKVector3Make(0, 26.5, 0));
-            peopleLoad.setLoad(0, 200);
-            peopleLoad.setLoad(1, 200);
-            peopleLoad.setLoad(2, 200);
+        case 2: // left
+            peopleLoad.setPosition(GLKVector3Make(COL1_POS, top_posL, 0), GLKVector3Make(COL2_POS, top_posL, 0));
+            peopleLoad.setLoad(0.8 * (COL2_POS - COL1_POS));
+            reactionArrows[0].setIntensity(37.441);
+            reactionArrows[1].setIntensity(113.919);
+            reactionArrows[2].setIntensity(101.376);
+            reactionArrows[3].setIntensity(8.863);
             break;
-        case 3:
-            peopleLoad.setPosition(GLKVector3Make(0, 26.5, 0), GLKVector3Make(85, 28, 0));
-            peopleLoad.setLoad(0, 200);
-            peopleLoad.setLoad(1, 200);
-            peopleLoad.setLoad(2, 200);
+        case 3: // right
+            peopleLoad.setPosition(GLKVector3Make(COL3_POS, top_posR, 0), GLKVector3Make(COL4_POS, top_posR, 0));
+            peopleLoad.setLoad(0.8 * (COL4_POS - COL3_POS));
+            reactionArrows[0].setIntensity(18.033);
+            reactionArrows[1].setIntensity(106.792);
+            reactionArrows[2].setIntensity(123.978);
+            reactionArrows[3].setIntensity(23.997);
             break;
-        case 4:
+        case SCENARIO_VARIABLE: // variable
+            peopleLoad.setPosition(GLKVector3Make(COL1_POS, top_posL, 0), GLKVector3Make(COL4_POS, top_posR, 0));
             break;
         default:
             break;
     }
+    [SCNTransaction commit];
 }
 
 // Touch handling
@@ -295,6 +316,9 @@
 //    }
     
 //    arrow.touchBegan(hitResults.firstObject);
+    if (activeScenario == SCENARIO_VARIABLE) {
+        peopleLoad.touchBegan(SCNVector3ToGLKVector3(cameraNode.position), hitResults.firstObject);
+    }
     return;
 }
 
@@ -309,19 +333,27 @@
     GLKVector3 cameraPos = SCNVector3ToGLKVector3(cameraNode.position);
     GLKVector3  touchRay = GLKVector3Normalize(GLKVector3Subtract(farClipHit, cameraPos));
     
-    GLKVector3 cameraDir = GLKVector3Make(cameraNode.transform.m13, cameraNode.transform.m23, cameraNode.transform.m33);
+    //GLKVector3 cameraDir = GLKVector3Make(cameraNode.transform.m13, cameraNode.transform.m23, cameraNode.transform.m33);
     
     
-//    float dragValue = arrow.getDragValue(cameraPos, touchRay, cameraDir);
-//    arrow.setIntensity(dragValue);
+    if (activeScenario == SCENARIO_VARIABLE) {
+        float dragValue = peopleLoad.getDragValue(cameraPos, touchRay);
+        peopleLoad.setLoad(dragValue);
+        std::pair<float, float> sideDragMovement = peopleLoad.getDragPosition(cameraPos, touchRay);
+        printf("drag pos: %f, %f\n", sideDragMovement.first, sideDragMovement.second);
+    }
 //    self.sliderControl.value = dragValue;
 }
 
 - (void)touchesEnded:(NSSet<UITouch *> *) touches withEvent:(UIEvent *)event {
-//    arrow.touchEnded();
+    if (activeScenario == SCENARIO_VARIABLE) {
+        peopleLoad.touchEnded();
+    }
 }
 - (void)touchesCancelled:(NSSet<UITouch *> *) touches withEvent:(UIEvent *)event {
-//    arrow.touchCancelled();
+    if (activeScenario == SCENARIO_VARIABLE) {
+        peopleLoad.touchCancelled();
+    }
 }
 
 @end
