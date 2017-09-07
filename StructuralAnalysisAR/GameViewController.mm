@@ -10,6 +10,7 @@
 #import <ModelIO/ModelIO.h>
 #import <SceneKit/ModelIO.h>
 #import <GLKit/GLKQuaternion.h>
+#include <cmath>
 
 #define COL1_POS -80
 #define COL2_POS -25
@@ -36,6 +37,7 @@
     [scene.rootNode addChildNode:cameraNode];
     // move the camera
     cameraNode.position = SCNVector3Make(-5.5, 5, 147);
+//    cameraNode.position = SCNVector3Make(-5.5, 5, 200);
     cameraNode.camera.zFar = 500;
 //    cameraNode.camera.focalLength = 0.0108268; // 3.3mm
     cameraNode.camera.xFov = 45.12;
@@ -57,6 +59,7 @@
     
     // Get the view and set our scene to it
     SCNView *scnView = (SCNView *)self.view;
+    scnView.multipleTouchEnabled = YES;
     scnView.scene = scene;
     CGRect screenRect = [[UIScreen mainScreen] bounds];
     
@@ -290,7 +293,7 @@
             reactionArrows[3].setIntensity(23.997);
             break;
         case SCENARIO_VARIABLE: // variable
-            peopleLoad.setPosition(GLKVector3Make(COL1_POS, top_posL, 0), GLKVector3Make(COL4_POS, top_posR, 0));
+//            peopleLoad.setPosition(GLKVector3Make(COL1_POS, top_posL, 0), GLKVector3Make(COL4_POS, top_posR, 0));
             break;
         default:
             break;
@@ -301,10 +304,11 @@
 // Touch handling
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    printf("touch began\n");
     // retrieve the SCNView
     SCNView *scnView = (SCNView *)self.view;
     
-    NSAssert(touches.count == 1, @"number of touches != 1");
+//    NSAssert(touches.count == 1, @"number of touches != 1");
     
     CGPoint p = [[touches anyObject] locationInView:scnView];
     // check what nodes are tapped
@@ -326,7 +330,8 @@
 - (void)touchesMoved:(NSSet<UITouch *> *) touches withEvent:(UIEvent *)event {
     SCNView *scnView = (SCNView *)self.view;
     
-    NSAssert(touches.count == 1, @"number of touches != 1");
+//    NSAssert(touches.count == 1, @"number of touches != 1");
+    printf("%lu touches\n", touches.count);
     
     CGPoint p = [[touches anyObject] locationInView:scnView];
     GLKVector3 farClipHit = SCNVector3ToGLKVector3([scnView unprojectPoint:SCNVector3Make(p.x, p.y, 1.0)]);
@@ -339,8 +344,9 @@
     if (activeScenario == SCENARIO_VARIABLE) {
         float dragValue = peopleLoad.getDragValue(cameraPos, touchRay);
         peopleLoad.setLoad(dragValue);
-        std::pair<float, float> sideDragMovement = peopleLoad.getDragPosition(cameraPos, touchRay);
-        printf("drag pos: %f, %f\n", sideDragMovement.first, sideDragMovement.second);
+        std::pair<GLKVector3, GLKVector3> sideDragPosition = peopleLoad.getDragPosition(cameraPos, touchRay);
+//        printf("drag pos: %f, %f\n", sideDragMovement.first, sideDragMovement.second);
+        peopleLoad.setPosition(sideDragPosition.first, sideDragPosition.second);
     }
 //    self.sliderControl.value = dragValue;
 }

@@ -46,9 +46,12 @@ public:
     void touchBegan(GLKVector3 origin, SCNHitTestResult* hitTestResult);
     float getDragValue(GLKVector3 origin, GLKVector3 touchRay);
     // Returns the dragged start and end x position
-    std::pair<float, float> getDragPosition(GLKVector3 origin, GLKVector3 touchRayr);
+    std::pair<GLKVector3, GLKVector3> getDragPosition(GLKVector3 origin, GLKVector3 touchRayr);
     void touchEnded();
     void touchCancelled();
+    
+    const GLKVector3 getStartPos();
+    const GLKVector3 getEndPos();
     
 private:
     void refreshPositions();
