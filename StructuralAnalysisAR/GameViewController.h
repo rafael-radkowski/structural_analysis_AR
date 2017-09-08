@@ -15,7 +15,7 @@
 
 #include <vector>
 
-@interface GameViewController : UIViewController {
+@interface GameViewController : UIViewController <SKSceneDelegate> {
     // Private vars
     SCNNode *cameraNode;
     SCNScene *scene;
@@ -35,8 +35,10 @@
     LoadMarker peopleLoad;
     LoadMarker deadLoad;
     std::vector<GrabbableArrow> reactionArrows;
-    int activeScenario;
+    long activeScenario;
 }
+// SKSceneDelegate implementations
+- (void)update:(NSTimeInterval)currentTime forScene:(SKScene *)scene;
 
 - (void)setVisibilities;
 - (void)setupVisualizations;

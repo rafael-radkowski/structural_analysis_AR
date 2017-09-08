@@ -22,6 +22,9 @@ public:
     GrabbableArrow();
     void setScenes(SKScene* scene2d, SCNView* view3d);
     void addAsChild(SCNNode* node);
+    
+    void doUpdate();
+    
     void setHidden(bool hidden);
     void setPosition(GLKVector3 pos);
     void setRotationAxisAngle(GLKVector4 axisAngle);
@@ -69,6 +72,8 @@ private:
     float defaultWidth = 0.2;
     float width = defaultWidth;
     
+    NSString *textToDisplay;
+    
     float maxLength = 1;
     float minLength = 1;
     float minInput = 0;
@@ -77,6 +82,7 @@ private:
     SKScene* textScene = nullptr;
     SCNView* objectView = nullptr;
     SKLabelNode* valueLabel;
+    SKSpriteNode* backgroundBox;
 };
 
 #endif /* grabbableArrow_h */

@@ -374,6 +374,10 @@
 				DEVELOPMENT_TEAM = LD3D66957R;
 				INFOPLIST_FILE = StructuralAnalysisAR/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				"OTHER_CFLAGS[arch=*]" = (
+					"-Wall",
+					"-pedantic",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = vrac.sceneKitTest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";

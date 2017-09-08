@@ -29,6 +29,7 @@ public:
     LoadMarker(size_t nLoads);
     void setScenes(SKScene* scene2d, SCNView* view3d);
     void addAsChild(SCNNode *node);
+    void doUpdate();
     void setLoad(size_t loadIndex, double value);
     void setLoad(double value);
     void setPosition(GLKVector3 start, GLKVector3 end);

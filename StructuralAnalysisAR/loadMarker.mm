@@ -41,6 +41,12 @@ void LoadMarker::addAsChild(SCNNode *node) {
     [node addChildNode:rootNode];
 }
 
+void LoadMarker::doUpdate() {
+    for (GrabbableArrow& arrow : loadArrows) {
+        arrow.doUpdate();
+    }
+}
+
 void LoadMarker::setLoad(size_t loadIndex, double value) {
     assert(loadIndex < loadValues.size() && loadIndex >= 0);
     lastIntensity = value;
@@ -182,7 +188,7 @@ float LoadMarker::getDragValue(GLKVector3 origin, GLKVector3 touchRay) {
         GLKVector3 hitDir = GLKVector3Subtract(hitPoint, loadPos);
         double normalizedValue = GLKVector3DotProduct(loadDir, hitDir);
         double heightRange = maxHeight - minHeight;
-        normalizedValue = MIN(heightRange, MAX(0, normalizedValue));
+        normalizedValue = std::min(heightRange, std::max(0.0, normalizedValue));
         normalizedValue = normalizedValue / heightRange;
         value = minInput + normalizedValue * (maxInput - minInput);
     }

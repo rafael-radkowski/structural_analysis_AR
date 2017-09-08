@@ -10,6 +10,7 @@
 #import "grabbableArrow.h"
 #include <stdio.h>
 #import <assert.h>
+#include <algorithm>
 
 GrabbableArrow::GrabbableArrow() {
     // Import the arrow object
@@ -50,6 +51,10 @@ GrabbableArrow::GrabbableArrow() {
 //    valueLabel.fontName = @"Cochin";
     valueLabel.fontColor = [UIColor blackColor];
     valueLabel.fontSize = 26;
+    backgroundBox = [SKSpriteNode spriteNodeWithColor:[UIColor colorWithWhite:1.0 alpha:0.5] size:CGSizeMake(1,1)];
+    backgroundBox.zPosition = -1;
+    [valueLabel addChild:backgroundBox];
+    valueLabel.text = [NSString stringWithFormat:@"%.1f k", 123.3f];
 }
 
 void GrabbableArrow::setScenes(SKScene* scene2d, SCNView* view3d) {
@@ -61,6 +66,15 @@ void GrabbableArrow::setScenes(SKScene* scene2d, SCNView* view3d) {
 
 void GrabbableArrow::addAsChild(SCNNode* node) {
     [node addChildNode:root];
+}
+
+void GrabbableArrow::doUpdate() {
+    valueLabel.text = textToDisplay;
+    float width = valueLabel.frame.size.width;
+    float height = valueLabel.frame.size.height;
+    backgroundBox.xScale = width;
+    backgroundBox.yScale = height;
+    backgroundBox.position = CGPointMake(width / 2, height / 2);
 }
 
 void GrabbableArrow::setHidden(bool hidden) {
@@ -170,7 +184,7 @@ float GrabbableArrow::getDragValue(GLKVector3 origin, GLKVector3 touchRay, GLKVe
         GLKVector3 arrowDir = GLKVector3Make(-root.transform.m12, root.transform.m22, root.transform.m32);
         GLKVector3 hitDir = GLKVector3Subtract(hitPoint, arrowPos);
         double value = GLKVector3DotProduct(arrowDir, hitDir);
-        value = MIN(1.0, MAX(0, value));
+        value = std::min(1.0, std::max(0.0, value));
         lastArrowValue = value;
     }
     else {
@@ -206,7 +220,8 @@ void GrabbableArrow::setIntensity(float value) {
 //    arrowHead.geometry.firstMaterial.diffuse.contents = color;
 //    arrowBase.geometry.firstMaterial.diffuse.contents = color;
     
-    valueLabel.text = [NSString stringWithFormat:@"%.1f k", value];
+//    valueLabel.text = [NSString stringWithFormat:@"%.1f k", value];
+    textToDisplay = [NSString stringWithFormat:@"%.1f k", value];
 }
 
 void GrabbableArrow::setWide(bool wide) {

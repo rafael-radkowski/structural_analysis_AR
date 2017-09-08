@@ -65,6 +65,7 @@
     
     // Create SpriteKit scene
     scene2d = [SKScene sceneWithSize:screenRect.size];
+    scene2d.delegate = self;
     scnView.overlaySKScene = scene2d;
     scene2d.userInteractionEnabled = NO;
     
@@ -79,6 +80,14 @@
     // Set load visibilities to the default values
     [self setVisibilities];
     [self.loadPresetBtn sendActionsForControlEvents:UIControlEventValueChanged];
+}
+
+- (void)update:(NSTimeInterval)currentTime forScene:(SKScene *)scene {
+    peopleLoad.doUpdate();
+    deadLoad.doUpdate();
+    for (GrabbableArrow& rcnArrow : reactionArrows) {
+        rcnArrow.doUpdate();
+    }
 }
 
 - (void)setupVisualizations {
@@ -122,8 +131,8 @@
     deadLoad.setScenes(scene2d, scnView);
 }
 
-- (void) handleTap:(UIGestureRecognizer*)gestureRecognize
-{
+//- (void) handleTap:(UIGestureRecognizer*)gestureRecognize
+//{
 //    // retrieve the SCNView
 //    SCNView *scnView = (SCNView *)self.view;
 //    
@@ -157,7 +166,7 @@
 //        
 //        [SCNTransaction commit];
 //    }
-}
+//}
 
 - (BOOL)shouldAutorotate
 {
@@ -304,7 +313,6 @@
 // Touch handling
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    printf("touch began\n");
     // retrieve the SCNView
     SCNView *scnView = (SCNView *)self.view;
     
@@ -331,7 +339,7 @@
     SCNView *scnView = (SCNView *)self.view;
     
 //    NSAssert(touches.count == 1, @"number of touches != 1");
-    printf("%lu touches\n", touches.count);
+//    printf("%lu touches\n", touches.count);
     
     CGPoint p = [[touches anyObject] locationInView:scnView];
     GLKVector3 farClipHit = SCNVector3ToGLKVector3([scnView unprojectPoint:SCNVector3Make(p.x, p.y, 1.0)]);
