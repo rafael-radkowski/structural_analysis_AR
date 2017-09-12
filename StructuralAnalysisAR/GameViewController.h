@@ -9,6 +9,7 @@
 #import "grabbableArrow.h"
 #import "line3d.h"
 #include "loadMarker.h"
+#include "PeopleVis.h"
 #import <UIKit/UIKit.h>
 #import <SceneKit/SceneKit.h>
 #import <SpriteKit/SpriteKit.h>
@@ -36,6 +37,8 @@
     LoadMarker deadLoad;
     std::vector<GrabbableArrow> reactionArrows;
     long activeScenario;
+    
+    PeopleVis people;
 }
 // SKSceneDelegate implementations
 - (void)update:(NSTimeInterval)currentTime forScene:(SKScene *)scene;

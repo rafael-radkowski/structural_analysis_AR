@@ -45,6 +45,7 @@ GrabbableArrow::GrabbableArrow() {
     [root addChildNode:arrowBase];
     
     // Create text label
+    formatString = @"%.1f k/ft";
 //    valueLabel = [SKLabelNode labelNodeWithText:[NSString stringWithFormat:@"%f", lastArrowValue]];
     valueLabel = [SKLabelNode labelNodeWithFontNamed:@"Helvetica"];
     valueLabel.horizontalAlignmentMode = SKLabelHorizontalAlignmentModeLeft;
@@ -54,7 +55,11 @@ GrabbableArrow::GrabbableArrow() {
     backgroundBox = [SKSpriteNode spriteNodeWithColor:[UIColor colorWithWhite:1.0 alpha:0.5] size:CGSizeMake(1,1)];
     backgroundBox.zPosition = -1;
     [valueLabel addChild:backgroundBox];
-    valueLabel.text = [NSString stringWithFormat:@"%.1f k", 123.3f];
+    valueLabel.text = [NSString stringWithFormat:@"%.1f k/ft", 123.3f];
+}
+
+void GrabbableArrow::setFormatString(NSString* str) {
+    formatString = str;
 }
 
 void GrabbableArrow::setScenes(SKScene* scene2d, SCNView* view3d) {
@@ -221,7 +226,7 @@ void GrabbableArrow::setIntensity(float value) {
 //    arrowBase.geometry.firstMaterial.diffuse.contents = color;
     
 //    valueLabel.text = [NSString stringWithFormat:@"%.1f k", value];
-    textToDisplay = [NSString stringWithFormat:@"%.1f k", value];
+    textToDisplay = [NSString stringWithFormat:formatString, value];
 }
 
 void GrabbableArrow::setWide(bool wide) {

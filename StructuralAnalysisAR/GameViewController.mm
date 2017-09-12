@@ -96,7 +96,7 @@
     
     // Create live load bar
     peopleLoad = LoadMarker(3);
-    peopleLoad.setInputRange(0, 300);
+    peopleLoad.setInputRange(0, 1.5);
     peopleLoad.setMinHeight(15);
     peopleLoad.setMaxHeight(40);
     peopleLoad.setThickness(defaultThickness);
@@ -104,8 +104,8 @@
     
     // Create dead load bar
     deadLoad = LoadMarker(7);
-    deadLoad.setInputRange(0, 300);
-    deadLoad.setLoad(1.2 * (COL4_POS - COL1_POS)); // 1.2 k/ft
+    deadLoad.setInputRange(0, 1.5);
+    deadLoad.setLoad(1.2); // 1.2 k/ft
     deadLoad.setPosition(GLKVector3Make(COL1_POS, 22, 0), GLKVector3Make(COL4_POS, 24, 0));
     deadLoad.setMinHeight(15);
     deadLoad.setMaxHeight(25);
@@ -119,6 +119,7 @@
     reactionArrows[3].setPosition(GLKVector3Make(COL4_POS, 3, 0));
     for (int i = 0; i < reactionArrows.size(); ++i) {
         reactionArrows[i].addAsChild(scene.rootNode);
+        reactionArrows[i].setFormatString(@"%.1f k");
         reactionArrows[i].setThickness(defaultThickness);
         reactionArrows[i].setMinLength(10);
         reactionArrows[i].setMaxLength(30);
@@ -126,6 +127,9 @@
         reactionArrows[i].setRotationAxisAngle(GLKVector4Make(0, 0, 1, 3.1416));
         reactionArrows[i].setScenes(scene2d, scnView);
     }
+    
+    people = PeopleVis(10, cameraNode);
+    people.addAsChild(scene.rootNode);
     
     peopleLoad.setScenes(scene2d, scnView);
     deadLoad.setScenes(scene2d, scnView);
@@ -279,7 +283,7 @@
             break;
         case 1: // uniform
             peopleLoad.setPosition(GLKVector3Make(COL1_POS, top_posL, 0), GLKVector3Make(COL4_POS, top_posR, 0));
-            peopleLoad.setLoad(0.8 * (COL4_POS - COL1_POS));
+            peopleLoad.setLoad(0.8);
             reactionArrows[0].setIntensity(29.407);
             reactionArrows[1].setIntensity(180.118);
             reactionArrows[2].setIntensity(173.284);
@@ -287,7 +291,7 @@
             break;
         case 2: // left
             peopleLoad.setPosition(GLKVector3Make(COL1_POS, top_posL, 0), GLKVector3Make(COL2_POS, top_posL, 0));
-            peopleLoad.setLoad(0.8 * (COL2_POS - COL1_POS));
+            peopleLoad.setLoad(0.8);
             reactionArrows[0].setIntensity(37.441);
             reactionArrows[1].setIntensity(113.919);
             reactionArrows[2].setIntensity(101.376);
@@ -295,7 +299,7 @@
             break;
         case 3: // right
             peopleLoad.setPosition(GLKVector3Make(COL3_POS, top_posR, 0), GLKVector3Make(COL4_POS, top_posR, 0));
-            peopleLoad.setLoad(0.8 * (COL4_POS - COL3_POS));
+            peopleLoad.setLoad(0.8);
             reactionArrows[0].setIntensity(18.033);
             reactionArrows[1].setIntensity(106.792);
             reactionArrows[2].setIntensity(123.978);

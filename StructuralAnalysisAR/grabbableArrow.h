@@ -20,6 +20,7 @@
 class GrabbableArrow {
 public:
     GrabbableArrow();
+    void setFormatString(NSString* str);
     void setScenes(SKScene* scene2d, SCNView* view3d);
     void addAsChild(SCNNode* node);
     
@@ -61,6 +62,7 @@ public:
     bool dragging = false;
     
 private:
+    NSString* formatString;
     // Moves text label to correct position
     void placeLabel();
     SCNNode* arrowHead;

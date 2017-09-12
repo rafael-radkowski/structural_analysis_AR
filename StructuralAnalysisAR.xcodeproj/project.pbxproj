@@ -21,6 +21,9 @@
 		0B483C061F4F9051007A1D29 /* SceneKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B483C051F4F9051007A1D29 /* SceneKit.framework */; };
 		0B483C081F4F9063007A1D29 /* ModelIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B483C071F4F9063007A1D29 /* ModelIO.framework */; };
 		0B99FF611F47A79D00431996 /* View.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B99FF601F47A79D00431996 /* View.xib */; };
+		0BAD78751F66C622003CAE93 /* PeopleVis.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0BAD78731F66C622003CAE93 /* PeopleVis.mm */; };
+		0BAD78781F66CDDE003CAE93 /* stick_man.png in Resources */ = {isa = PBXBuildFile; fileRef = 0BAD78761F66CDDE003CAE93 /* stick_man.png */; };
+		0BAD78791F66CDDE003CAE93 /* stick_woman.png in Resources */ = {isa = PBXBuildFile; fileRef = 0BAD78771F66CDDE003CAE93 /* stick_woman.png */; };
 		0BB1643C1F4732DC0053CA3B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0BB1643B1F4732DC0053CA3B /* main.m */; };
 		0BB1643F1F4732DC0053CA3B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0BB1643E1F4732DC0053CA3B /* AppDelegate.m */; };
 		0BB164441F4732DC0053CA3B /* GameViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0BB164431F4732DC0053CA3B /* GameViewController.mm */; };
@@ -50,6 +53,10 @@
 		0B483C051F4F9051007A1D29 /* SceneKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SceneKit.framework; path = System/Library/Frameworks/SceneKit.framework; sourceTree = SDKROOT; };
 		0B483C071F4F9063007A1D29 /* ModelIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ModelIO.framework; path = System/Library/Frameworks/ModelIO.framework; sourceTree = SDKROOT; };
 		0B99FF601F47A79D00431996 /* View.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = View.xib; sourceTree = "<group>"; };
+		0BAD78731F66C622003CAE93 /* PeopleVis.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PeopleVis.mm; sourceTree = "<group>"; };
+		0BAD78741F66C622003CAE93 /* PeopleVis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeopleVis.h; sourceTree = "<group>"; };
+		0BAD78761F66CDDE003CAE93 /* stick_man.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = stick_man.png; path = image_assets/stick_man.png; sourceTree = "<group>"; };
+		0BAD78771F66CDDE003CAE93 /* stick_woman.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = stick_woman.png; path = image_assets/stick_woman.png; sourceTree = "<group>"; };
 		0BB164371F4732DC0053CA3B /* StructuralAnalysisAR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StructuralAnalysisAR.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0BB1643B1F4732DC0053CA3B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		0BB1643D1F4732DC0053CA3B /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -86,6 +93,8 @@
 				0B1573501F54601F004CE1BE /* campanile_stock_bw.jpg */,
 				0B15734C1F545CCC004CE1BE /* isuofficallogo_cropped.png */,
 				0B483BFA1F4DDB6F007A1D29 /* skywalk.jpg */,
+				0BAD78761F66CDDE003CAE93 /* stick_man.png */,
+				0BAD78771F66CDDE003CAE93 /* stick_woman.png */,
 			);
 			name = image_assets;
 			sourceTree = "<group>";
@@ -140,6 +149,8 @@
 				0B1573561F55BE3C004CE1BE /* line3d.mm */,
 				0B1573571F55BE3C004CE1BE /* line3d.h */,
 				0B1573591F5621C9004CE1BE /* loadMarker.mm */,
+				0BAD78731F66C622003CAE93 /* PeopleVis.mm */,
+				0BAD78741F66C622003CAE93 /* PeopleVis.h */,
 				0B15735A1F5621C9004CE1BE /* loadMarker.h */,
 			);
 			path = StructuralAnalysisAR;
@@ -233,6 +244,8 @@
 				0B15734D1F545CCC004CE1BE /* isuofficallogo_cropped.png in Resources */,
 				0B1573531F54615D004CE1BE /* campanile_stock_cropped.jpg in Resources */,
 				0B1573551F5463A4004CE1BE /* isuofficallogo_light.png in Resources */,
+				0BAD78781F66CDDE003CAE93 /* stick_man.png in Resources */,
+				0BAD78791F66CDDE003CAE93 /* stick_woman.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -248,6 +261,7 @@
 				0B483C031F4F8BF5007A1D29 /* grabbableArrow.mm in Sources */,
 				0B1573581F55BE3C004CE1BE /* line3d.mm in Sources */,
 				0BB1643F1F4732DC0053CA3B /* AppDelegate.m in Sources */,
+				0BAD78751F66C622003CAE93 /* PeopleVis.mm in Sources */,
 				0BB164441F4732DC0053CA3B /* GameViewController.mm in Sources */,
 				0BB1643C1F4732DC0053CA3B /* main.m in Sources */,
 			);

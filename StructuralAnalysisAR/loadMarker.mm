@@ -200,6 +200,8 @@ float LoadMarker::getDragValue(GLKVector3 origin, GLKVector3 touchRay) {
 }
 
 std::pair<GLKVector3, GLKVector3> LoadMarker::getDragPosition(GLKVector3 origin, GLKVector3 touchRay) {
+    std::pair<GLKVector3, GLKVector3> movedPos = std::make_pair(startPos, endPos);
+    
     if (dragState == horizontallyR || dragState == horizontallyL) {
         GLKVector3 hitPoint = projectRay(origin, touchRay);
         GLKVector3 lineDir = GLKVector3Normalize(GLKVector3Subtract(endPos, startPos));
@@ -211,13 +213,18 @@ std::pair<GLKVector3, GLKVector3> LoadMarker::getDragPosition(GLKVector3 origin,
         GLKVector3 dragPosition = GLKVector3Add(startPos, GLKVector3MultiplyScalar(lineDir, dragDistance));
         
         if (dragState == horizontallyL) {
-            return std::make_pair(dragPosition, endPos);
+            movedPos.first = dragPosition;
+//            movedPos =  std::make_pair(dragPosition, endPos);
         }
         if (dragState == horizontallyR) {
-            return std::make_pair(startPos, dragPosition);
+            movedPos.second = dragPosition;
+//            movedPos = std::make_pair(startPos, dragPosition);
         }
     }
-    return std::make_pair(startPos, endPos);
+    if (movedPos.second.x - movedPos.first.x < 5) {
+        movedPos = std::make_pair(startPos, endPos);
+    }
+    return movedPos;
 }
 
 void LoadMarker::touchEnded() {
