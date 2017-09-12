@@ -22,12 +22,20 @@ public:
     PeopleVis(int n, SCNNode* camera);
     void setPosition(GLKVector3 pos);
     void setLength(float length);
+    void setHeight(float height);
+    
+    // Rearranges the people by random
+    void shuffle();
     
     void addAsChild(SCNNode* node);
     void doUpdate();
 private:
+    void refreshPositions();
     std::vector<SCNNode*> billboards;
+    std::vector<float> peopleOffsets;
     SCNNode* root;
+    float length = 10;
+    float height = 6;
 };
 
 #endif /* PeopleVis_hpp */

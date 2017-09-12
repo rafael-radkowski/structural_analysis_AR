@@ -276,6 +276,8 @@
         case 0: // none
             peopleLoad.setPosition(GLKVector3Make(COL1_POS, top_posL, 0), GLKVector3Make(COL4_POS, top_posR, 0));
             peopleLoad.setLoad(0);
+            people.setPosition(GLKVector3Make(COL1_POS, top_posL - 12, 0));
+            people.setLength(COL4_POS - COL1_POS);
             reactionArrows[0].setIntensity(17.644);
             reactionArrows[1].setIntensity(108.071);
             reactionArrows[2].setIntensity(103.97);
@@ -284,6 +286,8 @@
         case 1: // uniform
             peopleLoad.setPosition(GLKVector3Make(COL1_POS, top_posL, 0), GLKVector3Make(COL4_POS, top_posR, 0));
             peopleLoad.setLoad(0.8);
+            people.setPosition(GLKVector3Make(COL1_POS, top_posL - 12, 0));
+            people.setLength(COL4_POS - COL1_POS);
             reactionArrows[0].setIntensity(29.407);
             reactionArrows[1].setIntensity(180.118);
             reactionArrows[2].setIntensity(173.284);
@@ -292,6 +296,8 @@
         case 2: // left
             peopleLoad.setPosition(GLKVector3Make(COL1_POS, top_posL, 0), GLKVector3Make(COL2_POS, top_posL, 0));
             peopleLoad.setLoad(0.8);
+            people.setPosition(GLKVector3Make(COL1_POS, top_posL - 12, 0));
+            people.setLength(COL2_POS - COL1_POS);
             reactionArrows[0].setIntensity(37.441);
             reactionArrows[1].setIntensity(113.919);
             reactionArrows[2].setIntensity(101.376);
@@ -300,6 +306,8 @@
         case 3: // right
             peopleLoad.setPosition(GLKVector3Make(COL3_POS, top_posR, 0), GLKVector3Make(COL4_POS, top_posR, 0));
             peopleLoad.setLoad(0.8);
+            people.setPosition(GLKVector3Make(COL3_POS, top_posR - 12, 0));
+            people.setLength(COL4_POS - COL3_POS);
             reactionArrows[0].setIntensity(18.033);
             reactionArrows[1].setIntensity(106.792);
             reactionArrows[2].setIntensity(123.978);
@@ -311,6 +319,7 @@
         default:
             break;
     }
+    people.shuffle();
     [SCNTransaction commit];
 }
 
@@ -359,6 +368,8 @@
         std::pair<GLKVector3, GLKVector3> sideDragPosition = peopleLoad.getDragPosition(cameraPos, touchRay);
 //        printf("drag pos: %f, %f\n", sideDragMovement.first, sideDragMovement.second);
         peopleLoad.setPosition(sideDragPosition.first, sideDragPosition.second);
+        people.setPosition(GLKVector3Make(sideDragPosition.first.x, 10, 0));
+        people.setLength(GLKVector3Length(GLKVector3Subtract(sideDragPosition.first, sideDragPosition.second)));
     }
 //    self.sliderControl.value = dragValue;
 }
