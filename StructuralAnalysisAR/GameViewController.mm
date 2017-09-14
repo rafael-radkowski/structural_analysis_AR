@@ -131,6 +131,14 @@
     people = PeopleVis(10, cameraNode);
     people.addAsChild(scene.rootNode);
     
+    std::vector<std::vector<float>> points(2);
+    for (int x = 0; x <= 75; x += 15) {
+        points[0].push_back(x);
+        points[1].push_back(3*sin(0.1*x));
+    }
+    BezierLine line(points);
+    line.addAsChild(scene.rootNode);
+    
     peopleLoad.setScenes(scene2d, scnView);
     deadLoad.setScenes(scene2d, scnView);
 }

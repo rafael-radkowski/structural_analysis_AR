@@ -31,6 +31,7 @@
 		0BB164491F4732DC0053CA3B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0BB164481F4732DC0053CA3B /* Assets.xcassets */; };
 		0BB1644C1F4732DC0053CA3B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0BB1644A1F4732DC0053CA3B /* LaunchScreen.storyboard */; };
 		0BDF88E61F4B3BAE0014BFB7 /* testScene.scn in Resources */ = {isa = PBXBuildFile; fileRef = 0BDF88E51F4B3BAE0014BFB7 /* testScene.scn */; };
+		0BE42D261F688DDA00937359 /* BezierLine.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0BE42D241F688DDA00937359 /* BezierLine.mm */; };
 		0BF623AB1F58C11C001B1775 /* SpriteKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BF623AA1F58C11C001B1775 /* SpriteKit.framework */; };
 /* End PBXBuildFile section */
 
@@ -68,6 +69,8 @@
 		0BB1644B1F4732DC0053CA3B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		0BB1644D1F4732DC0053CA3B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0BDF88E51F4B3BAE0014BFB7 /* testScene.scn */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = testScene.scn; sourceTree = "<group>"; };
+		0BE42D241F688DDA00937359 /* BezierLine.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BezierLine.mm; sourceTree = "<group>"; };
+		0BE42D251F688DDA00937359 /* BezierLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BezierLine.h; sourceTree = "<group>"; };
 		0BF623AA1F58C11C001B1775 /* SpriteKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SpriteKit.framework; path = System/Library/Frameworks/SpriteKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -147,6 +150,8 @@
 				0B483BFD1F4F1016007A1D29 /* grabbableArrow.h */,
 				0B483C021F4F8BF5007A1D29 /* grabbableArrow.mm */,
 				0B1573561F55BE3C004CE1BE /* line3d.mm */,
+				0BE42D241F688DDA00937359 /* BezierLine.mm */,
+				0BE42D251F688DDA00937359 /* BezierLine.h */,
 				0B1573571F55BE3C004CE1BE /* line3d.h */,
 				0B1573591F5621C9004CE1BE /* loadMarker.mm */,
 				0BAD78731F66C622003CAE93 /* PeopleVis.mm */,
@@ -260,6 +265,7 @@
 				0B15734B1F5451BF004CE1BE /* MainPageViewController.m in Sources */,
 				0B483C031F4F8BF5007A1D29 /* grabbableArrow.mm in Sources */,
 				0B1573581F55BE3C004CE1BE /* line3d.mm in Sources */,
+				0BE42D261F688DDA00937359 /* BezierLine.mm in Sources */,
 				0BB1643F1F4732DC0053CA3B /* AppDelegate.m in Sources */,
 				0BAD78751F66C622003CAE93 /* PeopleVis.mm in Sources */,
 				0BB164441F4732DC0053CA3B /* GameViewController.mm in Sources */,
