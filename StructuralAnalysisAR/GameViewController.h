@@ -40,6 +40,8 @@
     long activeScenario;
     
     PeopleVis people;
+    BezierLine beam;
+    bool draggingLoad;
 }
 // SKSceneDelegate implementations
 - (void)update:(NSTimeInterval)currentTime forScene:(SKScene *)scene;

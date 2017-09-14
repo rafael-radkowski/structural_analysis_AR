@@ -77,6 +77,7 @@
     
     [self setupVisualizations];
     
+    draggingLoad = false;
     // Set load visibilities to the default values
     [self setVisibilities];
     [self.loadPresetBtn sendActionsForControlEvents:UIControlEventValueChanged];
@@ -132,12 +133,16 @@
     people.addAsChild(scene.rootNode);
     
     std::vector<std::vector<float>> points(2);
-    for (int x = 0; x <= 75; x += 15) {
-        points[0].push_back(x);
-        points[1].push_back(3*sin(0.1*x));
-    }
-    BezierLine line(points);
-    line.addAsChild(scene.rootNode);
+    points[0].push_back(COL1_POS);
+    points[1].push_back(10);
+    points[0].push_back(COL2_POS);
+    points[1].push_back(5);
+    points[0].push_back(COL3_POS);
+    points[1].push_back(5);
+    points[0].push_back(COL4_POS);
+    points[1].push_back(10);
+    beam = BezierLine(points);
+    beam.addAsChild(scene.rootNode);
     
     peopleLoad.setScenes(scene2d, scnView);
     deadLoad.setScenes(scene2d, scnView);
@@ -286,6 +291,7 @@
             peopleLoad.setLoad(0);
             people.setPosition(GLKVector3Make(COL1_POS, top_posL - 12, 0));
             people.setLength(COL4_POS - COL1_POS);
+            people.setWeight((COL4_POS - COL1_POS) * 0.8 * 1000);
             reactionArrows[0].setIntensity(17.644);
             reactionArrows[1].setIntensity(108.071);
             reactionArrows[2].setIntensity(103.97);
@@ -296,6 +302,7 @@
             peopleLoad.setLoad(0.8);
             people.setPosition(GLKVector3Make(COL1_POS, top_posL - 12, 0));
             people.setLength(COL4_POS - COL1_POS);
+            people.setWeight((COL4_POS - COL1_POS) * 0.8 * 1000);
             reactionArrows[0].setIntensity(29.407);
             reactionArrows[1].setIntensity(180.118);
             reactionArrows[2].setIntensity(173.284);
@@ -306,6 +313,7 @@
             peopleLoad.setLoad(0.8);
             people.setPosition(GLKVector3Make(COL1_POS, top_posL - 12, 0));
             people.setLength(COL2_POS - COL1_POS);
+            people.setWeight((COL2_POS - COL1_POS) * 0.8 * 1000);
             reactionArrows[0].setIntensity(37.441);
             reactionArrows[1].setIntensity(113.919);
             reactionArrows[2].setIntensity(101.376);
@@ -316,6 +324,7 @@
             peopleLoad.setLoad(0.8);
             people.setPosition(GLKVector3Make(COL3_POS, top_posR - 12, 0));
             people.setLength(COL4_POS - COL3_POS);
+            people.setWeight((COL4_POS - COL3_POS) * 0.8 * 1000);
             reactionArrows[0].setIntensity(18.033);
             reactionArrows[1].setIntensity(106.792);
             reactionArrows[2].setIntensity(123.978);
@@ -378,6 +387,8 @@
         peopleLoad.setPosition(sideDragPosition.first, sideDragPosition.second);
         people.setPosition(GLKVector3Make(sideDragPosition.first.x, 10, 0));
         people.setLength(GLKVector3Length(GLKVector3Subtract(sideDragPosition.first, sideDragPosition.second)));
+        
+        draggingLoad = peopleLoad.changingLoad();
     }
 //    self.sliderControl.value = dragValue;
 }
@@ -385,6 +396,14 @@
 - (void)touchesEnded:(NSSet<UITouch *> *) touches withEvent:(UIEvent *)event {
     if (activeScenario == SCENARIO_VARIABLE) {
         peopleLoad.touchEnded();
+        if (draggingLoad) {
+            [SCNTransaction begin];
+            [SCNTransaction setAnimationDuration:0.5];
+            people.setWeight(1000 * peopleLoad.getLoad(0) * (peopleLoad.getEndPos().x - peopleLoad.getStartPos().x));
+            people.shuffle();
+            draggingLoad = false;
+            [SCNTransaction commit];
+        }
     }
 }
 - (void)touchesCancelled:(NSSet<UITouch *> *) touches withEvent:(UIEvent *)event {

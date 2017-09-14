@@ -63,15 +63,15 @@ void BezierLine::setThickness(float newThickness) {
     thickness = newThickness;
 }
 
-void BezierLine::updatePath(std::vector<std::vector<float> > points) {
+void BezierLine::updatePath(const std::vector<std::vector<float>>& points) {
     SCNShape* shapeGeom = (SCNShape*) lineNode.geometry;
     shapeGeom.path = interpolatePoints(points, thickness);
 }
 
-UIBezierPath* BezierLine::interpolatePoints(std::vector<std::vector<float>> points, float height) {
+UIBezierPath* BezierLine::interpolatePoints(const std::vector<std::vector<float>>& points, float height) {
     int n_points = static_cast<int>(points[0].size());
     assert(points[0].size() == n_points); // Validate cast to int
-    assert(n_points >= 2); // Need at least two points for a line
+    assert(n_points >= 3); // Need at least two points for a line
     assert(points.size() == 2); // can only make 2-dimensional UIBezierPath
     assert(points[0].size() == points[1].size()); // x and y match
     
@@ -87,7 +87,7 @@ UIBezierPath* BezierLine::interpolatePoints(std::vector<std::vector<float>> poin
     
     std::vector<std::vector<float>> splinePoints;
     // Solve for spline control points for each dimension
-    for (std::vector<float>& axialPoints : points) {
+    for (const std::vector<float>& axialPoints : points) {
         // Will be
         std::vector<float> axialSplinePoints(n_points);
         // First and last spline control points are just the original points

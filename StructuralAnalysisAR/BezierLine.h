@@ -20,16 +20,16 @@ class BezierLine {
 public:
     BezierLine();
     BezierLine(std::vector<std::vector<float>> points);
-    void updatePath(std::vector<std::vector<float>> points);
+    void updatePath(const std::vector<std::vector<float>>& points);
     void setThickness(float newThickness);
     
     void setColor(float r, float g, float b);
     void addAsChild(SCNNode *scene);
     void setHidden(bool hidden);
 private:
-    float thickness = 5;
+    float thickness = 2;
     SCNNode* lineNode;
-    UIBezierPath* interpolatePoints(std::vector<std::vector<float>> points, float height);
+    UIBezierPath* interpolatePoints(const std::vector<std::vector<float>>& points, float height);
     SCNShape* meshFromPath(UIBezierPath* path);
 };
 

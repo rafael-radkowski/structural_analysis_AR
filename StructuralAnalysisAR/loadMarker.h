@@ -36,15 +36,18 @@ public:
     void setMaxHeight(float h);
     void setMinHeight(float h);
     void setThickness(float thickness);
+    float getLoad(size_t loadIndex);
+    bool changingLoad();
     
     void setHidden(bool hidden);
     
     // Ranges of inputs that will map to the arrow length
     void setInputRange(float minValue, float maxValue);
-    std::pair<float,float> getInputRange();
+    std::pair<float, float> getInputRange();
     
     // Touch and drag functions
     void touchBegan(GLKVector3 origin, SCNHitTestResult* hitTestResult);
+    // The value, and whether it is a new value
     float getDragValue(GLKVector3 origin, GLKVector3 touchRay);
     // Returns the dragged start and end x position
     std::pair<GLKVector3, GLKVector3> getDragPosition(GLKVector3 origin, GLKVector3 touchRayr);

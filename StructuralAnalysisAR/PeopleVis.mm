@@ -17,31 +17,38 @@ PeopleVis::PeopleVis(int n, SCNNode* camera) {
     root = [SCNNode node];
 //    MDLTexture* texture = [MDLTexture textureNamed:@"stick_man.png"];
     
-    for (int i = 0; i < n; ++i) {
-        SCNPlane* plane = [SCNPlane planeWithWidth:1 height:1];
-//        for (SCNGeometrySource* geomSrc in [plane geometrySourcesForSemantic:@"kGeometrySourceSemanticTexcoord"]) {
-//            printf("b/cm: %ld\n", geomSrc.bytesPerComponent);
-//            for (int i = 0; i < geomSrc.vectorCount; ++i) {
-//                for (int c = 0; c < geomSrc.componentsPerVector; ++c) {
-//                    printf("%f ", *(reinterpret_cast<const float*>(static_cast<const Byte*>(geomSrc.data.bytes) + geomSrc.dataOffset + (i * geomSrc.dataStride) + (c * geomSrc.bytesPerComponent)) ));
-//                }
-//                printf("\n");
-//            }
-//        }
-        SCNNode* billboard = [SCNNode nodeWithGeometry:plane];
-        billboard.constraints = [NSArray arrayWithObject:[SCNBillboardConstraint billboardConstraint]];
-        
-        SCNMaterial* mat = [SCNMaterial material];
-//        mat.diffuse.contents = [SCNMaterialProperty materialPropertyWithContents:@"stick_man.png"];
-        NSString* texToLoad = rand() >= (RAND_MAX / 2) ? @"stick_man.png" : @"stick_woman.png";
-        mat.diffuse.contents = [UIImage imageNamed:texToLoad];
-        mat.lightingModelName = SCNLightingModelConstant;
-        billboard.geometry.firstMaterial = mat;
-        
-        billboards.push_back(billboard);
-        [root addChildNode:billboard];
+    setNumPeople(n);
+}
+
+void PeopleVis::setNumPeople(int n) {
+    int n_delete = billboards.size() - n;
+    if (n_delete > 0) {
+        for (int i = n; i < billboards.size(); ++i) {
+            [billboards[i] removeFromParentNode];
+        }
+        billboards.erase(billboards.begin() + n, billboards.end());
+    }
+    
+    int n_add = n - billboards.size();
+    if (n_add > 0) {
+        for (int i = 0; i < n_add; ++i) {
+            SCNPlane* plane = [SCNPlane planeWithWidth:1 height:1];
+            SCNNode* billboard = [SCNNode nodeWithGeometry:plane];
+            billboard.constraints = [NSArray arrayWithObject:[SCNBillboardConstraint billboardConstraint]];
+            
+            SCNMaterial* mat = [SCNMaterial material];
+    //        mat.diffuse.contents = [SCNMaterialProperty materialPropertyWithContents:@"stick_man.png"];
+            NSString* texToLoad = rand() >= (RAND_MAX / 2) ? @"stick_man.png" : @"stick_woman.png";
+            mat.diffuse.contents = [UIImage imageNamed:texToLoad];
+            mat.lightingModelName = SCNLightingModelConstant;
+            billboard.geometry.firstMaterial = mat;
+            
+            billboards.push_back(billboard);
+            [root addChildNode:billboard];
+        }
     }
     peopleOffsets.resize(n, 0);
+    
     // Set scales
     setHeight(height);
     refreshPositions();
@@ -50,6 +57,13 @@ PeopleVis::PeopleVis(int n, SCNNode* camera) {
 void PeopleVis::addAsChild(SCNNode *node) {
     [node addChildNode:root];
 }
+
+void PeopleVis::setWeight(float pounds) {
+    float avgWeight = 1000;
+    int n_people = static_cast<int>(pounds / avgWeight);
+    setNumPeople(n_people);
+}
+
 
 void PeopleVis::setPosition(GLKVector3 pos) {
     root.position = SCNVector3FromGLKVector3(pos);

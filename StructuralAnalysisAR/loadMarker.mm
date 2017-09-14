@@ -62,10 +62,22 @@ void LoadMarker::setLoad(double value) {
     refreshPositions();
 }
 
+float LoadMarker::getLoad(size_t loadIndex) {
+    return loadValues[loadIndex];
+}
+
 void LoadMarker::setPosition(GLKVector3 start, GLKVector3 end) {
     startPos = start;
     endPos = end;
     refreshPositions();
+}
+
+const GLKVector3 LoadMarker::getStartPos() {
+    return startPos;
+}
+
+const GLKVector3 LoadMarker::getEndPos() {
+    return endPos;
 }
 
 void LoadMarker::setMaxHeight(float h) {
@@ -140,6 +152,10 @@ void LoadMarker::setInputRange(float minValue, float maxValue) {
 
 std::pair<float, float> LoadMarker::getInputRange() {
     return std::make_pair(minInput, maxInput);
+}
+
+bool LoadMarker::changingLoad() {
+    return dragState != none;
 }
 
 void LoadMarker::touchBegan(GLKVector3 origin, SCNHitTestResult* hitTestResult) {
