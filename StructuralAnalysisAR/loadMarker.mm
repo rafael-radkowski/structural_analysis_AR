@@ -154,8 +154,8 @@ std::pair<float, float> LoadMarker::getInputRange() {
     return std::make_pair(minInput, maxInput);
 }
 
-bool LoadMarker::changingLoad() {
-    return dragState != none;
+LoadMarker::Dragging LoadMarker::draggingMode() const {
+    return dragState;
 }
 
 void LoadMarker::touchBegan(GLKVector3 origin, SCNHitTestResult* hitTestResult) {
@@ -169,14 +169,26 @@ void LoadMarker::touchBegan(GLKVector3 origin, SCNHitTestResult* hitTestResult) 
             dragState = vertically;
         }
     }
+    // check for left arrow
     if (loadArrows[0].hasNode(hitTestResult.node)) {
         dragState = horizontallyL;
     }
+    // check for right arrow
     else if (loadArrows[loadArrows.size() - 1].hasNode(hitTestResult.node)) {
         dragState = horizontallyR;
     }
+    // Check for one of the middle arrows
+    else {
+        for (int i = 1; i < loadArrows.size() - 1; ++i) {
+            if (loadArrows[i].hasNode(hitTestResult.node)) {
+                dragState = horizontally;
+            }
+        }
+    }
     GLKVector3 hitPoint = SCNVector3ToGLKVector3(hitTestResult.worldCoordinates);
     dragStartPos = projectRay(origin, GLKVector3Subtract(hitPoint, origin));
+    startAtDragBegin = startPos;
+    endAtDragBegin = endPos;
 }
 
 GLKVector3 LoadMarker::projectRay(const GLKVector3 origin, const GLKVector3 touchRay) {
@@ -218,25 +230,28 @@ float LoadMarker::getDragValue(GLKVector3 origin, GLKVector3 touchRay) {
 std::pair<GLKVector3, GLKVector3> LoadMarker::getDragPosition(GLKVector3 origin, GLKVector3 touchRay) {
     std::pair<GLKVector3, GLKVector3> movedPos = std::make_pair(startPos, endPos);
     
-    if (dragState == horizontallyR || dragState == horizontallyL) {
+    if (dragState == horizontallyR || dragState == horizontallyL || dragState == horizontally) {
         GLKVector3 hitPoint = projectRay(origin, touchRay);
         GLKVector3 lineDir = GLKVector3Normalize(GLKVector3Subtract(endPos, startPos));
-//        GLKVector3 hitDir = GLKVector3Subtract(hitPoint, dragStartPos);
-//        printf("hitDir: %f, %f %f\n", hitDir.x, hitDir.y, hitDir.z);
-//        printf("dragStartPos: %f, %f %f\n", dragStartPos.x, dragStartPos.y, dragStartPos.z);
+        
         GLKVector3 shiftedHitPoint = GLKVector3Subtract(hitPoint, startPos);
         double dragDistance = GLKVector3DotProduct(lineDir, shiftedHitPoint);
         GLKVector3 dragPosition = GLKVector3Add(startPos, GLKVector3MultiplyScalar(lineDir, dragDistance));
-        
         if (dragState == horizontallyL) {
             movedPos.first = dragPosition;
-//            movedPos =  std::make_pair(dragPosition, endPos);
         }
         if (dragState == horizontallyR) {
             movedPos.second = dragPosition;
-//            movedPos = std::make_pair(startPos, dragPosition);
+        }
+        
+        GLKVector3 fromStartVec = GLKVector3Subtract(hitPoint, dragStartPos);
+        double differenceFromStart = GLKVector3DotProduct(fromStartVec, lineDir);
+        if (dragState == horizontally) {
+            movedPos.first = GLKVector3Add(startAtDragBegin, GLKVector3MultiplyScalar(lineDir, differenceFromStart));
+            movedPos.second = GLKVector3Add(endAtDragBegin, GLKVector3MultiplyScalar(lineDir, differenceFromStart));
         }
     }
+    // Don't let the ends get collapsed too far
     if (movedPos.second.x - movedPos.first.x < 5) {
         movedPos = std::make_pair(startPos, endPos);
     }

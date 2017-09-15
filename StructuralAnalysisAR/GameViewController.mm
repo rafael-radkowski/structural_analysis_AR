@@ -77,7 +77,6 @@
     
     [self setupVisualizations];
     
-    draggingLoad = false;
     // Set load visibilities to the default values
     [self setVisibilities];
     [self.loadPresetBtn sendActionsForControlEvents:UIControlEventValueChanged];
@@ -291,7 +290,7 @@
             peopleLoad.setLoad(0);
             people.setPosition(GLKVector3Make(COL1_POS, top_posL - 12, 0));
             people.setLength(COL4_POS - COL1_POS);
-            people.setWeight((COL4_POS - COL1_POS) * 0.8 * 1000);
+            people.setWeight(0);
             reactionArrows[0].setIntensity(17.644);
             reactionArrows[1].setIntensity(108.071);
             reactionArrows[2].setIntensity(103.97);
@@ -349,17 +348,23 @@
 //    NSAssert(touches.count == 1, @"number of touches != 1");
     
     CGPoint p = [[touches anyObject] locationInView:scnView];
-    // check what nodes are tapped
-//    CGPoint p = [gestureRecognize locationInView:scnView];
-    NSArray *hitResults = [scnView hitTest:p options:nil];
+    // Use bounding boxes to increase the area that can be touched
+    NSDictionary* hitOptions = @{
+                                 SCNHitTestBoundingBoxOnlyKey: @YES
+                                 };
+    NSArray *hitResults = [scnView hitTest:p options:hitOptions];
 //    for (SCNHitTestResult *hit in hitResults) {
 //        const char* the_name = hit.node.name != nil ? [hit.node.name UTF8String] : "<unknown>";
 //        printf("Hit node %s\n", the_name);
 //    }
     
 //    arrow.touchBegan(hitResults.firstObject);
-    if (activeScenario == SCENARIO_VARIABLE) {
-        peopleLoad.touchBegan(SCNVector3ToGLKVector3(cameraNode.position), hitResults.firstObject);
+//    if (activeScenario == SCENARIO_VARIABLE) {
+    peopleLoad.touchBegan(SCNVector3ToGLKVector3(cameraNode.position), hitResults.firstObject);
+//    }
+    if (peopleLoad.draggingMode() != LoadMarker::none) {
+        activeScenario = SCENARIO_VARIABLE;
+        self.loadPresetBtn.selectedSegmentIndex = SCENARIO_VARIABLE;
     }
     return;
 }
@@ -387,23 +392,20 @@
         peopleLoad.setPosition(sideDragPosition.first, sideDragPosition.second);
         people.setPosition(GLKVector3Make(sideDragPosition.first.x, 10, 0));
         people.setLength(GLKVector3Length(GLKVector3Subtract(sideDragPosition.first, sideDragPosition.second)));
-        
-        draggingLoad = peopleLoad.changingLoad();
     }
 //    self.sliderControl.value = dragValue;
 }
 
 - (void)touchesEnded:(NSSet<UITouch *> *) touches withEvent:(UIEvent *)event {
     if (activeScenario == SCENARIO_VARIABLE) {
-        peopleLoad.touchEnded();
-        if (draggingLoad) {
+        if (peopleLoad.draggingMode() != LoadMarker::none && peopleLoad.draggingMode() != LoadMarker::horizontally) {
             [SCNTransaction begin];
             [SCNTransaction setAnimationDuration:0.5];
             people.setWeight(1000 * peopleLoad.getLoad(0) * (peopleLoad.getEndPos().x - peopleLoad.getStartPos().x));
             people.shuffle();
-            draggingLoad = false;
             [SCNTransaction commit];
         }
+        peopleLoad.touchEnded();
     }
 }
 - (void)touchesCancelled:(NSSet<UITouch *> *) touches withEvent:(UIEvent *)event {

@@ -23,10 +23,18 @@
 #include <utility>
 
 
+
 class LoadMarker {
 public:
     LoadMarker();
     LoadMarker(size_t nLoads);
+    enum Dragging {
+        none = 0,
+        vertically,
+        horizontallyL,
+        horizontallyR,
+        horizontally
+    };
     void setScenes(SKScene* scene2d, SCNView* view3d);
     void addAsChild(SCNNode *node);
     void doUpdate();
@@ -37,7 +45,7 @@ public:
     void setMinHeight(float h);
     void setThickness(float thickness);
     float getLoad(size_t loadIndex);
-    bool changingLoad();
+    Dragging draggingMode() const;
     
     void setHidden(bool hidden);
     
@@ -56,6 +64,7 @@ public:
     
     const GLKVector3 getStartPos();
     const GLKVector3 getEndPos();
+    
     
 private:
     void refreshPositions();
@@ -76,14 +85,12 @@ private:
     float minInput = 0;
     float maxInput = 1;
     
-    enum Dragging {
-        none = 0,
-        vertically,
-        horizontallyL,
-        horizontallyR
-    };
     Dragging dragState = none;
+    // Coordinates of touch hit point when touchBegan
     GLKVector3 dragStartPos;
+    // startPos and endPos whend touchBegan
+    GLKVector3 startAtDragBegin;
+    GLKVector3 endAtDragBegin;
 
     float lastIntensity = 0.5;
 };
