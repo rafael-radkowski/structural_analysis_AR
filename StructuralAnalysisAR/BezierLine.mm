@@ -45,7 +45,7 @@ BezierLine::BezierLine() {
 }
 
 
-BezierLine::BezierLine(std::vector<std::vector<float>> points) {
+BezierLine::BezierLine(const std::vector<std::vector<float>>& points) {
     UIBezierPath* pointsPath = interpolatePoints(points, thickness);
     
     lineNode = [SCNNode nodeWithGeometry:meshFromPath(pointsPath)];

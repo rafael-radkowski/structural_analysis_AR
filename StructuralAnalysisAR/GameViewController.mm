@@ -131,17 +131,25 @@
     people = PeopleVis(10, cameraNode);
     people.addAsChild(scene.rootNode);
     
-    std::vector<std::vector<float>> points(2);
-    points[0].push_back(COL1_POS);
-    points[1].push_back(10);
-    points[0].push_back(COL2_POS);
-    points[1].push_back(5);
-    points[0].push_back(COL3_POS);
-    points[1].push_back(5);
-    points[0].push_back(COL4_POS);
-    points[1].push_back(10);
-    beam = BezierLine(points);
-    beam.addAsChild(scene.rootNode);
+    int resolution = 10;
+    beamVals1.resize(2); beamVals2.resize(2); beamVals3.resize(2);
+    double stepSize1 = (COL2_POS - COL1_POS) / (resolution - 1);
+    double stepSize2 = (COL3_POS - COL2_POS) / (resolution - 1);
+    double stepSize3 = (COL4_POS - COL3_POS) / (resolution - 1);
+    for (int i = 0; i < resolution; ++i) {
+        beamVals1[0].push_back(COL1_POS + stepSize1 * i);
+        beamVals2[0].push_back(COL2_POS + stepSize2 * i);
+        beamVals3[0].push_back(COL3_POS + stepSize3 * i);
+        beamVals1[1].push_back(0);
+        beamVals2[1].push_back(0);
+        beamVals3[1].push_back(0);
+    }
+    beam1 = BezierLine(beamVals1);
+    beam2 = BezierLine(beamVals2);
+    beam3 = BezierLine(beamVals3);
+    beam1.addAsChild(scene.rootNode);
+    beam2.addAsChild(scene.rootNode);
+    beam3.addAsChild(scene.rootNode);
     
     peopleLoad.setScenes(scene2d, scnView);
     deadLoad.setScenes(scene2d, scnView);
@@ -336,6 +344,7 @@
             break;
     }
     people.shuffle();
+    [self updateBeamDeflection];
     [SCNTransaction commit];
 }
 
@@ -392,6 +401,7 @@
         peopleLoad.setPosition(sideDragPosition.first, sideDragPosition.second);
         people.setPosition(GLKVector3Make(sideDragPosition.first.x, 10, 0));
         people.setLength(GLKVector3Length(GLKVector3Subtract(sideDragPosition.first, sideDragPosition.second)));
+        [self updateBeamDeflection];
     }
 //    self.sliderControl.value = dragValue;
 }
@@ -411,6 +421,79 @@
 - (void)touchesCancelled:(NSSet<UITouch *> *) touches withEvent:(UIEvent *)event {
     if (activeScenario == SCENARIO_VARIABLE) {
         peopleLoad.touchCancelled();
+    }
+}
+
+- (void)updateBeamDeflection {
+    // Beam 1
+    float loadStart = peopleLoad.getStartPos().x;
+    float loadEnd = peopleLoad.getEndPos().x;
+    float load = peopleLoad.getLoad(0);
+    
+    [self calculateDeflection:beamVals1[1] forValues:beamVals1[0] beamStarts:COL1_POS beamEnds:COL2_POS loadStarts:loadStart loadEnds:loadEnd loadMagnitude:load];
+    [self calculateDeflection:beamVals2[1] forValues:beamVals2[0] beamStarts:COL2_POS beamEnds:COL3_POS loadStarts:loadStart loadEnds:loadEnd loadMagnitude:load];
+    [self calculateDeflection:beamVals3[1] forValues:beamVals3[0] beamStarts:COL3_POS beamEnds:COL4_POS loadStarts:loadStart loadEnds:loadEnd loadMagnitude:load];
+    
+    beam1.updatePath(beamVals1);
+    beam2.updatePath(beamVals2);
+    beam3.updatePath(beamVals3);
+}
+
+- (void)calculateDeflection:(std::vector<float>&)deflection forValues:(const std::vector<float>&)vals beamStarts:(double)beamStart beamEnds:(double)beamEnd loadStarts:(double)loadStart loadEnds:(double)loadEnd loadMagnitude:(double)totalLoad {
+    assert(vals.size() == deflection.size());
+    float magnification = 2;
+    double L = beamEnd - beamStart;
+    double a = std::max(0.0, loadStart - beamStart); // Don't let load extend beyond start of beam
+    double b = std::min(loadEnd, beamEnd) - std::max(loadStart, beamStart); // Don't let load extend beyond end of beam
+    double proportion = b / (loadEnd - loadStart); // Proportion of load on this beam
+    double w = proportion * totalLoad;
+//    double L2 = L*L;
+    double L3 = L*L*L;
+    for (int i = 0; i < vals.size(); ++i) {
+        double x = vals[i] - beamStart;
+        double x2 = x * x;
+        double x3 = x * x * x;
+        double delta;
+        // Load isn't on beam at all. Dead load only
+        if (b <= 0) {
+            delta = -1.04758E-6 * 1.2 * x * (L3 - 2*L*x2 + x3);
+        }
+        else if (x < a) {
+            delta = -1.04758E-6 *
+                (
+                    1.2 * x * (L3 - 2*L*x2 + x3) +
+                    w * (
+                         (x * b * (2*L-2*a - b) / L) *
+                         (-2*x2 + 2*a*(2*L - a) + b*(2*L - 2*a - b))
+                        )
+                 );
+        }
+        else if (x <= a + b) {
+            delta = -1.04758E-6 *
+                (
+                    1.2 * x * (L3 - 2*L*x2 + x3) +
+                    w * (
+                         std::pow(x-a, 4) +
+                         (x * b * (2*L - 2*a - b) / L) *
+                         (-2*x2 + 2*a*(2*L - a) + b*(2*L - 2*a - b))
+                        )
+                 );
+        }
+        else {
+            delta = -1.04758E-6 *
+                (
+                    1.2 * x * (L3 - 2*L*x2 + x3) +
+                    w * (
+                         ((L-x) * b*(b + 2*a) / L) *
+                         (
+                           -2 * std::pow((L-x), 2) +
+                           2 * (L - a - b) * (L + a + b) +
+                           b * (b + 2*a)
+                         )
+                        )
+                 );
+        }
+        deflection[i] = magnification * delta / 12;
     }
 }
 

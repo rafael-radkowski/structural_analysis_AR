@@ -19,7 +19,7 @@
 class BezierLine {
 public:
     BezierLine();
-    BezierLine(std::vector<std::vector<float>> points);
+    BezierLine(const std::vector<std::vector<float>>& points);
     void updatePath(const std::vector<std::vector<float>>& points);
     void setThickness(float newThickness);
     

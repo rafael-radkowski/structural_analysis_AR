@@ -40,13 +40,18 @@
     long activeScenario;
     
     PeopleVis people;
-    BezierLine beam;
+    BezierLine beam1, beam2, beam3;
+    
+    std::vector<std::vector<float>> beamVals1, beamVals2, beamVals3;
 }
 // SKSceneDelegate implementations
 - (void)update:(NSTimeInterval)currentTime forScene:(SKScene *)scene;
 
 - (void)setVisibilities;
 - (void)setupVisualizations;
+
+- (void)calculateDeflection:(std::vector<float>&)deflection forValues:(const std::vector<float>&)vals beamStarts:(double)beamStart beamEnds:(double)beamEnds loadStarts:(double)loadStart loadEnds:(double)loadEnd loadMagnitude:(double)totalLoad;
+- (void)updateBeamDeflection;
 
 // MARK: Properties
 @property (nonatomic, retain) IBOutlet UIView *viewFromNib;
