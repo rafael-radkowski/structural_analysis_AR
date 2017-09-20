@@ -6,12 +6,15 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="GameViewController">
             <connections>
                 <outlet property="deadLoadSwitch" destination="H19-hC-7p2" id="PFL-Ak-pyZ"/>
+                <outlet property="homeBtn" destination="diD-35-5ij" id="xu7-yK-ZRl"/>
+                <outlet property="instructionBox" destination="HeG-xu-Jal" id="HyM-KW-1TU"/>
                 <outlet property="liveLoadSwitch" destination="9M9-5V-cxZ" id="jtZ-IK-zTl"/>
                 <outlet property="loadPresetBtn" destination="pVc-5h-Jku" id="ZMP-7e-KDc"/>
                 <outlet property="rcnForceSwitch" destination="aOi-ms-XpB" id="vM5-iu-Tg2"/>
@@ -45,10 +48,23 @@
                                 <action selector="loadPresetSet:" destination="-1" eventType="valueChanged" id="xrG-gS-YMZ"/>
                             </connections>
                         </segmentedControl>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="diD-35-5ij">
+                            <rect key="frame" x="1058" y="7" width="36" height="36"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="36" id="5ys-S8-GVs"/>
+                                <constraint firstAttribute="width" secondItem="diD-35-5ij" secondAttribute="height" multiplier="1:1" id="xdP-Ej-g72"/>
+                            </constraints>
+                            <state key="normal" title="Button" image="home_blue.png"/>
+                            <connections>
+                                <action selector="homeBtnPressed:" destination="-1" eventType="touchUpInside" id="rj0-02-StX"/>
+                            </connections>
+                        </button>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <constraints>
                         <constraint firstItem="rT0-Pm-RBQ" firstAttribute="leading" secondItem="36Q-fD-OQO" secondAttribute="leading" constant="8" id="5dg-Po-9Sa"/>
+                        <constraint firstAttribute="trailing" secondItem="diD-35-5ij" secondAttribute="trailing" constant="18" id="5xM-3e-Psh"/>
+                        <constraint firstItem="diD-35-5ij" firstAttribute="centerY" secondItem="36Q-fD-OQO" secondAttribute="centerY" id="Txo-Aw-1dx"/>
                         <constraint firstItem="pVc-5h-Jku" firstAttribute="centerY" secondItem="36Q-fD-OQO" secondAttribute="centerY" id="U2o-S0-cq9"/>
                         <constraint firstAttribute="height" constant="50" id="V55-9U-OYG"/>
                         <constraint firstItem="rT0-Pm-RBQ" firstAttribute="centerY" secondItem="36Q-fD-OQO" secondAttribute="centerY" id="cdr-b9-nCi"/>
@@ -67,8 +83,8 @@
                         <action selector="visSwitchToggled:" destination="-1" eventType="valueChanged" id="d1e-1z-xfX"/>
                     </connections>
                 </switch>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Live Load" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Y5f-zh-Edg">
-                    <rect key="frame" x="77" y="25" width="81" height="21"/>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Live Load" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Y5f-zh-Edg">
+                    <rect key="frame" x="77" y="25" width="73" height="21"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
@@ -85,23 +101,21 @@
                         <action selector="visSwitchToggled:" destination="-1" eventType="valueChanged" id="aIa-ri-Z0a"/>
                     </connections>
                 </switch>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Reaction Force" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nIN-UM-TUp">
-                    <rect key="frame" x="77" y="103" width="128" height="21"/>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Reaction Force" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nIN-UM-TUp">
+                    <rect key="frame" x="77" y="103" width="115" height="21"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Instructions go here" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KZV-Uc-0oV">
-                    <rect key="frame" x="20" y="547" width="300" height="49"/>
-                    <color key="backgroundColor" white="1" alpha="0.65068493150684936" colorSpace="calibratedWhite"/>
-                    <rect key="contentStretch" x="1" y="1" width="1" height="1"/>
+                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" text="Instructions here" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="HeG-xu-Jal">
+                    <rect key="frame" x="406" y="743" width="300" height="33"/>
+                    <color key="backgroundColor" white="1" alpha="0.81298159246575341" colorSpace="calibratedWhite"/>
                     <constraints>
-                        <constraint firstAttribute="width" constant="300" id="gF0-uS-sck"/>
+                        <constraint firstAttribute="width" constant="300" id="JU7-J5-wZR"/>
                     </constraints>
-                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                    <nil key="textColor"/>
-                    <nil key="highlightedColor"/>
-                </label>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                </textView>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
@@ -110,6 +124,8 @@
                 <constraint firstItem="nIN-UM-TUp" firstAttribute="centerY" secondItem="aOi-ms-XpB" secondAttribute="centerY" id="4He-Q4-e40"/>
                 <constraint firstItem="9M9-5V-cxZ" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="20" id="9hw-hp-mc6"/>
                 <constraint firstItem="H19-hC-7p2" firstAttribute="leading" secondItem="9M9-5V-cxZ" secondAttribute="leading" id="Da4-6K-371"/>
+                <constraint firstItem="36Q-fD-OQO" firstAttribute="top" secondItem="HeG-xu-Jal" secondAttribute="bottom" constant="8" id="JvO-Id-QDb"/>
+                <constraint firstItem="HeG-xu-Jal" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="MRe-q2-WZz"/>
                 <constraint firstItem="Y5f-zh-Edg" firstAttribute="centerY" secondItem="9M9-5V-cxZ" secondAttribute="centerY" id="QcI-iQ-h9l"/>
                 <constraint firstItem="H19-hC-7p2" firstAttribute="top" secondItem="9M9-5V-cxZ" secondAttribute="bottom" constant="8" id="gXa-zg-Bps"/>
                 <constraint firstAttribute="bottom" secondItem="36Q-fD-OQO" secondAttribute="bottom" id="hgD-NN-X5S"/>
@@ -118,10 +134,12 @@
                 <constraint firstItem="9M9-5V-cxZ" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="20" id="mRD-fz-qy1"/>
                 <constraint firstItem="aOi-ms-XpB" firstAttribute="leading" secondItem="H19-hC-7p2" secondAttribute="leading" id="qVu-36-Tp1"/>
                 <constraint firstItem="Etl-2u-hJc" firstAttribute="leading" secondItem="H19-hC-7p2" secondAttribute="trailing" constant="8" id="tpi-xb-q88"/>
-                <constraint firstItem="KZV-Uc-0oV" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="20" id="v6J-fd-v8E"/>
                 <constraint firstItem="Y5f-zh-Edg" firstAttribute="leading" secondItem="9M9-5V-cxZ" secondAttribute="trailing" constant="8" id="vXd-3x-knw"/>
                 <constraint firstItem="aOi-ms-XpB" firstAttribute="top" secondItem="H19-hC-7p2" secondAttribute="bottom" constant="8" id="xvA-ah-LuX"/>
             </constraints>
         </view>
     </objects>
+    <resources>
+        <image name="home_blue.png" width="71" height="71"/>
+    </resources>
 </document>

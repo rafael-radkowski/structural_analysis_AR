@@ -12,7 +12,7 @@
         <!--Main Page View Controller-->
         <scene sceneID="1EN-a0-Wpb">
             <objects>
-                <viewController id="u2E-5y-GEk" customClass="MainPageViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="mainPage" modalTransitionStyle="crossDissolve" id="u2E-5y-GEk" customClass="MainPageViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="9mz-Z1-1nZ"/>
                         <viewControllerLayoutGuide type="bottom" id="OF5-L5-cTT"/>
@@ -105,7 +105,7 @@
         <!--Game View Controller-->
         <scene sceneID="tXr-a1-R10">
             <objects>
-                <viewController id="BV1-FR-VrT" customClass="GameViewController" sceneMemberID="viewController">
+                <viewController modalTransitionStyle="crossDissolve" id="BV1-FR-VrT" customClass="GameViewController" sceneMemberID="viewController">
                     <sceneKitView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="3se-qz-xqx">
                         <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

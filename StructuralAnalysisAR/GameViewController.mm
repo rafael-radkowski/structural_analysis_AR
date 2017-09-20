@@ -75,6 +75,17 @@
     self.viewFromNib.contentMode = UIViewContentModeScaleToFill;
     [scnView addSubview:self.viewFromNib];
     
+    // Setup home button style
+    self.homeBtn.layer.borderWidth = 1.5;
+    self.homeBtn.imageEdgeInsets = UIEdgeInsetsMake(3, 3, 3, 3);
+    self.homeBtn.layer.borderColor = [UIColor colorWithRed:0.08235 green:0.49412 blue:0.9843 alpha:1.0].CGColor;
+    self.homeBtn.layer.cornerRadius = 5;
+    
+    // Setup instruction box style
+    self.instructionBox.layer.borderWidth = 1.5;
+    self.instructionBox.textContainerInset = UIEdgeInsetsMake(5, 5, 5, 5);
+    [self setupInstructions];
+    
     [self setupVisualizations];
     
     // Set load visibilities to the default values
@@ -153,6 +164,17 @@
     
     peopleLoad.setScenes(scene2d, scnView);
     deadLoad.setScenes(scene2d, scnView);
+}
+
+- (void)setupInstructions {
+    instructions.push_back("Step 1");
+    instructions.push_back("Step 2");
+    instructions.push_back("Step 3");
+    instructions.push_back("Step 4");
+    instructions.push_back("Step 5");
+    instructions.push_back("Step 6");
+    curStep = 0;
+    self.instructionBox.text = [NSString stringWithCString:instructions[0].c_str() encoding:[NSString defaultCStringEncoding]];
 }
 
 //- (void) handleTap:(UIGestureRecognizer*)gestureRecognize
@@ -344,8 +366,14 @@
             break;
     }
     people.shuffle();
-    [self updateBeamDeflection];
+    [self updateBeamForces];
     [SCNTransaction commit];
+}
+
+- (IBAction)homeBtnPressed:(id)sender {
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    MainPageViewController *myNewVC = (MainPageViewController *)[storyboard instantiateViewControllerWithIdentifier:@"mainPage"];
+    [self presentViewController:myNewVC animated:YES completion:nil];
 }
 
 // Touch handling
@@ -401,7 +429,7 @@
         peopleLoad.setPosition(sideDragPosition.first, sideDragPosition.second);
         people.setPosition(GLKVector3Make(sideDragPosition.first.x, 10, 0));
         people.setLength(GLKVector3Length(GLKVector3Subtract(sideDragPosition.first, sideDragPosition.second)));
-        [self updateBeamDeflection];
+        [self updateBeamForces];
     }
 //    self.sliderControl.value = dragValue;
 }
@@ -424,22 +452,31 @@
     }
 }
 
-- (void)updateBeamDeflection {
+- (void)updateBeamForces {
     // Beam 1
     float loadStart = peopleLoad.getStartPos().x;
     float loadEnd = peopleLoad.getEndPos().x;
     float load = peopleLoad.getLoad(0);
     
-    [self calculateDeflection:beamVals1[1] forValues:beamVals1[0] beamStarts:COL1_POS beamEnds:COL2_POS loadStarts:loadStart loadEnds:loadEnd loadMagnitude:load];
-    [self calculateDeflection:beamVals2[1] forValues:beamVals2[0] beamStarts:COL2_POS beamEnds:COL3_POS loadStarts:loadStart loadEnds:loadEnd loadMagnitude:load];
-    [self calculateDeflection:beamVals3[1] forValues:beamVals3[0] beamStarts:COL3_POS beamEnds:COL4_POS loadStarts:loadStart loadEnds:loadEnd loadMagnitude:load];
+    // Reaction forces
+    double beam1_rcn, beam2_rcn, beam3_rcn, beam4_rcn;
+    beam1_rcn = beam2_rcn = beam3_rcn = beam4_rcn = 0;
+    
+    // Calculate
+    [self calculateDeflection:beamVals1[1] forValues:beamVals1[0] rcnL:beam1_rcn rcnR:beam2_rcn beamStarts:COL1_POS beamEnds:COL2_POS loadStarts:loadStart loadEnds:loadEnd loadMagnitude:load];
+    [self calculateDeflection:beamVals2[1] forValues:beamVals2[0] rcnL:beam2_rcn rcnR:beam3_rcn beamStarts:COL2_POS beamEnds:COL3_POS loadStarts:loadStart loadEnds:loadEnd loadMagnitude:load];
+    [self calculateDeflection:beamVals3[1] forValues:beamVals3[0] rcnL:beam3_rcn rcnR:beam4_rcn beamStarts:COL3_POS beamEnds:COL4_POS loadStarts:loadStart loadEnds:loadEnd loadMagnitude:load];
     
     beam1.updatePath(beamVals1);
     beam2.updatePath(beamVals2);
     beam3.updatePath(beamVals3);
+    reactionArrows[0].setIntensity(beam1_rcn);
+    reactionArrows[1].setIntensity(beam2_rcn);
+    reactionArrows[2].setIntensity(beam3_rcn);
+    reactionArrows[3].setIntensity(beam4_rcn);
 }
 
-- (void)calculateDeflection:(std::vector<float>&)deflection forValues:(const std::vector<float>&)vals beamStarts:(double)beamStart beamEnds:(double)beamEnd loadStarts:(double)loadStart loadEnds:(double)loadEnd loadMagnitude:(double)totalLoad {
+- (void)calculateDeflection:(std::vector<float>&)deflection forValues:(const std::vector<float>&)vals rcnL:(double&)rcnL rcnR:(double&)rcnR beamStarts:(double)beamStart beamEnds:(double)beamEnd loadStarts:(double)loadStart loadEnds:(double)loadEnd loadMagnitude:(double)totalLoad {
     assert(vals.size() == deflection.size());
     float magnification = 2;
     double L = beamEnd - beamStart;
@@ -447,7 +484,6 @@
     double b = std::min(loadEnd, beamEnd) - std::max(loadStart, beamStart); // Don't let load extend beyond end of beam
     double proportion = b / (loadEnd - loadStart); // Proportion of load on this beam
     double w = proportion * totalLoad;
-//    double L2 = L*L;
     double L3 = L*L*L;
     for (int i = 0; i < vals.size(); ++i) {
         double x = vals[i] - beamStart;
@@ -494,6 +530,15 @@
                  );
         }
         deflection[i] = magnification * delta / 12;
+    }
+    
+    if (b <= 0) {
+        rcnL += 0.6*L;
+        rcnR += 0.6*L;
+    }
+    else {
+        rcnL += 0.6*L + w * b * (2*L - 2*a - b) / (2*L);
+        rcnR += 0.6*L + w * b * (2*a + b) / (2*L);
     }
 }
 
