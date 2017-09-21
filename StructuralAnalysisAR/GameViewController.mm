@@ -117,6 +117,7 @@
     deadLoad = LoadMarker(7);
     deadLoad.setInputRange(0, 1.5);
     deadLoad.setLoad(1.2); // 1.2 k/ft
+//    float dead_z = self.guided ? 
     deadLoad.setPosition(GLKVector3Make(COL1_POS, 22, 0), GLKVector3Make(COL4_POS, 24, 0));
     deadLoad.setMinHeight(15);
     deadLoad.setMaxHeight(25);
@@ -167,16 +168,39 @@
 }
 
 - (void)setupInstructions {
-    instructions.push_back("Step 1");
-    instructions.push_back("Step 2");
-    instructions.push_back("Step 3");
-    instructions.push_back("Step 4");
-    instructions.push_back("Step 5");
-    instructions.push_back("Step 6");
-    curStep = 0;
+    if (self.guided) {
+        instructions.push_back("Step 1");
+        instructions.push_back("Step 2");
+        instructions.push_back("Step 3");
+        instructions.push_back("Step 4");
+        instructions.push_back("Step 5");
+        instructions.push_back("Step 6");
+        curStep = 0;
+        [self showInstruction:curStep];
+    }
+    else {
+        self.instructionBox.hidden = YES;
+        self.prevBtn.hidden = YES;
+        self.nextBtn.hidden = YES;
+    }
+}
+
+- (void)showInstruction:(int)curStep {
     self.instructionBox.text = [NSString stringWithCString:instructions[0].c_str() encoding:[NSString defaultCStringEncoding]];
 }
 
+- (IBAction)prevStepPressed:(id)sender {
+    if (curStep < instructions.size() - 1) {
+        curStep += 1;
+        [self showInstruction:curStep];
+        if (curStep == instructions.size() - 1) {
+            
+        }
+    }
+}
+
+- (IBAction)nextStepPressed:(id)sender {
+}
 //- (void) handleTap:(UIGestureRecognizer*)gestureRecognize
 //{
 //    // retrieve the SCNView

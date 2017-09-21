@@ -17,6 +17,8 @@
                 <outlet property="instructionBox" destination="HeG-xu-Jal" id="HyM-KW-1TU"/>
                 <outlet property="liveLoadSwitch" destination="9M9-5V-cxZ" id="jtZ-IK-zTl"/>
                 <outlet property="loadPresetBtn" destination="pVc-5h-Jku" id="ZMP-7e-KDc"/>
+                <outlet property="nextBtn" destination="DB0-Ij-iSD" id="xAH-SB-vrS"/>
+                <outlet property="prevBtn" destination="HkZ-zJ-3aS" id="Qnf-C4-gFI"/>
                 <outlet property="rcnForceSwitch" destination="aOi-ms-XpB" id="vM5-iu-Tg2"/>
                 <outlet property="viewFromNib" destination="iN0-l3-epB" id="Z6q-ZX-GcN"/>
             </connections>
@@ -116,18 +118,36 @@
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                 </textView>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DB0-Ij-iSD">
+                    <rect key="frame" x="714" y="746" width="32" height="30"/>
+                    <state key="normal" title="Next"/>
+                    <connections>
+                        <action selector="nextStepPressed:" destination="-1" eventType="touchUpInside" id="UdS-gz-kpq"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HkZ-zJ-3aS">
+                    <rect key="frame" x="339" y="746" width="59" height="30"/>
+                    <state key="normal" title="Previous"/>
+                    <connections>
+                        <action selector="prevStepPressed:" destination="-1" eventType="touchUpInside" id="XHc-XR-s3e"/>
+                    </connections>
+                </button>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="Etl-2u-hJc" firstAttribute="centerY" secondItem="H19-hC-7p2" secondAttribute="centerY" id="2su-u8-0PW"/>
                 <constraint firstItem="nIN-UM-TUp" firstAttribute="leading" secondItem="aOi-ms-XpB" secondAttribute="trailing" constant="8" id="3Bu-Jh-g28"/>
+                <constraint firstItem="DB0-Ij-iSD" firstAttribute="bottom" secondItem="HeG-xu-Jal" secondAttribute="bottom" id="47g-ic-cdY"/>
                 <constraint firstItem="nIN-UM-TUp" firstAttribute="centerY" secondItem="aOi-ms-XpB" secondAttribute="centerY" id="4He-Q4-e40"/>
                 <constraint firstItem="9M9-5V-cxZ" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="20" id="9hw-hp-mc6"/>
                 <constraint firstItem="H19-hC-7p2" firstAttribute="leading" secondItem="9M9-5V-cxZ" secondAttribute="leading" id="Da4-6K-371"/>
                 <constraint firstItem="36Q-fD-OQO" firstAttribute="top" secondItem="HeG-xu-Jal" secondAttribute="bottom" constant="8" id="JvO-Id-QDb"/>
                 <constraint firstItem="HeG-xu-Jal" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="MRe-q2-WZz"/>
                 <constraint firstItem="Y5f-zh-Edg" firstAttribute="centerY" secondItem="9M9-5V-cxZ" secondAttribute="centerY" id="QcI-iQ-h9l"/>
+                <constraint firstItem="HeG-xu-Jal" firstAttribute="leading" secondItem="HkZ-zJ-3aS" secondAttribute="trailing" constant="8" id="SuL-0C-Gu5"/>
+                <constraint firstItem="HkZ-zJ-3aS" firstAttribute="bottom" secondItem="HeG-xu-Jal" secondAttribute="bottom" id="TiU-As-WVC"/>
                 <constraint firstItem="H19-hC-7p2" firstAttribute="top" secondItem="9M9-5V-cxZ" secondAttribute="bottom" constant="8" id="gXa-zg-Bps"/>
+                <constraint firstItem="DB0-Ij-iSD" firstAttribute="leading" secondItem="HeG-xu-Jal" secondAttribute="trailing" constant="8" id="gbd-bT-BVL"/>
                 <constraint firstAttribute="bottom" secondItem="36Q-fD-OQO" secondAttribute="bottom" id="hgD-NN-X5S"/>
                 <constraint firstAttribute="trailing" secondItem="36Q-fD-OQO" secondAttribute="trailing" id="hxI-AO-Wkd"/>
                 <constraint firstItem="36Q-fD-OQO" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="mOr-h5-UvS"/>

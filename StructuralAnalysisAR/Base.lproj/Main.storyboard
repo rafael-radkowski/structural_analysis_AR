@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BV1-FR-VrT">
-    <device id="ipad9_7" orientation="portrait">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="u2E-5y-GEk">
+    <device id="ipad9_7" orientation="landscape">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
@@ -18,39 +18,33 @@
                         <viewControllerLayoutGuide type="bottom" id="OF5-L5-cTT"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="XPL-Kj-Yfd">
-                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFill" image="campanile_stock_cropped.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="K1Y-Uf-KEo">
-                                <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                                <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PiW-8Y-TNW">
-                                <rect key="frame" x="295" y="483" width="178" height="58"/>
+                                <rect key="frame" x="387.5" y="355" width="250" height="58"/>
                                 <color key="backgroundColor" red="0.90794807369999997" green="0.91693765859999998" blue="0.91693765859999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="178" id="l3p-rU-ABa"/>
+                                    <constraint firstAttribute="width" constant="250" id="l3p-rU-ABa"/>
                                     <constraint firstAttribute="height" constant="58" id="rDa-rq-rC8"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="26"/>
-                                <state key="normal" title="Water Tower"/>
+                                <state key="normal" title="Skywalk (guided)"/>
+                                <connections>
+                                    <segue destination="BV1-FR-VrT" kind="presentation" identifier="skywalkGuidedSegue" id="iyJ-9J-GsJ"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nVW-Dc-2xU">
-                                <rect key="frame" x="295" y="569" width="178" height="58"/>
+                                <rect key="frame" x="387" y="441" width="250" height="58"/>
                                 <color key="backgroundColor" red="0.90794807374091779" green="0.91693765862944165" blue="0.91693765862944165" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="26"/>
                                 <state key="normal" title="Campanile"/>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jhw-Bh-1Ip">
-                                <rect key="frame" x="295" y="397" width="178" height="58"/>
-                                <color key="backgroundColor" red="0.90794807369999997" green="0.91693765859999998" blue="0.91693765859999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="26"/>
-                                <state key="normal" title="Skywalk"/>
-                                <connections>
-                                    <segue destination="BV1-FR-VrT" kind="presentation" modalTransitionStyle="crossDissolve" id="ERb-dM-F7t"/>
-                                </connections>
-                            </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="AR Structural Analysis" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7Ts-Uw-9To">
-                                <rect key="frame" x="155" y="28" width="458" height="55"/>
+                                <rect key="frame" x="283" y="28" width="458" height="55"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="458" id="036-re-oeg"/>
                                     <constraint firstAttribute="height" constant="55" id="g5c-iJ-PX4"/>
@@ -60,11 +54,20 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" image="isuofficallogo_light.png" translatesAutoresizingMaskIntoConstraints="NO" id="Lbb-nN-uRn">
-                                <rect key="frame" x="487" y="974" width="281" height="65"/>
+                                <rect key="frame" x="743" y="718" width="281" height="65"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="281" id="S0y-pY-aQZ"/>
                                 </constraints>
                             </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jhw-Bh-1Ip">
+                                <rect key="frame" x="387" y="269" width="250" height="58"/>
+                                <color key="backgroundColor" red="0.90794807369999997" green="0.91693765859999998" blue="0.91693765859999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="26"/>
+                                <state key="normal" title="Skywalk"/>
+                                <connections>
+                                    <segue destination="BV1-FR-VrT" kind="presentation" identifier="skywalkSegue" modalTransitionStyle="crossDissolve" id="ERb-dM-F7t"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -107,7 +110,7 @@
             <objects>
                 <viewController modalTransitionStyle="crossDissolve" id="BV1-FR-VrT" customClass="GameViewController" sceneMemberID="viewController">
                     <sceneKitView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="3se-qz-xqx">
-                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </sceneKitView>
@@ -120,4 +123,7 @@
         <image name="campanile_stock_cropped.jpg" width="1696" height="1272"/>
         <image name="isuofficallogo_light.png" width="784" height="65"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="iyJ-9J-GsJ"/>
+    </inferredMetricsTieBreakers>
 </document>

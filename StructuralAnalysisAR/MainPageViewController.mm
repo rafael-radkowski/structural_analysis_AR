@@ -7,6 +7,7 @@
 //
 
 #import "MainPageViewController.h"
+#import "GameViewController.h"
 
 @interface MainPageViewController ()
 
@@ -41,14 +42,20 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     // Get the new view controller using [segue destinationViewController].
+    if ([segue.identifier isEqualToString:@"skywalkGuidedSegue"]) {
+        GameViewController* viewController = (GameViewController*) [segue destinationViewController];
+        viewController.guided = true;
+    }
+    if ([segue.identifier isEqualToString:@"skywalkSegue"]) {
+        GameViewController* viewController = (GameViewController*) [segue destinationViewController];
+        viewController.guided = false;
+    }
     // Pass the selected object to the new view controller.
 }
-*/
 
 @end

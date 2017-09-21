@@ -59,7 +59,10 @@
 - (void)calculateDeflection:(std::vector<float>&)deflection forValues:(const std::vector<float>&)vals rcnL:(double&)rcnL rcnR:(double&)rcnR beamStarts:(double)beamStart beamEnds:(double)beamEnds loadStarts:(double)loadStart loadEnds:(double)loadEnd loadMagnitude:(double)totalLoad;
 - (void)updateBeamForces;
 
+- (void)showInstruction:(int)curStep;
+
 // MARK: Properties
+@property (nonatomic) bool guided;
 @property (nonatomic, retain) IBOutlet UIView *viewFromNib;
 
 @property (weak, nonatomic) IBOutlet UISwitch *liveLoadSwitch;
@@ -68,6 +71,8 @@
 @property (weak, nonatomic) IBOutlet UISegmentedControl *loadPresetBtn;
 @property (weak, nonatomic) IBOutlet UIButton *homeBtn;
 @property (weak, nonatomic) IBOutlet UITextView *instructionBox;
+@property (weak, nonatomic) IBOutlet UIButton *prevBtn;
+@property (weak, nonatomic) IBOutlet UIButton *nextBtn;
 
 
 
@@ -76,6 +81,8 @@
 - (IBAction)visSwitchToggled:(id)sender;
 - (IBAction)loadPresetSet:(id)sender;
 - (IBAction)homeBtnPressed:(id)sender;
+- (IBAction)prevStepPressed:(id)sender;
+- (IBAction)nextStepPressed:(id)sender;
 
 
 // override
