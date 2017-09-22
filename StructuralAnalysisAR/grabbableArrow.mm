@@ -74,6 +74,7 @@ void GrabbableArrow::addAsChild(SCNNode* node) {
 }
 
 void GrabbableArrow::doUpdate() {
+    placeLabel();
     valueLabel.text = textToDisplay;
     float width = valueLabel.frame.size.width;
     float height = valueLabel.frame.size.height;
@@ -102,7 +103,8 @@ void GrabbableArrow::setRotationAxisAngle(GLKVector4 axisAngle) {
 
 void GrabbableArrow::placeLabel() {
     if (objectView) {
-        SCNVector3 screenCoords = [objectView projectPoint:root.position];
+        SCNVector3 worldPos = [root convertPosition:SCNVector3Make(0, 0, 0) toNode:nil];
+        SCNVector3 screenCoords = [objectView projectPoint:worldPos];
         // Spritekit uses bottom-left as (0,0), while screen coordinates use top-right
         int reversedY = objectView.frame.size.height - screenCoords.y;
         valueLabel.position = CGPointMake(12 + screenCoords.x, reversedY);

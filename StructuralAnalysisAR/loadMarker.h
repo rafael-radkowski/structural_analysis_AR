@@ -40,7 +40,9 @@ public:
     void doUpdate();
     void setLoad(size_t loadIndex, double value);
     void setLoad(double value);
-    void setPosition(GLKVector3 start, GLKVector3 end);
+    void setPosition(GLKVector3 pos);
+    void setOrientation(GLKQuaternion);
+    void setEnds(float start, float end);
     void setMaxHeight(float h);
     void setMinHeight(float h);
     void setThickness(float thickness);
@@ -58,7 +60,7 @@ public:
     // The value, and whether it is a new value
     float getDragValue(GLKVector3 origin, GLKVector3 touchRay);
     // Returns the dragged start and end x position
-    std::pair<GLKVector3, GLKVector3> getDragPosition(GLKVector3 origin, GLKVector3 touchRayr);
+    std::pair<float, float> getDragPosition(GLKVector3 origin, GLKVector3 touchRayr);
     void touchEnded();
     void touchCancelled();
     

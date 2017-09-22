@@ -48,6 +48,9 @@
     
     std::vector<std::string> instructions;
     int curStep;
+    // Whether to include the dead and live loads in the deflection and reaction calculations
+    bool deflectDead;
+    bool deflectLive;
 }
 // SKSceneDelegate implementations
 - (void)update:(NSTimeInterval)currentTime forScene:(SKScene *)scene;
@@ -66,8 +69,11 @@
 @property (nonatomic, retain) IBOutlet UIView *viewFromNib;
 
 @property (weak, nonatomic) IBOutlet UISwitch *liveLoadSwitch;
+@property (weak, nonatomic) IBOutlet UILabel *liveLoadLabel;
 @property (weak, nonatomic) IBOutlet UISwitch *deadLoadSwitch;
+@property (weak, nonatomic) IBOutlet UILabel *deadLoadLabel;
 @property (weak, nonatomic) IBOutlet UISwitch *rcnForceSwitch;
+@property (weak, nonatomic) IBOutlet UILabel *rcnForceLabel;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *loadPresetBtn;
 @property (weak, nonatomic) IBOutlet UIButton *homeBtn;
 @property (weak, nonatomic) IBOutlet UITextView *instructionBox;

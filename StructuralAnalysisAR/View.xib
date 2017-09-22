@@ -12,13 +12,16 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="GameViewController">
             <connections>
+                <outlet property="deadLoadLabel" destination="Etl-2u-hJc" id="WdX-Rs-t9K"/>
                 <outlet property="deadLoadSwitch" destination="H19-hC-7p2" id="PFL-Ak-pyZ"/>
                 <outlet property="homeBtn" destination="diD-35-5ij" id="xu7-yK-ZRl"/>
                 <outlet property="instructionBox" destination="HeG-xu-Jal" id="HyM-KW-1TU"/>
+                <outlet property="liveLoadLabel" destination="Y5f-zh-Edg" id="iDn-Vb-b3D"/>
                 <outlet property="liveLoadSwitch" destination="9M9-5V-cxZ" id="jtZ-IK-zTl"/>
                 <outlet property="loadPresetBtn" destination="pVc-5h-Jku" id="ZMP-7e-KDc"/>
                 <outlet property="nextBtn" destination="DB0-Ij-iSD" id="xAH-SB-vrS"/>
                 <outlet property="prevBtn" destination="HkZ-zJ-3aS" id="Qnf-C4-gFI"/>
+                <outlet property="rcnForceLabel" destination="nIN-UM-TUp" id="pM8-Ie-lMG"/>
                 <outlet property="rcnForceSwitch" destination="aOi-ms-XpB" id="vM5-iu-Tg2"/>
                 <outlet property="viewFromNib" destination="iN0-l3-epB" id="Z6q-ZX-GcN"/>
             </connections>
@@ -119,14 +122,22 @@
                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                 </textView>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DB0-Ij-iSD">
-                    <rect key="frame" x="714" y="746" width="32" height="30"/>
+                    <rect key="frame" x="714" y="746" width="50" height="30"/>
+                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.80000000000000004" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="50" id="hs2-5s-Xo6"/>
+                    </constraints>
                     <state key="normal" title="Next"/>
                     <connections>
                         <action selector="nextStepPressed:" destination="-1" eventType="touchUpInside" id="UdS-gz-kpq"/>
                     </connections>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HkZ-zJ-3aS">
-                    <rect key="frame" x="339" y="746" width="59" height="30"/>
+                    <rect key="frame" x="322" y="746" width="76" height="30"/>
+                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.80000000000000004" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="76" id="Wog-pM-00J"/>
+                    </constraints>
                     <state key="normal" title="Previous"/>
                     <connections>
                         <action selector="prevStepPressed:" destination="-1" eventType="touchUpInside" id="XHc-XR-s3e"/>

@@ -75,18 +75,32 @@
     self.viewFromNib.contentMode = UIViewContentModeScaleToFill;
     [scnView addSubview:self.viewFromNib];
     
+    // Hide visualization toggles switches in guided mode
+    if (self.guided) {
+        for (UIView* elem in [NSArray arrayWithObjects:self.liveLoadSwitch, self.deadLoadSwitch, self.rcnForceSwitch, self.liveLoadLabel, self.deadLoadLabel, self.rcnForceLabel, nil]) {
+            elem.hidden = YES;
+        }
+    }
+    
+    CGColor* textColor = [UIColor colorWithRed:0.08235 green:0.49412 blue:0.9843 alpha:1.0].CGColor;
     // Setup home button style
     self.homeBtn.layer.borderWidth = 1.5;
     self.homeBtn.imageEdgeInsets = UIEdgeInsetsMake(3, 3, 3, 3);
-    self.homeBtn.layer.borderColor = [UIColor colorWithRed:0.08235 green:0.49412 blue:0.9843 alpha:1.0].CGColor;
+    self.homeBtn.layer.borderColor = textColor;
     self.homeBtn.layer.cornerRadius = 5;
     
     // Setup instruction box style
     self.instructionBox.layer.borderWidth = 1.5;
     self.instructionBox.textContainerInset = UIEdgeInsetsMake(5, 5, 5, 5);
-    [self setupInstructions];
+    self.prevBtn.layer.borderWidth = self.nextBtn.layer.borderWidth = 1.5;
+    self.prevBtn.layer.borderColor = self.nextBtn.layer.borderColor = textColor;
+    self.prevBtn.layer.cornerRadius = self.nextBtn.layer.cornerRadius = 5;
+    self.prevBtn.titleEdgeInsets = self.nextBtn.titleEdgeInsets = UIEdgeInsetsMake(5, 5, 5, 5);
+    
+    deflectLive = deflectDead = true;
     
     [self setupVisualizations];
+    [self setupInstructions];
     
     // Set load visibilities to the default values
     [self setVisibilities];
@@ -105,8 +119,11 @@
     SCNView *scnView = (SCNView*)self.view;
     float defaultThickness = 4;
     
+    GLKQuaternion beamOri = GLKQuaternionMakeWithAngleAndAxis(0.015, 0, 0, 1);
     // Create live load bar
     peopleLoad = LoadMarker(3);
+    peopleLoad.setPosition(GLKVector3Make(0, 5, 0));
+    peopleLoad.setOrientation(beamOri);
     peopleLoad.setInputRange(0, 1.5);
     peopleLoad.setMinHeight(15);
     peopleLoad.setMaxHeight(40);
@@ -114,21 +131,19 @@
     peopleLoad.addAsChild(scene.rootNode);
     
     // Create dead load bar
-    deadLoad = LoadMarker(7);
+    deadLoad = LoadMarker(6);
     deadLoad.setInputRange(0, 1.5);
     deadLoad.setLoad(1.2); // 1.2 k/ft
-//    float dead_z = self.guided ? 
-    deadLoad.setPosition(GLKVector3Make(COL1_POS, 22, 0), GLKVector3Make(COL4_POS, 24, 0));
+//    float dead_z = self.guided ?
+    deadLoad.setPosition(GLKVector3Make(0, 22, 0));
+    deadLoad.setOrientation(beamOri);
+    deadLoad.setEnds(COL1_POS, COL4_POS);
     deadLoad.setMinHeight(15);
     deadLoad.setMaxHeight(25);
     deadLoad.setThickness(defaultThickness);
     deadLoad.addAsChild(scene.rootNode);
     
     reactionArrows.resize(4);
-    reactionArrows[0].setPosition(GLKVector3Make(COL1_POS, 3, 0));
-    reactionArrows[1].setPosition(GLKVector3Make(COL2_POS, 3, 0));
-    reactionArrows[2].setPosition(GLKVector3Make(COL3_POS, 3, 0));
-    reactionArrows[3].setPosition(GLKVector3Make(COL4_POS, 3, 0));
     for (int i = 0; i < reactionArrows.size(); ++i) {
         reactionArrows[i].addAsChild(scene.rootNode);
         reactionArrows[i].setFormatString(@"%.1f k");
@@ -139,6 +154,10 @@
         reactionArrows[i].setRotationAxisAngle(GLKVector4Make(0, 0, 1, 3.1416));
         reactionArrows[i].setScenes(scene2d, scnView);
     }
+    reactionArrows[0].setPosition(GLKVector3Make(COL1_POS, 3, 0));
+    reactionArrows[1].setPosition(GLKVector3Make(COL2_POS, 3, 0));
+    reactionArrows[2].setPosition(GLKVector3Make(COL3_POS, 3, 0));
+    reactionArrows[3].setPosition(GLKVector3Make(COL4_POS, 3, 0));
     
     people = PeopleVis(10, cameraNode);
     people.addAsChild(scene.rootNode);
@@ -169,14 +188,15 @@
 
 - (void)setupInstructions {
     if (self.guided) {
-        instructions.push_back("Step 1");
-        instructions.push_back("Step 2");
-        instructions.push_back("Step 3");
-        instructions.push_back("Step 4");
-        instructions.push_back("Step 5");
-        instructions.push_back("Step 6");
+        instructions.push_back("Step 1\nThat's a beam.");
+        instructions.push_back("Step 2\nOh, and it's heavy.");
+        instructions.push_back("Step 3\nThus, it bends under its own weight");
+        instructions.push_back("Step 4\nSometimes people walk on the skywalk");
+        instructions.push_back("Step 5\nThey make it bend even more");
+        instructions.push_back("Step 6\nThe beams have to hold all this up");
         curStep = 0;
         [self showInstruction:curStep];
+        self.prevBtn.hidden = YES;
     }
     else {
         self.instructionBox.hidden = YES;
@@ -185,58 +205,89 @@
     }
 }
 
-- (void)showInstruction:(int)curStep {
-    self.instructionBox.text = [NSString stringWithCString:instructions[0].c_str() encoding:[NSString defaultCStringEncoding]];
+- (void)showInstruction:(int)step {
+    self.instructionBox.text = [NSString stringWithCString:instructions[step].c_str() encoding:[NSString defaultCStringEncoding]];
+    bool hideLive, hideDead, hideReactions;
+    hideLive = hideDead = hideReactions = false;
+    switch (step) {
+        case 0: {
+            for (int i = 1; i < 5; ++i) { [self.loadPresetBtn setEnabled:NO forSegmentAtIndex:i]; }
+            [self.loadPresetBtn setEnabled:YES forSegmentAtIndex:0];
+            self.loadPresetBtn.selectedSegmentIndex = 0;
+            [self.loadPresetBtn sendActionsForControlEvents:UIControlEventValueChanged];
+            hideLive = true;
+            hideDead = true;
+            hideReactions = true;
+            deflectLive = deflectDead = false;
+            break;
+        }
+        case 1: {
+            peopleLoad.setLoad(0);
+            hideLive = true;
+            hideReactions = true;
+            deflectDead = false;
+            break;
+        }
+        case 2: {
+            for (int i = 1; i < 5; ++i) { [self.loadPresetBtn setEnabled:NO forSegmentAtIndex:i]; }
+            [self.loadPresetBtn setEnabled:YES forSegmentAtIndex:0];
+            deflectDead = true;
+            hideLive = true;
+            hideReactions = true;
+            peopleLoad.setHidden(true);
+            self.loadPresetBtn.selectedSegmentIndex = 0;
+            [self.loadPresetBtn sendActionsForControlEvents:UIControlEventValueChanged];
+            break;
+        }
+        case 3: {
+            deflectLive = false;
+            hideReactions = true;
+            for (int i = 0; i < 5; ++i) { [self.loadPresetBtn setEnabled:YES forSegmentAtIndex:i]; }
+            self.loadPresetBtn.selectedSegmentIndex = 1;
+            [self.loadPresetBtn sendActionsForControlEvents:UIControlEventValueChanged];
+            break;
+        }
+        case 4: {
+            deflectLive = true;
+            hideReactions = true;
+            break;
+        }
+        case 5: {
+            break;
+        }
+        default:
+            break;
+    }
+    peopleLoad.setHidden(hideLive);
+    deadLoad.setHidden(hideDead);
+    for (int i = 0; i < reactionArrows.size(); ++i) {
+        reactionArrows[i].setHidden(hideReactions);
+    }
+    
+    [self updateBeamForces];
 }
 
 - (IBAction)prevStepPressed:(id)sender {
-    if (curStep < instructions.size() - 1) {
-        curStep += 1;
+    if (curStep > 0) {
+        curStep -= 1;
         [self showInstruction:curStep];
-        if (curStep == instructions.size() - 1) {
-            
+        if (curStep == 0) {
+            self.prevBtn.hidden = YES;
         }
+        self.nextBtn.hidden = NO;
     }
 }
 
 - (IBAction)nextStepPressed:(id)sender {
+    if (curStep < instructions.size() - 1) {
+        curStep += 1;
+        [self showInstruction:curStep];
+        if (curStep == instructions.size() - 1) {
+            self.nextBtn.hidden = YES;
+        }
+        self.prevBtn.hidden = NO;
+    }
 }
-//- (void) handleTap:(UIGestureRecognizer*)gestureRecognize
-//{
-//    // retrieve the SCNView
-//    SCNView *scnView = (SCNView *)self.view;
-//    
-//    // check what nodes are tapped
-//    CGPoint p = [gestureRecognize locationInView:scnView];
-//    NSArray *hitResults = [scnView hitTest:p options:nil];
-//    
-//    // check that we clicked on at least one object
-//    if([hitResults count] > 0){
-//        // retrieved the first clicked object
-//        SCNHitTestResult *result = [hitResults objectAtIndex:0];
-//        
-//        // get its material
-//        SCNMaterial *material = result.node.geometry.firstMaterial;
-//        
-//        // highlight it
-//        [SCNTransaction begin];
-//        [SCNTransaction setAnimationDuration:0.5];
-//        
-//        // on completion - unhighlight
-//        [SCNTransaction setCompletionBlock:^{
-//            [SCNTransaction begin];
-//            [SCNTransaction setAnimationDuration:0.5];
-//            
-//            material.emission.contents = [UIColor blackColor];
-//            
-//            [SCNTransaction commit];
-//        }];
-//        
-//        material.emission.contents = [UIColor redColor];
-//        
-//        [SCNTransaction commit];
-//    }
-//}
 
 - (BOOL)shouldAutorotate
 {
@@ -262,72 +313,23 @@
     // Release any cached data, images, etc that aren't in use.
 }
 
-- (IBAction)stepperChanged:(id)sender {
-//    double new_value = self.stepperControl.value;
-//    
-////    GLKQuaternion movement = GLKQuaternionMakeWithAngleAndAxis(0.2, 0, 0, 1.0);
-////    SCNQuaternion curOrientation = arrowNode.orientation;
-////    GLKQuaternion curOrientationQuat = GLKQuaternionMake(curOrientation.x, curOrientation.y, curOrientation.z, curOrientation.w);
-//    
-////    GLKQuaternion newOrientation = GLKQuaternionMultiply(curOrientationQuat, movement);
-//    subRotation = -new_value;
-//    GLKQuaternion newOrientation = GLKQuaternionMakeWithAngleAndAxis(subRotation + baseRotation, 0, 0, 1.0);
-//    
-//    [SCNTransaction begin];
-//    arrow.root.orientation = SCNVector4Make(newOrientation.x, newOrientation.y, newOrientation.z, newOrientation.w);
-//    [SCNTransaction commit];
-}
-
-- (IBAction)sliderChanged:(id)sender {
-//    double new_value = self.sliderControl.value;
-//    arrow.setIntensity(new_value);
-}
-
-- (IBAction)posBtnPressed:(id)sender {
-//    arrowTop = !arrowTop;
-//    if (arrowTop) {
-//        baseRotation = 0;
-//        arrow.root.position = SCNVector3Make(0, 1, 0);
-//    }
-//    else {
-//        baseRotation = 3.1415;
-//        arrow.root.position = SCNVector3Make(0, -0.15, 0);
-//    }
-//    arrow.root.rotation = SCNVector4Make(0, 0, 1, subRotation + baseRotation);
-}
-
-- (IBAction)wideSwitchToggled:(id)sender {
-//    arrow.setWide(self.toggleControl.on);
-    
-//    arrowWidthFactor = self.toggleControl.on ? 1.5 : 1.0;
-    // Make scale change part of an animation
-}
-
-- (IBAction)colorChanged:(id)sender {
-//    switch (self.colorSelector.selectedSegmentIndex) {
-//        case 0:
-//            self.topTitle.textColor = UIColor.redColor;
-//            break;
-//        case 1:
-//            self.topTitle.textColor = UIColor.greenColor;
-//            break;
-//        case 2:
-//            self.topTitle.textColor = UIColor.blueColor;
-//            break;
-//        default:
-//            break;
-//    }
-}
 
 - (IBAction)visSwitchToggled:(id)sender {
     [self setVisibilities];
 }
 
 - (void)setVisibilities {
-    peopleLoad.setHidden(!self.liveLoadSwitch.on);
-    deadLoad.setHidden(!self.deadLoadSwitch.on);
-    for (int i = 0; i < reactionArrows.size(); ++i) {
-        reactionArrows[i].setHidden(!self.rcnForceSwitch.on);
+    // Only obey the switches if they are visible
+    if (!self.liveLoadSwitch.hidden) {
+        peopleLoad.setHidden(!self.liveLoadSwitch.on);
+    }
+    if (!self.deadLoadSwitch.hidden) {
+        deadLoad.setHidden(!self.deadLoadSwitch.on);
+    }
+    if (!self.rcnForceSwitch.hidden) {
+        for (int i = 0; i < reactionArrows.size(); ++i) {
+            reactionArrows[i].setHidden(!self.rcnForceSwitch.on);
+        }
     }
 }
 
@@ -340,7 +342,7 @@
 
     switch (self.loadPresetBtn.selectedSegmentIndex) {
         case 0: // none
-            peopleLoad.setPosition(GLKVector3Make(COL1_POS, top_posL, 0), GLKVector3Make(COL4_POS, top_posR, 0));
+            peopleLoad.setEnds(COL1_POS, COL4_POS);
             peopleLoad.setLoad(0);
             people.setPosition(GLKVector3Make(COL1_POS, top_posL - 12, 0));
             people.setLength(COL4_POS - COL1_POS);
@@ -351,7 +353,7 @@
             reactionArrows[3].setIntensity(7.914);
             break;
         case 1: // uniform
-            peopleLoad.setPosition(GLKVector3Make(COL1_POS, top_posL, 0), GLKVector3Make(COL4_POS, top_posR, 0));
+            peopleLoad.setEnds(COL1_POS, COL4_POS);
             peopleLoad.setLoad(0.8);
             people.setPosition(GLKVector3Make(COL1_POS, top_posL - 12, 0));
             people.setLength(COL4_POS - COL1_POS);
@@ -362,7 +364,7 @@
             reactionArrows[3].setIntensity(13.191);
             break;
         case 2: // left
-            peopleLoad.setPosition(GLKVector3Make(COL1_POS, top_posL, 0), GLKVector3Make(COL2_POS, top_posL, 0));
+            peopleLoad.setEnds(COL1_POS, COL2_POS);
             peopleLoad.setLoad(0.8);
             people.setPosition(GLKVector3Make(COL1_POS, top_posL - 12, 0));
             people.setLength(COL2_POS - COL1_POS);
@@ -373,7 +375,7 @@
             reactionArrows[3].setIntensity(8.863);
             break;
         case 3: // right
-            peopleLoad.setPosition(GLKVector3Make(COL3_POS, top_posR, 0), GLKVector3Make(COL4_POS, top_posR, 0));
+            peopleLoad.setEnds(COL3_POS, COL4_POS);
             peopleLoad.setLoad(0.8);
             people.setPosition(GLKVector3Make(COL3_POS, top_posR - 12, 0));
             people.setLength(COL4_POS - COL3_POS);
@@ -448,11 +450,11 @@
     if (activeScenario == SCENARIO_VARIABLE) {
         float dragValue = peopleLoad.getDragValue(cameraPos, touchRay);
         peopleLoad.setLoad(dragValue);
-        std::pair<GLKVector3, GLKVector3> sideDragPosition = peopleLoad.getDragPosition(cameraPos, touchRay);
+        std::pair<float, float> sideDragPosition = peopleLoad.getDragPosition(cameraPos, touchRay);
 //        printf("drag pos: %f, %f\n", sideDragMovement.first, sideDragMovement.second);
-        peopleLoad.setPosition(sideDragPosition.first, sideDragPosition.second);
-        people.setPosition(GLKVector3Make(sideDragPosition.first.x, 10, 0));
-        people.setLength(GLKVector3Length(GLKVector3Subtract(sideDragPosition.first, sideDragPosition.second)));
+        peopleLoad.setEnds(sideDragPosition.first, sideDragPosition.second);
+        people.setPosition(GLKVector3Make(sideDragPosition.first, 10, 0));
+        people.setLength(sideDragPosition.second - sideDragPosition.first);
         [self updateBeamForces];
     }
 //    self.sliderControl.value = dragValue;
@@ -513,52 +515,46 @@
         double x = vals[i] - beamStart;
         double x2 = x * x;
         double x3 = x * x * x;
-        double delta;
-        // Load isn't on beam at all. Dead load only
-        if (b <= 0) {
-            delta = -1.04758E-6 * 1.2 * x * (L3 - 2*L*x2 + x3);
+        double delta = 0;
+        if (deflectLive && b > 0) { // b > 0 means load is on beam
+            if (x < a) {
+                delta = w * (
+                             (x * b * (2*L-2*a - b) / L) *
+                             (-2*x2 + 2*a*(2*L - a) + b*(2*L - 2*a - b))
+                         );
+            }
+            else if (x <= a + b) {
+                delta = w * (
+                             std::pow(x-a, 4) +
+                             (x * b * (2*L - 2*a - b) / L) *
+                             (-2*x2 + 2*a*(2*L - a) + b*(2*L - 2*a - b))
+                         );
+            }
+            else {
+                delta = w * (
+                             ((L-x) * b*(b + 2*a) / L) *
+                             (
+                               -2 * std::pow((L-x), 2) +
+                               2 * (L - a - b) * (L + a + b) +
+                               b * (b + 2*a)
+                             )
+                            );
+            }
         }
-        else if (x < a) {
-            delta = -1.04758E-6 *
-                (
-                    1.2 * x * (L3 - 2*L*x2 + x3) +
-                    w * (
-                         (x * b * (2*L-2*a - b) / L) *
-                         (-2*x2 + 2*a*(2*L - a) + b*(2*L - 2*a - b))
-                        )
-                 );
+        if (deflectDead) {
+            // Extra deflection from dead load
+            delta += 1.2 * x * (L3 - 2*L*x2 + x3);
         }
-        else if (x <= a + b) {
-            delta = -1.04758E-6 *
-                (
-                    1.2 * x * (L3 - 2*L*x2 + x3) +
-                    w * (
-                         std::pow(x-a, 4) +
-                         (x * b * (2*L - 2*a - b) / L) *
-                         (-2*x2 + 2*a*(2*L - a) + b*(2*L - 2*a - b))
-                        )
-                 );
-        }
-        else {
-            delta = -1.04758E-6 *
-                (
-                    1.2 * x * (L3 - 2*L*x2 + x3) +
-                    w * (
-                         ((L-x) * b*(b + 2*a) / L) *
-                         (
-                           -2 * std::pow((L-x), 2) +
-                           2 * (L - a - b) * (L + a + b) +
-                           b * (b + 2*a)
-                         )
-                        )
-                 );
-        }
+        // Scaling factor (I think for unit compensation)
+        delta *= -1.04758E-6;
         deflection[i] = magnification * delta / 12;
     }
     
     if (b <= 0) {
-        rcnL += 0.6*L;
-        rcnR += 0.6*L;
+        if (deflectDead) {
+            rcnL += 0.6*L;
+            rcnR += 0.6*L;
+        }
     }
     else {
         rcnL += 0.6*L + w * b * (2*L - 2*a - b) / (2*L);
