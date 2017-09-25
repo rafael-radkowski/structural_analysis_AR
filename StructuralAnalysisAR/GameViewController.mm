@@ -181,6 +181,12 @@
     beam1.addAsChild(scene.rootNode);
     beam2.addAsChild(scene.rootNode);
     beam3.addAsChild(scene.rootNode);
+    beam1.setOrientation(beamOri);
+    beam2.setOrientation(beamOri);
+    beam3.setOrientation(beamOri);
+    beam1.setPosition(GLKVector3Make(0, 2, 0));
+    beam2.setPosition(GLKVector3Make(0, 2, 0));
+    beam3.setPosition(GLKVector3Make(0, 2, 0));
     
     peopleLoad.setScenes(scene2d, scnView);
     deadLoad.setScenes(scene2d, scnView);
@@ -190,10 +196,10 @@
     if (self.guided) {
         instructions.push_back("Step 1\nThat's a beam.");
         instructions.push_back("Step 2\nOh, and it's heavy.");
-        instructions.push_back("Step 3\nThus, it bends under its own weight");
+        instructions.push_back("Step 3\nCausing it to bend under its own weight");
         instructions.push_back("Step 4\nSometimes people walk on the skywalk");
         instructions.push_back("Step 5\nThey make it bend even more");
-        instructions.push_back("Step 6\nThe beams have to hold all this up");
+        instructions.push_back("Step 6\nThe supports have to hold all this up");
         curStep = 0;
         [self showInstruction:curStep];
         self.prevBtn.hidden = YES;

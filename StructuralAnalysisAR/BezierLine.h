@@ -22,6 +22,8 @@ public:
     BezierLine(const std::vector<std::vector<float>>& points);
     void updatePath(const std::vector<std::vector<float>>& points);
     void setThickness(float newThickness);
+    void setPosition(GLKVector3 pos);
+    void setOrientation(GLKQuaternion ori);
     
     void setColor(float r, float g, float b);
     void addAsChild(SCNNode *scene);
@@ -29,6 +31,7 @@ public:
 private:
     float thickness = 2;
     SCNNode* lineNode;
+    SCNNode* rootNode;
     UIBezierPath* interpolatePoints(const std::vector<std::vector<float>>& points, float height);
     SCNShape* meshFromPath(UIBezierPath* path);
 };

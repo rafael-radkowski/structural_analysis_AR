@@ -38,6 +38,8 @@ SCNShape* BezierLine::meshFromPath(UIBezierPath* path) {
 
 BezierLine::BezierLine() {
     lineNode = [SCNNode nodeWithGeometry:meshFromPath(makePath())];
+    rootNode = [SCNNode node];
+    [rootNode addChildNode:lineNode];
     
     // Make a material
     lineNode.geometry.firstMaterial = [SCNMaterial material];
@@ -49,6 +51,8 @@ BezierLine::BezierLine(const std::vector<std::vector<float>>& points) {
     UIBezierPath* pointsPath = interpolatePoints(points, thickness);
     
     lineNode = [SCNNode nodeWithGeometry:meshFromPath(pointsPath)];
+    rootNode = [SCNNode node];
+    [rootNode addChildNode:lineNode];
     
     // Make a material
     lineNode.geometry.firstMaterial = [SCNMaterial material];
@@ -56,7 +60,15 @@ BezierLine::BezierLine(const std::vector<std::vector<float>>& points) {
 }
 
 void BezierLine::addAsChild(SCNNode* node) {
-    [node addChildNode:lineNode];
+    [node addChildNode:rootNode];
+}
+
+void BezierLine::setPosition(GLKVector3 pos) {
+    rootNode.position = SCNVector3FromGLKVector3(pos);
+}
+
+void BezierLine::setOrientation(GLKQuaternion ori) {
+    rootNode.orientation = SCNVector4Make(ori.x, ori.y, ori.z, ori.w);
 }
 
 void BezierLine::setThickness(float newThickness) {
