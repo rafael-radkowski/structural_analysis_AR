@@ -10,12 +10,13 @@
 #define grabbableArrow_h
 
 #import <Scenekit/Scenekit.h>
-#import <SpriteKit/SpriteKit.h>
 #import <ModelIO/ModelIO.h>
 #import <Scenekit/ModelIO.h>
 #import <GLKit/GLKit.h>
 
 #include <utility>
+
+#include "OverlayLabel.h"
 
 class GrabbableArrow {
 public:
@@ -24,8 +25,10 @@ public:
     void setScenes(SKScene* scene2d, SCNView* view3d);
     void addAsChild(SCNNode* node);
     
+    // Perform SpriteKit update routines
     void doUpdate();
     
+    void setTextHidden(bool hidden);
     void setHidden(bool hidden);
     void setPosition(GLKVector3 pos);
     void setRotationAxisAngle(GLKVector4 axisAngle);
@@ -63,8 +66,8 @@ public:
     
 private:
     NSString* formatString;
-    // Moves text label to correct position
-    void placeLabel();
+    OverlayLabel valueLabel;
+    bool labelHidden = false;
     SCNNode* arrowHead;
     SCNNode* arrowBase;
     
@@ -72,9 +75,6 @@ private:
     float defaultTipSize = 0.3;
     float tipSize = defaultTipSize;
     float defaultWidth = 0.2;
-    float width = defaultWidth;
-    
-    NSString *textToDisplay;
     
     float maxLength = 1;
     float minLength = 1;
@@ -83,7 +83,6 @@ private:
     
     SKScene* textScene = nullptr;
     SCNView* objectView = nullptr;
-    SKLabelNode* valueLabel;
     SKSpriteNode* backgroundBox;
 };
 

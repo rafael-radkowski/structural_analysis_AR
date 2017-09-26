@@ -11,6 +11,7 @@
 
 #include "line3d.h"
 #include "grabbableArrow.h"
+#include "OverlayLabel.h"
 
 #import <GLKit/GLKit.h>
 #import <Scenekit/Scenekit.h>
@@ -28,12 +29,12 @@ class LoadMarker {
 public:
     LoadMarker();
     LoadMarker(size_t nLoads);
-    enum Dragging {
+    enum Dragging : uint32_t {
         none = 0,
-        vertically,
-        horizontallyL,
-        horizontallyR,
-        horizontally
+        vertically = 1,
+        horizontallyL = 1 << 2,
+        horizontallyR = 1 << 3,
+        horizontally = 1 << 4
     };
     void setScenes(SKScene* scene2d, SCNView* view3d);
     void addAsChild(SCNNode *node);
@@ -47,7 +48,7 @@ public:
     void setMinHeight(float h);
     void setThickness(float thickness);
     float getLoad(size_t loadIndex);
-    Dragging draggingMode() const;
+    uint32_t draggingMode() const;
     
     void setHidden(bool hidden);
     
@@ -87,7 +88,7 @@ private:
     float minInput = 0;
     float maxInput = 1;
     
-    Dragging dragState = none;
+    uint32_t dragState = none;
     // Coordinates of touch hit point when touchBegan
     GLKVector3 dragStartPos;
     // startPos and endPos whend touchBegan
@@ -95,6 +96,11 @@ private:
     GLKVector3 endAtDragBegin;
 
     float lastIntensity = 0.5;
+    float thickness;
+    
+    // Label
+    OverlayLabel textLabel;
+    SCNNode* labelEmpty;
 };
 
 #endif /* loadMarker_hpp */

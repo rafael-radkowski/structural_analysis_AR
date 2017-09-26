@@ -59,6 +59,7 @@
     
     // Get the view and set our scene to it
     SCNView *scnView = (SCNView *)self.view;
+    scnView.antialiasingMode = SCNAntialiasingModeMultisampling4X;
     scnView.multipleTouchEnabled = YES;
     scnView.scene = scene;
     CGRect screenRect = [[UIScreen mainScreen] bounds];
@@ -510,7 +511,7 @@
 
 - (void)calculateDeflection:(std::vector<float>&)deflection forValues:(const std::vector<float>&)vals rcnL:(double&)rcnL rcnR:(double&)rcnR beamStarts:(double)beamStart beamEnds:(double)beamEnd loadStarts:(double)loadStart loadEnds:(double)loadEnd loadMagnitude:(double)totalLoad {
     assert(vals.size() == deflection.size());
-    float magnification = 2;
+    float magnification = 4000;
     double L = beamEnd - beamStart;
     double a = std::max(0.0, loadStart - beamStart); // Don't let load extend beyond start of beam
     double b = std::min(loadEnd, beamEnd) - std::max(loadStart, beamStart); // Don't let load extend beyond end of beam
@@ -551,8 +552,8 @@
             // Extra deflection from dead load
             delta += 1.2 * x * (L3 - 2*L*x2 + x3);
         }
-        // Scaling factor (I think for unit compensation)
-        delta *= -1.04758E-6;
+        // Scaling factor
+        delta *= -3.72063E-10;//-1.04758E-6;
         deflection[i] = magnification * delta / 12;
     }
     

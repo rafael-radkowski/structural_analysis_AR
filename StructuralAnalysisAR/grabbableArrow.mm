@@ -44,18 +44,9 @@ GrabbableArrow::GrabbableArrow() {
     [root addChildNode:arrowHead];
     [root addChildNode:arrowBase];
     
-    // Create text label
-    formatString = @"%.1f k/ft";
-//    valueLabel = [SKLabelNode labelNodeWithText:[NSString stringWithFormat:@"%f", lastArrowValue]];
-    valueLabel = [SKLabelNode labelNodeWithFontNamed:@"Helvetica"];
-    valueLabel.horizontalAlignmentMode = SKLabelHorizontalAlignmentModeLeft;
-//    valueLabel.fontName = @"Cochin";
-    valueLabel.fontColor = [UIColor blackColor];
-    valueLabel.fontSize = 26;
-    backgroundBox = [SKSpriteNode spriteNodeWithColor:[UIColor colorWithWhite:1.0 alpha:0.5] size:CGSizeMake(1,1)];
-    backgroundBox.zPosition = -1;
-    [valueLabel addChild:backgroundBox];
-    valueLabel.text = [NSString stringWithFormat:@"%.1f k/ft", 123.3f];
+    // Text stuff
+    valueLabel.setObject(root);
+    setFormatString(@"%.1f k/ft");
 }
 
 void GrabbableArrow::setFormatString(NSString* str) {
@@ -65,8 +56,7 @@ void GrabbableArrow::setFormatString(NSString* str) {
 void GrabbableArrow::setScenes(SKScene* scene2d, SCNView* view3d) {
     textScene = scene2d;
     objectView = view3d;
-    [textScene addChild:valueLabel];
-    placeLabel();
+    valueLabel.setScenes(scene2d, view3d);
 }
 
 void GrabbableArrow::addAsChild(SCNNode* node) {
@@ -74,18 +64,17 @@ void GrabbableArrow::addAsChild(SCNNode* node) {
 }
 
 void GrabbableArrow::doUpdate() {
-    placeLabel();
-    valueLabel.text = textToDisplay;
-    float width = valueLabel.frame.size.width;
-    float height = valueLabel.frame.size.height;
-    backgroundBox.xScale = width;
-    backgroundBox.yScale = height;
-    backgroundBox.position = CGPointMake(width / 2, height / 2);
+    valueLabel.doUpdate();
+}
+
+void GrabbableArrow::setTextHidden(bool hide) {
+    labelHidden = hide;
+    valueLabel.setHidden(hide);
 }
 
 void GrabbableArrow::setHidden(bool hidden) {
     root.hidden = hidden;
-    valueLabel.hidden = hidden;
+    valueLabel.setHidden(hidden || labelHidden);
 }
 
 bool GrabbableArrow::hasNode(SCNNode* node) {
@@ -94,21 +83,11 @@ bool GrabbableArrow::hasNode(SCNNode* node) {
 
 void GrabbableArrow::setPosition(GLKVector3 pos) {
     root.position = SCNVector3FromGLKVector3(pos);
-    placeLabel();
+    valueLabel.markPosDirty();
 }
 
 void GrabbableArrow::setRotationAxisAngle(GLKVector4 axisAngle) {
     root.rotation = SCNVector4FromGLKVector4(axisAngle);
-}
-
-void GrabbableArrow::placeLabel() {
-    if (objectView) {
-        SCNVector3 worldPos = [root convertPosition:SCNVector3Make(0, 0, 0) toNode:nil];
-        SCNVector3 screenCoords = [objectView projectPoint:worldPos];
-        // Spritekit uses bottom-left as (0,0), while screen coordinates use top-right
-        int reversedY = objectView.frame.size.height - screenCoords.y;
-        valueLabel.position = CGPointMake(12 + screenCoords.x, reversedY);
-    }
 }
 
 void GrabbableArrow::setThickness(float thickness) {
@@ -228,7 +207,7 @@ void GrabbableArrow::setIntensity(float value) {
 //    arrowBase.geometry.firstMaterial.diffuse.contents = color;
     
 //    valueLabel.text = [NSString stringWithFormat:@"%.1f k", value];
-    textToDisplay = [NSString stringWithFormat:formatString, value];
+    valueLabel.setText([NSString stringWithFormat:formatString, value]);
 }
 
 void GrabbableArrow::setWide(bool wide) {
