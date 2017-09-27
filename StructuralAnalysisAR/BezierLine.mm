@@ -7,56 +7,59 @@
 //
 
 #include "BezierLine.h"
+#include <algorithm>
 
 
+//BezierLine::BezierLine() {
+//    lineNode = [SCNNode nodeWithGeometry:meshFromPath([UIBezierPath bezierPath])];
+//    rootNode = [SCNNode node];
+//    [rootNode addChildNode:lineNode];
+//    
+//    // Make a material
+//    lineNode.geometry.firstMaterial = [SCNMaterial material];
+//    lineNode.geometry.firstMaterial.diffuse.contents = [UIColor redColor];
+//}
+//
+//
+//BezierLine::BezierLine(const std::vector<std::vector<float>>& points) {
+//    UIBezierPath* pointsPath = interpolatePoints(points, thickness);
+//    
+//    lineNode = [SCNNode nodeWithGeometry:meshFromPath(pointsPath)];
+//    rootNode = [SCNNode node];
+//    [rootNode addChildNode:lineNode];
+//    
+//    // Make a material
+//    lineNode.geometry.firstMaterial = [SCNMaterial material];
+//    lineNode.geometry.firstMaterial.diffuse.contents = [UIColor colorWithRed:0.05 green:0.9 blue:1 alpha:1];
+//}
 
-UIBezierPath* makePath() {
-    UIBezierPath* path = [UIBezierPath bezierPath];
-    [path moveToPoint:CGPointMake(0, 0)];
-    [path addCurveToPoint:CGPointMake(50, 0) controlPoint1:CGPointMake(10, -10) controlPoint2:CGPointMake(30, -10)];
-    
-    float height = 5;
-//    [path addLineToPoint:CGPointMake(50, 0 + height)];
-//    [path addCurveToPoint:CGPointMake(0, height) controlPoint1:CGPointMake(30, -10 + height) controlPoint2:CGPointMake(10, -10 + height)];
-//    [path closePath];
-//    path.flatness = 0.1;
-    
-    UIBezierPath* reversed = [path bezierPathByReversingPath];
-    [reversed applyTransform:CGAffineTransformMakeTranslation(0, height)];
-//    [path addLineToPoint:CGPointMake(50, 0 + height)];
-    [path appendPath:reversed];
-    [path closePath];
-    
-    return path;
-}
-
-SCNShape* BezierLine::meshFromPath(UIBezierPath* path) {
-    SCNShape* shape = [SCNShape shapeWithPath:path extrusionDepth:thickness];
-//    shape.chamferRadius = 1;
-    return shape;
-}
-
-BezierLine::BezierLine() {
-    lineNode = [SCNNode nodeWithGeometry:meshFromPath(makePath())];
-    rootNode = [SCNNode node];
-    [rootNode addChildNode:lineNode];
-    
-    // Make a material
-    lineNode.geometry.firstMaterial = [SCNMaterial material];
-    lineNode.geometry.firstMaterial.diffuse.contents = [UIColor redColor];
-}
-
-
-BezierLine::BezierLine(const std::vector<std::vector<float>>& points) {
-    UIBezierPath* pointsPath = interpolatePoints(points, thickness);
-    
-    lineNode = [SCNNode nodeWithGeometry:meshFromPath(pointsPath)];
+BezierLine::BezierLine(UIBezierPath* path) {
+    lineNode = [SCNNode nodeWithGeometry:meshFromPath(path)];
     rootNode = [SCNNode node];
     [rootNode addChildNode:lineNode];
     
     // Make a material
     lineNode.geometry.firstMaterial = [SCNMaterial material];
     lineNode.geometry.firstMaterial.diffuse.contents = [UIColor colorWithRed:0.05 green:0.9 blue:1 alpha:1];
+    
+    labelEmpty = [SCNNode node];
+    [rootNode addChildNode:labelEmpty];
+    defLabel.setObject(labelEmpty);
+    defLabel.setText(@"Hello, person");
+}
+
+void BezierLine::setScenes(SKScene* scene2d, SCNView* view3d) {
+    defLabel.setScenes(scene2d, view3d);
+}
+
+void BezierLine::doUpdate() {
+    defLabel.doUpdate();
+}
+
+SCNShape* BezierLine::meshFromPath(UIBezierPath* path) {
+    SCNShape* shape = [SCNShape shapeWithPath:path extrusionDepth:thickness];
+//    shape.chamferRadius = 1;
+    return shape;
 }
 
 void BezierLine::addAsChild(SCNNode* node) {
@@ -75,9 +78,22 @@ void BezierLine::setThickness(float newThickness) {
     thickness = newThickness;
 }
 
+void BezierLine::setMagnification(float new_mag) {
+    magnification = new_mag;
+}
+
 void BezierLine::updatePath(const std::vector<std::vector<float>>& points) {
     SCNShape* shapeGeom = (SCNShape*) lineNode.geometry;
-    shapeGeom.path = interpolatePoints(points, thickness);
+    std::vector<std::vector<float>> pointsCopy(2);
+    pointsCopy[0] = points[0];
+    pointsCopy[1] = std::vector<float>(points[1].size());
+    std::transform(points[1].begin(), points[1].end(), pointsCopy[1].begin(), [this](float orig_y) {return orig_y * magnification;});
+    shapeGeom.path = interpolatePoints(pointsCopy, thickness);
+    float min_y = *std::min_element(points[1].begin(), points[1].end());
+    float x_middle = (points[0][points[0].size() - 1] + points[0][0]) / 2;
+    labelEmpty.position = SCNVector3Make(x_middle, min_y * magnification, 0);
+    defLabel.setText([NSString stringWithFormat:@"%.3f in.", min_y * 12]);
+    defLabel.markPosDirty();
 }
 
 UIBezierPath* BezierLine::interpolatePoints(const std::vector<std::vector<float>>& points, float height) {
@@ -130,7 +146,7 @@ UIBezierPath* BezierLine::interpolatePoints(const std::vector<std::vector<float>
     
     // Now that spline points are found, create actual path
     UIBezierPath* path = [UIBezierPath bezierPath];
-    [path moveToPoint:CGPointMake(points[0][0], points[1][0])];
+    [path moveToPoint:CGPointMake(points[0][0], points[1][0] * magnification)];
     const float twoThirds = 2.0 / 3.0;
     const float oneThird = 1.0 / 3.0;
     for (int i = 0; i < n_paths; ++i) {

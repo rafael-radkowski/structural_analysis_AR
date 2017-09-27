@@ -114,6 +114,9 @@
     for (GrabbableArrow& rcnArrow : reactionArrows) {
         rcnArrow.doUpdate();
     }
+    beam1.doUpdate();
+    beam2.doUpdate();
+    beam3.doUpdate();
 }
 
 - (void)setupVisualizations {
@@ -176,9 +179,13 @@
         beamVals2[1].push_back(0);
         beamVals3[1].push_back(0);
     }
+    // TODO: ew. Put these in an array
     beam1 = BezierLine(beamVals1);
     beam2 = BezierLine(beamVals2);
     beam3 = BezierLine(beamVals3);
+    beam1.setMagnification(4000);
+    beam2.setMagnification(4000);
+    beam3.setMagnification(4000);
     beam1.addAsChild(scene.rootNode);
     beam2.addAsChild(scene.rootNode);
     beam3.addAsChild(scene.rootNode);
@@ -188,6 +195,9 @@
     beam1.setPosition(GLKVector3Make(0, 2, 0));
     beam2.setPosition(GLKVector3Make(0, 2, 0));
     beam3.setPosition(GLKVector3Make(0, 2, 0));
+    beam1.setScenes(scene2d, scnView);
+    beam2.setScenes(scene2d, scnView);
+    beam3.setScenes(scene2d, scnView);
     
     peopleLoad.setScenes(scene2d, scnView);
     deadLoad.setScenes(scene2d, scnView);
@@ -511,7 +521,6 @@
 
 - (void)calculateDeflection:(std::vector<float>&)deflection forValues:(const std::vector<float>&)vals rcnL:(double&)rcnL rcnR:(double&)rcnR beamStarts:(double)beamStart beamEnds:(double)beamEnd loadStarts:(double)loadStart loadEnds:(double)loadEnd loadMagnitude:(double)totalLoad {
     assert(vals.size() == deflection.size());
-    float magnification = 4000;
     double L = beamEnd - beamStart;
     double a = std::max(0.0, loadStart - beamStart); // Don't let load extend beyond start of beam
     double b = std::min(loadEnd, beamEnd) - std::max(loadStart, beamStart); // Don't let load extend beyond end of beam
@@ -552,9 +561,9 @@
             // Extra deflection from dead load
             delta += 1.2 * x * (L3 - 2*L*x2 + x3);
         }
-        // Scaling factor
-        delta *= -3.72063E-10;//-1.04758E-6;
-        deflection[i] = magnification * delta / 12;
+        // Scaling factor. Divide by 12 to convert inches to feet
+        delta *= -3.72063E-10 / 12.0;//-1.04758E-6;
+        deflection[i] = delta;
     }
     
     if (b <= 0) {
