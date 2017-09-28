@@ -285,13 +285,7 @@ std::pair<float, float> LoadMarker::getDragPosition(GLKVector3 origin, GLKVector
         if (dragState & horizontally) {
             movedPos.first = startAtDragBegin.x + differenceFromStart;
             movedPos.second = endAtDragBegin.x + differenceFromStart;
-//            movedPos.first = GLKVector3Add(startAtDragBegin, GLKVector3MultiplyScalar(lineDir, differenceFromStart));
-//            movedPos.second = GLKVector3Add(endAtDragBegin, GLKVector3MultiplyScalar(lineDir, differenceFromStart));
         }
-    }
-    // Don't let the ends get collapsed too far
-    if (movedPos.second - movedPos.first < 5) {
-        movedPos = std::make_pair(startPos.x, endPos.x);
     }
     return movedPos;
 }

@@ -21,6 +21,7 @@ PeopleVis::PeopleVis(int n, SCNNode* camera) {
 }
 
 void PeopleVis::setNumPeople(int n) {
+    n = std::max(n, 0); // Don't let go below 0
     int n_delete = billboards.size() - n;
     if (n_delete > 0) {
         for (int i = n; i < billboards.size(); ++i) {

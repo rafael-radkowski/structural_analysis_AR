@@ -11,6 +11,7 @@
 #import <SceneKit/ModelIO.h>
 #import <GLKit/GLKQuaternion.h>
 #include <cmath>
+#include <algorithm>
 
 #define COL1_POS -80
 #define COL2_POS -25
@@ -483,10 +484,17 @@
         peopleLoad.setLoad(dragValue);
         std::pair<float, float> sideDragPosition = peopleLoad.getDragPosition(cameraPos, touchRay);
 //        printf("drag pos: %f, %f\n", sideDragMovement.first, sideDragMovement.second);
-        peopleLoad.setEnds(sideDragPosition.first, sideDragPosition.second);
-        people.setPosition(GLKVector3Make(sideDragPosition.first, 10, 0));
-        people.setLength(sideDragPosition.second - sideDragPosition.first);
-        [self updateBeamForces];
+        // Limit left to the range of [COL1_POS, COL4_POS - 5]
+        sideDragPosition.first = std::min<float>(std::max<float>(COL1_POS, sideDragPosition.first), COL4_POS - 5);
+        // Limit right to the range of [COL1_POS + 5, COL4_POS]
+        sideDragPosition.second = std::max<float>(std::min<float>(COL4_POS, sideDragPosition.second), COL1_POS + 5);
+        // Dont let bar collapse
+        if (sideDragPosition.second - sideDragPosition.first >= 5) {
+            peopleLoad.setEnds(sideDragPosition.first, sideDragPosition.second);
+            people.setPosition(GLKVector3Make(sideDragPosition.first, 10, 0));
+            people.setLength(sideDragPosition.second - sideDragPosition.first);
+            [self updateBeamForces];
+        }
     }
 //    self.sliderControl.value = dragValue;
 }
