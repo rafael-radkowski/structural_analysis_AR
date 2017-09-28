@@ -20,6 +20,8 @@ public:
     void setText(NSString* text);
     void setScenes(SKScene* scene, SCNView* view3d);
     void setHidden(bool hidden);
+    // What part of the label to center on object. x and y are normalized to the range of [0,1]
+    void setCenter(float x, float y);
     
     void setObject(SCNNode* attachedTo);
     void markPosDirty();
@@ -28,6 +30,8 @@ public:
 private:
     void placeLabel();
     int paddingX = 12;
+    float centerXNorm = 0.5;
+    float centerYNorm = 0.5;
     
     SKScene* scene2d;
     SCNView* objectView;

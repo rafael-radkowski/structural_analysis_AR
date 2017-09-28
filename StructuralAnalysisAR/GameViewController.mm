@@ -36,25 +36,37 @@
     cameraNode.camera = [SCNCamera camera];
     [scene.rootNode addChildNode:cameraNode];
     // move the camera
-    cameraNode.position = SCNVector3Make(-5.5, 5, 147);
+    cameraNode.position = SCNVector3Make(-69, 36, 270);
+    cameraNode.eulerAngles = SCNVector3Make(-0.1, -0.30, 0.033);
+//    GLKVector3 z_axis = GLKVector3Make(cameraNode.transform.m13, cameraNode.transform.m23, cameraNode.transform.m33);
+//    GLKVector3 newPos = GLKVector3Add(SCNVector3ToGLKVector3(cameraNode.position), GLKVector3MultiplyScalar(z_axis, 90));
+//    cameraNode.position = SCNVector3FromGLKVector3(newPos);
+//    printf("z: %f, %f, %f\n", cameraNode.transform.m13, cameraNode.transform.m23, cameraNode.transform.m33);
 //    cameraNode.position = SCNVector3Make(-5.5, 5, 200);
     cameraNode.camera.zFar = 500;
 //    cameraNode.camera.focalLength = 0.0108268; // 3.3mm
-    cameraNode.camera.xFov = 45.12;
-    cameraNode.camera.yFov = 57.96;
+    cameraNode.camera.xFov = 45.12 * 0.6666666; // Background image cropped roughly at 2/3 the size
+    cameraNode.camera.yFov = 57.96 * 0.6666666;
     
     SCNNode *lightNode = [SCNNode node];
     lightNode.light = [SCNLight light];
     lightNode.light.type = SCNLightTypeOmni;
     lightNode.position = SCNVector3Make(100, 50, 30);
+    lightNode.light.intensity = 700;
     [scene.rootNode addChildNode:lightNode];
+    SCNNode *lightNode2 = [SCNNode node];
+    lightNode2.light = [SCNLight light];
+    lightNode2.light.type = SCNLightTypeOmni;
+    lightNode2.light.intensity = 700;
+    lightNode2.position = SCNVector3Make(-100, 50, 80);
+    [scene.rootNode addChildNode:lightNode2];
     
     // create and add an ambient light to the scene
     SCNNode *ambientLightNode = [SCNNode node];
     ambientLightNode.light = [SCNLight light];
     ambientLightNode.light.type = SCNLightTypeAmbient;
     ambientLightNode.light.color = [UIColor darkGrayColor];
-    ambientLightNode.light.intensity = 0.7;
+    ambientLightNode.light.intensity = 0.6;
     [scene.rootNode addChildNode:ambientLightNode];
     
     // Get the view and set our scene to it
@@ -121,9 +133,10 @@
 
 - (void)setupVisualizations {
     SCNView *scnView = (SCNView*)self.view;
-    float defaultThickness = 4;
+    float defaultThickness = 5;
     
-    GLKQuaternion beamOri = GLKQuaternionMakeWithAngleAndAxis(0.015, 0, 0, 1);
+//    GLKQuaternion beamOri = GLKQuaternionMakeWithAngleAndAxis(0.015, 0, 0, 1);
+    GLKQuaternion beamOri = GLKQuaternionMakeWithAngleAndAxis(0, 0, 0, 1);
     // Create live load bar
     peopleLoad = LoadMarker(3);
     peopleLoad.setPosition(GLKVector3Make(0, 5, 0));
@@ -143,7 +156,7 @@
     deadLoad.setOrientation(beamOri);
     deadLoad.setEnds(COL1_POS, COL4_POS);
     deadLoad.setMinHeight(15);
-    deadLoad.setMaxHeight(25);
+    deadLoad.setMaxHeight(40);
     deadLoad.setThickness(defaultThickness);
     deadLoad.addAsChild(scene.rootNode);
     
@@ -152,8 +165,8 @@
         reactionArrows[i].addAsChild(scene.rootNode);
         reactionArrows[i].setFormatString(@"%.1f k");
         reactionArrows[i].setThickness(defaultThickness);
-        reactionArrows[i].setMinLength(10);
-        reactionArrows[i].setMaxLength(30);
+        reactionArrows[i].setMinLength(15);
+        reactionArrows[i].setMaxLength(40);
         reactionArrows[i].setInputRange(0, 150);
         reactionArrows[i].setRotationAxisAngle(GLKVector4Make(0, 0, 1, 3.1416));
         reactionArrows[i].setScenes(scene2d, scnView);
@@ -224,8 +237,8 @@
 
 - (void)showInstruction:(int)step {
     self.instructionBox.text = [NSString stringWithCString:instructions[step].c_str() encoding:[NSString defaultCStringEncoding]];
-    bool hideLive, hideDead, hideReactions;
-    hideLive = hideDead = hideReactions = false;
+    bool hideLive, hideDead, hideReactions, hideDeflectionText;
+    hideLive = hideDead = hideReactions = hideDeflectionText = false;
     switch (step) {
         case 0: {
             for (int i = 1; i < 5; ++i) { [self.loadPresetBtn setEnabled:NO forSegmentAtIndex:i]; }
@@ -235,6 +248,7 @@
             hideLive = true;
             hideDead = true;
             hideReactions = true;
+            hideDeflectionText = true;
             deflectLive = deflectDead = false;
             break;
         }
@@ -243,6 +257,7 @@
             hideLive = true;
             hideReactions = true;
             deflectDead = false;
+            hideDeflectionText = true;
             break;
         }
         case 2: {
@@ -280,6 +295,7 @@
     for (int i = 0; i < reactionArrows.size(); ++i) {
         reactionArrows[i].setHidden(hideReactions);
     }
+    beam1.setTextHidden(hideDeflectionText); beam2.setTextHidden(hideDeflectionText); beam3.setTextHidden(hideDeflectionText);
     
     [self updateBeamForces];
 }
@@ -427,20 +443,18 @@
     
 //    NSAssert(touches.count == 1, @"number of touches != 1");
     
-    CGPoint p = [[touches anyObject] locationInView:scnView];
+//    CGPoint p = [[touches anyObject] locationInView:scnView];
     // Use bounding boxes to increase the area that can be touched
-    NSDictionary* hitOptions = @{
-                                 SCNHitTestBoundingBoxOnlyKey: @YES
-                                 };
-    NSArray *hitResults = [scnView hitTest:p options:hitOptions];
-//    for (SCNHitTestResult *hit in hitResults) {
-//        const char* the_name = hit.node.name != nil ? [hit.node.name UTF8String] : "<unknown>";
-//        printf("Hit node %s\n", the_name);
-//    }
+//    NSDictionary* hitOptions = @{
+//                                 SCNHitTestBoundingBoxOnlyKey: @YES
+//                                 };
+//    NSArray *hitResults = [scnView hitTest:p options:hitOptions];
+    CGPoint p = [[touches anyObject] locationInView:scnView];
+    GLKVector3 farClipHit = SCNVector3ToGLKVector3([scnView unprojectPoint:SCNVector3Make(p.x, p.y, 1.0)]);
+//    GLKVector3 cameraPos = SCNVector3ToGLKVector3(cameraNode.position);
+//    GLKVector3  touchRay = GLKVector3Normalize(GLKVector3Subtract(farClipHit, cameraPos));
     
-//    arrow.touchBegan(hitResults.firstObject);
-//    if (activeScenario == SCENARIO_VARIABLE) {
-    peopleLoad.touchBegan(SCNVector3ToGLKVector3(cameraNode.position), hitResults.firstObject);
+    peopleLoad.touchBegan(SCNVector3ToGLKVector3(cameraNode.position), farClipHit);
 //    }
     if (peopleLoad.draggingMode() != LoadMarker::none) {
         activeScenario = SCENARIO_VARIABLE;

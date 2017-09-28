@@ -57,11 +57,11 @@ public:
     std::pair<float, float> getInputRange();
     
     // Touch and drag functions
-    void touchBegan(GLKVector3 origin, SCNHitTestResult* hitTestResult);
+    void touchBegan(GLKVector3 origin, GLKVector3 touchRay);
     // The value, and whether it is a new value
     float getDragValue(GLKVector3 origin, GLKVector3 touchRay);
     // Returns the dragged start and end x position
-    std::pair<float, float> getDragPosition(GLKVector3 origin, GLKVector3 touchRayr);
+    std::pair<float, float> getDragPosition(GLKVector3 origin, GLKVector3 farHit);
     void touchEnded();
     void touchCancelled();
     

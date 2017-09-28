@@ -34,6 +34,7 @@ LoadMarker::LoadMarker(size_t nLoads) {
     // Make an empty that the label will follow
     labelEmpty = [SCNNode node];
     textLabel.setObject(labelEmpty);
+    textLabel.setCenter(0.5, 0);
     [rootNode addChildNode:labelEmpty];
 }
 
@@ -186,10 +187,17 @@ uint32_t LoadMarker::draggingMode() const {
     return dragState;
 }
 
-void LoadMarker::touchBegan(GLKVector3 origin, SCNHitTestResult* hitTestResult) {
+void LoadMarker::touchBegan(GLKVector3 origin, GLKVector3 farHit) {
 //    GLKMatrix4 moveToEnd = GLKMatrix4MakeTranslation(lastArrowValue * -root.transform.m12, lastArrowValue * root.transform.m22, lastArrowValue * root.transform.m32);
 //    GLKMatrix4 endTransform = GLKMatrix4Multiply(moveToEnd, SCNMatrix4ToGLKMatrix4(root.transform));
 //    GLKVector4 endPos4 = GLKMatrix4GetColumn(endTransform, 3);
+    NSDictionary* hitOptions = @{
+                                 SCNHitTestBoundingBoxOnlyKey: @YES
+                                 };
+    SCNVector3 origin_local = [rootNode convertPosition:SCNVector3FromGLKVector3(origin) fromNode:nil];
+    SCNVector3 destination_local = [rootNode convertPosition:SCNVector3FromGLKVector3(farHit) fromNode:nil];
+    NSArray *hitResults = [rootNode hitTestWithSegmentFromPoint:origin_local toPoint:destination_local options:hitOptions];
+    SCNHitTestResult* hitTestResult = hitResults.firstObject;
     
     // Check if the hit node was a load line
     for (Line3d& loadLine : loadLines) {

@@ -60,6 +60,11 @@ void OverlayLabel::setText(NSString* text) {
     textChanged = true;
 }
 
+void OverlayLabel::setCenter(float x, float y) {
+    centerXNorm = x;
+    centerYNorm = y;
+}
+
 void OverlayLabel::doUpdate() {
     if (posChanged) {
         placeLabel();
@@ -82,6 +87,8 @@ void OverlayLabel::placeLabel() {
         SCNVector3 screenCoords = [objectView projectPoint:worldPos];
         // Spritekit uses bottom-left as (0,0), while screen coordinates use top-right
         int reversedY = objectView.frame.size.height - screenCoords.y;
-        label.position = CGPointMake(paddingX + screenCoords.x, reversedY);
+        float width = label.frame.size.width;
+        float height = label.frame.size.height;
+        label.position = CGPointMake(screenCoords.x - width*centerXNorm, reversedY - height*centerYNorm);
     }
 }

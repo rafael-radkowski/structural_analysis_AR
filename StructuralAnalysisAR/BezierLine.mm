@@ -45,7 +45,7 @@ BezierLine::BezierLine(UIBezierPath* path) {
     labelEmpty = [SCNNode node];
     [rootNode addChildNode:labelEmpty];
     defLabel.setObject(labelEmpty);
-    defLabel.setText(@"Hello, person");
+    defLabel.setCenter(0.5, 1);
 }
 
 void BezierLine::setScenes(SKScene* scene2d, SCNView* view3d) {
@@ -54,6 +54,17 @@ void BezierLine::setScenes(SKScene* scene2d, SCNView* view3d) {
 
 void BezierLine::doUpdate() {
     defLabel.doUpdate();
+}
+
+void BezierLine::setTextHidden(bool new_hidden) {
+    labelHidden = new_hidden;
+    defLabel.setHidden(labelHidden || hidden);
+}
+
+void BezierLine::setHidden(bool new_hidden) {
+    rootNode.hidden = hidden;
+    defLabel.setHidden(hidden || labelHidden);
+    hidden = new_hidden;
 }
 
 SCNShape* BezierLine::meshFromPath(UIBezierPath* path) {

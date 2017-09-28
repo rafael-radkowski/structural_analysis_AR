@@ -35,9 +35,9 @@ public:
     void setColor(float r, float g, float b);
     void addAsChild(SCNNode *scene);
     void setHidden(bool hidden);
-    
-    void setText(NSString& new_text);
+    void setTextHidden(bool hidden);
 private:
+    bool hidden = false;
     float magnification = 1;
     float thickness = 2;
     SCNNode* lineNode;
@@ -48,6 +48,7 @@ private:
     // Deflection label
     OverlayLabel defLabel;
     SCNNode* labelEmpty;
+    bool labelHidden = false;
 };
 
 #endif /* BezierLine_hpp */

@@ -45,7 +45,10 @@ GrabbableArrow::GrabbableArrow() {
     [root addChildNode:arrowBase];
     
     // Text stuff
-    valueLabel.setObject(root);
+    labelEmpty = [SCNNode node];
+    [root addChildNode:labelEmpty];
+    valueLabel.setObject(labelEmpty);
+    valueLabel.setCenter(0.5, 1);
     setFormatString(@"%.1f k/ft");
 }
 
@@ -198,6 +201,8 @@ void GrabbableArrow::setIntensity(float value) {
     float lengthRange = maxLength - minLength; // The length range for the arrow base
     float desiredLength = (minLength - tipSize) + lengthRange * normalizedValue;
     arrowBase.scale = SCNVector3Make(arrowBase.scale.x, desiredLength, arrowBase.scale.z);
+    labelEmpty.position = SCNVector3Make(0, desiredLength + tipSize, 0);
+    valueLabel.markPosDirty();
     
     // adjust color
 //    double reverse_value = 1 - normalizedValue ;

@@ -67,7 +67,9 @@ public:
 private:
     NSString* formatString;
     OverlayLabel valueLabel;
+    SCNNode* labelEmpty;
     bool labelHidden = false;
+    
     SCNNode* arrowHead;
     SCNNode* arrowBase;
     
