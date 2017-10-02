@@ -16,10 +16,13 @@
 #import <SceneKit/SceneKit.h>
 #import <SpriteKit/SpriteKit.h>
 
+#import "SampleApplicationSession.h"
+#import <Vuforia/DataSet.h>
+
 #include <vector>
 #include <string>
 
-@interface GameViewController : UIViewController <SKSceneDelegate> {
+@interface GameViewController : UIViewController <SKSceneDelegate, SampleApplicationControl> {
     // Private vars
     SCNNode *cameraNode;
     SCNScene *scene;
@@ -51,7 +54,16 @@
     // Whether to include the dead and live loads in the deflection and reaction calculations
     bool deflectDead;
     bool deflectLive;
+    
+    // Vuforia stuff
+    Vuforia::DataSet*  dataSetStonesAndChips;
+    Vuforia::DataSet*  dataSetCurrent;
+    BOOL extendedTrackingEnabled;
+    BOOL continuousAutofocusEnabled;
 }
+// Vuforia stuff
+@property (nonatomic, strong) SampleApplicationSession * vapp;
+
 // SKSceneDelegate implementations
 - (void)update:(NSTimeInterval)currentTime forScene:(SKScene *)scene;
 

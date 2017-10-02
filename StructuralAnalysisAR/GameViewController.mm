@@ -10,6 +10,15 @@
 #import <ModelIO/ModelIO.h>
 #import <SceneKit/ModelIO.h>
 #import <GLKit/GLKQuaternion.h>
+
+#import "VuforiaSamplesAppDelegate.h"
+#import <Vuforia/Vuforia.h>
+#import <Vuforia/TrackerManager.h>
+#import <Vuforia/ObjectTracker.h>
+#import <Vuforia/Trackable.h>
+#import <Vuforia/DataSet.h>
+#import <Vuforia/CameraDevice.h>
+
 #include <cmath>
 #include <algorithm>
 
@@ -119,6 +128,13 @@
     // Set load visibilities to the default values
     [self setVisibilities];
     [self.loadPresetBtn sendActionsForControlEvents:UIControlEventValueChanged];
+    
+    
+    // Vuforia stuff
+    self.vapp = [[SampleApplicationSession alloc] initWithDelegate:self];
+    extendedTrackingEnabled = NO;
+    continuousAutofocusEnabled = NO;
+    [self.vapp initAR:Vuforia::GL_20 orientation:self.interfaceOrientation];
 }
 
 - (void)update:(NSTimeInterval)currentTime forScene:(SKScene *)scene {
@@ -599,5 +615,210 @@
         rcnR += 0.6*L + w * b * (2*a + b) / (2*L);
     }
 }
+
+
+#pragma mark - Vuforia stuff
+
+// Load the image tracker data set
+- (Vuforia::DataSet *)loadObjectTrackerDataSet:(NSString*)dataFile
+{
+    NSLog(@"loadObjectTrackerDataSet (%@)", dataFile);
+    Vuforia::DataSet * dataSet = NULL;
+    
+    // Get the Vuforia tracker manager image tracker
+    Vuforia::TrackerManager& trackerManager = Vuforia::TrackerManager::getInstance();
+    Vuforia::ObjectTracker* objectTracker = static_cast<Vuforia::ObjectTracker*>(trackerManager.getTracker(Vuforia::ObjectTracker::getClassType()));
+    
+    if (NULL == objectTracker) {
+        NSLog(@"ERROR: failed to get the ObjectTracker from the tracker manager");
+        return NULL;
+    } else {
+        dataSet = objectTracker->createDataSet();
+        
+        if (NULL != dataSet) {
+            NSLog(@"INFO: successfully loaded data set");
+            
+            // Load the data set from the app's resources location
+            if (!dataSet->load([dataFile cStringUsingEncoding:NSASCIIStringEncoding], Vuforia::STORAGE_APPRESOURCE)) {
+                NSLog(@"ERROR: failed to load data set");
+                objectTracker->destroyDataSet(dataSet);
+                dataSet = NULL;
+            }
+        }
+        else {
+            NSLog(@"ERROR: failed to create data set");
+        }
+    }
+    
+    return dataSet;
+}
+
+- (BOOL)activateDataSet:(Vuforia::DataSet *)theDataSet
+{
+    // if we've previously recorded an activation, deactivate it
+    if (dataSetCurrent != nil)
+    {
+        [self deactivateDataSet:dataSetCurrent];
+    }
+    BOOL success = NO;
+    
+    // Get the image tracker:
+    Vuforia::TrackerManager& trackerManager = Vuforia::TrackerManager::getInstance();
+    Vuforia::ObjectTracker* objectTracker = static_cast<Vuforia::ObjectTracker*>(trackerManager.getTracker(Vuforia::ObjectTracker::getClassType()));
+    
+    if (objectTracker == NULL) {
+        NSLog(@"Failed to load tracking data set because the ObjectTracker has not been initialized.");
+    }
+    else
+    {
+        // Activate the data set:
+        if (!objectTracker->activateDataSet(theDataSet))
+        {
+            NSLog(@"Failed to activate data set.");
+        }
+        else
+        {
+            NSLog(@"Successfully activated data set.");
+            dataSetCurrent = theDataSet;
+            success = YES;
+        }
+    }
+    
+    // we set the off target tracking mode to the current state
+    if (success) {
+        [self setExtendedTrackingForDataSet:dataSetCurrent start:extendedTrackingEnabled];
+    }
+    
+    return success;
+}
+- (BOOL)deactivateDataSet:(Vuforia::DataSet *)theDataSet
+{
+    if ((dataSetCurrent == nil) || (theDataSet != dataSetCurrent))
+    {
+        NSLog(@"Invalid request to deactivate data set.");
+        return NO;
+    }
+    
+    BOOL success = NO;
+    
+    // we deactivate the enhanced tracking
+    [self setExtendedTrackingForDataSet:theDataSet start:NO];
+    
+    // Get the image tracker:
+    Vuforia::TrackerManager& trackerManager = Vuforia::TrackerManager::getInstance();
+    Vuforia::ObjectTracker* objectTracker = static_cast<Vuforia::ObjectTracker*>(trackerManager.getTracker(Vuforia::ObjectTracker::getClassType()));
+    
+    if (objectTracker == NULL)
+    {
+        NSLog(@"Failed to unload tracking data set because the ObjectTracker has not been initialized.");
+    }
+    else
+    {
+        // Activate the data set:
+        if (!objectTracker->deactivateDataSet(theDataSet))
+        {
+            NSLog(@"Failed to deactivate data set.");
+        }
+        else
+        {
+            success = YES;
+        }
+    }
+    
+    dataSetCurrent = nil;
+    
+    return success;
+}
+
+- (BOOL) setExtendedTrackingForDataSet:(Vuforia::DataSet *)theDataSet start:(BOOL) start {
+    BOOL result = YES;
+    for (int tIdx = 0; tIdx < theDataSet->getNumTrackables(); tIdx++) {
+        Vuforia::Trackable* trackable = theDataSet->getTrackable(tIdx);
+        if (start) {
+            if (!trackable->startExtendedTracking())
+            {
+                NSLog(@"Failed to start extended tracking on: %s", trackable->getName());
+                result = false;
+            }
+        } else {
+            if (!trackable->stopExtendedTracking())
+            {
+                NSLog(@"Failed to stop extended tracking on: %s", trackable->getName());
+                result = false;
+            }
+        }
+    }
+    return result;
+}
+
+#pragma mark - SampleApplicationControl
+
+// Initialize the application trackers
+- (bool) doInitTrackers {
+    // Initialize the object tracker
+    Vuforia::TrackerManager& trackerManager = Vuforia::TrackerManager::getInstance();
+    Vuforia::Tracker* trackerBase = trackerManager.initTracker(Vuforia::ObjectTracker::getClassType());
+    if (trackerBase == NULL)
+    {
+        NSLog(@"Failed to initialize ObjectTracker.");
+        return false;
+    }
+    return true;
+}
+
+// load the data associated to the trackers
+- (bool) doLoadTrackersData {
+    dataSetStonesAndChips = [self loadObjectTrackerDataSet:@"StonesAndChips.xml"];
+    if (dataSetStonesAndChips == NULL) {
+        NSLog(@"Failed to load datasets");
+        return NO;
+    }
+    if (! [self activateDataSet:dataSetStonesAndChips]) {
+        NSLog(@"Failed to activate dataset");
+        return NO;
+    }
+    
+    
+    return YES;
+}
+
+// start the application trackers
+- (bool) doStartTrackers {
+    Vuforia::TrackerManager& trackerManager = Vuforia::TrackerManager::getInstance();
+    Vuforia::Tracker* tracker = trackerManager.getTracker(Vuforia::ObjectTracker::getClassType());
+    if(tracker == 0) {
+        return false;
+    }
+    tracker->start();
+    return true;
+}
+
+// callback called when the initailization of the AR is done
+- (void) onInitARDone:(NSError *)initError {
+    if (initError == nil) {
+        NSError * error = nil;
+        [self.vapp startAR:Vuforia::CameraDevice::CAMERA_DIRECTION_BACK error:&error];
+        
+//        [eaglView updateRenderingPrimitives];
+        
+        // by default, we try to set the continuous auto focus mode
+        continuousAutofocusEnabled = Vuforia::CameraDevice::getInstance().setFocusMode(Vuforia::CameraDevice::FOCUS_MODE_CONTINUOUSAUTO);
+        
+        //[eaglView configureBackground];
+        
+    } else {
+        NSLog(@"Error initializing AR:%@", [initError description]);
+        dispatch_async( dispatch_get_main_queue(), ^{
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                            message:[initError localizedDescription]
+                                                           delegate:self
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles:nil];
+            [alert show];
+        });
+    }
+}
+
 
 @end
