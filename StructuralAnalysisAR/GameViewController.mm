@@ -562,8 +562,7 @@
     double L = beamEnd - beamStart;
     double a = std::max(0.0, loadStart - beamStart); // Don't let load extend beyond start of beam
     double b = std::min(loadEnd, beamEnd) - std::max(loadStart, beamStart); // Don't let load extend beyond end of beam
-    double proportion = b / (loadEnd - loadStart); // Proportion of load on this beam
-    double w = proportion * totalLoad;
+    double w = totalLoad;
     double L3 = L*L*L;
     for (int i = 0; i < vals.size(); ++i) {
         double x = vals[i] - beamStart;
