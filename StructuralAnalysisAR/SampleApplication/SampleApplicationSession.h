@@ -1,8 +1,6 @@
 /*===============================================================================
-Copyright (c) 2016 PTC Inc. All Rights Reserved.
-
- Copyright (c) 2012-2015 Qualcomm Connected Experiences, Inc. All Rights Reserved.
- 
+ Copyright (c) 2015-2016 PTC Inc. All Rights Reserved. Confidential and Proprietary -
+ Protected under copyright and other laws.
  Vuforia is a trademark of PTC Inc., registered in the United States and other
  countries.
  ===============================================================================*/
@@ -14,7 +12,7 @@ Copyright (c) 2016 PTC Inc. All Rights Reserved.
 #import <Vuforia/CameraDevice.h>
 #import <Vuforia/State.h>
 
-#define E_INITIALIZING_VUFORIA      100
+#define E_INITIALIZING_VUFORIA         100
 
 #define E_INITIALIZING_CAMERA       110
 #define E_STARTING_CAMERA           111
@@ -59,9 +57,6 @@ Copyright (c) 2016 PTC Inc. All Rights Reserved.
 // the application must deinititalize its tracker(s)
 - (bool) doDeinitTrackers;
 
-// the application msut handle the video background configuration
-- (void)configureVideoBackgroundWithViewWidth:(float)viewWidth andHeight:(float)viewHeight;
-
 @optional
 // optional method to handle the Vuforia callback - can be used to swap dataset for instance
 - (void) onVuforiaUpdate: (Vuforia::State *) state;
@@ -93,5 +88,16 @@ Copyright (c) 2016 PTC Inc. All Rights Reserved.
 
 @property (nonatomic, readwrite) BOOL isRetinaDisplay;
 @property (nonatomic, readwrite) BOOL cameraIsStarted;
+@property (nonatomic, readwrite) Vuforia::Matrix44F projectionMatrix;
+// Orthographic projection matrix, used when rendering the video background
+@property (nonatomic, readwrite) Vuforia::Matrix44F orthoProjMatrix;
+
+// Viewport geometry
+@property (nonatomic, readwrite) struct tagViewport {
+  int posX;
+  int posY;
+  int sizeX;
+  int sizeY;
+} viewport;
 
 @end

@@ -15,6 +15,7 @@
 #import <UIKit/UIKit.h>
 #import <SceneKit/SceneKit.h>
 #import <SpriteKit/SpriteKit.h>
+#import <Metal/Metal.h>
 
 #import "SampleApplicationSession.h"
 #import <Vuforia/DataSet.h>
@@ -55,11 +56,13 @@
     bool deflectDead;
     bool deflectLive;
     
+//    SCNView* scnView;
     // Vuforia stuff
     Vuforia::DataSet*  dataSetStonesAndChips;
     Vuforia::DataSet*  dataSetCurrent;
     BOOL extendedTrackingEnabled;
     BOOL continuousAutofocusEnabled;
+    MTLTexture* videoTex;
 }
 // Vuforia stuff
 @property (nonatomic, strong) SampleApplicationSession * vapp;

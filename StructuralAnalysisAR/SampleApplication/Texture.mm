@@ -1,6 +1,6 @@
 /*===============================================================================
- Copyright (c) 2012-2015 Qualcomm Connected Experiences, Inc. All Rights Reserved.
- 
+ Copyright (c) 2016 PTC Inc. All Rights Reserved. Confidential and Proprietary -
+ Protected under copyright and other laws.
  Vuforia is a trademark of PTC Inc., registered in the United States and other
  countries.
  ===============================================================================*/
@@ -12,7 +12,7 @@
 // Private method declarations
 @interface Texture (PrivateMethods)
 - (BOOL)loadImage:(NSString*)filename;
-- (BOOL)copyImageDataForOpenGL:(CFDataRef)imageData;
+- (BOOL)copyImageDataForRendering:(CFDataRef)imageData;
 @end
 
 
@@ -72,7 +72,7 @@
         CFDataRef imageData = CGDataProviderCopyData(CGImageGetDataProvider(cgImage));
         
         // Copy the image data for use by Open GL
-        ret = [self copyImageDataForOpenGL: imageData];
+        ret = [self copyImageDataForRendering: imageData];
         
         CFRelease(imageData);
     }
@@ -81,7 +81,7 @@
 }
 
 
-- (BOOL)copyImageDataForOpenGL:(CFDataRef)imageData
+- (BOOL)copyImageDataForRendering:(CFDataRef)imageData
 {    
     if (_pngData) {
         delete[] _pngData;

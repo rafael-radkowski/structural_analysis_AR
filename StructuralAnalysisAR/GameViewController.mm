@@ -10,14 +10,21 @@
 #import <ModelIO/ModelIO.h>
 #import <SceneKit/ModelIO.h>
 #import <GLKit/GLKQuaternion.h>
+#import <GLKit/GLKMatrix4.h>
+#import <GLKit/GLKit.h>
 
-#import "VuforiaSamplesAppDelegate.h"
+#import <AVFoundation/AVFoundation.h>
+
+#import "SampleApplicationUtils.h"
 #import <Vuforia/Vuforia.h>
 #import <Vuforia/TrackerManager.h>
 #import <Vuforia/ObjectTracker.h>
 #import <Vuforia/Trackable.h>
 #import <Vuforia/DataSet.h>
 #import <Vuforia/CameraDevice.h>
+#import <Vuforia/State.h>
+#import <Vuforia/Tool.h>
+#import <Vuforia/TrackableResult.h>
 
 #include <cmath>
 #include <algorithm>
@@ -37,7 +44,29 @@
     [super viewDidLoad];
     
     scene = [SCNScene scene];
-    scene.background.contents = [UIImage imageNamed:@"skywalk.jpg"];
+    
+    
+    // Make camera as scene background
+//    AVCaptureSession* captureSession = [[AVCaptureSession alloc] init];
+//    AVCaptureDevice* videoCaptureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+//    NSError* error = nil;
+//    AVCaptureDeviceInput* videoInput = [AVCaptureDeviceInput deviceInputWithDevice:videoCaptureDevice error:&error];
+//    if (videoInput) {
+//        [captureSession addInput:videoInput];
+//        AVCaptureVideoPreviewLayer* previewLayer = [AVCaptureVideoPreviewLayer layerWithSession:captureSession];
+//        [captureSession startRunning];
+//        
+//        previewLayer.frame = self.view.bounds;
+//        [self.view.layer addSublayer:previewLayer];
+//        
+//    }
+//    else {
+//        printf("Error when connecting to camera: %s", [error localizedDescription]);
+//        scene.background.contents = [UIImage imageNamed:@"skywalk.jpg"];
+//    }
+//    scnView = [[SCNView alloc] initWithFrame:self.view.bounds options:nil];
+//    scnView.backgroundColor = [UIColor clearColor];
+//    [self.view addSubview:scnView ];
     
 //    [scene.rootNode addChildNode:arrow.root];
     
@@ -128,13 +157,11 @@
     // Set load visibilities to the default values
     [self setVisibilities];
     [self.loadPresetBtn sendActionsForControlEvents:UIControlEventValueChanged];
-    
+    GLKMatrix4 projMat = SCNMatrix4ToGLKMatrix4(cameraNode.camera.projectionTransform);
     
     // Vuforia stuff
     self.vapp = [[SampleApplicationSession alloc] initWithDelegate:self];
-    extendedTrackingEnabled = NO;
-    continuousAutofocusEnabled = NO;
-    [self.vapp initAR:Vuforia::GL_20 orientation:self.interfaceOrientation];
+    [self.vapp initAR:Vuforia::METAL orientation:self.interfaceOrientation];
 }
 
 - (void)update:(NSTimeInterval)currentTime forScene:(SKScene *)scene {
@@ -618,6 +645,82 @@
 
 #pragma mark - Vuforia stuff
 
+// Converts Vuforia matrix to SceneKit matrix
+- (GLKMatrix4)GLKMatrix4FromQCARMatrix44:(Vuforia::Matrix44F)matrix {
+    GLKMatrix4 glkMatrix;
+    
+    for(int i=0; i<16; i++) {
+        glkMatrix.m[i] = matrix.data[i];
+    }
+//    printf("m10: %f, m[1] = %f, m[4] = %f\n", glkMatrix.m10, glkMatrix.m[1], glkMatrix.m[4]);
+    
+    return glkMatrix;
+//    return SCNMatrix4FromGLKMatrix4(glkMatrix);
+    
+}
+
+- (void)printMatrix:(GLKMatrix4)mat {
+    printf("%f, %f, %f, %f\n%f, %f, %f, %f\n%f, %f, %f, %f\n%f, %f, %f, %f\n",
+           mat.m[0], mat.m[1], mat.m[2], mat.m[3], mat.m[4], mat.m[5], mat.m[6], mat.m[7], mat.m[8], mat.m[9], mat.m[10], mat.m[11], mat.m[12], mat.m[13], mat.m[14], mat.m[15]);
+}
+
+// Calculate inverse matrix and assign it to cameraNode
+- (void)setCameraMatrix:(Vuforia::Matrix44F)matrix {
+    GLKMatrix4 extrinsic = [self GLKMatrix4FromQCARMatrix44:matrix];
+    bool invertible;
+    GLKMatrix4 inverted = GLKMatrix4Invert(extrinsic, &invertible); // inverse matrix!
+//    SCNMatrix4 rotated = SCNMatrix4Mult(inverted, SCNMatrix4MakeRotation(M_PI, 1, 0, 0));
+//    GLKMatrix4 desiredMat = GLKMatrix4Make(inverted.m00, -inverted.m01,  -inverted.m02, inverted.m03,
+//                                           inverted.m10, -inverted.m11,  -inverted.m12, inverted.m13,
+//                                           inverted.m20, -inverted.m21,  -inverted.m22, inverted.m23,
+//                                           0,             0,              0,            1);
+//    GLKMatrix4 desiredMat = GLKMatrix4Make(inverted.m00,  -inverted.m10,   -inverted.m20, 0,
+//                                            inverted.m01,  -inverted.m11,  -inverted.m21, 0,
+//                                            inverted.m02,  -inverted.m12,  -inverted.m22, 0,
+//                                            inverted.m30, inverted.m31, inverted.m32, 1);
+    GLKMatrix4 desiredMat = GLKMatrix4Make(inverted.m00,  inverted.m01,   inverted.m02, 0,
+                                            -inverted.m10,  -inverted.m11,  -inverted.m12, 0,
+                                            -inverted.m20,  -inverted.m21,  -inverted.m22, 0,
+                                            inverted.m30, inverted.m31, inverted.m32, 1);
+    [self printMatrix:desiredMat];
+    cameraNode.transform = SCNMatrix4FromGLKMatrix4(desiredMat);
+//    cameraNode.transform = SCNMatrix4FromGLKMatrix4(GLKMatrix4Multiply(fixer, inverted));
+//    cameraNode.transform = inverted; // assign it to the camera node's transform property.
+}
+
+- (void)setProjectionMatrix:(Vuforia::Matrix44F)matrix {
+    GLKMatrix4 projMat = [self GLKMatrix4FromQCARMatrix44:matrix];
+    projMat.m11 = -projMat.m11;
+    projMat.m22 = -projMat.m22;
+    projMat.m23 = -projMat.m23;
+    cameraNode.camera.projectionTransform = SCNMatrix4FromGLKMatrix4(projMat);
+}
+
+- (void) onVuforiaUpdate: (Vuforia::State *) state {
+    const Vuforia::Frame frame = state->getFrame();
+    if (frame.getNumImages()) {
+        const Vuforia::Image* img = frame.getImage(0);
+        
+    }
+//    const float kObjectScaleNormal = 0.003f;
+    const float kObjectScaleNormal = 10;
+    
+    [self setProjectionMatrix:self.vapp.projectionMatrix];
+    
+//    printf("Have %d trackables\n", state->getNumTrackableResults());
+    if (state->getNumTrackableResults()) {
+        const Vuforia::TrackableResult* track_result = state->getTrackableResult(0);
+        
+        Vuforia::Matrix44F modelViewMatrix = Vuforia::Tool::convertPose2GLMatrix(track_result->getPose());
+        SampleApplicationUtils::translatePoseMatrix(0.0f, 0.0f, kObjectScaleNormal, &modelViewMatrix.data[0]);
+//        SampleApplicationUtils::scalePoseMatrix(kObjectScaleNormal, kObjectScaleNormal, kObjectScaleNormal, &modelViewMatrix.data[0]);
+        [self setCameraMatrix:modelViewMatrix];
+        printf("Pos: %f, %f, %f\n", cameraNode.position.x, cameraNode.position.y, cameraNode.position.z);
+        printf("Looking at: %f, %f, %f\n", cameraNode.transform.m13, cameraNode.transform.m23, cameraNode.transform.m33);
+    }
+}
+
+
 // Load the image tracker data set
 - (Vuforia::DataSet *)loadObjectTrackerDataSet:(NSString*)dataFile
 {
@@ -652,6 +755,40 @@
     return dataSet;
 }
 
+- (bool) doStopTrackers {
+    // Stop the tracker
+    Vuforia::TrackerManager& trackerManager = Vuforia::TrackerManager::getInstance();
+    Vuforia::Tracker* tracker = trackerManager.getTracker(Vuforia::ObjectTracker::getClassType());
+    
+    if (NULL != tracker) {
+        tracker->stop();
+        NSLog(@"INFO: successfully stopped tracker");
+        return YES;
+    }
+    else {
+        NSLog(@"ERROR: failed to get the tracker from the tracker manager");
+        return NO;
+    }
+}
+
+- (bool) doUnloadTrackersData {
+    [self deactivateDataSet: dataSetCurrent];
+    dataSetCurrent = nil;
+    
+    // Get the image tracker:
+    Vuforia::TrackerManager& trackerManager = Vuforia::TrackerManager::getInstance();
+    Vuforia::ObjectTracker* objectTracker = static_cast<Vuforia::ObjectTracker*>(trackerManager.getTracker(Vuforia::ObjectTracker::getClassType()));
+    
+    // Destroy the data sets:
+    if (!objectTracker->destroyDataSet(dataSetStonesAndChips))
+    {
+        NSLog(@"Failed to destroy data set Stones and Chips.");
+    }
+    
+    NSLog(@"datasets destroyed");
+    return YES;
+}
+
 - (BOOL)activateDataSet:(Vuforia::DataSet *)theDataSet
 {
     // if we've previously recorded an activation, deactivate it
@@ -684,9 +821,9 @@
     }
     
     // we set the off target tracking mode to the current state
-    if (success) {
-        [self setExtendedTrackingForDataSet:dataSetCurrent start:extendedTrackingEnabled];
-    }
+//    if (success) {
+//        [self setExtendedTrackingForDataSet:dataSetCurrent start:extendedTrackingEnabled];
+//    }
     
     return success;
 }
@@ -701,7 +838,7 @@
     BOOL success = NO;
     
     // we deactivate the enhanced tracking
-    [self setExtendedTrackingForDataSet:theDataSet start:NO];
+//    [self setExtendedTrackingForDataSet:theDataSet start:NO];
     
     // Get the image tracker:
     Vuforia::TrackerManager& trackerManager = Vuforia::TrackerManager::getInstance();
@@ -728,27 +865,27 @@
     
     return success;
 }
-
-- (BOOL) setExtendedTrackingForDataSet:(Vuforia::DataSet *)theDataSet start:(BOOL) start {
-    BOOL result = YES;
-    for (int tIdx = 0; tIdx < theDataSet->getNumTrackables(); tIdx++) {
-        Vuforia::Trackable* trackable = theDataSet->getTrackable(tIdx);
-        if (start) {
-            if (!trackable->startExtendedTracking())
-            {
-                NSLog(@"Failed to start extended tracking on: %s", trackable->getName());
-                result = false;
-            }
-        } else {
-            if (!trackable->stopExtendedTracking())
-            {
-                NSLog(@"Failed to stop extended tracking on: %s", trackable->getName());
-                result = false;
-            }
-        }
-    }
-    return result;
-}
+//
+//- (BOOL) setExtendedTrackingForDataSet:(Vuforia::DataSet *)theDataSet start:(BOOL) start {
+//    BOOL result = YES;
+//    for (int tIdx = 0; tIdx < theDataSet->getNumTrackables(); tIdx++) {
+//        Vuforia::Trackable* trackable = theDataSet->getTrackable(tIdx);
+//        if (start) {
+//            if (!trackable->startExtendedTracking())
+//            {
+//                NSLog(@"Failed to start extended tracking on: %s", trackable->getName());
+//                result = false;
+//            }
+//        } else {
+//            if (!trackable->stopExtendedTracking())
+//            {
+//                NSLog(@"Failed to stop extended tracking on: %s", trackable->getName());
+//                result = false;
+//            }
+//        }
+//    }
+//    return result;
+//}
 
 #pragma mark - SampleApplicationControl
 
@@ -765,9 +902,15 @@
     return true;
 }
 
+- (bool) doDeinitTrackers {
+    Vuforia::TrackerManager& trackerManager = Vuforia::TrackerManager::getInstance();
+    trackerManager.deinitTracker(Vuforia::ObjectTracker::getClassType());
+    return YES;
+}
+
 // load the data associated to the trackers
 - (bool) doLoadTrackersData {
-    dataSetStonesAndChips = [self loadObjectTrackerDataSet:@"StonesAndChips.xml"];
+    dataSetStonesAndChips = [self loadObjectTrackerDataSet:@"skywalk_far.xml"];
     if (dataSetStonesAndChips == NULL) {
         NSLog(@"Failed to load datasets");
         return NO;

@@ -1,8 +1,6 @@
 /*===============================================================================
-Copyright (c) 2015-2017 PTC Inc. All Rights Reserved.
-
- Copyright (c) 2012-2015 Qualcomm Connected Experiences, Inc. All Rights Reserved.
- 
+ Copyright (c) 2015-2017 PTC Inc. All Rights Reserved. Confidential and Proprietary -
+ Protected under copyright and other laws.
  Vuforia is a trademark of PTC Inc., registered in the United States and other
  countries.
  ===============================================================================*/
@@ -43,12 +41,32 @@ namespace {
 
     // NSerror domain for errors coming from the Sample application template classes
     NSString * SAMPLE_APPLICATION_ERROR_DOMAIN = @"vuforia_sample_application";
+    
+    const float orthoProjectionMatrix[] =
+    {
+        1.0f, 0.0f, 0.0f, 0.0f,
+        0.0f, 1.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, -1.0f, 0.0f,
+        0.0f, 0.0f, 0.0f, 1.0f
+    };
 }
 
 @interface SampleApplicationSession ()
 
 @property (nonatomic, readwrite) UIInterfaceOrientation mARViewOrientation;
+@property (nonatomic, readwrite) BOOL mIsActivityInPortraitMode;
 @property (nonatomic, readwrite) BOOL cameraIsActive;
+@property (nonatomic, readwrite) BOOL mIsMetalRendering;
+// *** Metal ***
+// Projection matrix scale factors, used when rendering with Metal if the
+// aspect ratios of the viewport and video do not match due to the viewport
+// bounds being limited by the size of the render buffer (screen)
+//
+@property (nonatomic, readwrite) float projectionScaleX;
+@property (nonatomic, readwrite) float projectionScaleY;
+@property (nonatomic, readwrite) float orthoProjScaleX;
+@property (nonatomic, readwrite) float orthoProjScaleY;
+
 
 // SampleApplicationControl delegate (receives callbacks in response to particular
 // events, such as completion of Vuforia initialisation)
@@ -58,6 +76,7 @@ namespace {
 
 
 @implementation SampleApplicationSession
+@synthesize viewport;
 
 - (id)initWithDelegate:(id<SampleApplicationControl>) delegate
 {
@@ -109,6 +128,7 @@ namespace {
     mVuforiaInitFlags = VuforiaInitFlags;
     self.isRetinaDisplay = [self isRetinaDisplay];
     self.mARViewOrientation = ARViewOrientation;
+    self.mIsMetalRendering = (mVuforiaInitFlags == Vuforia::METAL);
 
     // Initialising Vuforia is a potentially lengthy operation, so perform it on a
     // background thread
@@ -175,6 +195,10 @@ namespace {
                         error = [self NSErrorWithCode:NSLocalizedString(@"INIT_LICENSE_ERROR_PRODUCT_TYPE_MISMATCH", nil) code:initSuccess];
                         break;
                         
+                    case Vuforia::INIT_DEVICE_NOT_SUPPORTED:
+                        error = [self NSErrorWithCode:NSLocalizedString(@"INIT_DEVICE_NOT_SUPPORTED", nil) code:initSuccess];
+                        break;
+                        
                     default:
                         error = [self NSErrorWithCode:NSLocalizedString(@"INIT_default", nil) code:initSuccess];
                         break;
@@ -186,7 +210,6 @@ namespace {
         }
     }
 }
-
 
 // Prompts a dialog to warn the user that
 // the camera access was not granted to this App and
@@ -263,13 +286,9 @@ namespace {
 {
     CGRect screenBounds = [[UIScreen mainScreen] bounds];
     CGSize viewSize = screenBounds.size;
-    
-    // If this device has a retina display, scale the view bounds
-    // for the AR (OpenGL) view
-    if (YES == self.isRetinaDisplay) {
-        viewSize.width *= [UIScreen mainScreen].nativeScale;
-        viewSize.height *= [UIScreen mainScreen].nativeScale;
-    }
+
+    viewSize.width *= [UIScreen mainScreen].nativeScale;
+    viewSize.height *= [UIScreen mainScreen].nativeScale;
     return viewSize;
 }
 
@@ -292,21 +311,29 @@ namespace {
     {
         Vuforia::onSurfaceChanged(smallerSize, largerSize);
         Vuforia::setRotation(Vuforia::ROTATE_IOS_90);
+        
+        self.mIsActivityInPortraitMode = YES;
     }
     else if (self.mARViewOrientation == UIInterfaceOrientationPortraitUpsideDown)
     {
         Vuforia::onSurfaceChanged(smallerSize, largerSize);
         Vuforia::setRotation(Vuforia::ROTATE_IOS_270);
+        
+        self.mIsActivityInPortraitMode = YES;
     }
     else if (self.mARViewOrientation == UIInterfaceOrientationLandscapeLeft)
     {
         Vuforia::onSurfaceChanged(largerSize, smallerSize);
         Vuforia::setRotation(Vuforia::ROTATE_IOS_180);
+        
+        self.mIsActivityInPortraitMode = NO;
     }
     else if (self.mARViewOrientation == UIInterfaceOrientationLandscapeRight)
     {
         Vuforia::onSurfaceChanged(largerSize, smallerSize);
         Vuforia::setRotation(Vuforia::ROTATE_IOS_0);
+        
+        self.mIsActivityInPortraitMode = NO;
     }
     
     [self initTracker];
@@ -343,6 +370,197 @@ namespace {
     [self.delegate onInitARDone:nil];
 }
 
+// Configure Vuforia with the video background size
+- (void)configureVideoBackgroundWithViewWidth:(float)viewWidth andHeight:(float)viewHeight
+{
+    // Get the default video mode
+    Vuforia::CameraDevice& cameraDevice = Vuforia::CameraDevice::getInstance();
+    Vuforia::VideoMode videoMode = cameraDevice.getVideoMode(Vuforia::CameraDevice::MODE_DEFAULT);
+    
+    // Configure the video background
+    Vuforia::VideoBackgroundConfig config;
+//    config.mEnabled = true;
+    config.mEnabled = false;
+    config.mPosition.data[0] = 0.0f;
+    config.mPosition.data[1] = 0.0f;
+    
+    // *** Metal ***
+    // When using Metal, the viewport cannot extend outside the area of the
+    // render buffer, so we must scale the projection matrix to compensate when
+    // the aspect ratio of the video and the viewport do not match.
+    // Default to a scale factor of 1.0f for both X and Y
+    self.projectionScaleX = 1.0f;
+    self.projectionScaleY = 1.0f;
+    self.orthoProjScaleX = 1.0f;
+    self.orthoProjScaleY = 1.0f;
+    
+    // Determine the orientation of the view.  Note, this simple test assumes
+    // that a view is portrait if its height is greater than its width.  This is
+    // not always true: it is perfectly reasonable for a view with portrait
+    // orientation to be wider than it is high.  The test is suitable for the
+    // dimensions used in this sample
+    if (self.mIsActivityInPortraitMode) {
+        // --- View is portrait ---
+        
+        // Compare aspect ratios of video and screen.  If they are different we
+        // use the full screen size while maintaining the video's aspect ratio,
+        // which naturally entails some cropping of the video
+        float aspectRatioVideo = (float)videoMode.mWidth / (float)videoMode.mHeight;
+        float aspectRatioView = viewHeight / viewWidth;
+        
+        if (aspectRatioVideo < aspectRatioView) {
+            // Video (when rotated) is wider than the view: crop left and right
+            // (top and bottom of video)
+            
+            // --============--
+            // - =          = _
+            // - =          = _
+            // - =          = _
+            // - =          = _
+            // - =          = _
+            // - =          = _
+            // - =          = _
+            // - =          = _
+            // --============--
+            
+            config.mSize.data[0] = (int)videoMode.mHeight * (viewHeight / (float)videoMode.mWidth);
+            config.mSize.data[1] = (int)viewHeight;
+        }
+        else {
+            // Video (when rotated) is narrower than the view: crop top and
+            // bottom (left and right of video).  Also used when aspect ratios
+            // match (no cropping)
+            
+            // ------------
+            // -          -
+            // -          -
+            // ============
+            // =          =
+            // =          =
+            // =          =
+            // =          =
+            // =          =
+            // =          =
+            // =          =
+            // =          =
+            // ============
+            // -          -
+            // -          -
+            // ------------
+            
+            config.mSize.data[0] = (int)viewWidth;
+            config.mSize.data[1] = (int)videoMode.mWidth * (viewWidth / (float)videoMode.mHeight);
+        }
+        
+        if (self.mIsMetalRendering) {
+            // *** Metal ***
+            // Calculate the projection scale for aspect ratio correction when the
+            // required viewport size is larger than the render buffer.  Note that
+            // the viewport position must also be considered in this calculation, if
+            // it is not 0, 0
+            if (config.mSize.data[1] > viewHeight) {
+                self.projectionScaleX = static_cast<float>(config.mSize.data[1]) / viewHeight;
+                self.orthoProjScaleY = self.projectionScaleX;
+            }
+            
+            if (config.mSize.data[0] > viewWidth) {
+                self.projectionScaleY = static_cast<float>(config.mSize.data[0]) / viewWidth;
+                self.orthoProjScaleX = self.projectionScaleY;
+            }
+            
+            // Scale first, then rotate
+            SampleApplicationUtils::scalePoseMatrix(self.orthoProjScaleX, self.orthoProjScaleY, 1.0f, _orthoProjMatrix.data);
+            SampleApplicationUtils::rotatePoseMatrix(-90.0f, 0.0f, 0.0f, 1.0f, _orthoProjMatrix.data);
+            
+        }
+    }
+    else {
+        // --- View is landscape ---
+        if (viewWidth < viewHeight) {
+            // Swap width/height: this is neded on iOS7 and below
+            // as the view width is always reported as if in portrait.
+            // On IOS 8, the swap is not needed, because the size is
+            // orientation-dependent; so, this swap code in practice
+            // will only be executed on iOS 7 and below.
+            float temp = viewWidth;
+            viewWidth = viewHeight;
+            viewHeight = temp;
+        }
+        
+        // Compare aspect ratios of video and screen.  If they are different we
+        // use the full screen size while maintaining the video's aspect ratio,
+        // which naturally entails some cropping of the video
+        float aspectRatioVideo = (float)videoMode.mWidth / (float)videoMode.mHeight;
+        float aspectRatioView = viewWidth / viewHeight;
+        
+        if (aspectRatioVideo < aspectRatioView) {
+            // Video is taller than the view: crop top and bottom
+            
+            // --------------------
+            // ====================
+            // =                  =
+            // =                  =
+            // =                  =
+            // =                  =
+            // ====================
+            // --------------------
+            
+            config.mSize.data[0] = (int)viewWidth;
+            config.mSize.data[1] = (int)videoMode.mHeight * (viewWidth / (float)videoMode.mWidth);
+        }
+        else {
+            // Video is wider than the view: crop left and right.  Also used
+            // when aspect ratios match (no cropping)
+            
+            // ---====================---
+            // -  =                  =  -
+            // -  =                  =  -
+            // -  =                  =  -
+            // -  =                  =  -
+            // ---====================---
+            
+            config.mSize.data[0] = (int)videoMode.mWidth * (viewHeight / (float)videoMode.mHeight);
+            config.mSize.data[1] = (int)viewHeight;
+        }
+        
+        if (self.mIsMetalRendering) {
+            // *** Metal ***
+            // Metal: calculate the projection scale for aspect ratio correction
+            // when the required viewport size is larger than the render buffer.
+            // Note that the viewport position must also be considered in this
+            // calculation, if it is not 0, 0
+            if (config.mSize.data[0] > viewWidth) {
+                self.projectionScaleX = static_cast<float>(config.mSize.data[0]) / viewWidth;
+                self.orthoProjScaleX = self.projectionScaleX;
+            }
+            
+            if (config.mSize.data[1] > viewHeight) {
+                self.projectionScaleY = static_cast<float>(config.mSize.data[1]) / viewHeight;
+                self.orthoProjScaleY = self.projectionScaleY;
+            }
+            
+            SampleApplicationUtils::scalePoseMatrix(self.orthoProjScaleX, self.orthoProjScaleY, 1.0f, _orthoProjMatrix.data);
+            
+        }
+    }
+    
+    // Calculate the viewport for the app to use when rendering
+    viewport.posX = ((viewWidth - config.mSize.data[0]) / 2) + config.mPosition.data[0];
+    viewport.posY = (((int)(viewHeight - config.mSize.data[1])) / (int) 2) + config.mPosition.data[1];
+    viewport.sizeX = config.mSize.data[0];
+    viewport.sizeY = config.mSize.data[1];
+    
+#ifdef DEBUG_SAMPLE_APP
+    NSLog(@"VideoBackgroundConfig: size: %d,%d", config.mSize.data[0], config.mSize.data[1]);
+    NSLog(@"VideoMode:w=%d h=%d", videoMode.mWidth, videoMode.mHeight);
+    NSLog(@"width=%7.3f height=%7.3f", viewWidth, viewHeight);
+    NSLog(@"ViewPort: X,Y: %d,%d Size X,Y:%d,%d", viewport.posX,viewport.posY,viewport.sizeX,viewport.sizeY);
+#endif
+    
+    // Set the config
+    Vuforia::Renderer::getInstance().setVideoBackgroundConfig(config);
+}
+
 
 // Start Vuforia camera with the specified view size
 - (bool)startCamera:(Vuforia::CameraDevice::CAMERA_DIRECTION)camera viewWidth:(float)viewWidth andHeight:(float)viewHeight error:(NSError **)error
@@ -359,8 +577,12 @@ namespace {
         return NO;
     }
     
+    // Copy the orthographic projection matrix constant data (used for
+    // video background when operating in bindVideoBackground mode)
+    memcpy(_orthoProjMatrix.data, orthoProjectionMatrix, sizeof(_orthoProjMatrix.data));
+    
     // configure Vuforia video background
-    [self.delegate configureVideoBackgroundWithViewWidth:viewWidth andHeight:viewHeight];
+    [self configureVideoBackgroundWithViewWidth:viewWidth andHeight:viewHeight];
     
     // set the FPS to its recommended value
     int recommendedFps = Vuforia::Renderer::getInstance().getRecommendedFps();
@@ -382,6 +604,11 @@ namespace {
         return NO;
     }
     
+    // Cache the projection matrix
+    const Vuforia::CameraCalibration& cameraCalibration = Vuforia::CameraDevice::getInstance().getCameraCalibration();
+    _projectionMatrix = Vuforia::Tool::getProjectionGL(cameraCalibration, 2.0f, 5000.0f);
+    SampleApplicationUtils::scalePoseMatrix(self.projectionScaleX, self.projectionScaleY, 1.0f, _projectionMatrix.data);
+
     return YES;
 }
 

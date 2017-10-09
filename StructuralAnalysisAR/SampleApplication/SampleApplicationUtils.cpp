@@ -1,6 +1,6 @@
 /*===============================================================================
- Copyright (c) 2012-2015 Qualcomm Connected Experiences, Inc. All Rights Reserved.
- 
+ Copyright (c) 2016 PTC Inc. All Rights Reserved. Confidential and Proprietary -
+ Protected under copyright and other laws.
  Vuforia is a trademark of PTC Inc., registered in the United States and other
  countries.
  ===============================================================================*/
@@ -19,16 +19,6 @@ namespace SampleApplicationUtils
     {
         for (int r = 0; r < 4; r++, mat += 4) {
             printf("%7.3f %7.3f %7.3f %7.3f", mat[0], mat[1], mat[2], mat[3]);
-        }
-    }
-    
-    
-    // Print GL error information
-    void
-    checkGlError(const char* operation)
-    { 
-        for (GLint error = glGetError(); error; error = glGetError()) {
-            printf("after %s() glError (0x%x)\n", operation, error);
         }
     }
     
@@ -146,88 +136,6 @@ namespace SampleApplicationUtils
         for (i = 0; i < 16; i++) {
             matrixC[i] = aTmp[i];
         }
-    }
-    
-    
-    // Initialise a shader
-    int
-    initShader(GLenum nShaderType, const char* pszSource, const char* pszDefs)
-    {
-        GLuint shader = glCreateShader(nShaderType);
-        
-        if (shader) {
-            if(pszDefs == NULL)
-            {
-                glShaderSource(shader, 1, &pszSource, NULL);
-            }
-            else
-            {   
-                const char* finalShader[2] = {pszDefs,pszSource};
-                GLint finalShaderSizes[2] = {static_cast<GLint>(strlen(pszDefs)), static_cast<GLint>(strlen(pszSource))};
-                glShaderSource(shader, 2, finalShader, finalShaderSizes);
-            }
-            
-            glCompileShader(shader);
-            GLint compiled = 0;
-            glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
-            
-            if (!compiled) {
-                GLint infoLen = 0;
-                glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLen);
-                
-                if (infoLen) {
-                    char* buf = new char[infoLen];
-                    glGetShaderInfoLog(shader, infoLen, NULL, buf);
-                    printf("Could not compile shader %d: %s\n", shader, buf);
-                    delete[] buf;
-                }
-            }
-        }
-        
-        return shader;
-    }
-    
-    
-    // Create a shader program
-    int
-    createProgramFromBuffer(const char* pszVertexSource,
-                            const char* pszFragmentSource,
-                            const char* pszVertexShaderDefs,
-                            const char* pszFragmentShaderDefs)
-
-    {
-        GLuint program = 0;
-        GLuint vertexShader = initShader(GL_VERTEX_SHADER, pszVertexSource, pszVertexShaderDefs);
-        GLuint fragmentShader = initShader(GL_FRAGMENT_SHADER, pszFragmentSource, pszFragmentShaderDefs);
-        
-        if (vertexShader && fragmentShader) {
-            program = glCreateProgram();
-            
-            if (program) {
-                glAttachShader(program, vertexShader);
-                checkGlError("glAttachShader");
-                glAttachShader(program, fragmentShader);
-                checkGlError("glAttachShader");
-                
-                glLinkProgram(program);
-                GLint linkStatus;
-                glGetProgramiv(program, GL_LINK_STATUS, &linkStatus);
-                
-                if (GL_TRUE != linkStatus) {
-                    GLint infoLen = 0;
-                    glGetProgramiv(program, GL_INFO_LOG_LENGTH, &infoLen);
-                    
-                    if (infoLen) {
-                        char* buf = new char[infoLen];
-                        glGetProgramInfoLog(program, infoLen, NULL, buf);
-                        printf("Could not link program %d: %s\n", program, buf);
-                        delete[] buf;
-                    }
-                }
-            }
-        }
-        
-        return program;
     }
     
     
