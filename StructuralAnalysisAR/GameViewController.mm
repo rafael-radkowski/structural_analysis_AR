@@ -7,6 +7,7 @@
 //
 
 #import "GameViewController.h"
+#import "ARView.h"
 #import <ModelIO/ModelIO.h>
 #import <SceneKit/ModelIO.h>
 #import <GLKit/GLKQuaternion.h>
@@ -25,6 +26,8 @@
 #import <Vuforia/State.h>
 #import <Vuforia/Tool.h>
 #import <Vuforia/TrackableResult.h>
+#import <Vuforia/Image.h>
+#import <Vuforia/Renderer.h>
 
 #include <cmath>
 #include <algorithm>
@@ -39,14 +42,39 @@
 
 @implementation GameViewController
 
+- (CGRect)getCurrentARViewFrame
+{
+    CGRect screenBounds = [[UIScreen mainScreen] bounds];
+    CGRect viewFrame = screenBounds;
+    
+    // If this device has a retina display, scale the view bounds
+    // for the AR (OpenGL) view
+    if (YES == self.vapp.isRetinaDisplay) {
+        viewFrame.size.width *= [UIScreen mainScreen].scale;
+        viewFrame.size.height *= [UIScreen mainScreen].scale;
+    }
+    return viewFrame;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
     scene = [SCNScene scene];
     
+    CGRect viewFrame = [self getCurrentARViewFrame];
+    MTLTextureDescriptor* texDescription = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:MTLPixelFormatBGRA8Unorm width:viewFrame.size.width height:viewFrame.size.height mipmapped:NO];
+    id<MTLDevice> gpu = MTLCreateSystemDefaultDevice();
+    videoTexture = [gpu newTextureWithDescriptor:texDescription];
+    scene.background.contents = videoTexture;
+    ARView* arView = [[ARView alloc] initWithFrame:viewFrame appSession:self.vapp backgroundTex:videoTexture];
+    [self setView:arView];
+    
     
     // Make camera as scene background
+//    UIImage* backgroundImage = [UIImage imageNamed:@"skywalk.jpg"];
+//    scene.background.contents = backgroundImage;
+    
 //    AVCaptureSession* captureSession = [[AVCaptureSession alloc] init];
 //    AVCaptureDevice* videoCaptureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
 //    NSError* error = nil;
@@ -157,7 +185,7 @@
     // Set load visibilities to the default values
     [self setVisibilities];
     [self.loadPresetBtn sendActionsForControlEvents:UIControlEventValueChanged];
-    GLKMatrix4 projMat = SCNMatrix4ToGLKMatrix4(cameraNode.camera.projectionTransform);
+//    GLKMatrix4 projMat = SCNMatrix4ToGLKMatrix4(cameraNode.camera.projectionTransform);
     
     // Vuforia stuff
     self.vapp = [[SampleApplicationSession alloc] initWithDelegate:self];
@@ -697,11 +725,21 @@
 }
 
 - (void) onVuforiaUpdate: (Vuforia::State *) state {
-    const Vuforia::Frame frame = state->getFrame();
-    if (frame.getNumImages()) {
-        const Vuforia::Image* img = frame.getImage(0);
-        
-    }
+    
+//    Vuforia::Frame frame = state->getFrame();
+//    if (frame.getNumImages()) {
+//        const Vuforia::Image* img = frame.getImage(0);
+//        if (videoTexture == nil) {
+//            MTLTextureDescriptor* texDescription = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:MTLPixelFormatBGRA8Unorm width:img->getBufferWidth() height:img->getBufferHeight() mipmapped:NO];
+//            id<MTLDevice> gpu = MTLCreateSystemDefaultDevice();
+//            videoTexture = [gpu newTextureWithDescriptor:texDescription];
+////            scene.background.contents = videoTexture;
+//            printf("Image: bufferWidth: %d, bufferHeight: %d, width: %d, height: %d, stride: %d, fmt: %d\n", img->getBufferWidth(), img->getBufferHeight(), img->getWidth(), img->getHeight(), img->getStride(), img->getFormat() == Vuforia::GRAYSCALE);
+//        }
+//        MTLRegion texRegion = MTLRegionMake2D(0, 0, img->getWidth(), img->getHeight());
+//        // Copy image into texture
+////        [videoTexture replaceRegion:texRegion mipmapLevel:0 withBytes:img->getPixels() bytesPerRow:img->getStride()];
+//    }
 //    const float kObjectScaleNormal = 0.003f;
     const float kObjectScaleNormal = 10;
     

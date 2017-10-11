@@ -62,10 +62,11 @@
     Vuforia::DataSet*  dataSetCurrent;
     BOOL extendedTrackingEnabled;
     BOOL continuousAutofocusEnabled;
-    MTLTexture* videoTex;
+    id<MTLTexture> videoTexture;
 }
 // Vuforia stuff
 @property (nonatomic, strong) SampleApplicationSession * vapp;
+- (CGRect)getCurrentARViewFrame;
 
 // SKSceneDelegate implementations
 - (void)update:(NSTimeInterval)currentTime forScene:(SKScene *)scene;

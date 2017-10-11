@@ -380,7 +380,7 @@ namespace {
     // Configure the video background
     Vuforia::VideoBackgroundConfig config;
 //    config.mEnabled = true;
-    config.mEnabled = false;
+    config.mEnabled = true;
     config.mPosition.data[0] = 0.0f;
     config.mPosition.data[1] = 0.0f;
     

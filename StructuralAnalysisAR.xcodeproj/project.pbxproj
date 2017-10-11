@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0B0BEE6E1F87EFD4008BC076 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B0BEE6D1F87EFD4008BC076 /* GLKit.framework */; };
+		0B0C0E971F8D053A00A173E7 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B0C0E961F8D053A00A173E7 /* Metal.framework */; };
 		0B15734B1F5451BF004CE1BE /* MainPageViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B15734A1F5451BF004CE1BE /* MainPageViewController.mm */; };
 		0B15734D1F545CCC004CE1BE /* isuofficallogo_cropped.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B15734C1F545CCC004CE1BE /* isuofficallogo_cropped.png */; };
 		0B1573511F54601F004CE1BE /* campanile_stock_bw.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0B1573501F54601F004CE1BE /* campanile_stock_bw.jpg */; };
@@ -57,6 +58,7 @@
 
 /* Begin PBXFileReference section */
 		0B0BEE6D1F87EFD4008BC076 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
+		0B0C0E961F8D053A00A173E7 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		0B1573491F5451BF004CE1BE /* MainPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainPageViewController.h; sourceTree = "<group>"; };
 		0B15734A1F5451BF004CE1BE /* MainPageViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MainPageViewController.mm; sourceTree = "<group>"; };
 		0B15734C1F545CCC004CE1BE /* isuofficallogo_cropped.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = isuofficallogo_cropped.png; path = ../../assets/isuofficallogo_cropped.png; sourceTree = "<group>"; };
@@ -127,6 +129,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0B0C0E971F8D053A00A173E7 /* Metal.framework in Frameworks */,
 				0B0BEE6E1F87EFD4008BC076 /* GLKit.framework in Frameworks */,
 				0BAFBB831F7ECF70007B1FC6 /* CoreMotion.framework in Frameworks */,
 				0BAFBB811F7ECF63007B1FC6 /* CoreMedia.framework in Frameworks */,
@@ -166,6 +169,7 @@
 		0B483C041F4F9051007A1D29 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0B0C0E961F8D053A00A173E7 /* Metal.framework */,
 				0B0BEE6D1F87EFD4008BC076 /* GLKit.framework */,
 				0BAFBB821F7ECF70007B1FC6 /* CoreMotion.framework */,
 				0BAFBB801F7ECF63007B1FC6 /* CoreMedia.framework */,
