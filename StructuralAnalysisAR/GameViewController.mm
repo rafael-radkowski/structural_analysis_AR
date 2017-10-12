@@ -68,8 +68,9 @@
     
     CGRect viewFrame = [self getCurrentARViewFrame];
 //    MTLTextureDescriptor* texDescription = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:MTLPixelFormatBGRA8Unorm width:viewFrame.size.width height:viewFrame.size.height mipmapped:NO];
-    ARView* arView = [[ARView alloc] initWithFrame:viewFrame appSession:self.vapp];
-    [self setView:arView];
+//    ARView* arView = [[ARView alloc] initWithFrame:viewFrame appSession:self.vapp];
+//    [self setView:arView];
+    [((ARView*) self.view) setVuforiaApp:self.vapp];
     
     
     // Make camera as scene background
@@ -142,6 +143,9 @@
     scnView.antialiasingMode = SCNAntialiasingModeMultisampling4X;
     scnView.multipleTouchEnabled = YES;
     scnView.scene = scene;
+    // Setting SCNView.playing to true makes it render on every scene, even if nothing in the scenegraph was moved
+    // We want this behavior to update the video background
+    scnView.playing = YES;
     CGRect screenRect = [[UIScreen mainScreen] bounds];
     
     // Create SpriteKit scene
@@ -186,8 +190,6 @@
     // Set load visibilities to the default values
     [self setVisibilities];
     [self.loadPresetBtn sendActionsForControlEvents:UIControlEventValueChanged];
-//    GLKMatrix4 projMat = SCNMatrix4ToGLKMatrix4(cameraNode.camera.projectionTransform);
-   
 }
 
 - (void)update:(NSTimeInterval)currentTime forScene:(SKScene *)scene {
@@ -708,7 +710,7 @@
                                             -inverted.m10,  -inverted.m11,  -inverted.m12, 0,
                                             -inverted.m20,  -inverted.m21,  -inverted.m22, 0,
                                             inverted.m30, inverted.m31, inverted.m32, 1);
-    [self printMatrix:desiredMat];
+//    [self printMatrix:desiredMat];
     cameraNode.transform = SCNMatrix4FromGLKMatrix4(desiredMat);
 //    cameraNode.transform = SCNMatrix4FromGLKMatrix4(GLKMatrix4Multiply(fixer, inverted));
 //    cameraNode.transform = inverted; // assign it to the camera node's transform property.
@@ -739,7 +741,7 @@
 ////        [videoTexture replaceRegion:texRegion mipmapLevel:0 withBytes:img->getPixels() bytesPerRow:img->getStride()];
 //    }
 //    const float kObjectScaleNormal = 0.003f;
-    const float kObjectScaleNormal = 10;
+    const float kObjectScaleNormal = 1;
     
     [self setProjectionMatrix:self.vapp.projectionMatrix];
     
@@ -748,7 +750,7 @@
         const Vuforia::TrackableResult* track_result = state->getTrackableResult(0);
         
         Vuforia::Matrix44F modelViewMatrix = Vuforia::Tool::convertPose2GLMatrix(track_result->getPose());
-        SampleApplicationUtils::translatePoseMatrix(0.0f, 0.0f, kObjectScaleNormal, &modelViewMatrix.data[0]);
+        SampleApplicationUtils::translatePoseMatrix(0.0f, -16.0f, kObjectScaleNormal, &modelViewMatrix.data[0]);
 //        SampleApplicationUtils::scalePoseMatrix(kObjectScaleNormal, kObjectScaleNormal, kObjectScaleNormal, &modelViewMatrix.data[0]);
         [self setCameraMatrix:modelViewMatrix];
 //        printf("Pos: %f, %f, %f\n", cameraNode.position.x, cameraNode.position.y, cameraNode.position.z);

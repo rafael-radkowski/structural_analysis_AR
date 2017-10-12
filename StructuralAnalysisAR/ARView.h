@@ -23,7 +23,8 @@
 
 @property (nonatomic, weak) SampleApplicationSession * vapp;
 
-- (id)initWithFrame:(CGRect)frame appSession:(SampleApplicationSession *)app;
+- (void)setVuforiaApp:(SampleApplicationSession *) app;
+//- (id)initWithFrame:(CGRect)frame appSession:(SampleApplicationSession *)app;
 - (void)setVideoTexture:(id<MTLTexture>) tex;
 - (void)renderFrameVuforia;
 @end

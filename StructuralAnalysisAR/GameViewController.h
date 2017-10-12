@@ -25,6 +25,7 @@
 
 @interface GameViewController : UIViewController <SKSceneDelegate, SampleApplicationControl> {
     // Private vars
+    SCNRenderer* renderer;
     SCNNode *cameraNode;
     SCNScene *scene;
     SKScene *scene2d;

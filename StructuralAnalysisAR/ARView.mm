@@ -20,14 +20,18 @@
 @implementation ARView
 @synthesize vapp = vapp;
 
-- (id)initWithFrame:(CGRect)frame appSession:(SampleApplicationSession *) app{
-    self = [super initWithFrame:frame];
-    if (self) {
-        vapp = app;
-        
-    }
-    
-    return self;
+//- (id)initWithFrame:(CGRect)frame appSession:(SampleApplicationSession *) app{
+//    self = [super initWithFrame:frame];
+//    if (self) {
+//        vapp = app;
+//        
+//    }
+//    
+//    return self;
+//}
+
+- (void)setVuforiaApp:(SampleApplicationSession *) app {
+    vapp = app;
 }
 
 - (void)setVideoTexture:(id<MTLTexture>) tex {
