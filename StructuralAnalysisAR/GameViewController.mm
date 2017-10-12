@@ -61,13 +61,14 @@
     [super viewDidLoad];
     
     scene = [SCNScene scene];
+     
+    // Vuforia stuff
+    self.vapp = [[SampleApplicationSession alloc] initWithDelegate:self];
+    [self.vapp initAR:Vuforia::METAL orientation:self.interfaceOrientation];
     
     CGRect viewFrame = [self getCurrentARViewFrame];
-    MTLTextureDescriptor* texDescription = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:MTLPixelFormatBGRA8Unorm width:viewFrame.size.width height:viewFrame.size.height mipmapped:NO];
-    id<MTLDevice> gpu = MTLCreateSystemDefaultDevice();
-    videoTexture = [gpu newTextureWithDescriptor:texDescription];
-    scene.background.contents = videoTexture;
-    ARView* arView = [[ARView alloc] initWithFrame:viewFrame appSession:self.vapp backgroundTex:videoTexture];
+//    MTLTextureDescriptor* texDescription = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:MTLPixelFormatBGRA8Unorm width:viewFrame.size.width height:viewFrame.size.height mipmapped:NO];
+    ARView* arView = [[ARView alloc] initWithFrame:viewFrame appSession:self.vapp];
     [self setView:arView];
     
     
@@ -186,10 +187,7 @@
     [self setVisibilities];
     [self.loadPresetBtn sendActionsForControlEvents:UIControlEventValueChanged];
 //    GLKMatrix4 projMat = SCNMatrix4ToGLKMatrix4(cameraNode.camera.projectionTransform);
-    
-    // Vuforia stuff
-    self.vapp = [[SampleApplicationSession alloc] initWithDelegate:self];
-    [self.vapp initAR:Vuforia::METAL orientation:self.interfaceOrientation];
+   
 }
 
 - (void)update:(NSTimeInterval)currentTime forScene:(SKScene *)scene {
@@ -753,8 +751,8 @@
         SampleApplicationUtils::translatePoseMatrix(0.0f, 0.0f, kObjectScaleNormal, &modelViewMatrix.data[0]);
 //        SampleApplicationUtils::scalePoseMatrix(kObjectScaleNormal, kObjectScaleNormal, kObjectScaleNormal, &modelViewMatrix.data[0]);
         [self setCameraMatrix:modelViewMatrix];
-        printf("Pos: %f, %f, %f\n", cameraNode.position.x, cameraNode.position.y, cameraNode.position.z);
-        printf("Looking at: %f, %f, %f\n", cameraNode.transform.m13, cameraNode.transform.m23, cameraNode.transform.m33);
+//        printf("Pos: %f, %f, %f\n", cameraNode.position.x, cameraNode.position.y, cameraNode.position.z);
+//        printf("Looking at: %f, %f, %f\n", cameraNode.transform.m13, cameraNode.transform.m23, cameraNode.transform.m33);
     }
 }
 
@@ -978,6 +976,26 @@
     if (initError == nil) {
         NSError * error = nil;
         [self.vapp startAR:Vuforia::CameraDevice::CAMERA_DIRECTION_BACK error:&error];
+        
+        MTLTextureDescriptor* texDescription = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:MTLPixelFormatBGRA8Unorm width:self.vapp.videoMode.mWidth height:self.vapp.videoMode.mHeight mipmapped:NO];
+        id<MTLDevice> gpu = MTLCreateSystemDefaultDevice();
+        videoTexture = [gpu newTextureWithDescriptor:texDescription];
+        [((ARView*) self.view) setVideoTexture:videoTexture];
+        scene.background.contents = videoTexture;
+        
+        // Calculate texture coordinate scaling to make video fit
+        float aspectVideo = (float)self.vapp.videoMode.mWidth / self.vapp.videoMode.mHeight;
+        CGSize viewSize = self.view.frame.size;
+        float aspectScreen = (float)viewSize.width / viewSize.height;
+        float xScale, yScale;
+        xScale = yScale = 1;
+        if (aspectVideo > aspectScreen) {
+            xScale = aspectScreen / aspectVideo;
+        }
+        else {
+            yScale = aspectVideo / aspectScreen;
+        }
+        scene.background.contentsTransform = SCNMatrix4MakeScale(xScale, yScale, 1);
         
 //        [eaglView updateRenderingPrimitives];
         

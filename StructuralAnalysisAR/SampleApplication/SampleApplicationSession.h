@@ -86,6 +86,7 @@
 // This can be used if you want to switch between the front and the back camera for instance
 - (bool) stopCamera:(NSError **)error;
 
+@property (nonatomic, readwrite) Vuforia::VideoMode videoMode;
 @property (nonatomic, readwrite) BOOL isRetinaDisplay;
 @property (nonatomic, readwrite) BOOL cameraIsStarted;
 @property (nonatomic, readwrite) Vuforia::Matrix44F projectionMatrix;

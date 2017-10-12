@@ -66,10 +66,10 @@ void OverlayLabel::setCenter(float x, float y) {
 }
 
 void OverlayLabel::doUpdate() {
-    if (posChanged) {
+//    if (posChanged) {
         placeLabel();
-        posChanged = false;
-    }
+//        posChanged = false;
+//    }
     if (textChanged) {
         label.text = textToDisplay;
         float width = label.frame.size.width;

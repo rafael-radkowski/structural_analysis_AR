@@ -375,7 +375,7 @@ namespace {
 {
     // Get the default video mode
     Vuforia::CameraDevice& cameraDevice = Vuforia::CameraDevice::getInstance();
-    Vuforia::VideoMode videoMode = cameraDevice.getVideoMode(Vuforia::CameraDevice::MODE_DEFAULT);
+    self.videoMode = cameraDevice.getVideoMode(Vuforia::CameraDevice::MODE_DEFAULT);
     
     // Configure the video background
     Vuforia::VideoBackgroundConfig config;
@@ -405,7 +405,7 @@ namespace {
         // Compare aspect ratios of video and screen.  If they are different we
         // use the full screen size while maintaining the video's aspect ratio,
         // which naturally entails some cropping of the video
-        float aspectRatioVideo = (float)videoMode.mWidth / (float)videoMode.mHeight;
+        float aspectRatioVideo = (float)self.videoMode.mWidth / (float)self.videoMode.mHeight;
         float aspectRatioView = viewHeight / viewWidth;
         
         if (aspectRatioVideo < aspectRatioView) {
@@ -423,7 +423,7 @@ namespace {
             // - =          = _
             // --============--
             
-            config.mSize.data[0] = (int)videoMode.mHeight * (viewHeight / (float)videoMode.mWidth);
+            config.mSize.data[0] = (int)self.videoMode.mHeight * (viewHeight / (float)self.videoMode.mWidth);
             config.mSize.data[1] = (int)viewHeight;
         }
         else {
@@ -449,7 +449,7 @@ namespace {
             // ------------
             
             config.mSize.data[0] = (int)viewWidth;
-            config.mSize.data[1] = (int)videoMode.mWidth * (viewWidth / (float)videoMode.mHeight);
+            config.mSize.data[1] = (int)self.videoMode.mWidth * (viewWidth / (float)self.videoMode.mHeight);
         }
         
         if (self.mIsMetalRendering) {
@@ -490,7 +490,7 @@ namespace {
         // Compare aspect ratios of video and screen.  If they are different we
         // use the full screen size while maintaining the video's aspect ratio,
         // which naturally entails some cropping of the video
-        float aspectRatioVideo = (float)videoMode.mWidth / (float)videoMode.mHeight;
+        float aspectRatioVideo = (float)self.videoMode.mWidth / (float)self.videoMode.mHeight;
         float aspectRatioView = viewWidth / viewHeight;
         
         if (aspectRatioVideo < aspectRatioView) {
@@ -506,7 +506,7 @@ namespace {
             // --------------------
             
             config.mSize.data[0] = (int)viewWidth;
-            config.mSize.data[1] = (int)videoMode.mHeight * (viewWidth / (float)videoMode.mWidth);
+            config.mSize.data[1] = (int)self.videoMode.mHeight * (viewWidth / (float)self.videoMode.mWidth);
         }
         else {
             // Video is wider than the view: crop left and right.  Also used
@@ -519,7 +519,7 @@ namespace {
             // -  =                  =  -
             // ---====================---
             
-            config.mSize.data[0] = (int)videoMode.mWidth * (viewHeight / (float)videoMode.mHeight);
+            config.mSize.data[0] = (int)self.videoMode.mWidth * (viewHeight / (float)self.videoMode.mHeight);
             config.mSize.data[1] = (int)viewHeight;
         }
         
@@ -552,7 +552,7 @@ namespace {
     
 #ifdef DEBUG_SAMPLE_APP
     NSLog(@"VideoBackgroundConfig: size: %d,%d", config.mSize.data[0], config.mSize.data[1]);
-    NSLog(@"VideoMode:w=%d h=%d", videoMode.mWidth, videoMode.mHeight);
+    NSLog(@"VideoMode:w=%d h=%d", self.videoMode.mWidth, self.videoMode.mHeight);
     NSLog(@"width=%7.3f height=%7.3f", viewWidth, viewHeight);
     NSLog(@"ViewPort: X,Y: %d,%d Size X,Y:%d,%d", viewport.posX,viewport.posY,viewport.sizeX,viewport.sizeY);
 #endif

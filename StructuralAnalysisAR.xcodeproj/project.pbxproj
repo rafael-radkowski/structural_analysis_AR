@@ -511,6 +511,7 @@
 				ENABLE_BITCODE = NO;
 				HEADER_SEARCH_PATHS = "StructuralAnalysisAR/vuforia-sdk-ios/build/include";
 				INFOPLIST_FILE = StructuralAnalysisAR/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -534,6 +535,7 @@
 				ENABLE_BITCODE = NO;
 				HEADER_SEARCH_PATHS = "StructuralAnalysisAR/vuforia-sdk-ios/build/include";
 				INFOPLIST_FILE = StructuralAnalysisAR/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
