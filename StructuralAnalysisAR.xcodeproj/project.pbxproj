@@ -17,6 +17,8 @@
 		0B1573581F55BE3C004CE1BE /* line3d.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B1573561F55BE3C004CE1BE /* line3d.mm */; };
 		0B15735B1F5621C9004CE1BE /* loadMarker.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B1573591F5621C9004CE1BE /* loadMarker.mm */; };
 		0B41E99A1F72BC04001DB823 /* home_blue.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B41E9991F72BC04001DB823 /* home_blue.png */; };
+		0B47E51C1F8FDBF300147E0F /* skywalk_cropped.dat in Resources */ = {isa = PBXBuildFile; fileRef = 0B47E51A1F8FDBF300147E0F /* skywalk_cropped.dat */; };
+		0B47E51D1F8FDBF300147E0F /* skywalk_cropped.xml in Resources */ = {isa = PBXBuildFile; fileRef = 0B47E51B1F8FDBF300147E0F /* skywalk_cropped.xml */; };
 		0B483BFB1F4DDB6F007A1D29 /* skywalk.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0B483BFA1F4DDB6F007A1D29 /* skywalk.jpg */; };
 		0B483C001F4F8AF9007A1D29 /* arrow_base.obj in Resources */ = {isa = PBXBuildFile; fileRef = 0B483BFE1F4F8AF9007A1D29 /* arrow_base.obj */; };
 		0B483C011F4F8AF9007A1D29 /* arrow_tip.obj in Resources */ = {isa = PBXBuildFile; fileRef = 0B483BFF1F4F8AF9007A1D29 /* arrow_tip.obj */; };
@@ -24,8 +26,6 @@
 		0B483C061F4F9051007A1D29 /* SceneKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B483C051F4F9051007A1D29 /* SceneKit.framework */; };
 		0B483C081F4F9063007A1D29 /* ModelIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B483C071F4F9063007A1D29 /* ModelIO.framework */; };
 		0B5F39DE1F843975004870DE /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0B5F39DD1F843975004870DE /* Shaders.metal */; };
-		0B5F39E11F843E7E004870DE /* StonesAndChips.dat in Resources */ = {isa = PBXBuildFile; fileRef = 0B5F39DF1F843E7E004870DE /* StonesAndChips.dat */; };
-		0B5F39E21F843E7E004870DE /* StonesAndChips.xml in Resources */ = {isa = PBXBuildFile; fileRef = 0B5F39E01F843E7E004870DE /* StonesAndChips.xml */; };
 		0B5F39E51F844CEF004870DE /* skywalk_far.dat in Resources */ = {isa = PBXBuildFile; fileRef = 0B5F39E31F844CEF004870DE /* skywalk_far.dat */; };
 		0B5F39E61F844CEF004870DE /* skywalk_far.xml in Resources */ = {isa = PBXBuildFile; fileRef = 0B5F39E41F844CEF004870DE /* skywalk_far.xml */; };
 		0B79A12E1F7ABA5300632CE4 /* OverlayLabel.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B79A12C1F7ABA5300632CE4 /* OverlayLabel.mm */; };
@@ -70,6 +70,8 @@
 		0B1573591F5621C9004CE1BE /* loadMarker.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = loadMarker.mm; sourceTree = "<group>"; };
 		0B15735A1F5621C9004CE1BE /* loadMarker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = loadMarker.h; sourceTree = "<group>"; };
 		0B41E9991F72BC04001DB823 /* home_blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = home_blue.png; path = image_assets/home_blue.png; sourceTree = "<group>"; };
+		0B47E51A1F8FDBF300147E0F /* skywalk_cropped.dat */ = {isa = PBXFileReference; lastKnownFileType = file; name = skywalk_cropped.dat; path = image_assets/skywalk_cropped.dat; sourceTree = "<group>"; };
+		0B47E51B1F8FDBF300147E0F /* skywalk_cropped.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = skywalk_cropped.xml; path = image_assets/skywalk_cropped.xml; sourceTree = "<group>"; };
 		0B483BFA1F4DDB6F007A1D29 /* skywalk.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = skywalk.jpg; path = image_assets/skywalk.jpg; sourceTree = "<group>"; };
 		0B483BFD1F4F1016007A1D29 /* grabbableArrow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = grabbableArrow.h; sourceTree = "<group>"; };
 		0B483BFE1F4F8AF9007A1D29 /* arrow_base.obj */ = {isa = PBXFileReference; lastKnownFileType = text; path = arrow_base.obj; sourceTree = "<group>"; };
@@ -78,8 +80,6 @@
 		0B483C051F4F9051007A1D29 /* SceneKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SceneKit.framework; path = System/Library/Frameworks/SceneKit.framework; sourceTree = SDKROOT; };
 		0B483C071F4F9063007A1D29 /* ModelIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ModelIO.framework; path = System/Library/Frameworks/ModelIO.framework; sourceTree = SDKROOT; };
 		0B5F39DD1F843975004870DE /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
-		0B5F39DF1F843E7E004870DE /* StonesAndChips.dat */ = {isa = PBXFileReference; lastKnownFileType = file; name = StonesAndChips.dat; path = image_assets/StonesAndChips.dat; sourceTree = "<group>"; };
-		0B5F39E01F843E7E004870DE /* StonesAndChips.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = StonesAndChips.xml; path = image_assets/StonesAndChips.xml; sourceTree = "<group>"; };
 		0B5F39E31F844CEF004870DE /* skywalk_far.dat */ = {isa = PBXFileReference; lastKnownFileType = file; name = skywalk_far.dat; path = image_assets/skywalk_far.dat; sourceTree = "<group>"; };
 		0B5F39E41F844CEF004870DE /* skywalk_far.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = skywalk_far.xml; path = image_assets/skywalk_far.xml; sourceTree = "<group>"; };
 		0B79A12C1F7ABA5300632CE4 /* OverlayLabel.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OverlayLabel.mm; sourceTree = "<group>"; };
@@ -152,11 +152,11 @@
 			children = (
 				0B5F39E31F844CEF004870DE /* skywalk_far.dat */,
 				0B5F39E41F844CEF004870DE /* skywalk_far.xml */,
-				0B5F39DF1F843E7E004870DE /* StonesAndChips.dat */,
-				0B5F39E01F843E7E004870DE /* StonesAndChips.xml */,
 				0B41E9991F72BC04001DB823 /* home_blue.png */,
 				0B1573541F5463A4004CE1BE /* isuofficallogo_light.png */,
 				0B1573521F54615D004CE1BE /* campanile_stock_cropped.jpg */,
+				0B47E51A1F8FDBF300147E0F /* skywalk_cropped.dat */,
+				0B47E51B1F8FDBF300147E0F /* skywalk_cropped.xml */,
 				0B1573501F54601F004CE1BE /* campanile_stock_bw.jpg */,
 				0B15734C1F545CCC004CE1BE /* isuofficallogo_cropped.png */,
 				0B483BFA1F4DDB6F007A1D29 /* skywalk.jpg */,
@@ -343,6 +343,7 @@
 			files = (
 				0B99FF611F47A79D00431996 /* View.xib in Resources */,
 				0BB1644C1F4732DC0053CA3B /* LaunchScreen.storyboard in Resources */,
+				0B47E51C1F8FDBF300147E0F /* skywalk_cropped.dat in Resources */,
 				0BB164491F4732DC0053CA3B /* Assets.xcassets in Resources */,
 				0BB164471F4732DC0053CA3B /* Main.storyboard in Resources */,
 				0B5F39E51F844CEF004870DE /* skywalk_far.dat in Resources */,
@@ -355,9 +356,8 @@
 				0B1573531F54615D004CE1BE /* campanile_stock_cropped.jpg in Resources */,
 				0B1573551F5463A4004CE1BE /* isuofficallogo_light.png in Resources */,
 				0BAD78781F66CDDE003CAE93 /* stick_man.png in Resources */,
+				0B47E51D1F8FDBF300147E0F /* skywalk_cropped.xml in Resources */,
 				0BAD78791F66CDDE003CAE93 /* stick_woman.png in Resources */,
-				0B5F39E11F843E7E004870DE /* StonesAndChips.dat in Resources */,
-				0B5F39E21F843E7E004870DE /* StonesAndChips.xml in Resources */,
 				0B5F39E61F844CEF004870DE /* skywalk_far.xml in Resources */,
 				0B41E99A1F72BC04001DB823 /* home_blue.png in Resources */,
 			);

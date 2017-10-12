@@ -63,6 +63,7 @@
     scene = [SCNScene scene];
      
     // Vuforia stuff
+    extendedTrackingEnabled = YES;
     self.vapp = [[SampleApplicationSession alloc] initWithDelegate:self];
     [self.vapp initAR:Vuforia::METAL orientation:self.interfaceOrientation];
     
@@ -859,9 +860,9 @@
     }
     
     // we set the off target tracking mode to the current state
-//    if (success) {
-//        [self setExtendedTrackingForDataSet:dataSetCurrent start:extendedTrackingEnabled];
-//    }
+    if (success) {
+        [self setExtendedTrackingForDataSet:dataSetCurrent start:extendedTrackingEnabled];
+    }
     
     return success;
 }
@@ -876,7 +877,7 @@
     BOOL success = NO;
     
     // we deactivate the enhanced tracking
-//    [self setExtendedTrackingForDataSet:theDataSet start:NO];
+    [self setExtendedTrackingForDataSet:theDataSet start:NO];
     
     // Get the image tracker:
     Vuforia::TrackerManager& trackerManager = Vuforia::TrackerManager::getInstance();
@@ -904,26 +905,26 @@
     return success;
 }
 //
-//- (BOOL) setExtendedTrackingForDataSet:(Vuforia::DataSet *)theDataSet start:(BOOL) start {
-//    BOOL result = YES;
-//    for (int tIdx = 0; tIdx < theDataSet->getNumTrackables(); tIdx++) {
-//        Vuforia::Trackable* trackable = theDataSet->getTrackable(tIdx);
-//        if (start) {
-//            if (!trackable->startExtendedTracking())
-//            {
-//                NSLog(@"Failed to start extended tracking on: %s", trackable->getName());
-//                result = false;
-//            }
-//        } else {
-//            if (!trackable->stopExtendedTracking())
-//            {
-//                NSLog(@"Failed to stop extended tracking on: %s", trackable->getName());
-//                result = false;
-//            }
-//        }
-//    }
-//    return result;
-//}
+- (BOOL) setExtendedTrackingForDataSet:(Vuforia::DataSet *)theDataSet start:(BOOL) start {
+    BOOL result = YES;
+    for (int tIdx = 0; tIdx < theDataSet->getNumTrackables(); tIdx++) {
+        Vuforia::Trackable* trackable = theDataSet->getTrackable(tIdx);
+        if (start) {
+            if (!trackable->startExtendedTracking())
+            {
+                NSLog(@"Failed to start extended tracking on: %s", trackable->getName());
+                result = false;
+            }
+        } else {
+            if (!trackable->stopExtendedTracking())
+            {
+                NSLog(@"Failed to stop extended tracking on: %s", trackable->getName());
+                result = false;
+            }
+        }
+    }
+    return result;
+}
 
 #pragma mark - SampleApplicationControl
 
