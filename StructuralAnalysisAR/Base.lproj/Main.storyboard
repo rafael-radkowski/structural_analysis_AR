@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BV1-FR-VrT">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="u2E-5y-GEk">
     <device id="ipad9_7" orientation="landscape">
         <adaptation id="fullscreen"/>
     </device>
@@ -114,8 +114,12 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </sceneKitView>
+                    <connections>
+                        <segue destination="Qa4-oh-wGB" kind="unwind" identifier="backToHomepageSegue" unwindAction="backToHomepage:" id="VAC-JI-S4L"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SZV-WD-TEh" sceneMemberID="firstResponder"/>
+                <exit id="Qa4-oh-wGB" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
         </scene>
     </scenes>
@@ -124,6 +128,6 @@
         <image name="isuofficallogo_light.png" width="784" height="65"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="iyJ-9J-GsJ"/>
+        <segue reference="ERb-dM-F7t"/>
     </inferredMetricsTieBreakers>
 </document>

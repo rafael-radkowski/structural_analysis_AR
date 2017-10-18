@@ -57,7 +57,10 @@
     bool deflectDead;
     bool deflectLive;
     
-//    SCNView* scnView;
+    id<MTLTexture> staticBgTex;
+    UIImage* scaled_img;
+    bool arEnabled;
+    SCNMatrix4 bgImgScale;
     // Vuforia stuff
     Vuforia::DataSet*  dataSetStonesAndChips;
     Vuforia::DataSet*  dataSetCurrent;
@@ -96,6 +99,7 @@
 @property (weak, nonatomic) IBOutlet UITextView *instructionBox;
 @property (weak, nonatomic) IBOutlet UIButton *prevBtn;
 @property (weak, nonatomic) IBOutlet UIButton *nextBtn;
+@property (weak, nonatomic) IBOutlet UISwitch *arViewSwitch;
 
 
 
@@ -106,6 +110,7 @@
 - (IBAction)homeBtnPressed:(id)sender;
 - (IBAction)prevStepPressed:(id)sender;
 - (IBAction)nextStepPressed:(id)sender;
+- (IBAction)arViewToggled:(id)sender;
 
 
 // override

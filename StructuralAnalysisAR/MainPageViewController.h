@@ -17,5 +17,7 @@
 
 @property (weak, nonatomic) IBOutlet UIButton *btnCampanile;
 
+- (IBAction)backToHomepage:(UIStoryboardSegue*)unwindSegue;
+
 
 @end

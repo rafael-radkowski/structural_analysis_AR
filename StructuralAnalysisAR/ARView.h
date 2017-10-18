@@ -18,10 +18,12 @@
 
 @interface ARView : SCNView <UIGLViewProtocol> {
     id<MTLTexture> videoTexture;
+    bool textureInitialized;
     
 }
 
 @property (nonatomic, weak) SampleApplicationSession * vapp;
+@property (nonatomic) bool renderVideo;
 
 - (void)setVuforiaApp:(SampleApplicationSession *) app;
 //- (id)initWithFrame:(CGRect)frame appSession:(SampleApplicationSession *)app;

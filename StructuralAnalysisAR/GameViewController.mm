@@ -13,6 +13,7 @@
 #import <GLKit/GLKQuaternion.h>
 #import <GLKit/GLKMatrix4.h>
 #import <GLKit/GLKit.h>
+#import <MetalKit/MetalKit.h>
 
 #import <AVFoundation/AVFoundation.h>
 
@@ -75,7 +76,22 @@
     
     
     // Make camera as scene background
-//    UIImage* backgroundImage = [UIImage imageNamed:@"skywalk.jpg"];
+    UIImage* bgImage = [UIImage imageNamed:@"skywalk.jpg"];
+    float img_scale = (float)self.view.frame.size.width / bgImage.size.width;
+    scaled_img = [UIImage imageWithData:UIImagePNGRepresentation(bgImage) scale:img_scale];
+    NSError* error = nil;
+    id<MTLDevice> gpu = MTLCreateSystemDefaultDevice();
+    MTKTextureLoader* texLoader = [[MTKTextureLoader alloc] initWithDevice:gpu];
+    // Set as sRGB to be correct color
+    NSDictionary* mtkLoaderOptions = @{
+                                 MTKTextureLoaderOptionSRGB: @0
+                                 };
+    staticBgTex = [texLoader newTextureWithData:UIImagePNGRepresentation(scaled_img) options:mtkLoaderOptions error:&error];
+    if (error) {
+        printf("failed to load static background image\n");
+    }
+    
+    
 //    scene.background.contents = backgroundImage;
     
 //    AVCaptureSession* captureSession = [[AVCaptureSession alloc] init];
@@ -105,14 +121,6 @@
     cameraNode = [SCNNode node];
     cameraNode.camera = [SCNCamera camera];
     [scene.rootNode addChildNode:cameraNode];
-    // move the camera
-    cameraNode.position = SCNVector3Make(-69, 36, 270);
-    cameraNode.eulerAngles = SCNVector3Make(-0.1, -0.30, 0.033);
-//    GLKVector3 z_axis = GLKVector3Make(cameraNode.transform.m13, cameraNode.transform.m23, cameraNode.transform.m33);
-//    GLKVector3 newPos = GLKVector3Add(SCNVector3ToGLKVector3(cameraNode.position), GLKVector3MultiplyScalar(z_axis, 90));
-//    cameraNode.position = SCNVector3FromGLKVector3(newPos);
-//    printf("z: %f, %f, %f\n", cameraNode.transform.m13, cameraNode.transform.m23, cameraNode.transform.m33);
-//    cameraNode.position = SCNVector3Make(-5.5, 5, 200);
     cameraNode.camera.zFar = 500;
 //    cameraNode.camera.focalLength = 0.0108268; // 3.3mm
     cameraNode.camera.xFov = 45.12 * 0.6666666; // Background image cropped roughly at 2/3 the size
@@ -193,6 +201,31 @@
     [self.loadPresetBtn sendActionsForControlEvents:UIControlEventValueChanged];
 }
 
+//- (void)viewDidAppear:(BOOL)animated {
+//    NSError* error;
+//    [self.vapp resumeAR:&error];
+//    if (error) {
+//        printf("Error on resumeAR\n");
+//    }
+//}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    NSError* error;
+    [self.vapp stopAR:&error];
+    if (error) {
+        printf("Error on stopAR\n");
+    }
+}
+
+//- (void)viewDidDisappear:(BOOL)animated {
+//    [super viewDidDisappear:animated];
+//    NSError * error = nil;
+//    [self.vapp stopAR:&error];
+//    if (error != nil) {
+//        printf("Error stopping AR\n");
+//    }
+//}
+
 - (void)update:(NSTimeInterval)currentTime forScene:(SKScene *)scene {
     peopleLoad.doUpdate();
     deadLoad.doUpdate();
@@ -208,7 +241,6 @@
     SCNView *scnView = (SCNView*)self.view;
     float defaultThickness = 5;
     
-//    GLKQuaternion beamOri = GLKQuaternionMakeWithAngleAndAxis(0.015, 0, 0, 1);
     GLKQuaternion beamOri = GLKQuaternionMakeWithAngleAndAxis(0, 0, 0, 1);
     // Create live load bar
     peopleLoad = LoadMarker(3);
@@ -395,6 +427,33 @@
     }
 }
 
+- (void) setAREnabled:(bool)enabled {
+    arEnabled = enabled;
+    
+    ARView* scnView = (ARView*) self.view;
+    scnView.renderVideo = arEnabled;
+    
+    if (!arEnabled) {
+        // We need to manually set the texture
+        scene.background.contents = staticBgTex;
+        
+        // move the camera to position for background image
+        cameraNode.position = SCNVector3Make(-69, 36, 270);
+        cameraNode.eulerAngles = SCNVector3Make(-0.1, -0.30, 0.033);
+        // Remove background image scaling
+        scene.background.contentsTransform = SCNMatrix4Identity;
+    }
+    else {
+        scene.background.contents = videoTexture;
+        scene.background.contentsTransform = bgImgScale;
+    }
+}
+- (IBAction)arViewToggled:(id)sender {
+    [self setAREnabled:self.arViewSwitch.on];
+}
+
+
+
 - (BOOL)shouldAutorotate
 {
     return NO;
@@ -503,9 +562,10 @@
 }
 
 - (IBAction)homeBtnPressed:(id)sender {
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-    MainPageViewController *myNewVC = (MainPageViewController *)[storyboard instantiateViewControllerWithIdentifier:@"mainPage"];
-    [self presentViewController:myNewVC animated:YES completion:nil];
+//    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+//    MainPageViewController *myNewVC = (MainPageViewController *)[storyboard instantiateViewControllerWithIdentifier:@"mainPage"];
+//    [self presentViewController:myNewVC animated:YES completion:nil];
+    [self performSegueWithIdentifier:@"backToHomepageSegue" sender:self];
 }
 
 // Touch handling
@@ -726,27 +786,15 @@
 }
 
 - (void) onVuforiaUpdate: (Vuforia::State *) state {
+    // Don't move camera if not doing AR
+    if (!arEnabled) {
+        return;
+    }
     
-//    Vuforia::Frame frame = state->getFrame();
-//    if (frame.getNumImages()) {
-//        const Vuforia::Image* img = frame.getImage(0);
-//        if (videoTexture == nil) {
-//            MTLTextureDescriptor* texDescription = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:MTLPixelFormatBGRA8Unorm width:img->getBufferWidth() height:img->getBufferHeight() mipmapped:NO];
-//            id<MTLDevice> gpu = MTLCreateSystemDefaultDevice();
-//            videoTexture = [gpu newTextureWithDescriptor:texDescription];
-////            scene.background.contents = videoTexture;
-//            printf("Image: bufferWidth: %d, bufferHeight: %d, width: %d, height: %d, stride: %d, fmt: %d\n", img->getBufferWidth(), img->getBufferHeight(), img->getWidth(), img->getHeight(), img->getStride(), img->getFormat() == Vuforia::GRAYSCALE);
-//        }
-//        MTLRegion texRegion = MTLRegionMake2D(0, 0, img->getWidth(), img->getHeight());
-//        // Copy image into texture
-////        [videoTexture replaceRegion:texRegion mipmapLevel:0 withBytes:img->getPixels() bytesPerRow:img->getStride()];
-//    }
-//    const float kObjectScaleNormal = 0.003f;
     const float kObjectScaleNormal = 1;
     
     [self setProjectionMatrix:self.vapp.projectionMatrix];
     
-//    printf("Have %d trackables\n", state->getNumTrackableResults());
     if (state->getNumTrackableResults()) {
         const Vuforia::TrackableResult* track_result = state->getTrackableResult(0);
         
@@ -754,8 +802,6 @@
         SampleApplicationUtils::translatePoseMatrix(0.0f, -16.0f, kObjectScaleNormal, &modelViewMatrix.data[0]);
 //        SampleApplicationUtils::scalePoseMatrix(kObjectScaleNormal, kObjectScaleNormal, kObjectScaleNormal, &modelViewMatrix.data[0]);
         [self setCameraMatrix:modelViewMatrix];
-//        printf("Pos: %f, %f, %f\n", cameraNode.position.x, cameraNode.position.y, cameraNode.position.z);
-//        printf("Looking at: %f, %f, %f\n", cameraNode.transform.m13, cameraNode.transform.m23, cameraNode.transform.m33);
     }
 }
 
@@ -949,7 +995,7 @@
 
 // load the data associated to the trackers
 - (bool) doLoadTrackersData {
-    dataSetStonesAndChips = [self loadObjectTrackerDataSet:@"skywalk_far.xml"];
+    dataSetStonesAndChips = [self loadObjectTrackerDataSet:@"low_clearance_sign.xml"];
     if (dataSetStonesAndChips == NULL) {
         NSLog(@"Failed to load datasets");
         return NO;
@@ -962,6 +1008,7 @@
     
     return YES;
 }
+
 
 // start the application trackers
 - (bool) doStartTrackers {
@@ -980,13 +1027,16 @@
         NSError * error = nil;
         [self.vapp startAR:Vuforia::CameraDevice::CAMERA_DIRECTION_BACK error:&error];
         
-        MTLTextureDescriptor* texDescription = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:MTLPixelFormatBGRA8Unorm width:self.vapp.videoMode.mWidth height:self.vapp.videoMode.mHeight mipmapped:NO];
+        // Create texture for holding video
+        MTLTextureDescriptor* texDescription = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:MTLPixelFormatRGBA8Unorm width:self.vapp.videoMode.mWidth height:self.vapp.videoMode.mHeight mipmapped:NO];
         id<MTLDevice> gpu = MTLCreateSystemDefaultDevice();
         videoTexture = [gpu newTextureWithDescriptor:texDescription];
         [((ARView*) self.view) setVideoTexture:videoTexture];
-        scene.background.contents = videoTexture;
+        printf("onInitARDone\n");
+        
         
         // Calculate texture coordinate scaling to make video fit
+        // Vuforia expects this scaling for augmentations to match
         float aspectVideo = (float)self.vapp.videoMode.mWidth / self.vapp.videoMode.mHeight;
         CGSize viewSize = self.view.frame.size;
         float aspectScreen = (float)viewSize.width / viewSize.height;
@@ -998,8 +1048,9 @@
         else {
             yScale = aspectVideo / aspectScreen;
         }
-        scene.background.contentsTransform = SCNMatrix4MakeScale(xScale, yScale, 1);
+        bgImgScale = SCNMatrix4MakeScale(xScale, yScale, 1);
         
+        [self setAREnabled:YES];
 //        [eaglView updateRenderingPrimitives];
         
         // by default, we try to set the continuous auto focus mode

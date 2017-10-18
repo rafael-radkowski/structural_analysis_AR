@@ -90,6 +90,10 @@ namespace {
     return self;
 }
 
+//- (void)setDelegate:(id<SampleApplicationControl>) delegate {
+//    self.delegate = delegate;
+//}
+
 // build a NSError
 - (NSError *) NSErrorWithCode:(int) code {
     return [NSError errorWithDomain:SAMPLE_APPLICATION_ERROR_DOMAIN code:code userInfo:nil];
@@ -661,6 +665,7 @@ namespace {
     Vuforia::onPause();
     Vuforia::deinit();
     
+    self.delegate = nil;
     return YES;
 }
 

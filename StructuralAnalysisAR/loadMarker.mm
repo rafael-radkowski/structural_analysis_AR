@@ -197,6 +197,10 @@ void LoadMarker::touchBegan(GLKVector3 origin, GLKVector3 farHit) {
     SCNVector3 origin_local = [rootNode convertPosition:SCNVector3FromGLKVector3(origin) fromNode:nil];
     SCNVector3 destination_local = [rootNode convertPosition:SCNVector3FromGLKVector3(farHit) fromNode:nil];
     NSArray *hitResults = [rootNode hitTestWithSegmentFromPoint:origin_local toPoint:destination_local options:hitOptions];
+    if ([hitResults count] == 0) {
+        printf("Error: No hit results\n");
+        return;
+    }
     SCNHitTestResult* hitTestResult = hitResults.firstObject;
     
     // Check if the hit node was a load line

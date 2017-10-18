@@ -67,6 +67,8 @@
 
 - (id)initWithDelegate:(id<SampleApplicationControl>) delegate;
 
+//- (void)setDelegate:(id<SampleApplicationControl>) delegate;
+
 // initialize the AR library. This is an asynchronous method. When the initialization is complete, the callback method initARDone will be called
 - (void) initAR:(int) VuforiaInitFlags orientation:(UIInterfaceOrientation) ARViewOrientation;
 

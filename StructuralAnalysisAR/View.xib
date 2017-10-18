@@ -12,6 +12,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="GameViewController">
             <connections>
+                <outlet property="arViewSwitch" destination="Sbq-PH-sfP" id="YyO-EM-kzP"/>
                 <outlet property="deadLoadLabel" destination="Etl-2u-hJc" id="WdX-Rs-t9K"/>
                 <outlet property="deadLoadSwitch" destination="H19-hC-7p2" id="PFL-Ak-pyZ"/>
                 <outlet property="homeBtn" destination="diD-35-5ij" id="xu7-yK-ZRl"/>
@@ -64,16 +65,32 @@
                                 <action selector="homeBtnPressed:" destination="-1" eventType="touchUpInside" id="rj0-02-StX"/>
                             </connections>
                         </button>
+                        <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Sbq-PH-sfP">
+                            <rect key="frame" x="672" y="9" width="51" height="31"/>
+                            <connections>
+                                <action selector="arViewToggled:" destination="-1" eventType="valueChanged" id="Nt0-Kh-XCl"/>
+                            </connections>
+                        </switch>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Live View" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ByL-Vx-yUJ">
+                            <rect key="frame" x="729" y="15" width="80" height="21"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <constraints>
                         <constraint firstItem="rT0-Pm-RBQ" firstAttribute="leading" secondItem="36Q-fD-OQO" secondAttribute="leading" constant="8" id="5dg-Po-9Sa"/>
                         <constraint firstAttribute="trailing" secondItem="diD-35-5ij" secondAttribute="trailing" constant="18" id="5xM-3e-Psh"/>
+                        <constraint firstItem="ByL-Vx-yUJ" firstAttribute="leading" secondItem="Sbq-PH-sfP" secondAttribute="trailing" constant="8" id="A5U-h3-o8D"/>
+                        <constraint firstItem="ByL-Vx-yUJ" firstAttribute="centerY" secondItem="Sbq-PH-sfP" secondAttribute="centerY" id="JII-6a-5GU"/>
                         <constraint firstItem="diD-35-5ij" firstAttribute="centerY" secondItem="36Q-fD-OQO" secondAttribute="centerY" id="Txo-Aw-1dx"/>
                         <constraint firstItem="pVc-5h-Jku" firstAttribute="centerY" secondItem="36Q-fD-OQO" secondAttribute="centerY" id="U2o-S0-cq9"/>
                         <constraint firstAttribute="height" constant="50" id="V55-9U-OYG"/>
                         <constraint firstItem="rT0-Pm-RBQ" firstAttribute="centerY" secondItem="36Q-fD-OQO" secondAttribute="centerY" id="cdr-b9-nCi"/>
+                        <constraint firstItem="Sbq-PH-sfP" firstAttribute="centerY" secondItem="36Q-fD-OQO" secondAttribute="centerY" id="jjN-2b-8Md"/>
                         <constraint firstItem="pVc-5h-Jku" firstAttribute="leading" secondItem="rT0-Pm-RBQ" secondAttribute="trailing" constant="16.5" id="pt0-Hk-Clm"/>
+                        <constraint firstItem="Sbq-PH-sfP" firstAttribute="leading" secondItem="pVc-5h-Jku" secondAttribute="trailing" constant="198" id="wB6-5X-61l"/>
                     </constraints>
                 </view>
                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9M9-5V-cxZ">
