@@ -758,6 +758,7 @@
     GLKMatrix4 extrinsic = [self GLKMatrix4FromQCARMatrix44:matrix];
     bool invertible;
     GLKMatrix4 inverted = GLKMatrix4Invert(extrinsic, &invertible); // inverse matrix!
+    assert(invertible);
 //    SCNMatrix4 rotated = SCNMatrix4Mult(inverted, SCNMatrix4MakeRotation(M_PI, 1, 0, 0));
 //    GLKMatrix4 desiredMat = GLKMatrix4Make(inverted.m00, -inverted.m01,  -inverted.m02, inverted.m03,
 //                                           inverted.m10, -inverted.m11,  -inverted.m12, inverted.m13,
@@ -799,8 +800,12 @@
         const Vuforia::TrackableResult* track_result = state->getTrackableResult(0);
         
         Vuforia::Matrix44F modelViewMatrix = Vuforia::Tool::convertPose2GLMatrix(track_result->getPose());
-        SampleApplicationUtils::translatePoseMatrix(0.0f, -16.0f, kObjectScaleNormal, &modelViewMatrix.data[0]);
+//        SampleApplicationUtils::translatePoseMatrix(0.0f, -16.0f, kObjectScaleNormal, &modelViewMatrix.data[0]);
 //        SampleApplicationUtils::scalePoseMatrix(kObjectScaleNormal, kObjectScaleNormal, kObjectScaleNormal, &modelViewMatrix.data[0]);
+        
+        
+        SampleApplicationUtils::rotatePoseMatrix(M_PI, 0, 1, 0, &modelViewMatrix.data[0]);
+        SampleApplicationUtils::translatePoseMatrix(self.x_stepper_thing.value, self.y_stepper_thing.value, self.z_stepper_thing.value, &modelViewMatrix.data[0]);
         [self setCameraMatrix:modelViewMatrix];
     }
 }
@@ -1073,4 +1078,18 @@
 }
 
 
+- (IBAction)x_stepper:(id)sender {
+    self.x_label.text = [[NSString alloc] initWithFormat:@"%f", self.x_stepper_thing.value];
+}
+
+- (IBAction)y_stepper:(id)sender {
+    self.y_label.text = [[NSString alloc] initWithFormat:@"%f", self.y_stepper_thing.value];
+}
+
+- (IBAction)z_stepper:(id)sender {
+    self.z_label.text = [[NSString alloc] initWithFormat:@"%f", self.z_stepper_thing.value];
+}
+- (IBAction)extendedChanged:(id)sender {
+    [self setExtendedTrackingForDataSet:dataSetCurrent start:self.extendedSwitch.isOn];
+}
 @end

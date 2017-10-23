@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <QCARConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="qcar_config.xsd">
   <Tracking>
-    <ImageTarget name="sign_cutout" size="2.000000 1.961127" />
+    <ImageTarget name="IMG_0022_2" size="2.017766 2.017766" />
   </Tracking>
 </QCARConfig>

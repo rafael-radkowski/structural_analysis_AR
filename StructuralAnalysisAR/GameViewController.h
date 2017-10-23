@@ -101,6 +101,18 @@
 @property (weak, nonatomic) IBOutlet UIButton *nextBtn;
 @property (weak, nonatomic) IBOutlet UISwitch *arViewSwitch;
 
+@property (weak, nonatomic) IBOutlet UIStepper *x_stepper_thing;
+@property (weak, nonatomic) IBOutlet UIStepper *y_stepper_thing;
+@property (weak, nonatomic) IBOutlet UIStepper *z_stepper_thing;
+- (IBAction)x_stepper:(id)sender;
+- (IBAction)y_stepper:(id)sender;
+- (IBAction)z_stepper:(id)sender;
+@property (weak, nonatomic) IBOutlet UILabel *x_label;
+@property (weak, nonatomic) IBOutlet UILabel *y_label;
+@property (weak, nonatomic) IBOutlet UILabel *z_label;
+
+@property (weak, nonatomic) IBOutlet UISwitch *extendedSwitch;
+- (IBAction)extendedChanged:(id)sender;
 
 
 // MARK: Actions
