@@ -34,7 +34,24 @@
     self.btnCampanile.layer.cornerRadius = cornerRadius;
     self.btnCampanile.layer.borderColor = textColor;
     
+    // Load the property list for button visibility
+    // Find out the path
+    NSString *rootPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    self.prefs_path = [rootPath stringByAppendingPathComponent:@"user_prefs.plist"];
+    //self.prefs_path = [[NSBundle mainBundle] pathForResource:@"user_prefs" ofType:@"plist"];
     
+    // Load the file content and read the data into arrays
+    NSDictionary *dict = [[NSDictionary alloc] initWithContentsOfFile:self.prefs_path];
+
+    NSNumber* skywalk_hidden = [dict valueForKey:@"skywalk_hidden"];
+    NSNumber* skywalk_guided_hidden = [dict valueForKey:@"skywalk_guided_hidden"];
+    if (skywalk_hidden == skywalk_guided_hidden) {
+        // Failed to load. Probably hasn't been saved before. Set manually
+        skywalk_hidden = [NSNumber numberWithBool:NO];
+        skywalk_guided_hidden = [NSNumber numberWithBool:YES];
+    }
+    self.btnSkywalk.hidden = [skywalk_hidden boolValue];
+    self.btnWaterTower.hidden = [skywalk_guided_hidden boolValue];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -60,6 +77,47 @@
 
 - (IBAction)backToHomepage:(UIStoryboardSegue*)unwindSegue {
     // Do things here?
+}
+
+- (BOOL)shouldAutorotate
+{
+    return NO;
+}
+
+- (IBAction)secretPress:(id)sender {
+    [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(timeUp:) userInfo:nil repeats:NO];
+}
+
+- (void) timeUp:(NSTimer*) timer {
+    if (self.superSecretButton.state == UIControlStateHighlighted) {
+        self.btnSkywalk.hidden = !self.btnSkywalk.hidden;
+        self.btnWaterTower.hidden = !self.btnWaterTower.hidden;
+        
+        // Save changes to user_prefs.plist
+
+        NSError *error;
+        NSDictionary *plistDict = @{
+                                    @"skywalk_hidden": [NSNumber numberWithBool:self.btnSkywalk.hidden],
+                                    @"skywalk_guided_hidden": [NSNumber numberWithBool:self.btnWaterTower.hidden]
+                                    };
+
+        NSData *plistData = [NSPropertyListSerialization dataWithPropertyList:plistDict
+                                                          format:NSPropertyListXMLFormat_v1_0
+                                                          options:0
+                                                          error:&error];
+        
+        if(plistData) {
+            bool write_successful = [plistData writeToFile:self.prefs_path atomically:YES];
+            if (!write_successful) {
+                printf("failed to write prefs\n");
+            }
+        }
+        
+        else {
+            printf("aahhh!, error saving prefs!\n");
+        }
+    }
+
 }
 
 @end

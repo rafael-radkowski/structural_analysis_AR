@@ -54,6 +54,7 @@
 		0BD038A71F97B38F004B65F6 /* low_clearance_sign.xml in Resources */ = {isa = PBXBuildFile; fileRef = 0BD038A51F97B38F004B65F6 /* low_clearance_sign.xml */; };
 		0BDF88E61F4B3BAE0014BFB7 /* testScene.scn in Resources */ = {isa = PBXBuildFile; fileRef = 0BDF88E51F4B3BAE0014BFB7 /* testScene.scn */; };
 		0BE42D261F688DDA00937359 /* BezierLine.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0BE42D241F688DDA00937359 /* BezierLine.mm */; };
+		0BE4C5E11FAFB0E500A501C9 /* user_prefs.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0BE4C5DF1FAFA95B00A501C9 /* user_prefs.plist */; };
 		0BF623AB1F58C11C001B1775 /* SpriteKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BF623AA1F58C11C001B1775 /* SpriteKit.framework */; };
 /* End PBXBuildFile section */
 
@@ -123,6 +124,7 @@
 		0BDF88E51F4B3BAE0014BFB7 /* testScene.scn */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = testScene.scn; sourceTree = "<group>"; };
 		0BE42D241F688DDA00937359 /* BezierLine.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BezierLine.mm; sourceTree = "<group>"; };
 		0BE42D251F688DDA00937359 /* BezierLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BezierLine.h; sourceTree = "<group>"; };
+		0BE4C5DF1FAFA95B00A501C9 /* user_prefs.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = user_prefs.plist; sourceTree = "<group>"; };
 		0BF623AA1F58C11C001B1775 /* SpriteKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SpriteKit.framework; path = System/Library/Frameworks/SpriteKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -248,6 +250,7 @@
 				0B1573491F5451BF004CE1BE /* MainPageViewController.h */,
 				0B15734A1F5451BF004CE1BE /* MainPageViewController.mm */,
 				0BB164481F4732DC0053CA3B /* Assets.xcassets */,
+				0BE4C5DF1FAFA95B00A501C9 /* user_prefs.plist */,
 				0BB1644A1F4732DC0053CA3B /* LaunchScreen.storyboard */,
 				0BB1644D1F4732DC0053CA3B /* Info.plist */,
 				0BB1643A1F4732DC0053CA3B /* Supporting Files */,
@@ -349,6 +352,7 @@
 				0BB1644C1F4732DC0053CA3B /* LaunchScreen.storyboard in Resources */,
 				0BB164491F4732DC0053CA3B /* Assets.xcassets in Resources */,
 				0BB164471F4732DC0053CA3B /* Main.storyboard in Resources */,
+				0BE4C5E11FAFB0E500A501C9 /* user_prefs.plist in Resources */,
 				0BD038A61F97B38F004B65F6 /* low_clearance_sign.dat in Resources */,
 				0B5F39E51F844CEF004870DE /* skywalk_far.dat in Resources */,
 				0B1573511F54601F004CE1BE /* campanile_stock_bw.jpg in Resources */,

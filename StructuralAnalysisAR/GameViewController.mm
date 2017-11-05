@@ -68,7 +68,7 @@
     self.vapp = [[SampleApplicationSession alloc] initWithDelegate:self];
     [self.vapp initAR:Vuforia::METAL orientation:self.interfaceOrientation];
     
-    CGRect viewFrame = [self getCurrentARViewFrame];
+//    CGRect viewFrame = [self getCurrentARViewFrame];
 //    MTLTextureDescriptor* texDescription = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:MTLPixelFormatBGRA8Unorm width:viewFrame.size.width height:viewFrame.size.height mipmapped:NO];
 //    ARView* arView = [[ARView alloc] initWithFrame:viewFrame appSession:self.vapp];
 //    [self setView:arView];
@@ -76,20 +76,20 @@
     
     
     // Make camera as scene background
-    UIImage* bgImage = [UIImage imageNamed:@"skywalk.jpg"];
-    float img_scale = (float)self.view.frame.size.width / bgImage.size.width;
-    scaled_img = [UIImage imageWithData:UIImagePNGRepresentation(bgImage) scale:img_scale];
-    NSError* error = nil;
-    id<MTLDevice> gpu = MTLCreateSystemDefaultDevice();
-    MTKTextureLoader* texLoader = [[MTKTextureLoader alloc] initWithDevice:gpu];
+//    UIImage* bgImage = [UIImage imageNamed:@"skywalk.jpg"];
+//    float img_scale = (float)self.view.frame.size.width / bgImage.size.width;
+//    scaled_img = [UIImage imageWithData:UIImagePNGRepresentation(bgImage) scale:img_scale];
+//    NSError* error = nil;
+//    id<MTLDevice> gpu = MTLCreateSystemDefaultDevice();
+//    MTKTextureLoader* texLoader = [[MTKTextureLoader alloc] initWithDevice:gpu];
     // Set as sRGB to be correct color
-    NSDictionary* mtkLoaderOptions = @{
-                                 MTKTextureLoaderOptionSRGB: @0
-                                 };
-    staticBgTex = [texLoader newTextureWithData:UIImagePNGRepresentation(scaled_img) options:mtkLoaderOptions error:&error];
-    if (error) {
-        printf("failed to load static background image\n");
-    }
+//    NSDictionary* mtkLoaderOptions = @{
+//                                 MTKTextureLoaderOptionSRGB: @0
+//                                 };
+//    staticBgTex = [texLoader newTextureWithData:UIImagePNGRepresentation(scaled_img) options:mtkLoaderOptions error:&error];
+//    if (error) {
+//        printf("failed to load static background image\n");
+//    }
     
     
 //    scene.background.contents = backgroundImage;
@@ -171,9 +171,7 @@
     
     // Hide visualization toggles switches in guided mode
     if (self.guided) {
-        for (UIView* elem in [NSArray arrayWithObjects:self.liveLoadSwitch, self.deadLoadSwitch, self.rcnForceSwitch, self.liveLoadLabel, self.deadLoadLabel, self.rcnForceLabel, nil]) {
-            elem.hidden = YES;
-        }
+        self.visOptionsBox.hidden = YES;
     }
     
     CGColor* textColor = [UIColor colorWithRed:0.08235 green:0.49412 blue:0.9843 alpha:1.0].CGColor;
@@ -191,13 +189,21 @@
     self.prevBtn.layer.cornerRadius = self.nextBtn.layer.cornerRadius = 5;
     self.prevBtn.titleEdgeInsets = self.nextBtn.titleEdgeInsets = UIEdgeInsetsMake(5, 5, 5, 5);
     
+    // Setup freeze frame button
+    self.freezeFrameBtn.layer.borderWidth = 1.5;
+    self.freezeFrameBtn.layer.borderColor = textColor;
+    self.freezeFrameBtn.layer.cornerRadius = 5;
+    
+    self.visOptionsBox.layer.borderWidth = 1.5;
+    self.visOptionsBox.layer.borderColor = UIColor.grayColor.CGColor;
+    
     deflectLive = deflectDead = true;
     
     [self setupVisualizations];
-    [self setupInstructions];
-    
     // Set load visibilities to the default values
     [self setVisibilities];
+    [self setupInstructions];
+    
     [self.loadPresetBtn sendActionsForControlEvents:UIControlEventValueChanged];
 }
 
@@ -244,7 +250,7 @@
     GLKQuaternion beamOri = GLKQuaternionMakeWithAngleAndAxis(0, 0, 0, 1);
     // Create live load bar
     peopleLoad = LoadMarker(3);
-    peopleLoad.setPosition(GLKVector3Make(0, 5, 0));
+    peopleLoad.setPosition(GLKVector3Make(0, 33, 0));
     peopleLoad.setOrientation(beamOri);
     peopleLoad.setInputRange(0, 1.5);
     peopleLoad.setMinHeight(15);
@@ -257,11 +263,11 @@
     deadLoad.setInputRange(0, 1.5);
     deadLoad.setLoad(1.2); // 1.2 k/ft
 //    float dead_z = self.guided ?
-    deadLoad.setPosition(GLKVector3Make(0, 22, 0));
+    deadLoad.setPosition(GLKVector3Make(0, 5, 0));
     deadLoad.setOrientation(beamOri);
     deadLoad.setEnds(COL1_POS, COL4_POS);
     deadLoad.setMinHeight(15);
-    deadLoad.setMaxHeight(40);
+    deadLoad.setMaxHeight(28);
     deadLoad.setThickness(defaultThickness);
     deadLoad.addAsChild(scene.rootNode);
     
@@ -284,11 +290,12 @@
     people = PeopleVis(10, cameraNode);
     people.addAsChild(scene.rootNode);
     
+    double gap = 1.5;
     int resolution = 10;
     beamVals1.resize(2); beamVals2.resize(2); beamVals3.resize(2);
-    double stepSize1 = (COL2_POS - COL1_POS) / (resolution - 1);
-    double stepSize2 = (COL3_POS - COL2_POS) / (resolution - 1);
-    double stepSize3 = (COL4_POS - COL3_POS) / (resolution - 1);
+    double stepSize1 = (COL2_POS - COL1_POS - gap) / (resolution - 1);
+    double stepSize2 = (COL3_POS - COL2_POS - gap) / (resolution - 1);
+    double stepSize3 = (COL4_POS - COL3_POS - (gap/2)) / (resolution - 1);
     for (int i = 0; i < resolution; ++i) {
         beamVals1[0].push_back(COL1_POS + stepSize1 * i);
         beamVals2[0].push_back(COL2_POS + stepSize2 * i);
@@ -323,12 +330,12 @@
 
 - (void)setupInstructions {
     if (self.guided) {
-        instructions.push_back("Step 1\nThat's a beam.");
-        instructions.push_back("Step 2\nOh, and it's heavy.");
-        instructions.push_back("Step 3\nCausing it to bend under its own weight");
-        instructions.push_back("Step 4\nSometimes people walk on the skywalk");
-        instructions.push_back("Step 5\nThey make it bend even more");
-        instructions.push_back("Step 6\nThe supports have to hold all this up");
+        instructions.push_back("Step 1\nShown above is the Skywalk, which can be simplified and modeled as three spans, each simply supported.");
+        instructions.push_back("Step 2\nThe self-weight of the Skywalk acts as a uniformly distributed dead load that is always acting on the beam.");
+        instructions.push_back("Step 3\nThis dead load causes the structure to deflect. Deflection values are based off of an estimated composite moment of inertia and modulus of elasticity.");
+        instructions.push_back("Step 4\nPeople walking on the Skywalk contribute more load to the structure. They act as a uniformly distributed live load.");
+        instructions.push_back("Step 5\nThe addition of this live load causes the structure to deflect an additional amount.");
+        instructions.push_back("Step 6\nThe simplified Skywalk model has four supports, each having a vertical reaction force that counteracts the magnitude of the dead and live loads.");
         curStep = 0;
         [self showInstruction:curStep];
         self.prevBtn.hidden = YES;
@@ -427,31 +434,40 @@
     }
 }
 
-- (void) setAREnabled:(bool)enabled {
-    arEnabled = enabled;
-    
-    ARView* scnView = (ARView*) self.view;
-    scnView.renderVideo = arEnabled;
-    
-    if (!arEnabled) {
-        // We need to manually set the texture
-        scene.background.contents = staticBgTex;
-        
-        // move the camera to position for background image
-        cameraNode.position = SCNVector3Make(-69, 36, 270);
-        cameraNode.eulerAngles = SCNVector3Make(-0.1, -0.30, 0.033);
-        // Remove background image scaling
-        scene.background.contentsTransform = SCNMatrix4Identity;
-    }
-    else {
-        scene.background.contents = videoTexture;
-        scene.background.contentsTransform = bgImgScale;
-    }
-}
-- (IBAction)arViewToggled:(id)sender {
-    [self setAREnabled:self.arViewSwitch.on];
+- (IBAction)freezePressed:(id)sender {
+    [self setAREnabled:!arEnabled];
+//    ARView* scnView = (ARView*) self.view;
+    // Toggle whether we update background video texture
+//    scnView.renderVideo = !scnView.renderVideo;
 }
 
+- (void) setAREnabled:(bool)enabled {
+    arEnabled = enabled;
+
+    ARView* scnView = (ARView*) self.view;
+    scnView.renderVideo = arEnabled;
+
+    if (arEnabled) {
+        [self.freezeFrameBtn setTitle:@"Freeze View" forState:UIControlStateNormal];
+    } else {
+        [self.freezeFrameBtn setTitle:@"Resume View" forState:UIControlStateNormal];
+    }
+    
+//    if (!arEnabled) {
+        // We need to manually set the texture
+//        scene.background.contents = staticBgTex;
+
+        // move the camera to position for background image
+//        cameraNode.position = SCNVector3Make(-69, 36, 270);
+//        cameraNode.eulerAngles = SCNVector3Make(-0.1, -0.30, 0.033);
+        // Remove background image scaling
+//        scene.background.contentsTransform = SCNMatrix4Identity;
+//    }
+//    else {
+//        scene.background.contents = videoTexture;
+//        scene.background.contentsTransform = bgImgScale;
+//    }
+}
 
 
 - (BOOL)shouldAutorotate
@@ -1000,7 +1016,7 @@
 
 // load the data associated to the trackers
 - (bool) doLoadTrackersData {
-    dataSetStonesAndChips = [self loadObjectTrackerDataSet:@"low_clearance_sign.xml"];
+    dataSetStonesAndChips = [self loadObjectTrackerDataSet:@"skywalk_far.xml"];
     if (dataSetStonesAndChips == NULL) {
         NSLog(@"Failed to load datasets");
         return NO;
@@ -1036,6 +1052,7 @@
         MTLTextureDescriptor* texDescription = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:MTLPixelFormatRGBA8Unorm width:self.vapp.videoMode.mWidth height:self.vapp.videoMode.mHeight mipmapped:NO];
         id<MTLDevice> gpu = MTLCreateSystemDefaultDevice();
         videoTexture = [gpu newTextureWithDescriptor:texDescription];
+        staticBgTex = [gpu newTextureWithDescriptor:texDescription];
         [((ARView*) self.view) setVideoTexture:videoTexture];
         printf("onInitARDone\n");
         
@@ -1055,7 +1072,11 @@
         }
         bgImgScale = SCNMatrix4MakeScale(xScale, yScale, 1);
         
+        // Set background to texture with scaling
+        scene.background.contents = videoTexture;
+        scene.background.contentsTransform = bgImgScale;
         [self setAREnabled:YES];
+        
 //        [eaglView updateRenderingPrimitives];
         
         // by default, we try to set the continuous auto focus mode
