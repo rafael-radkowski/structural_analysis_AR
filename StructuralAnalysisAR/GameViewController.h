@@ -88,6 +88,8 @@
 @property (nonatomic) bool guided;
 @property (nonatomic, retain) IBOutlet UIView *viewFromNib;
 
+
+@property (weak, nonatomic) IBOutlet UIView *visOptionsBox;
 @property (weak, nonatomic) IBOutlet UISwitch *liveLoadSwitch;
 @property (weak, nonatomic) IBOutlet UILabel *liveLoadLabel;
 @property (weak, nonatomic) IBOutlet UISwitch *deadLoadSwitch;
@@ -99,7 +101,8 @@
 @property (weak, nonatomic) IBOutlet UITextView *instructionBox;
 @property (weak, nonatomic) IBOutlet UIButton *prevBtn;
 @property (weak, nonatomic) IBOutlet UIButton *nextBtn;
-@property (weak, nonatomic) IBOutlet UISwitch *arViewSwitch;
+@property (weak, nonatomic) IBOutlet UIButton *freezeFrameBtn;
+
 
 
 
@@ -110,7 +113,8 @@
 - (IBAction)homeBtnPressed:(id)sender;
 - (IBAction)prevStepPressed:(id)sender;
 - (IBAction)nextStepPressed:(id)sender;
-- (IBAction)arViewToggled:(id)sender;
+- (IBAction)freezePressed:(id)sender;
+
 
 
 // override

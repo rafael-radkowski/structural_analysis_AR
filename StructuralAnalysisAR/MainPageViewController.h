@@ -19,5 +19,12 @@
 
 - (IBAction)backToHomepage:(UIStoryboardSegue*)unwindSegue;
 
+@property (nonatomic) NSString* prefs_path;
+
+- (void) timeUp:(NSTimer*)timer;
+
+@property (weak, nonatomic) IBOutlet UIButton *superSecretButton;
+- (IBAction)secretPress:(id)sender;
+
 
 @end
