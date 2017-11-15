@@ -70,7 +70,7 @@ namespace {
 
 // SampleApplicationControl delegate (receives callbacks in response to particular
 // events, such as completion of Vuforia initialisation)
-@property (nonatomic, assign) id delegate;
+@property (nonatomic, assign) SampleApplicationControlCpp* delegate;
 
 @end
 
@@ -78,7 +78,7 @@ namespace {
 @implementation SampleApplicationSession
 @synthesize viewport;
 
-- (id)initWithDelegate:(id<SampleApplicationControl>) delegate
+- (id)initWithDelegate:(SampleApplicationControlCpp*) delegate
 {
     self = [super init];
     if (self) {
@@ -209,7 +209,8 @@ namespace {
                         
                 }
                 // Vuforia initialization error
-                [self.delegate onInitARDone:error];
+                // [self.delegate onInitARDone:error];
+                self.delegate->onInitARDone(error);
             }
         }
     }
@@ -281,9 +282,12 @@ namespace {
 }
 
 - (void) Vuforia_onUpdate:(Vuforia::State *) state {
-    if ((self.delegate != nil) && [self.delegate respondsToSelector:@selector(onVuforiaUpdate:)]) {
-        [self.delegate onVuforiaUpdate:state];
+    if (self.delegate) {
+        self.delegate->onVuforiaUpdate(state);
     }
+    // if ((self.delegate != nil) && [self.delegate respondsToSelector:@selector(onVuforiaUpdate:)]) {
+    //     [self.delegate onVuforiaUpdate:state];
+    // }
 }
 
 - (CGSize)getCurrentARViewBoundsSize
@@ -345,8 +349,8 @@ namespace {
 
 - (void) initTracker {
     // ask the application to initialize its trackers
-    if (! [self.delegate doInitTrackers]) {
-        [self.delegate onInitARDone:[self NSErrorWithCode:E_INIT_TRACKERS]];
+    if (! self.delegate->doInitTrackers()) {
+        self.delegate->onInitARDone([self NSErrorWithCode:E_INIT_TRACKERS]);
         return;
     }
     [self loadTrackerData];
@@ -365,13 +369,13 @@ namespace {
     // Background thread must have its own autorelease pool
     @autoreleasepool {
         // the application can now prepare the loading of the data
-        if(! [self.delegate doLoadTrackersData]) {
-            [self.delegate onInitARDone:[self NSErrorWithCode:E_LOADING_TRACKERS_DATA]];
+        if(! self.delegate->doLoadTrackersData()) {
+            self.delegate->onInitARDone([self NSErrorWithCode:E_LOADING_TRACKERS_DATA]);
             return;
         }
     }
     
-    [self.delegate onInitARDone:nil];
+    self.delegate->onInitARDone(nil);
 }
 
 // Configure Vuforia with the video background size
@@ -603,7 +607,7 @@ namespace {
     mCamera = camera;
     
     // ask the application to start the tracker(s)
-    if(! [self.delegate doStartTrackers] ) {
+    if(! self.delegate->doStartTrackers() ) {
         [self NSErrorWithCode:-1 error:error];
         return NO;
     }
@@ -644,19 +648,19 @@ namespace {
     self.cameraIsStarted = NO;
 
     // ask the application to stop the trackers
-    if(! [self.delegate doStopTrackers]) {
+    if(! self.delegate->doStopTrackers()) {
         [self NSErrorWithCode:E_STOPPING_TRACKERS error:error];
         return NO;
     }
     
     // ask the application to unload the data associated to the trackers
-    if(! [self.delegate doUnloadTrackersData]) {
+    if(! self.delegate->doUnloadTrackersData()) {
         [self NSErrorWithCode:E_UNLOADING_TRACKERS_DATA error:error];
         return NO;
     }
     
     // ask the application to deinit the trackers
-    if(! [self.delegate doDeinitTrackers]) {
+    if(! self.delegate->doDeinitTrackers()) {
         [self NSErrorWithCode:E_DEINIT_TRACKERS error:error];
         return NO;
     }
@@ -683,7 +687,7 @@ namespace {
     self.cameraIsStarted = NO;
     
     // Stop the trackers
-    if(! [self.delegate doStopTrackers]) {
+    if(! self.delegate->doStopTrackers()) {
         [self NSErrorWithCode:E_STOPPING_TRACKERS error:error];
         return NO;
     }

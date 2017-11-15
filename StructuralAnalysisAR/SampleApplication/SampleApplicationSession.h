@@ -4,6 +4,7 @@
  Vuforia is a trademark of PTC Inc., registered in the United States and other
  countries.
  ===============================================================================*/
+#include <memory>
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
@@ -63,9 +64,24 @@
 
 @end
 
+// A c++ version of the SampleApplicationControl protocol
+class SampleApplicationControlCpp {
+public:
+    virtual void onInitARDone(NSError* error) = 0;
+    virtual bool doInitTrackers() = 0;
+    virtual bool doLoadTrackersData() = 0;
+    virtual bool doStartTrackers() = 0;
+    virtual bool doStopTrackers() = 0;
+    virtual bool doUnloadTrackersData() = 0;
+    virtual bool doDeinitTrackers() = 0;
+    
+    // optional
+    virtual void onVuforiaUpdate(Vuforia::State* state) {};
+};
+
 @interface SampleApplicationSession : NSObject
 
-- (id)initWithDelegate:(id<SampleApplicationControl>) delegate;
+- (id)initWithDelegate:(SampleApplicationControlCpp*) delegate;
 
 //- (void)setDelegate:(id<SampleApplicationControl>) delegate;
 
@@ -104,3 +120,4 @@
 } viewport;
 
 @end
+

@@ -29,7 +29,7 @@ public:
     
 private:
     void placeLabel();
-    int paddingX = 12;
+//    int paddingX = 12;
     float centerXNorm = 0.5;
     float centerYNorm = 0.5;
     

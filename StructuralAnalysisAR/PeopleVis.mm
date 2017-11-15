@@ -22,7 +22,7 @@ PeopleVis::PeopleVis(int n, SCNNode* camera) {
 
 void PeopleVis::setNumPeople(int n) {
     n = std::max(n, 0); // Don't let go below 0
-    int n_delete = billboards.size() - n;
+    long n_delete = billboards.size() - n;
     if (n_delete > 0) {
         for (int i = n; i < billboards.size(); ++i) {
             [billboards[i] removeFromParentNode];
@@ -30,7 +30,7 @@ void PeopleVis::setNumPeople(int n) {
         billboards.erase(billboards.begin() + n, billboards.end());
     }
     
-    int n_add = n - billboards.size();
+    long n_add = n - billboards.size();
     if (n_add > 0) {
         for (int i = 0; i < n_add; ++i) {
             SCNPlane* plane = [SCNPlane planeWithWidth:1 height:1];

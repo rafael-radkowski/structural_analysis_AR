@@ -18,12 +18,13 @@
 #import <Metal/Metal.h>
 
 #import "SampleApplicationSession.h"
+#include "ARManager.h"
 #import <Vuforia/DataSet.h>
 
 #include <vector>
 #include <string>
 
-@interface GameViewController : UIViewController <SKSceneDelegate, SampleApplicationControl> {
+@interface GameViewController : UIViewController <SKSceneDelegate, SCNSceneRendererDelegate> {
     // Private vars
     SCNRenderer* renderer;
     SCNNode *cameraNode;
@@ -57,6 +58,8 @@
     bool deflectDead;
     bool deflectLive;
     
+    
+    ARManager* arManager;
     id<MTLTexture> staticBgTex;
     UIImage* scaled_img;
     bool arEnabled;
@@ -69,8 +72,8 @@
     id<MTLTexture> videoTexture;
 }
 // Vuforia stuff
-@property (nonatomic, strong) SampleApplicationSession * vapp;
-- (CGRect)getCurrentARViewFrame;
+//@property (nonatomic, strong) SampleApplicationSession * vapp;
+//- (CGRect)getCurrentARViewFrame;
 
 // SKSceneDelegate implementations
 - (void)update:(NSTimeInterval)currentTime forScene:(SKScene *)scene;
@@ -104,18 +107,18 @@
 @property (weak, nonatomic) IBOutlet UIButton *freezeFrameBtn;
 
 
-@property (weak, nonatomic) IBOutlet UIStepper *x_stepper_thing;
-@property (weak, nonatomic) IBOutlet UIStepper *y_stepper_thing;
-@property (weak, nonatomic) IBOutlet UIStepper *z_stepper_thing;
-- (IBAction)x_stepper:(id)sender;
-- (IBAction)y_stepper:(id)sender;
-- (IBAction)z_stepper:(id)sender;
-@property (weak, nonatomic) IBOutlet UILabel *x_label;
-@property (weak, nonatomic) IBOutlet UILabel *y_label;
-@property (weak, nonatomic) IBOutlet UILabel *z_label;
+//@property (weak, nonatomic) IBOutlet UIStepper *x_stepper_thing;
+//@property (weak, nonatomic) IBOutlet UIStepper *y_stepper_thing;
+//@property (weak, nonatomic) IBOutlet UIStepper *z_stepper_thing;
+//- (IBAction)x_stepper:(id)sender;
+//- (IBAction)y_stepper:(id)sender;
+//- (IBAction)z_stepper:(id)sender;
+//@property (weak, nonatomic) IBOutlet UILabel *x_label;
+//@property (weak, nonatomic) IBOutlet UILabel *y_label;
+//@property (weak, nonatomic) IBOutlet UILabel *z_label;
 
-@property (weak, nonatomic) IBOutlet UISwitch *extendedSwitch;
-- (IBAction)extendedChanged:(id)sender;
+//@property (weak, nonatomic) IBOutlet UISwitch *extendedSwitch;
+//- (IBAction)extendedChanged:(id)sender;
 
 
 // MARK: Actions
