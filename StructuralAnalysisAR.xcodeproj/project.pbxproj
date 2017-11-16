@@ -17,6 +17,8 @@
 		0B1573581F55BE3C004CE1BE /* line3d.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B1573561F55BE3C004CE1BE /* line3d.mm */; };
 		0B15735B1F5621C9004CE1BE /* loadMarker.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B1573591F5621C9004CE1BE /* loadMarker.mm */; };
 		0B1FCD461FBCA2F2002DBE98 /* VuforiaARManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B1FCD441FBCA2F2002DBE98 /* VuforiaARManager.mm */; };
+		0B1FCD471FBDDFB6002DBE98 /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B1FCD3F1FBB429F002DBE98 /* opencv2.framework */; };
+		0B1FCD4A1FBDE1C4002DBE98 /* cvARManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B1FCD481FBDE1C4002DBE98 /* cvARManager.mm */; };
 		0B41E99A1F72BC04001DB823 /* home_blue.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B41E9991F72BC04001DB823 /* home_blue.png */; };
 		0B483BFB1F4DDB6F007A1D29 /* skywalk.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0B483BFA1F4DDB6F007A1D29 /* skywalk.jpg */; };
 		0B483C001F4F8AF9007A1D29 /* arrow_base.obj in Resources */ = {isa = PBXBuildFile; fileRef = 0B483BFE1F4F8AF9007A1D29 /* arrow_base.obj */; };
@@ -76,6 +78,8 @@
 		0B1FCD421FBB6CCF002DBE98 /* ARManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ARManager.h; sourceTree = "<group>"; };
 		0B1FCD441FBCA2F2002DBE98 /* VuforiaARManager.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = VuforiaARManager.mm; sourceTree = "<group>"; };
 		0B1FCD451FBCA2F2002DBE98 /* VuforiaARManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VuforiaARManager.h; sourceTree = "<group>"; };
+		0B1FCD481FBDE1C4002DBE98 /* cvARManager.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = cvARManager.mm; sourceTree = "<group>"; };
+		0B1FCD491FBDE1C4002DBE98 /* cvARManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = cvARManager.h; sourceTree = "<group>"; };
 		0B41E9991F72BC04001DB823 /* home_blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = home_blue.png; path = image_assets/home_blue.png; sourceTree = "<group>"; };
 		0B483BFA1F4DDB6F007A1D29 /* skywalk.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = skywalk.jpg; path = image_assets/skywalk.jpg; sourceTree = "<group>"; };
 		0B483BFD1F4F1016007A1D29 /* grabbableArrow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = grabbableArrow.h; sourceTree = "<group>"; };
@@ -138,6 +142,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0B1FCD471FBDDFB6002DBE98 /* opencv2.framework in Frameworks */,
 				0BD038A31F9513B8004B65F6 /* MetalKit.framework in Frameworks */,
 				0B0C0E971F8D053A00A173E7 /* Metal.framework in Frameworks */,
 				0B0BEE6E1F87EFD4008BC076 /* GLKit.framework in Frameworks */,
@@ -277,6 +282,8 @@
 				0B1FCD421FBB6CCF002DBE98 /* ARManager.h */,
 				0B1FCD441FBCA2F2002DBE98 /* VuforiaARManager.mm */,
 				0B1FCD451FBCA2F2002DBE98 /* VuforiaARManager.h */,
+				0B1FCD481FBDE1C4002DBE98 /* cvARManager.mm */,
+				0B1FCD491FBDE1C4002DBE98 /* cvARManager.h */,
 			);
 			path = StructuralAnalysisAR;
 			sourceTree = "<group>";
@@ -388,6 +395,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0B15735B1F5621C9004CE1BE /* loadMarker.mm in Sources */,
+				0B1FCD4A1FBDE1C4002DBE98 /* cvARManager.mm in Sources */,
 				0BAFBB651F7EBAFE007B1FC6 /* SampleApplicationSession.mm in Sources */,
 				0BAFBB671F7EBAFE007B1FC6 /* SampleApplicationUtils.cpp in Sources */,
 				0BAFBB701F7EBAFE007B1FC6 /* Texture.mm in Sources */,
@@ -527,6 +535,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 8X28YXWGUD;
 				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = "~/cv_build/ios";
 				HEADER_SEARCH_PATHS = "StructuralAnalysisAR/vuforia-sdk-ios/build/include";
 				INFOPLIST_FILE = StructuralAnalysisAR/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -551,6 +560,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 8X28YXWGUD;
 				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = "~/cv_build/ios";
 				HEADER_SEARCH_PATHS = "StructuralAnalysisAR/vuforia-sdk-ios/build/include";
 				INFOPLIST_FILE = StructuralAnalysisAR/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;

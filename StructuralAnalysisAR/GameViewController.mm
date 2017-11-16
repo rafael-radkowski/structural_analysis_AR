@@ -6,6 +6,8 @@
 //  Copyright © 2017 David Wehr. All rights reserved.
 //
 
+// Must #include openCV stuff before other things
+#include "cvARManager.h"
 #import "GameViewController.h"
 #import "ARView.h"
 #include "VuforiaARManager.h"
@@ -66,7 +68,9 @@
      
     // Vuforia stuff
     extendedTrackingEnabled = YES;
-    arManager = new VuforiaARManager((ARView*)self.view, scene, Vuforia::METAL, self.interfaceOrientation);
+//    arManager = new VuforiaARManager((ARView*)self.view, scene, Vuforia::METAL, self.interfaceOrientation);
+    arManager = new cvARManager(self.view, scene);
+
     [self setAREnabled:YES];
 //    self.vapp = [[SampleApplicationSession alloc] initWithDelegate:self];
 //    [self.vapp initAR:Vuforia::METAL orientation:self.interfaceOrientation];
