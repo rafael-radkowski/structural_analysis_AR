@@ -60,6 +60,11 @@
 //    return viewFrame;
 //}
 
+- (void)printMatrix:(GLKMatrix4)mat {
+    printf("%f, %f, %f, %f\n%f, %f, %f, %f\n%f, %f, %f, %f\n%f, %f, %f, %f\n",
+           mat.m[0], mat.m[1], mat.m[2], mat.m[3], mat.m[4], mat.m[5], mat.m[6], mat.m[7], mat.m[8], mat.m[9], mat.m[10], mat.m[11], mat.m[12], mat.m[13], mat.m[14], mat.m[15]);
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -255,7 +260,9 @@
 
 - (void)renderer:(id<SCNSceneRenderer>)renderer willRenderScene:(SCNScene *)scene atTime:(NSTimeInterval)time {
     if (arEnabled) {
-        cameraNode.transform = SCNMatrix4FromGLKMatrix4(arManager->getCameraMatrix());
+        GLKMatrix4 camera_matrix =arManager->getCameraMatrix();
+        [self printMatrix:camera_matrix];
+        cameraNode.transform = SCNMatrix4FromGLKMatrix4(camera_matrix);
         cameraNode.camera.projectionTransform = SCNMatrix4FromGLKMatrix4(arManager->getProjectionMatrix());
     }
 }

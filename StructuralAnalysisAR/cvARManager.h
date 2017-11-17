@@ -9,14 +9,18 @@
 #ifndef cvARManager_hpp
 #define cvARManager_hpp
 
-// Apparently include this before any other iOS-specific headers
+// Apparently include openCV things before any other iOS-specific headers
 #import <opencv2/opencv.hpp>
 #import <opencv2/videoio/cap_ios.h>
+// these reference openCV includes
+#include "ImageMatcher.hpp"
+#include "MaskedImage.hpp"
 
 #include <stdio.h>
 #include <functional>
 
 #include "ARManager.h"
+
 
 // This delegate object allows us to receive callbacks from OpenCV, which requires an objective-C delegate
 // It just calls a provided callback
@@ -44,10 +48,17 @@ private:
     CvVideoCamera* camera;
     CvCameraDelegateObj* camDelegate;
     int video_width, video_height;
+    // Metal texture for the background video
+    id<MTLTexture> videoTexture;
+    
+    cv::Mat intrinsic_mat;
     
     void processImage(cv::Mat& image);
     
-//    id<MTLTexture> videoTexture;
+    GLKMatrix4 cameraMatrix;
+    // AR things
+    ImageMatcher matcher;
+    
 };
 
 #endif /* cvARManager_hpp */

@@ -55,6 +55,9 @@
 		0BD038A31F9513B8004B65F6 /* MetalKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BD038A21F9513B8004B65F6 /* MetalKit.framework */; };
 		0BD038A61F97B38F004B65F6 /* low_clearance_sign.dat in Resources */ = {isa = PBXBuildFile; fileRef = 0BD038A41F97B38F004B65F6 /* low_clearance_sign.dat */; };
 		0BD038A71F97B38F004B65F6 /* low_clearance_sign.xml in Resources */ = {isa = PBXBuildFile; fileRef = 0BD038A51F97B38F004B65F6 /* low_clearance_sign.xml */; };
+		0BDE98DF1FBE4D43003673F4 /* ImageMatcher.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0BDE98DB1FBE4D42003673F4 /* ImageMatcher.cpp */; };
+		0BDE98E01FBE4D43003673F4 /* MaskedImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0BDE98DE1FBE4D42003673F4 /* MaskedImage.cpp */; };
+		0BDE98E31FBE521C003673F4 /* cutout_skywalk_1280x720.png in Resources */ = {isa = PBXBuildFile; fileRef = 0BDE98E21FBE521C003673F4 /* cutout_skywalk_1280x720.png */; };
 		0BDF88E61F4B3BAE0014BFB7 /* testScene.scn in Resources */ = {isa = PBXBuildFile; fileRef = 0BDF88E51F4B3BAE0014BFB7 /* testScene.scn */; };
 		0BE42D261F688DDA00937359 /* BezierLine.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0BE42D241F688DDA00937359 /* BezierLine.mm */; };
 		0BE4C5E11FAFB0E500A501C9 /* user_prefs.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0BE4C5DF1FAFA95B00A501C9 /* user_prefs.plist */; };
@@ -130,6 +133,12 @@
 		0BD038A21F9513B8004B65F6 /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = SDKROOT; };
 		0BD038A41F97B38F004B65F6 /* low_clearance_sign.dat */ = {isa = PBXFileReference; lastKnownFileType = file; name = low_clearance_sign.dat; path = image_assets/low_clearance_sign.dat; sourceTree = "<group>"; };
 		0BD038A51F97B38F004B65F6 /* low_clearance_sign.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = low_clearance_sign.xml; path = image_assets/low_clearance_sign.xml; sourceTree = "<group>"; };
+		0BDE98DB1FBE4D42003673F4 /* ImageMatcher.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ImageMatcher.cpp; sourceTree = "<group>"; };
+		0BDE98DC1FBE4D42003673F4 /* ImageMatcher.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ImageMatcher.hpp; sourceTree = "<group>"; };
+		0BDE98DD1FBE4D42003673F4 /* MaskedImage.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MaskedImage.hpp; sourceTree = "<group>"; };
+		0BDE98DE1FBE4D42003673F4 /* MaskedImage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MaskedImage.cpp; sourceTree = "<group>"; };
+		0BDE98E11FBE4D7E003673F4 /* EdgeClipper.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = EdgeClipper.hpp; sourceTree = "<group>"; };
+		0BDE98E21FBE521C003673F4 /* cutout_skywalk_1280x720.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = cutout_skywalk_1280x720.png; path = image_assets/cutout_skywalk_1280x720.png; sourceTree = "<group>"; };
 		0BDF88E51F4B3BAE0014BFB7 /* testScene.scn */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = testScene.scn; sourceTree = "<group>"; };
 		0BE42D241F688DDA00937359 /* BezierLine.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BezierLine.mm; sourceTree = "<group>"; };
 		0BE42D251F688DDA00937359 /* BezierLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BezierLine.h; sourceTree = "<group>"; };
@@ -165,6 +174,7 @@
 		0B483BFC1F4DDB89007A1D29 /* image_assets */ = {
 			isa = PBXGroup;
 			children = (
+				0BDE98E21FBE521C003673F4 /* cutout_skywalk_1280x720.png */,
 				0BD038A41F97B38F004B65F6 /* low_clearance_sign.dat */,
 				0BD038A51F97B38F004B65F6 /* low_clearance_sign.xml */,
 				0B5F39E31F844CEF004870DE /* skywalk_far.dat */,
@@ -271,6 +281,11 @@
 				0B483C021F4F8BF5007A1D29 /* grabbableArrow.mm */,
 				0B1573561F55BE3C004CE1BE /* line3d.mm */,
 				0BE42D241F688DDA00937359 /* BezierLine.mm */,
+				0BDE98DB1FBE4D42003673F4 /* ImageMatcher.cpp */,
+				0BDE98DC1FBE4D42003673F4 /* ImageMatcher.hpp */,
+				0BDE98E11FBE4D7E003673F4 /* EdgeClipper.hpp */,
+				0BDE98DE1FBE4D42003673F4 /* MaskedImage.cpp */,
+				0BDE98DD1FBE4D42003673F4 /* MaskedImage.hpp */,
 				0BE42D251F688DDA00937359 /* BezierLine.h */,
 				0B1573571F55BE3C004CE1BE /* line3d.h */,
 				0B1573591F5621C9004CE1BE /* loadMarker.mm */,
@@ -372,6 +387,7 @@
 				0BD038A61F97B38F004B65F6 /* low_clearance_sign.dat in Resources */,
 				0B5F39E51F844CEF004870DE /* skywalk_far.dat in Resources */,
 				0B1573511F54601F004CE1BE /* campanile_stock_bw.jpg in Resources */,
+				0BDE98E31FBE521C003673F4 /* cutout_skywalk_1280x720.png in Resources */,
 				0BDF88E61F4B3BAE0014BFB7 /* testScene.scn in Resources */,
 				0BD038A71F97B38F004B65F6 /* low_clearance_sign.xml in Resources */,
 				0B483BFB1F4DDB6F007A1D29 /* skywalk.jpg in Resources */,
@@ -394,10 +410,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0BDE98E01FBE4D43003673F4 /* MaskedImage.cpp in Sources */,
 				0B15735B1F5621C9004CE1BE /* loadMarker.mm in Sources */,
 				0B1FCD4A1FBDE1C4002DBE98 /* cvARManager.mm in Sources */,
 				0BAFBB651F7EBAFE007B1FC6 /* SampleApplicationSession.mm in Sources */,
 				0BAFBB671F7EBAFE007B1FC6 /* SampleApplicationUtils.cpp in Sources */,
+				0BDE98DF1FBE4D43003673F4 /* ImageMatcher.cpp in Sources */,
 				0BAFBB701F7EBAFE007B1FC6 /* Texture.mm in Sources */,
 				0B15734B1F5451BF004CE1BE /* MainPageViewController.mm in Sources */,
 				0B483C031F4F8BF5007A1D29 /* grabbableArrow.mm in Sources */,
