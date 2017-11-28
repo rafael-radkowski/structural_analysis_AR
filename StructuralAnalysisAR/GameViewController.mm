@@ -263,7 +263,7 @@
         GLKMatrix4 camera_matrix =arManager->getCameraMatrix();
         [self printMatrix:camera_matrix];
         cameraNode.transform = SCNMatrix4FromGLKMatrix4(camera_matrix);
-        cameraNode.camera.projectionTransform = SCNMatrix4FromGLKMatrix4(arManager->getProjectionMatrix());
+//        cameraNode.camera.projectionTransform = SCNMatrix4FromGLKMatrix4(arManager->getProjectionMatrix());
     }
 }
 

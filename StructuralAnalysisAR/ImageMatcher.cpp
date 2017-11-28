@@ -14,7 +14,7 @@ ImageMatcher::ImageMatcher(const Mat& ref_img, int n_features, double ratio, dou
     , ransac_distance(ransac_distance) {
     // feat_matcher = FlannBasedMatcher::create();
     // feat_extractor = xfeatures2d::SIFT::create(2000);
-    feat_matcher = BFMatcher::create(NORM_L2, false);
+    feat_matcher = BFMatcher::create(NORM_HAMMING, false);
     feat_extractor = ORB::create(n_features);
     feat_detector = feat_extractor;
 
@@ -39,9 +39,6 @@ ImageMatcher::Correspondences ImageMatcher::getMatches(const cv::Mat test_img) {
     auto start_time = std::chrono::high_resolution_clock::now();
     feat_detector->detect(test_img, keypoints);
     feat_extractor->compute(test_img, keypoints, descriptors);
-    auto end_time = std::chrono::high_resolution_clock::now();
-    auto duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
-    *log << "Took " << duration_ms.count() << " ms to extract features" << std::endl;
 
     Correspondences corr;
 
@@ -91,6 +88,9 @@ ImageMatcher::Correspondences ImageMatcher::getMatches(const cv::Mat test_img) {
         corr.model_pts.push_back(ref_keypoints[match.trainIdx].pt);
         corr.img_pts.push_back(keypoints[match.queryIdx].pt);
     }
+    auto end_time = std::chrono::high_resolution_clock::now();
+    auto duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
+    *log << "Took " << duration_ms.count() << " ms to perform matching" << std::endl;
     return corr;
     
     // Mat homography_mat = cv::findHomography(img_pts, model_pts, cv::RANSAC /*CV_LMEDS*/, 1);

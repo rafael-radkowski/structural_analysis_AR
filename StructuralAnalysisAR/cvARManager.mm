@@ -33,6 +33,7 @@ GLKMatrix4 CVMat3ToGLKMat4(const cv::Mat& cvMat);
 @end
 
 cvARManager::cvARManager(UIView* view, SCNScene* scene) {
+//    cv::setNumThreads(0);
     // Set up camera callbacks
     camera = [[CvVideoCamera alloc] initWithParentView:nil];
     camera.defaultAVCaptureDevicePosition = AVCaptureDevicePositionBack;
@@ -75,16 +76,18 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene) {
 //    double intr_data[9] = {2927.801, 0, 1634.850,
 //                           0, 2943.291, 1262.958,
 //                           0, 0, 1};
-//    double intr_data[9] = {3322.232, 0, 1994.099,
-//                           0, 3289.874, 1426.956,
-//                           0, 0, 1};
+    double intr_data[9] = {3322.232, 0, 1994.099,
+                           0, 3289.874, 1426.956,
+                           0, 0, 1};
 //    double intr_data[9] = {1054.603, 0, 633.047,
 //                           0, 783.303, 339.751,
 //                           0, 0, 1};
-    double intr_data[9] = {1049, 0, 640,
-        0, 1049, 360,
-        0, 0, 1};
-    intrinsic_mat = cv::Mat(3, 3, CV_64F, intr_data);
+//    double intr_data[9] = {1049, 0, 640,
+//        0, 1049, 360,
+//        0, 0, 1};
+    cv::Mat raw_intrinsic_mat(3, 3, CV_64F, intr_data);
+    intrinsic_mat = cv::getOptimalNewCameraMatrix(raw_intrinsic_mat, std::vector<float>(4, 0), cv::Size(4032,3024), 0, cv::Size(1280,720));
+//    intrinsic_mat = cv::Mat(3, 3, CV_64F, intr_data);
     // Transform to account for crop
     
     // Load reference image
@@ -136,6 +139,8 @@ GLKMatrix4 cvARManager::getBgMatrix() {
 void cvARManager::processImage(cv::Mat& image) {
     // Negative value means flip in both X and Y axes
     cv::flip(image, image, -1);
+    cv::Mat overdrawn(image.size(), image.type());
+    image.copyTo(overdrawn);
     
     // Copy image to background Metal texture
     static MTLRegion region = MTLRegionMake2D(0, 0, video_width, video_height);
@@ -162,23 +167,72 @@ void cvARManager::processImage(cv::Mat& image) {
 //    }
     
     if (correspondences.img_pts.size() >= 5) {
+        cv::Mat mask;
 //        cv::Mat essential_mat = cv::findEssentialMat(correspondences.img_pts, correspondences.model_pts, intrinsic_mat, cv::RANSAC);
-        cv::Mat essential_mat = cv::findEssentialMat(correspondences.img_pts, correspondences.model_pts, cv::RANSAC);
-        std::cout << "Essential matrix: " << std::endl << essential_mat << std::endl;
-        cv::Mat rotation;
+//        cv::Mat essential_mat = cv::findEssentialMat(correspondences.img_pts, correspondences.model_pts, cv::RANSAC);
+//        cv::Mat essential_mat = cv::findEssentialMat(correspondences.img_pts, correspondences.model_pts, 1.0, cv::Point2d(0, 0), cv::RANSAC, 0.999, 1.0, mask);
+//        cv::Mat essential_mat = cv::findEssentialMat(correspondences.img_pts, correspondences.model_pts, intrinsic_mat, cv::RANSAC, 0.999, 1.0, mask);
+//        std::cout << "Essential matrix: " << std::endl << essential_mat << std::endl;
+        cv::Mat rotation, rotation_vec;
         cv::Mat translation;
 //        int n_inliers = cv::recoverPose(essential_mat, correspondences.img_pts, correspondences.model_pts, intrinsic_mat, rotation, translation);
-        int n_inliers = cv::recoverPose(essential_mat, correspondences.img_pts, correspondences.model_pts, rotation, translation);
-        std::cout << n_inliers << " inliers" << std::endl;
+//        int n_inliers = cv::recoverPose(essential_mat, correspondences.img_pts, correspondences.model_pts, rotation, translation, 1.0, cv::Point2d(0, 0), mask);
+//        int n_inliers = cv::recoverPose(essential_mat, correspondences.img_pts, correspondences.model_pts, intrinsic_mat, rotation, translation, mask);
+        
+        // convert 2d model points to 3d model points
+        // TODO: This can be done once
+        std::vector<cv::Point3f> model_pts3(correspondences.model_pts.size());
+        for (size_t i = 0; i < correspondences.model_pts.size(); ++i) {
+            model_pts3[i].x = correspondences.model_pts[i].x * (154.0 / 1280.0);
+//            model_pts3[i].y = (720 - correspondences.model_pts[i].y) * (115.0 / 720.0);
+            model_pts3[i].y = correspondences.model_pts[i].y * (115.0 / 720.0);
+            model_pts3[i].z = 0;
+//            cv::circle(overdrawn, correspondences.img_pts[i], 4, cv::Scalar(0, 0, 255));
+        }
+//        static MTLRegion region = MTLRegionMake2D(0, 0, video_width, video_height);
+//        [videoTexture replaceRegion:region mipmapLevel:0 withBytes:overdrawn.data bytesPerRow:(video_width*4)];
+
+        std::vector<float> dist_coeffs;
+//        cv::solvePnP(model_pts3, correspondences.img_pts, intrinsic_mat, dist_coeffs, rotation_vec, translation);
+        cv::solvePnPRansac(model_pts3, correspondences.img_pts, intrinsic_mat, dist_coeffs, rotation_vec, translation);
+        cv::Rodrigues(rotation_vec, rotation);
+//        rotation = rotation.inv();
+//        rotation = rotation.t();
+        
+        
+        
+//        std::cout << n_inliers << " inliers" << std::endl;
         std::cout << "Rotation:\n" << rotation << std::endl;
         std::cout << "Translation:\n" << translation << std::endl;
         
-        float scale = 100;
-        cameraMatrix = CVMat3ToGLKMat4(rotation);
-        cameraMatrix.m30 = -translation.at<double>(0) * scale;
-        cameraMatrix.m31 = -translation.at<double>(1) * scale;
-        cameraMatrix.m32 = -translation.at<double>(2) * scale;
-        cameraMatrix.m33 = 1.0;
+        float scale = 1;
+        GLKMatrix4 extrinsic = CVMat3ToGLKMat4(rotation);
+        extrinsic.m03 = translation.at<double>(0) * scale;
+        extrinsic.m13 = translation.at<double>(1) * scale;
+        extrinsic.m23 = translation.at<double>(2) * scale;
+        extrinsic.m33 = 1.0;
+        bool invertible;
+        GLKMatrix4 inverted = GLKMatrix4Invert(extrinsic, &invertible); // inverse matrix!
+        assert(invertible);
+        cameraMatrix = GLKMatrix4Make(inverted.m00,  inverted.m01,   inverted.m02, 0,
+                                      inverted.m10,  inverted.m11,  -inverted.m12, 0,
+                                      inverted.m20,  -inverted.m21,  inverted.m22, 0,
+                                      inverted.m03, -inverted.m13, -inverted.m23, 1);
+//        cameraMatrix.m30 += -60;
+//        cameraMatrix.m31 += 57;
+//        cameraMatrix.m32 += 50;
+//        cameraMatrix = GLKMatrix4Transpose(inverted);
+//        cameraMatrix.m30 = -cameraMatrix.m30;
+//        cameraMatrix.m31 = -cameraMatrix.m31;
+//        cameraMatrix.m32 = -cameraMatrix.m32;
+//        GLKMatrix4 rot_mat = GLKMatrix4MakeXRotation(M_PI);
+//        cameraMatrix = GLKMatrix4Multiply(rot_mat, cameraMatrix);
+//        cameraMatrix.m30 = translation.at<double>(0) * scale;
+//        cameraMatrix.m31 = translation.at<double>(1) * scale;
+//        cameraMatrix.m32 = translation.at<double>(2) * scale;
+    }
+    else {
+        std::cout << "Not enough points for cv::recoverPose" << std::endl;
     }
     
 }

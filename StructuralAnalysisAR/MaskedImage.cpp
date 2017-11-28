@@ -65,7 +65,7 @@ Mat MaskedImage::getCropped() {
 
 
 void MaskedImage::findSkywalk() {
-    auto lines = findLines(false);
+    auto lines = findLines(true);
     // 0.6 of width required
     int min_length = 0.6 * orig_img.size[1];
     float min_length2 = min_length * min_length;
