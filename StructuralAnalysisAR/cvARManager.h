@@ -18,6 +18,10 @@
 
 #include <stdio.h>
 #include <functional>
+#include <thread>
+#include <atomic>
+#include <mutex>
+#include <condition_variable>
 
 #include "ARManager.h"
 
@@ -54,6 +58,14 @@ private:
     cv::Mat intrinsic_mat;
     
     void processImage(cv::Mat& image);
+    
+    // holds the frame that is being
+    cv::Mat working_frame;
+    std::atomic<bool> worker_busy;
+    std::condition_variable worker_cond_var;
+    std::mutex worker_mutex;
+    std::thread worker_thread;
+    void performTracking();
     
     GLKMatrix4 cameraMatrix;
     // AR things

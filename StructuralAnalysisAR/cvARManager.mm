@@ -11,6 +11,9 @@
 
 #import <GLKit/GLKMatrix4.h>
 
+// Use 3840x2160 video resolution
+//#define HIGH_RES
+
 // Utility functions (defined at bottom)
 cv::Mat cvMatFromUIImage(UIImage* image);
 UIImage* UIImageFromCVMat(cv::Mat cvMat);
@@ -32,21 +35,30 @@ GLKMatrix4 CVMat3ToGLKMat4(const cv::Mat& cvMat);
 }
 @end
 
-cvARManager::cvARManager(UIView* view, SCNScene* scene) {
+cvARManager::cvARManager(UIView* view, SCNScene* scene)
+    : worker_busy(false) {
 //    cv::setNumThreads(0);
     // Set up camera callbacks
     camera = [[CvVideoCamera alloc] initWithParentView:nil];
     camera.defaultAVCaptureDevicePosition = AVCaptureDevicePositionBack;
+#ifdef HIGH_RES
+        camera.defaultAVCaptureSessionPreset = AVCaptureSessionPreset3840x2160;
+#else
     camera.defaultAVCaptureSessionPreset = AVCaptureSessionPreset1280x720;
-//    camera.defaultAVCaptureSessionPreset = AVCaptureSessionPreset3840x2160;
+#endif
     camera.defaultFPS = 30;
     // Make lambda for calling this->processImage(). Lets the callback not have to worry that its a member function
     auto this_processImage = [this](cv::Mat& img) {processImage(img);};
     camDelegate = [[CvCameraDelegateObj alloc] initWithCallback:this_processImage];
     camera.delegate = camDelegate;
     
+#ifdef HIGH_RES
+    video_width = 3840;
+    video_height = 2160;
+#else
     video_width = 1280;
     video_height = 720;
+#endif
     
     
     // Create texture for holding video
@@ -54,6 +66,10 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene) {
     id<MTLDevice> gpu = MTLCreateSystemDefaultDevice();
     videoTexture = [gpu newTextureWithDescriptor:texDescription];
     scene.background.contents = videoTexture;
+    
+    // Allocate space for frame to hold frame being processed for tracking
+    working_frame = cv::Mat(video_height, video_width, CV_8UC4);
+    worker_thread = std::thread([this] () {while (1) performTracking();});
     
     cameraMatrix = GLKMatrix4Identity;
     
@@ -86,14 +102,19 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene) {
 //        0, 1049, 360,
 //        0, 0, 1};
     cv::Mat raw_intrinsic_mat(3, 3, CV_64F, intr_data);
-    intrinsic_mat = cv::getOptimalNewCameraMatrix(raw_intrinsic_mat, std::vector<float>(4, 0), cv::Size(4032,3024), 0, cv::Size(1280,720));
+    intrinsic_mat = cv::getOptimalNewCameraMatrix(raw_intrinsic_mat, std::vector<float>(4, 0), cv::Size(4032,3024), 0, cv::Size(video_width,video_height));
+
 //    intrinsic_mat = cv::Mat(3, 3, CV_64F, intr_data);
     // Transform to account for crop
     
     // Load reference image
+#ifdef HIGH_RES
+    UIImage* bgImage = [UIImage imageNamed:@"cutout_skywalk_3840x2160.png"];
+#else
     UIImage* bgImage = [UIImage imageNamed:@"cutout_skywalk_1280x720.png"];
+#endif
 //    matcher = ImageMatcher(cvMatFromUIImage(bgImage), 6000, 0.75, 0.9, 3.0, std::cout); // for 1280x720
-    matcher = ImageMatcher(cvMatFromUIImage(bgImage), 4000, 0.85, 0.98, 4.0, std::cout); // for 3840x
+    matcher = ImageMatcher(cvMatFromUIImage(bgImage), 4000, 0.85, 0.98, 4.0, std::cout); // for 3840x2160
     
     
     // Copy image to background Metal texture
@@ -139,69 +160,86 @@ GLKMatrix4 cvARManager::getBgMatrix() {
 void cvARManager::processImage(cv::Mat& image) {
     // Negative value means flip in both X and Y axes
     cv::flip(image, image, -1);
-    cv::Mat overdrawn(image.size(), image.type());
-    image.copyTo(overdrawn);
+//    cv::Mat overdrawn(image.size(), image.type());
     
     // Copy image to background Metal texture
     static MTLRegion region = MTLRegionMake2D(0, 0, video_width, video_height);
     [videoTexture replaceRegion:region mipmapLevel:0 withBytes:image.data bytesPerRow:(video_width*4)];
+
+    if (!worker_busy) {
+        // Obtain mutex for this scope
+        std::unique_lock<std::mutex> lk(worker_mutex);
+        
+        worker_busy = true;
+        image.copyTo(working_frame);
+        worker_cond_var.notify_one();
+    }
+}
+
+void cvARManager::performTracking() {
+    std::unique_lock<std::mutex> lk(worker_mutex);
+    while (!worker_busy) {
+        worker_cond_var.wait(lk);
+    }
     
-    MaskedImage masked(image);
+    MaskedImage masked(working_frame);
     cv::Mat cropped = masked.getCropped();
     auto correspondences = matcher.getMatches(cropped);
     
     masked.uncropPoints(correspondences.img_pts);
-//    cv::Mat homography_mat;
-//    if (correspondences.img_pts.size() >= 4) {
-//        homography_mat = cv::findHomography(correspondences.img_pts, correspondences.model_pts, cv::RANSAC, 1);
-//    }
-//    else {
-//        std::cout << "error: not enough points for homography" << std::endl;
-//        homography_mat = cv::Mat::eye(3, 3, CV_32F);
-//    }
-//    std::cout << "Homography matrix: " << std::endl << homography_mat << std::endl;
+    //    cv::Mat homography_mat;
+    //    if (correspondences.img_pts.size() >= 4) {
+    //        homography_mat = cv::findHomography(correspondences.img_pts, correspondences.model_pts, cv::RANSAC, 1);
+    //    }
+    //    else {
+    //        std::cout << "error: not enough points for homography" << std::endl;
+    //        homography_mat = cv::Mat::eye(3, 3, CV_32F);
+    //    }
+    //    std::cout << "Homography matrix: " << std::endl << homography_mat << std::endl;
     
-//    cv::Mat warped_img = cv::Mat(image.size(), image.type());
-//    if (homography_mat.dims) {
-//        warpPerspective(image, warped_img, homography_mat, warped_img.size(), cv::INTER_LINEAR);
-//    }
+    //    cv::Mat warped_img = cv::Mat(working_frame.size(), working_frame.type());
+    //    if (homography_mat.dims) {
+    //        warpPerspective(working_frame, warped_img, homography_mat, warped_img.size(), cv::INTER_LINEAR);
+    //    }
     
     if (correspondences.img_pts.size() >= 5) {
         cv::Mat mask;
-//        cv::Mat essential_mat = cv::findEssentialMat(correspondences.img_pts, correspondences.model_pts, intrinsic_mat, cv::RANSAC);
-//        cv::Mat essential_mat = cv::findEssentialMat(correspondences.img_pts, correspondences.model_pts, cv::RANSAC);
-//        cv::Mat essential_mat = cv::findEssentialMat(correspondences.img_pts, correspondences.model_pts, 1.0, cv::Point2d(0, 0), cv::RANSAC, 0.999, 1.0, mask);
-//        cv::Mat essential_mat = cv::findEssentialMat(correspondences.img_pts, correspondences.model_pts, intrinsic_mat, cv::RANSAC, 0.999, 1.0, mask);
-//        std::cout << "Essential matrix: " << std::endl << essential_mat << std::endl;
+        //        cv::Mat essential_mat = cv::findEssentialMat(correspondences.img_pts, correspondences.model_pts, intrinsic_mat, cv::RANSAC);
+        //        cv::Mat essential_mat = cv::findEssentialMat(correspondences.img_pts, correspondences.model_pts, cv::RANSAC);
+        //        cv::Mat essential_mat = cv::findEssentialMat(correspondences.img_pts, correspondences.model_pts, 1.0, cv::Point2d(0, 0), cv::RANSAC, 0.999, 1.0, mask);
+        //        cv::Mat essential_mat = cv::findEssentialMat(correspondences.img_pts, correspondences.model_pts, intrinsic_mat, cv::RANSAC, 0.999, 1.0, mask);
+        //        std::cout << "Essential matrix: " << std::endl << essential_mat << std::endl;
         cv::Mat rotation, rotation_vec;
         cv::Mat translation;
-//        int n_inliers = cv::recoverPose(essential_mat, correspondences.img_pts, correspondences.model_pts, intrinsic_mat, rotation, translation);
-//        int n_inliers = cv::recoverPose(essential_mat, correspondences.img_pts, correspondences.model_pts, rotation, translation, 1.0, cv::Point2d(0, 0), mask);
-//        int n_inliers = cv::recoverPose(essential_mat, correspondences.img_pts, correspondences.model_pts, intrinsic_mat, rotation, translation, mask);
+        //        int n_inliers = cv::recoverPose(essential_mat, correspondences.img_pts, correspondences.model_pts, intrinsic_mat, rotation, translation);
+        //        int n_inliers = cv::recoverPose(essential_mat, correspondences.img_pts, correspondences.model_pts, rotation, translation, 1.0, cv::Point2d(0, 0), mask);
+        //        int n_inliers = cv::recoverPose(essential_mat, correspondences.img_pts, correspondences.model_pts, intrinsic_mat, rotation, translation, mask);
         
         // convert 2d model points to 3d model points
         // TODO: This can be done once
         std::vector<cv::Point3f> model_pts3(correspondences.model_pts.size());
+        const float model_width = 154;
+        const float model_height = (model_width * ((double)video_height / video_width));
         for (size_t i = 0; i < correspondences.model_pts.size(); ++i) {
-            model_pts3[i].x = correspondences.model_pts[i].x * (154.0 / 1280.0);
-//            model_pts3[i].y = (720 - correspondences.model_pts[i].y) * (115.0 / 720.0);
-            model_pts3[i].y = correspondences.model_pts[i].y * (115.0 / 720.0);
+            model_pts3[i].x = correspondences.model_pts[i].x * (model_width / video_width) - (model_width / 2);
+            //            model_pts3[i].y = (720 - correspondences.model_pts[i].y) * (115.0 / 720.0);
+            model_pts3[i].y = correspondences.model_pts[i].y * (model_height / video_height) - (model_height / 2);
             model_pts3[i].z = 0;
-//            cv::circle(overdrawn, correspondences.img_pts[i], 4, cv::Scalar(0, 0, 255));
+            //            cv::circle(overdrawn, correspondences.img_pts[i], 4, cv::Scalar(0, 0, 255));
         }
-//        static MTLRegion region = MTLRegionMake2D(0, 0, video_width, video_height);
-//        [videoTexture replaceRegion:region mipmapLevel:0 withBytes:overdrawn.data bytesPerRow:(video_width*4)];
-
+        //        static MTLRegion region = MTLRegionMake2D(0, 0, video_width, video_height);
+        //        [videoTexture replaceRegion:region mipmapLevel:0 withBytes:overdrawn.data bytesPerRow:(video_width*4)];
+        
         std::vector<float> dist_coeffs;
-//        cv::solvePnP(model_pts3, correspondences.img_pts, intrinsic_mat, dist_coeffs, rotation_vec, translation);
+        //        cv::solvePnP(model_pts3, correspondences.img_pts, intrinsic_mat, dist_coeffs, rotation_vec, translation);
         cv::solvePnPRansac(model_pts3, correspondences.img_pts, intrinsic_mat, dist_coeffs, rotation_vec, translation);
         cv::Rodrigues(rotation_vec, rotation);
-//        rotation = rotation.inv();
-//        rotation = rotation.t();
+        //        rotation = rotation.inv();
+        //        rotation = rotation.t();
         
         
         
-//        std::cout << n_inliers << " inliers" << std::endl;
+        //        std::cout << n_inliers << " inliers" << std::endl;
         std::cout << "Rotation:\n" << rotation << std::endl;
         std::cout << "Translation:\n" << translation << std::endl;
         
@@ -218,23 +256,22 @@ void cvARManager::processImage(cv::Mat& image) {
                                       inverted.m10,  inverted.m11,  -inverted.m12, 0,
                                       inverted.m20,  -inverted.m21,  inverted.m22, 0,
                                       inverted.m03, -inverted.m13, -inverted.m23, 1);
-//        cameraMatrix.m30 += -60;
-//        cameraMatrix.m31 += 57;
-//        cameraMatrix.m32 += 50;
-//        cameraMatrix = GLKMatrix4Transpose(inverted);
-//        cameraMatrix.m30 = -cameraMatrix.m30;
-//        cameraMatrix.m31 = -cameraMatrix.m31;
-//        cameraMatrix.m32 = -cameraMatrix.m32;
-//        GLKMatrix4 rot_mat = GLKMatrix4MakeXRotation(M_PI);
-//        cameraMatrix = GLKMatrix4Multiply(rot_mat, cameraMatrix);
-//        cameraMatrix.m30 = translation.at<double>(0) * scale;
-//        cameraMatrix.m31 = translation.at<double>(1) * scale;
-//        cameraMatrix.m32 = translation.at<double>(2) * scale;
+        //        cameraMatrix.m31 += 57;
+        //        cameraMatrix.m32 += 50;
+        //        cameraMatrix = GLKMatrix4Transpose(inverted);
+        //        cameraMatrix.m30 = -cameraMatrix.m30;
+        //        cameraMatrix.m31 = -cameraMatrix.m31;
+        //        cameraMatrix.m32 = -cameraMatrix.m32;
+        //        GLKMatrix4 rot_mat = GLKMatrix4MakeXRotation(M_PI);
+        //        cameraMatrix = GLKMatrix4Multiply(rot_mat, cameraMatrix);
+        //        cameraMatrix.m30 = translation.at<double>(0) * scale;
+        //        cameraMatrix.m31 = translation.at<double>(1) * scale;
+        //        cameraMatrix.m32 = translation.at<double>(2) * scale;
     }
     else {
         std::cout << "Not enough points for cv::recoverPose" << std::endl;
     }
-    
+    worker_busy = false;
 }
 
 /////////////////////////////////////////////////////////////////////////////////

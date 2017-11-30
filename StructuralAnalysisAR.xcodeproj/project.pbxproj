@@ -29,6 +29,7 @@
 		0B5F39DE1F843975004870DE /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0B5F39DD1F843975004870DE /* Shaders.metal */; };
 		0B5F39E51F844CEF004870DE /* skywalk_far.dat in Resources */ = {isa = PBXBuildFile; fileRef = 0B5F39E31F844CEF004870DE /* skywalk_far.dat */; };
 		0B5F39E61F844CEF004870DE /* skywalk_far.xml in Resources */ = {isa = PBXBuildFile; fileRef = 0B5F39E41F844CEF004870DE /* skywalk_far.xml */; };
+		0B6E6A9D1FCF7EB500EE7950 /* cutout_skywalk_3840x2160.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B6E6A9C1FCF7EB500EE7950 /* cutout_skywalk_3840x2160.png */; };
 		0B79A12E1F7ABA5300632CE4 /* OverlayLabel.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B79A12C1F7ABA5300632CE4 /* OverlayLabel.mm */; };
 		0B99FF611F47A79D00431996 /* View.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B99FF601F47A79D00431996 /* View.xib */; };
 		0BAD78751F66C622003CAE93 /* PeopleVis.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0BAD78731F66C622003CAE93 /* PeopleVis.mm */; };
@@ -94,6 +95,7 @@
 		0B5F39DD1F843975004870DE /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
 		0B5F39E31F844CEF004870DE /* skywalk_far.dat */ = {isa = PBXFileReference; lastKnownFileType = file; name = skywalk_far.dat; path = image_assets/skywalk_far.dat; sourceTree = "<group>"; };
 		0B5F39E41F844CEF004870DE /* skywalk_far.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = skywalk_far.xml; path = image_assets/skywalk_far.xml; sourceTree = "<group>"; };
+		0B6E6A9C1FCF7EB500EE7950 /* cutout_skywalk_3840x2160.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = cutout_skywalk_3840x2160.png; path = image_assets/cutout_skywalk_3840x2160.png; sourceTree = "<group>"; };
 		0B79A12C1F7ABA5300632CE4 /* OverlayLabel.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OverlayLabel.mm; sourceTree = "<group>"; };
 		0B79A12D1F7ABA5300632CE4 /* OverlayLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverlayLabel.h; sourceTree = "<group>"; };
 		0B99FF601F47A79D00431996 /* View.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = View.xib; sourceTree = "<group>"; };
@@ -175,6 +177,7 @@
 			isa = PBXGroup;
 			children = (
 				0BDE98E21FBE521C003673F4 /* cutout_skywalk_1280x720.png */,
+				0B6E6A9C1FCF7EB500EE7950 /* cutout_skywalk_3840x2160.png */,
 				0BD038A41F97B38F004B65F6 /* low_clearance_sign.dat */,
 				0BD038A51F97B38F004B65F6 /* low_clearance_sign.xml */,
 				0B5F39E31F844CEF004870DE /* skywalk_far.dat */,
@@ -396,6 +399,7 @@
 				0B15734D1F545CCC004CE1BE /* isuofficallogo_cropped.png in Resources */,
 				0B1573531F54615D004CE1BE /* campanile_stock_cropped.jpg in Resources */,
 				0B1573551F5463A4004CE1BE /* isuofficallogo_light.png in Resources */,
+				0B6E6A9D1FCF7EB500EE7950 /* cutout_skywalk_3840x2160.png in Resources */,
 				0BAD78781F66CDDE003CAE93 /* stick_man.png in Resources */,
 				0BAD78791F66CDDE003CAE93 /* stick_woman.png in Resources */,
 				0B5F39E61F844CEF004870DE /* skywalk_far.xml in Resources */,
