@@ -10,6 +10,7 @@
 #define ARManager_hpp
 
 #include <stdio.h>
+#include <functional>
 
 #import <Metal/Metal.h>
 #import <SceneKit/SceneKit.h>
@@ -18,10 +19,16 @@
 
 class ARManager {
 public:
-    virtual void initAR() = 0;
     virtual bool startAR() = 0;
+    enum CB_STATE {
+        PROCESSED_FRAME, // When a single frame has just completed processing
+        DONE_CAPTURING // When all frames to be captured have been saved, but not necessarily processed yet
+    };
+    virtual void doFrame(int n_avg, std::function<void(CB_STATE)> cb_func) = 0;
     virtual size_t stopAR() = 0;
     virtual void pauseAR() = 0;
+    virtual void startCamera() = 0;
+    virtual void stopCamera() = 0;
     virtual GLKMatrix4 getCameraMatrix() = 0;
     virtual GLKMatrix4 getProjectionMatrix() = 0;
     virtual id<MTLTexture> getBgTexture() = 0;

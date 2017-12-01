@@ -67,11 +67,11 @@
                             </connections>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YTf-tA-4gj">
-                            <rect key="frame" x="926" y="10" width="110" height="30"/>
+                            <rect key="frame" x="899" y="10" width="137" height="30"/>
                             <constraints>
-                                <constraint firstAttribute="width" constant="110" id="URG-rG-KEi"/>
+                                <constraint firstAttribute="width" constant="137" id="URG-rG-KEi"/>
                             </constraints>
-                            <state key="normal" title="Freeze View"/>
+                            <state key="normal" title="Pause Camera"/>
                             <connections>
                                 <action selector="freezePressed:" destination="-1" eventType="touchUpInside" id="pmx-cM-8F0"/>
                             </connections>

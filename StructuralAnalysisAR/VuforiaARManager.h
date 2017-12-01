@@ -26,10 +26,12 @@
 class VuforiaARManager : public ARManager, SampleApplicationControlCpp {
 public:
     VuforiaARManager(ARView* view, SCNScene* scene, int VuforiaInitFlags, UIInterfaceOrientation ARViewOrientation);
-    void initAR() override;
+    void doFrame(int n_avg, std::function<void(CB_STATE)> cb_func) override;
     bool startAR() override;
     size_t stopAR() override;
     void pauseAR() override;
+    void startCamera() override;
+    void stopCamera() override;
     GLKMatrix4 getCameraMatrix() override;
     GLKMatrix4 getProjectionMatrix() override;
     id<MTLTexture> getBgTexture() override;

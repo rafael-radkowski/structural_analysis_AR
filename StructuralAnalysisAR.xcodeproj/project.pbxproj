@@ -53,6 +53,7 @@
 		0BB164471F4732DC0053CA3B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0BB164451F4732DC0053CA3B /* Main.storyboard */; };
 		0BB164491F4732DC0053CA3B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0BB164481F4732DC0053CA3B /* Assets.xcassets */; };
 		0BB1644C1F4732DC0053CA3B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0BB1644A1F4732DC0053CA3B /* LaunchScreen.storyboard */; };
+		0BB5AD101FD1B3C8001C78CD /* cutout_skywalk_1920x1080.png in Resources */ = {isa = PBXBuildFile; fileRef = 0BB5AD0F1FD1B3C7001C78CD /* cutout_skywalk_1920x1080.png */; };
 		0BD038A31F9513B8004B65F6 /* MetalKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BD038A21F9513B8004B65F6 /* MetalKit.framework */; };
 		0BD038A61F97B38F004B65F6 /* low_clearance_sign.dat in Resources */ = {isa = PBXBuildFile; fileRef = 0BD038A41F97B38F004B65F6 /* low_clearance_sign.dat */; };
 		0BD038A71F97B38F004B65F6 /* low_clearance_sign.xml in Resources */ = {isa = PBXBuildFile; fileRef = 0BD038A51F97B38F004B65F6 /* low_clearance_sign.xml */; };
@@ -132,6 +133,7 @@
 		0BB164481F4732DC0053CA3B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0BB1644B1F4732DC0053CA3B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		0BB1644D1F4732DC0053CA3B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0BB5AD0F1FD1B3C7001C78CD /* cutout_skywalk_1920x1080.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = cutout_skywalk_1920x1080.png; path = image_assets/cutout_skywalk_1920x1080.png; sourceTree = "<group>"; };
 		0BD038A21F9513B8004B65F6 /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = SDKROOT; };
 		0BD038A41F97B38F004B65F6 /* low_clearance_sign.dat */ = {isa = PBXFileReference; lastKnownFileType = file; name = low_clearance_sign.dat; path = image_assets/low_clearance_sign.dat; sourceTree = "<group>"; };
 		0BD038A51F97B38F004B65F6 /* low_clearance_sign.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = low_clearance_sign.xml; path = image_assets/low_clearance_sign.xml; sourceTree = "<group>"; };
@@ -177,6 +179,7 @@
 			isa = PBXGroup;
 			children = (
 				0BDE98E21FBE521C003673F4 /* cutout_skywalk_1280x720.png */,
+				0BB5AD0F1FD1B3C7001C78CD /* cutout_skywalk_1920x1080.png */,
 				0B6E6A9C1FCF7EB500EE7950 /* cutout_skywalk_3840x2160.png */,
 				0BD038A41F97B38F004B65F6 /* low_clearance_sign.dat */,
 				0BD038A51F97B38F004B65F6 /* low_clearance_sign.xml */,
@@ -382,6 +385,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0BB5AD101FD1B3C8001C78CD /* cutout_skywalk_1920x1080.png in Resources */,
 				0B99FF611F47A79D00431996 /* View.xib in Resources */,
 				0BB1644C1F4732DC0053CA3B /* LaunchScreen.storyboard in Resources */,
 				0BB164491F4732DC0053CA3B /* Assets.xcassets in Resources */,

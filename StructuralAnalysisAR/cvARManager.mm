@@ -18,6 +18,7 @@
 cv::Mat cvMatFromUIImage(UIImage* image);
 UIImage* UIImageFromCVMat(cv::Mat cvMat);
 GLKMatrix4 CVMat3ToGLKMat4(const cv::Mat& cvMat);
+GLKMatrix4 CVMat4ToGLKMat4(const cv::Mat& cvMat);
 
 
 @implementation CvCameraDelegateObj
@@ -36,7 +37,7 @@ GLKMatrix4 CVMat3ToGLKMat4(const cv::Mat& cvMat);
 @end
 
 cvARManager::cvARManager(UIView* view, SCNScene* scene)
-    : worker_busy(false) {
+: worker_busy(false) {
 //    cv::setNumThreads(0);
     // Set up camera callbacks
     camera = [[CvVideoCamera alloc] initWithParentView:nil];
@@ -44,7 +45,7 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene)
 #ifdef HIGH_RES
         camera.defaultAVCaptureSessionPreset = AVCaptureSessionPreset3840x2160;
 #else
-    camera.defaultAVCaptureSessionPreset = AVCaptureSessionPreset1280x720;
+    camera.defaultAVCaptureSessionPreset = AVCaptureSessionPreset1920x1080;
 #endif
     camera.defaultFPS = 30;
     // Make lambda for calling this->processImage(). Lets the callback not have to worry that its a member function
@@ -52,12 +53,33 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene)
     camDelegate = [[CvCameraDelegateObj alloc] initWithCallback:this_processImage];
     camera.delegate = camDelegate;
     
+    
+//    std::cout << "sessio nloaded: " << camera.captureSessionLoaded << std::endl;
+//    if ([camera.captureSession canSetSessionPreset:AVCaptureSessionPreset3840x2160]) {
+//        std::cout << "3840" << std::endl;
+//        video_width = 3840;
+//        video_height = 2160;
+//    }
+//    else if ([camera.captureSession canSetSessionPreset:AVCaptureSessionPreset1920x1080]) {
+//        std::cout << "1920" << std::endl;
+//        video_width = 1920;
+//        video_height = 1080;
+//    }
+//    else if ([camera.captureSession canSetSessionPreset:AVCaptureSessionPreset1280x720]) {
+//        std::cout << "1280" << std::endl;
+//        video_width = 1280;
+//        video_height = 720;
+//    }
+//    else {
+//        std::cout << "Your camera is terrible" << std::endl;
+//    }
+    
 #ifdef HIGH_RES
     video_width = 3840;
     video_height = 2160;
 #else
-    video_width = 1280;
-    video_height = 720;
+    video_width = 1920;
+    video_height = 1080;
 #endif
     
     
@@ -69,6 +91,7 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene)
     
     // Allocate space for frame to hold frame being processed for tracking
     working_frame = cv::Mat(video_height, video_width, CV_8UC4);
+    // start background worker thread to perform tracking
     worker_thread = std::thread([this] () {while (1) performTracking();});
     
     cameraMatrix = GLKMatrix4Identity;
@@ -111,25 +134,28 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene)
 #ifdef HIGH_RES
     UIImage* bgImage = [UIImage imageNamed:@"cutout_skywalk_3840x2160.png"];
 #else
-    UIImage* bgImage = [UIImage imageNamed:@"cutout_skywalk_1280x720.png"];
+    UIImage* bgImage = [UIImage imageNamed:@"cutout_skywalk_1920x1080.png"];
 #endif
 //    matcher = ImageMatcher(cvMatFromUIImage(bgImage), 6000, 0.75, 0.9, 3.0, std::cout); // for 1280x720
-    matcher = ImageMatcher(cvMatFromUIImage(bgImage), 4000, 0.85, 0.98, 4.0, std::cout); // for 3840x2160
+    matcher = ImageMatcher(cvMatFromUIImage(bgImage), 6000, 0.8, 0.98, 4.0, std::cout); // for 3840x2160
     
     
     // Copy image to background Metal texture
 //    static MTLRegion region = MTLRegionMake2D(0, 0, video_width, video_height);
 //    [videoTexture replaceRegion:region mipmapLevel:0 withBytes:cvMatFromUIImage(bgImage).data bytesPerRow:(video_width*4)];
-    
-    [camera start];
 }
 
-void cvARManager::initAR() {
-    
+void cvARManager::doFrame(int n_avg, std::function<void(CB_STATE)> cb_func) {
+    captured_frames.clear();
+    captured_poses.clear();
+    frames_to_capture = n_avg;
+    frame_callback = cb_func;
 }
 
 bool cvARManager::startAR() {
-    return false;
+    do_tracking = true;
+    [camera start];
+    return true;
 }
 
 size_t cvARManager::stopAR() {
@@ -137,7 +163,15 @@ size_t cvARManager::stopAR() {
 }
 
 void cvARManager::pauseAR() {
-    
+    do_tracking = false;
+}
+
+void cvARManager::startCamera() {
+    [camera start];
+}
+
+void cvARManager::stopCamera() {
+    [camera stop];
 }
 
 GLKMatrix4 cvARManager::getCameraMatrix() {
@@ -166,7 +200,7 @@ void cvARManager::processImage(cv::Mat& image) {
     static MTLRegion region = MTLRegionMake2D(0, 0, video_width, video_height);
     [videoTexture replaceRegion:region mipmapLevel:0 withBytes:image.data bytesPerRow:(video_width*4)];
 
-    if (!worker_busy) {
+    if (!worker_busy && do_tracking) {
         // Obtain mutex for this scope
         std::unique_lock<std::mutex> lk(worker_mutex);
         
@@ -174,15 +208,39 @@ void cvARManager::processImage(cv::Mat& image) {
         image.copyTo(working_frame);
         worker_cond_var.notify_one();
     }
+    if (frames_to_capture) {
+        captured_frames.push_back(image.clone());
+        frames_to_capture--;
+        // wake up the tracking thread
+        worker_cond_var.notify_one();
+        // All frames have been captured, so notify callback
+        if (!frames_to_capture) {
+            frame_callback(DONE_CAPTURING);
+        }
+    }
 }
 
 void cvARManager::performTracking() {
     std::unique_lock<std::mutex> lk(worker_mutex);
-    while (!worker_busy) {
+    // Wait only if there is no work to do, either in the form of live data in working_frame, or captured data in captured_frames
+    while (!worker_busy && !captured_frames.size()) {
         worker_cond_var.wait(lk);
     }
     
-    MaskedImage masked(working_frame);
+    // image that will be processed
+    cv::Mat frame;
+    bool processed_live_frame = false;
+    // Process captured frames with higher priority
+    if (captured_frames.size()) {
+        frame = captured_frames.front();
+        captured_frames.pop_front();
+    }
+    else {
+        frame = working_frame;
+        processed_live_frame = true;
+    }
+    
+    MaskedImage masked(frame);
     cv::Mat cropped = masked.getCropped();
     auto correspondences = matcher.getMatches(cropped);
     
@@ -197,9 +255,9 @@ void cvARManager::performTracking() {
     //    }
     //    std::cout << "Homography matrix: " << std::endl << homography_mat << std::endl;
     
-    //    cv::Mat warped_img = cv::Mat(working_frame.size(), working_frame.type());
+    //    cv::Mat warped_img = cv::Mat(frame.size(), frame.type());
     //    if (homography_mat.dims) {
-    //        warpPerspective(working_frame, warped_img, homography_mat, warped_img.size(), cv::INTER_LINEAR);
+    //        warpPerspective(frame, warped_img, homography_mat, warped_img.size(), cv::INTER_LINEAR);
     //    }
     
     if (correspondences.img_pts.size() >= 5) {
@@ -240,22 +298,57 @@ void cvARManager::performTracking() {
         
         
         //        std::cout << n_inliers << " inliers" << std::endl;
-        std::cout << "Rotation:\n" << rotation << std::endl;
-        std::cout << "Translation:\n" << translation << std::endl;
+//        std::cout << "Rotation:\n" << rotation << std::endl;
+//        std::cout << "Translation:\n" << translation << std::endl;
         
-        float scale = 1;
-        GLKMatrix4 extrinsic = CVMat3ToGLKMat4(rotation);
-        extrinsic.m03 = translation.at<double>(0) * scale;
-        extrinsic.m13 = translation.at<double>(1) * scale;
-        extrinsic.m23 = translation.at<double>(2) * scale;
-        extrinsic.m33 = 1.0;
-        bool invertible;
-        GLKMatrix4 inverted = GLKMatrix4Invert(extrinsic, &invertible); // inverse matrix!
-        assert(invertible);
-        cameraMatrix = GLKMatrix4Make(inverted.m00,  inverted.m01,   inverted.m02, 0,
-                                      inverted.m10,  inverted.m11,  -inverted.m12, 0,
-                                      inverted.m20,  -inverted.m21,  inverted.m22, 0,
-                                      inverted.m03, -inverted.m13, -inverted.m23, 1);
+        cv::Mat cvExtrinsic(4, 4, CV_64F);
+        // copy rotation matrix into a larger 4x4 transformation matrix
+        rotation.copyTo(cvExtrinsic.colRange(0, 3).rowRange(0, 3));
+        
+//        extrinsic.at<double>(0,3) = translation.at<double>(0) * scale;
+//        extrinsic.at<double>(1,3) = translation.at<double>(0) * scale;
+//        extrinsic.at<double>(2,3) = translation.at<double>(0) * scale;
+        translation.copyTo(cvExtrinsic.col(3).rowRange(0,3));
+        cvExtrinsic.row(3).setTo(0);
+        cvExtrinsic.at<double>(3,3) = 1;
+        cv::Mat inverted = cvExtrinsic.inv();
+
+        // Transform the OpenCV camera matrix into the compatible format for SceneKit
+        cv::Mat skExtrinsic(inverted);
+        // Set new bottom row to be the old rightmost column
+        skExtrinsic.col(3).copyTo(skExtrinsic.row(3).reshape(0,4));
+        // clear rightmost column
+        skExtrinsic.col(3).setTo(0);
+        skExtrinsic.at<double>(3,3) = 1;
+        // negate the necessary elements (why?)
+        auto negate = [&skExtrinsic](int row, int col) {skExtrinsic.at<double>(row,col) = -skExtrinsic.at<double>(row,col);};
+        negate(1,2);
+        negate(2,1);
+        negate(3,1);
+        negate(3,2);
+        
+//        std::cout << skExtrinsic << std::endl;
+        // Keep the captured frame
+        if (!processed_live_frame) {
+            captured_poses.push_back(skExtrinsic);
+        }
+        
+        cameraMatrix = CVMat4ToGLKMat4(skExtrinsic);
+        
+//        GLKMatrix4 extrinsic = CVMat3ToGLKMat4(rotation);
+//        extrinsic.m03 = translation.at<double>(0) * scale;
+//        extrinsic.m13 = translation.at<double>(1) * scale;
+//        extrinsic.m23 = translation.at<double>(2) * scale;
+//        extrinsic.m33 = 1.0;
+//        bool invertible;
+//        GLKMatrix4 inverted = GLKMatrix4Invert(extrinsic, &invertible); // inverse matrix!
+//        assert(invertible);
+//        cameraMatrix = GLKMatrix4Make(inverted.m00,  inverted.m01,   inverted.m02, 0,
+//                                      inverted.m10,  inverted.m11,  -inverted.m12, 0,
+//                                      inverted.m20,  -inverted.m21,  inverted.m22, 0,
+//                                      inverted.m03, -inverted.m13, -inverted.m23, 1);
+        
+        
         //        cameraMatrix.m31 += 57;
         //        cameraMatrix.m32 += 50;
         //        cameraMatrix = GLKMatrix4Transpose(inverted);
@@ -271,7 +364,17 @@ void cvARManager::performTracking() {
     else {
         std::cout << "Not enough points for cv::recoverPose" << std::endl;
     }
-    worker_busy = false;
+    if (processed_live_frame) {
+        worker_busy = false;
+    }
+    else {
+        // If we just processed the last frame to capture
+        if (frames_to_capture == 0 && !captured_frames.size()) {
+            // TODO: Average
+            cameraMatrix = CVMat4ToGLKMat4(captured_poses[0]);
+        }
+        frame_callback(PROCESSED_FRAME);
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -355,5 +458,22 @@ GLKMatrix4 CVMat3ToGLKMat4(const cv::Mat& cvMat) {
     glkMat.m20 = cvMat.at<double>(2, 0);
     glkMat.m21 = cvMat.at<double>(2, 1);
     glkMat.m22 = cvMat.at<double>(2, 2);
+    return glkMat;
+}
+
+GLKMatrix4 CVMat4ToGLKMat4(const cv::Mat& cvMat) {
+    // Copy the upper 3x3
+    GLKMatrix4 glkMat = CVMat3ToGLKMat4(cvMat);
+    
+    // then copy the last column and row
+    glkMat.m30 = cvMat.at<double>(3, 0);
+    glkMat.m31 = cvMat.at<double>(3, 1);
+    glkMat.m32 = cvMat.at<double>(3, 2);
+    
+    
+    glkMat.m03 = cvMat.at<double>(0, 3);
+    glkMat.m13 = cvMat.at<double>(1, 3);
+    glkMat.m23 = cvMat.at<double>(2, 3);
+    glkMat.m33 = cvMat.at<double>(3, 3);
     return glkMat;
 }

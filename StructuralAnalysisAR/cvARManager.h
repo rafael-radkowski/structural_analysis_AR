@@ -22,6 +22,8 @@
 #include <atomic>
 #include <mutex>
 #include <condition_variable>
+#include <vector>
+#include <deque>
 
 #include "ARManager.h"
 
@@ -40,10 +42,12 @@
 class cvARManager : public ARManager {
 public:
     cvARManager(UIView* view, SCNScene* scene);
-    void initAR() override;
+    void doFrame(int n_avg, std::function<void(CB_STATE)> cb_func) override;
     bool startAR() override;
     size_t stopAR() override;
     void pauseAR() override;
+    void startCamera() override;
+    void stopCamera() override;
     GLKMatrix4 getCameraMatrix() override;
     GLKMatrix4 getProjectionMatrix() override;
     id<MTLTexture> getBgTexture() override;
@@ -51,6 +55,7 @@ public:
 private:
     CvVideoCamera* camera;
     CvCameraDelegateObj* camDelegate;
+    bool cam_running = false;
     int video_width, video_height;
     // Metal texture for the background video
     id<MTLTexture> videoTexture;
@@ -58,6 +63,7 @@ private:
     cv::Mat intrinsic_mat;
     
     void processImage(cv::Mat& image);
+    bool do_tracking = false;
     
     // holds the frame that is being
     cv::Mat working_frame;
@@ -66,6 +72,12 @@ private:
     std::mutex worker_mutex;
     std::thread worker_thread;
     void performTracking();
+    
+    // for single-frame tracking
+    int frames_to_capture = 0;
+    std::deque<cv::Mat> captured_frames;
+    std::vector<cv::Mat> captured_poses;
+    std::function<void(CB_STATE)> frame_callback;
     
     GLKMatrix4 cameraMatrix;
     // AR things

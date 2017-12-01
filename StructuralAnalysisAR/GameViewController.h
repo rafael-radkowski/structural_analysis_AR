@@ -62,7 +62,8 @@
     ARManager* arManager;
     id<MTLTexture> staticBgTex;
     UIImage* scaled_img;
-    bool arEnabled;
+    bool camPaused;
+    int framesLeftToProcess;
     SCNMatrix4 bgImgScale;
     // Vuforia stuff
     Vuforia::DataSet*  dataSetStonesAndChips;

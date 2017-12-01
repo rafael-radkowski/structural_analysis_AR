@@ -75,8 +75,10 @@
     extendedTrackingEnabled = YES;
 //    arManager = new VuforiaARManager((ARView*)self.view, scene, Vuforia::METAL, self.interfaceOrientation);
     arManager = new cvARManager(self.view, scene);
+    arManager->startCamera();
+//    arManager->startAR();
 
-    [self setAREnabled:YES];
+//    [self setAREnabled:YES];
 //    self.vapp = [[SampleApplicationSession alloc] initWithDelegate:self];
 //    [self.vapp initAR:Vuforia::METAL orientation:self.interfaceOrientation];
     
@@ -259,9 +261,9 @@
 }
 
 - (void)renderer:(id<SCNSceneRenderer>)renderer willRenderScene:(SCNScene *)scene atTime:(NSTimeInterval)time {
-    if (arEnabled) {
+    if (!camPaused) {
         GLKMatrix4 camera_matrix =arManager->getCameraMatrix();
-        [self printMatrix:camera_matrix];
+//        [self printMatrix:camera_matrix];
         cameraNode.transform = SCNMatrix4FromGLKMatrix4(camera_matrix);
 //        cameraNode.camera.projectionTransform = SCNMatrix4FromGLKMatrix4(arManager->getProjectionMatrix());
     }
@@ -459,23 +461,53 @@
 }
 
 - (IBAction)freezePressed:(id)sender {
-    [self setAREnabled:!arEnabled];
+    if (!camPaused) {
+        camPaused = true;
+        [self.freezeFrameBtn setEnabled:NO];
+        framesLeftToProcess = 5;
+        arManager->doFrame(framesLeftToProcess, [self](ARManager::CB_STATE update_type) {
+            if (update_type == ARManager::DONE_CAPTURING) {
+                // this callback function gets called from a different thread, so we must post UI chanages to the main thread
+                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                    [self.freezeFrameBtn setEnabled:YES];
+                    [self.freezeFrameBtn setTitle:@"Resume Camera" forState:UIControlStateNormal];
+                }];
+                arManager->stopCamera();
+            }
+            if (update_type == ARManager::PROCESSED_FRAME) {
+                framesLeftToProcess--;
+                if (framesLeftToProcess == 0) {
+                    std::cout << "done" << std::endl;
+                    // Finished processing all frames
+                    GLKMatrix4 camera_matrix = arManager->getCameraMatrix();
+                    cameraNode.transform = SCNMatrix4FromGLKMatrix4(camera_matrix);
+                }
+            }
+//            cameraNode.transform = SCNMatrix4FromGLKMatrix4(camMat);
+        });
+    }
+    else {
+        camPaused = false;
+        [self.freezeFrameBtn setTitle:@"Pause Camera" forState:UIControlStateNormal];
+        arManager->startCamera();
+    }
+//    [self setAREnabled:!arEnabled];
 //    ARView* scnView = (ARView*) self.view;
     // Toggle whether we update background video texture
 //    scnView.renderVideo = !scnView.renderVideo;
 }
 
 - (void) setAREnabled:(bool)enabled {
-    arEnabled = enabled;
-
-    ARView* scnView = (ARView*) self.view;
-    scnView.renderVideo = arEnabled;
-
-    if (arEnabled) {
-        [self.freezeFrameBtn setTitle:@"Freeze View" forState:UIControlStateNormal];
-    } else {
-        [self.freezeFrameBtn setTitle:@"Resume View" forState:UIControlStateNormal];
-    }
+//    arEnabled = enabled;
+//
+//    ARView* scnView = (ARView*) self.view;
+//    scnView.renderVideo = arEnabled;
+//
+//    if (arEnabled) {
+//        [self.freezeFrameBtn setTitle:@"Freeze View" forState:UIControlStateNormal];
+//    } else {
+//        [self.freezeFrameBtn setTitle:@"Resume View" forState:UIControlStateNormal];
+//    }
     
 //    if (!arEnabled) {
         // We need to manually set the texture

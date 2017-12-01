@@ -33,7 +33,15 @@ VuforiaARManager::VuforiaARManager(ARView* view, SCNScene* scene, int VuforiaIni
      [view setVuforiaApp:vapp];
 }
 
-void VuforiaARManager::initAR() {
+void VuforiaARManager::doFrame(int n_avg, std::function<void(CB_STATE)> cb_func) {
+    
+}
+
+void VuforiaARManager::startCamera() {
+    
+}
+
+void VuforiaARManager::stopCamera() {
     
 }
 
