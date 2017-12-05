@@ -461,6 +461,7 @@
 }
 
 - (IBAction)freezePressed:(id)sender {
+//    ((cvARManager*)arManager)->saveImg();
     if (!camPaused) {
         camPaused = true;
         [self.freezeFrameBtn setEnabled:NO];
@@ -477,13 +478,12 @@
             if (update_type == ARManager::PROCESSED_FRAME) {
                 framesLeftToProcess--;
                 if (framesLeftToProcess == 0) {
-                    std::cout << "done" << std::endl;
-                    // Finished processing all frames
-                    GLKMatrix4 camera_matrix = arManager->getCameraMatrix();
-                    cameraNode.transform = SCNMatrix4FromGLKMatrix4(camera_matrix);
-                }
+                std::cout << "done" << std::endl;
+                // Finished processing all frames
+                GLKMatrix4 camera_matrix = arManager->getCameraMatrix();
+                cameraNode.transform = SCNMatrix4FromGLKMatrix4(camera_matrix);
             }
-//            cameraNode.transform = SCNMatrix4FromGLKMatrix4(camMat);
+        }
         });
     }
     else {
@@ -491,6 +491,7 @@
         [self.freezeFrameBtn setTitle:@"Pause Camera" forState:UIControlStateNormal];
         arManager->startCamera();
     }
+    
 //    [self setAREnabled:!arEnabled];
 //    ARView* scnView = (ARView*) self.view;
     // Toggle whether we update background video texture

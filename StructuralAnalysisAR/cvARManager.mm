@@ -115,20 +115,27 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene)
 //    double intr_data[9] = {2927.801, 0, 1634.850,
 //                           0, 2943.291, 1262.958,
 //                           0, 0, 1};
-    double intr_data[9] = {3322.232, 0, 1994.099,
-                           0, 3289.874, 1426.956,
-                           0, 0, 1};
+//    double intr_data[9] = {3322.232, 0, 1994.099,
+//                           0, 3289.874, 1426.956,
+//                           0, 0, 1};
 //    double intr_data[9] = {1054.603, 0, 633.047,
 //                           0, 783.303, 339.751,
 //                           0, 0, 1};
 //    double intr_data[9] = {1049, 0, 640,
 //        0, 1049, 360,
 //        0, 0, 1};
-    cv::Mat raw_intrinsic_mat(3, 3, CV_64F, intr_data);
-    intrinsic_mat = cv::getOptimalNewCameraMatrix(raw_intrinsic_mat, std::vector<float>(4, 0), cv::Size(4032,3024), 0, cv::Size(video_width,video_height));
-
-//    intrinsic_mat = cv::Mat(3, 3, CV_64F, intr_data);
-    // Transform to account for crop
+    // From 1920x1080 video on iPad air
+    // distortion = [0.139796, -0.278091, 0.000479, -0.000284]
+    double intr_data[9] = {1706.752, 0, 963.632,
+                           0, 1732.817, 596.788,
+                           0, 0, 1};
+//    cv::Mat raw_intrinsic_mat(3, 3, CV_64F, intr_data);
+//    intrinsic_mat = cv::getOptimalNewCameraMatrix(raw_intrinsic_mat, std::vector<float>(4, 0), cv::Size(4032,3024), 0, cv::Size(video_width,video_height));
+    
+    std::cout << "modified type: " << intrinsic_mat.type() << std::endl;
+    intrinsic_mat = cv::Mat(3, 3, CV_64F, intr_data).clone();
+    
+    std::cout << "camera matrix: " << std::endl << intrinsic_mat << std::endl;
     
     // Load reference image
 #ifdef HIGH_RES
@@ -136,13 +143,31 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene)
 #else
     UIImage* bgImage = [UIImage imageNamed:@"cutout_skywalk_1920x1080.png"];
 #endif
-//    matcher = ImageMatcher(cvMatFromUIImage(bgImage), 6000, 0.75, 0.9, 3.0, std::cout); // for 1280x720
-    matcher = ImageMatcher(cvMatFromUIImage(bgImage), 6000, 0.8, 0.98, 4.0, std::cout); // for 3840x2160
     
+    MaskedImage masked(cvMatFromUIImage(bgImage));
+    cv::Mat cropped = masked.getCropped();
+    matcher = ImageMatcher(cropped, 6000, 0.8, 0.98, 4.0, std::cout);
+    
+    
+    const float model_width = 200;
+    const float model_height = (model_width * ((double)video_height / video_width));
+    const std::vector<cv::KeyPoint>& model_keypoints = matcher.getRefKeypoints();
+    model_pts_3d.resize(model_keypoints.size());
+    for (size_t i = 0; i < model_keypoints.size(); ++i) {
+        auto model_pt = model_keypoints[i].pt;
+        masked.uncropPoint(model_pt);
+        model_pts_3d[i].x = model_pt.x * (model_width / video_width) - (model_width / 2);
+        model_pts_3d[i].y = model_pt.y * (model_height / video_height) - (model_height / 2);
+        model_pts_3d[i].z = 0;
+    }
     
     // Copy image to background Metal texture
 //    static MTLRegion region = MTLRegionMake2D(0, 0, video_width, video_height);
 //    [videoTexture replaceRegion:region mipmapLevel:0 withBytes:cvMatFromUIImage(bgImage).data bytesPerRow:(video_width*4)];
+}
+
+void cvARManager::saveImg() {
+    saveNext = true;
 }
 
 void cvARManager::doFrame(int n_avg, std::function<void(CB_STATE)> cb_func) {
@@ -196,6 +221,17 @@ void cvARManager::processImage(cv::Mat& image) {
     cv::flip(image, image, -1);
 //    cv::Mat overdrawn(image.size(), image.type());
     
+    if (saveNext) {
+        static int img_idx = 0;
+        // Create path.
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *filePath = [[paths objectAtIndex:0] stringByAppendingPathComponent:[NSString stringWithFormat:@"%d.png", img_idx++]];
+        
+        // Save image.
+        [UIImagePNGRepresentation(UIImageFromCVMat(image)) writeToFile:filePath atomically:YES];
+        saveNext = false;
+    }
+    
     // Copy image to background Metal texture
     static MTLRegion region = MTLRegionMake2D(0, 0, video_width, video_height);
     [videoTexture replaceRegion:region mipmapLevel:0 withBytes:image.data bytesPerRow:(video_width*4)];
@@ -243,71 +279,38 @@ void cvARManager::performTracking() {
     MaskedImage masked(frame);
     cv::Mat cropped = masked.getCropped();
     auto correspondences = matcher.getMatches(cropped);
-    
     masked.uncropPoints(correspondences.img_pts);
-    //    cv::Mat homography_mat;
-    //    if (correspondences.img_pts.size() >= 4) {
-    //        homography_mat = cv::findHomography(correspondences.img_pts, correspondences.model_pts, cv::RANSAC, 1);
-    //    }
-    //    else {
-    //        std::cout << "error: not enough points for homography" << std::endl;
-    //        homography_mat = cv::Mat::eye(3, 3, CV_32F);
-    //    }
-    //    std::cout << "Homography matrix: " << std::endl << homography_mat << std::endl;
-    
-    //    cv::Mat warped_img = cv::Mat(frame.size(), frame.type());
-    //    if (homography_mat.dims) {
-    //        warpPerspective(frame, warped_img, homography_mat, warped_img.size(), cv::INTER_LINEAR);
-    //    }
     
     if (correspondences.img_pts.size() >= 5) {
         cv::Mat mask;
-        //        cv::Mat essential_mat = cv::findEssentialMat(correspondences.img_pts, correspondences.model_pts, intrinsic_mat, cv::RANSAC);
-        //        cv::Mat essential_mat = cv::findEssentialMat(correspondences.img_pts, correspondences.model_pts, cv::RANSAC);
-        //        cv::Mat essential_mat = cv::findEssentialMat(correspondences.img_pts, correspondences.model_pts, 1.0, cv::Point2d(0, 0), cv::RANSAC, 0.999, 1.0, mask);
-        //        cv::Mat essential_mat = cv::findEssentialMat(correspondences.img_pts, correspondences.model_pts, intrinsic_mat, cv::RANSAC, 0.999, 1.0, mask);
-        //        std::cout << "Essential matrix: " << std::endl << essential_mat << std::endl;
+
         cv::Mat rotation, rotation_vec;
         cv::Mat translation;
-        //        int n_inliers = cv::recoverPose(essential_mat, correspondences.img_pts, correspondences.model_pts, intrinsic_mat, rotation, translation);
-        //        int n_inliers = cv::recoverPose(essential_mat, correspondences.img_pts, correspondences.model_pts, rotation, translation, 1.0, cv::Point2d(0, 0), mask);
-        //        int n_inliers = cv::recoverPose(essential_mat, correspondences.img_pts, correspondences.model_pts, intrinsic_mat, rotation, translation, mask);
-        
-        // convert 2d model points to 3d model points
-        // TODO: This can be done once
-        std::vector<cv::Point3f> model_pts3(correspondences.model_pts.size());
-        const float model_width = 154;
-        const float model_height = (model_width * ((double)video_height / video_width));
+
+        std::vector<cv::Point3f> correspondence_model_pts3(correspondences.model_pts.size());
         for (size_t i = 0; i < correspondences.model_pts.size(); ++i) {
-            model_pts3[i].x = correspondences.model_pts[i].x * (model_width / video_width) - (model_width / 2);
-            //            model_pts3[i].y = (720 - correspondences.model_pts[i].y) * (115.0 / 720.0);
-            model_pts3[i].y = correspondences.model_pts[i].y * (model_height / video_height) - (model_height / 2);
-            model_pts3[i].z = 0;
-            //            cv::circle(overdrawn, correspondences.img_pts[i], 4, cv::Scalar(0, 0, 255));
+            const auto& model_pt = model_pts_3d[correspondences.model_pts[i]];
+            correspondence_model_pts3[i] = model_pt;
         }
-        //        static MTLRegion region = MTLRegionMake2D(0, 0, video_width, video_height);
-        //        [videoTexture replaceRegion:region mipmapLevel:0 withBytes:overdrawn.data bytesPerRow:(video_width*4)];
-        
         std::vector<float> dist_coeffs;
-        //        cv::solvePnP(model_pts3, correspondences.img_pts, intrinsic_mat, dist_coeffs, rotation_vec, translation);
-        cv::solvePnPRansac(model_pts3, correspondences.img_pts, intrinsic_mat, dist_coeffs, rotation_vec, translation);
+        cv::solvePnP(correspondence_model_pts3, correspondences.img_pts, intrinsic_mat, dist_coeffs, rotation_vec, translation);
+//        cv::Mat pnp_inliers;
+//        cv::solvePnPRansac(correspondence_model_pts3, correspondences.img_pts, intrinsic_mat, dist_coeffs, rotation_vec, translation,
+//                           false, // useExtrinsicGuess
+//                           100, // iterationsCount
+//                           8.0, // reprojectionError
+//                           0.99, // confidence
+//                           pnp_inliers);
+//        std::cout << pnp_inliers.size() << " inliers" << std::endl;
         cv::Rodrigues(rotation_vec, rotation);
-        //        rotation = rotation.inv();
-        //        rotation = rotation.t();
-        
-        
-        
-        //        std::cout << n_inliers << " inliers" << std::endl;
+
 //        std::cout << "Rotation:\n" << rotation << std::endl;
-//        std::cout << "Translation:\n" << translation << std::endl;
+        std::cout << "Translation:\n" << translation << std::endl;
         
         cv::Mat cvExtrinsic(4, 4, CV_64F);
         // copy rotation matrix into a larger 4x4 transformation matrix
         rotation.copyTo(cvExtrinsic.colRange(0, 3).rowRange(0, 3));
-        
-//        extrinsic.at<double>(0,3) = translation.at<double>(0) * scale;
-//        extrinsic.at<double>(1,3) = translation.at<double>(0) * scale;
-//        extrinsic.at<double>(2,3) = translation.at<double>(0) * scale;
+
         translation.copyTo(cvExtrinsic.col(3).rowRange(0,3));
         cvExtrinsic.row(3).setTo(0);
         cvExtrinsic.at<double>(3,3) = 1;
@@ -327,13 +330,27 @@ void cvARManager::performTracking() {
         negate(3,1);
         negate(3,2);
         
-//        std::cout << skExtrinsic << std::endl;
+        // Apply transformation to account for where the reference (model) image was taken from
+//        static const double y_angle = 0.174;
+//        static double rot_mat_data[16] = {
+//            std::cos(y_angle), 0, 0, 0,
+//            0, , -std::sin(y_angle), 0,
+//            0, std::sin(y_angle), std::cos(y_angle), 0,
+//            0, 0, 0, 1
+//        };
+//        static const cv::Mat rot_mat(3, 3, CV_64F, rot_mat_data);
+        GLKMatrix4 rotMat = GLKMatrix4MakeYRotation(0.174);
+        
+        
+        cameraMatrix = GLKMatrix4Multiply(rotMat, CVMat4ToGLKMat4(skExtrinsic));
+                                
         // Keep the captured frame
         if (!processed_live_frame) {
+            bool within_range = (translation.at<double>(0) > 0 && translation.at<double>(0) < 50 &&
+                                 translation.at<double>(1) > -10 && translation.at<double>(1) < 20);
+            std::cout << "within range: " << within_range << std::endl;
             captured_poses.push_back(skExtrinsic);
         }
-        
-        cameraMatrix = CVMat4ToGLKMat4(skExtrinsic);
         
 //        GLKMatrix4 extrinsic = CVMat3ToGLKMat4(rotation);
 //        extrinsic.m03 = translation.at<double>(0) * scale;
@@ -346,20 +363,6 @@ void cvARManager::performTracking() {
 //        cameraMatrix = GLKMatrix4Make(inverted.m00,  inverted.m01,   inverted.m02, 0,
 //                                      inverted.m10,  inverted.m11,  -inverted.m12, 0,
 //                                      inverted.m20,  -inverted.m21,  inverted.m22, 0,
-//                                      inverted.m03, -inverted.m13, -inverted.m23, 1);
-        
-        
-        //        cameraMatrix.m31 += 57;
-        //        cameraMatrix.m32 += 50;
-        //        cameraMatrix = GLKMatrix4Transpose(inverted);
-        //        cameraMatrix.m30 = -cameraMatrix.m30;
-        //        cameraMatrix.m31 = -cameraMatrix.m31;
-        //        cameraMatrix.m32 = -cameraMatrix.m32;
-        //        GLKMatrix4 rot_mat = GLKMatrix4MakeXRotation(M_PI);
-        //        cameraMatrix = GLKMatrix4Multiply(rot_mat, cameraMatrix);
-        //        cameraMatrix.m30 = translation.at<double>(0) * scale;
-        //        cameraMatrix.m31 = translation.at<double>(1) * scale;
-        //        cameraMatrix.m32 = translation.at<double>(2) * scale;
     }
     else {
         std::cout << "Not enough points for cv::recoverPose" << std::endl;
@@ -370,7 +373,6 @@ void cvARManager::performTracking() {
     else {
         // If we just processed the last frame to capture
         if (frames_to_capture == 0 && !captured_frames.size()) {
-            // TODO: Average
             cameraMatrix = CVMat4ToGLKMat4(captured_poses[0]);
         }
         frame_callback(PROCESSED_FRAME);
@@ -410,8 +412,12 @@ cv::Mat cvMatFromUIImage(UIImage* image)
 // TODO: Do returned UIImage* objects from here need to be manually deleted? Or does ARC work?
 UIImage* UIImageFromCVMat(cv::Mat cvMat)
 {
+    
+    cv::cvtColor(cvMat, cvMat, CV_BGRA2RGBA);
+    
     NSData *data = [NSData dataWithBytes:cvMat.data length:cvMat.elemSize()*cvMat.total()];
     CGColorSpaceRef colorSpace;
+    
     
     if (cvMat.elemSize() == 1) {
         colorSpace = CGColorSpaceCreateDeviceGray();

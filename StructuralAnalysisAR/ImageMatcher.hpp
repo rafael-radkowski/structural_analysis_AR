@@ -15,10 +15,13 @@ public:
     ImageMatcher(const cv::Mat& ref_img, int n_features, double ratio, double ransac_confidence, double ransac_dist, std::ostream& out_log = std::cout);
 
     struct Correspondences {
-        std::vector<cv::Point2f> model_pts;
+        std::vector<size_t> model_pts;
         std::vector<cv::Point2f> img_pts;
     };
     Correspondences getMatches(const cv::Mat test_img);
+    
+    // the keypoints found in the reference image
+    const std::vector<cv::KeyPoint>& getRefKeypoints() const;
 private:
     std::ostream* log;
 
@@ -27,8 +30,8 @@ private:
     cv::Ptr<cv::Feature2D> feat_extractor;
 
     cv::Mat ref_img;
-    std::vector<cv::KeyPoint> ref_keypoints;
     cv::Mat ref_descriptors;
+    std::vector<cv::KeyPoint> ref_keypoints;
 
     double ratio;
     double ransac_confidence;

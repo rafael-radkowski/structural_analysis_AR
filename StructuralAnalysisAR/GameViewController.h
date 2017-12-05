@@ -58,7 +58,6 @@
     bool deflectDead;
     bool deflectLive;
     
-    
     ARManager* arManager;
     id<MTLTexture> staticBgTex;
     UIImage* scaled_img;

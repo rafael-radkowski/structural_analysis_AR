@@ -52,6 +52,9 @@ public:
     GLKMatrix4 getProjectionMatrix() override;
     id<MTLTexture> getBgTexture() override;
     GLKMatrix4 getBgMatrix() override;
+    
+    void saveImg();
+    bool saveNext = false;
 private:
     CvVideoCamera* camera;
     CvCameraDelegateObj* camDelegate;
@@ -64,6 +67,9 @@ private:
     
     void processImage(cv::Mat& image);
     bool do_tracking = false;
+    
+    // Holds 3D points of the model image
+    std::vector<cv::Point3f> model_pts_3d;
     
     // holds the frame that is being
     cv::Mat working_frame;

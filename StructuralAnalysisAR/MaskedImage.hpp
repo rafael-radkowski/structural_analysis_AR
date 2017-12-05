@@ -11,6 +11,8 @@ public:
     std::vector<cv::Vec4i> findLines(bool probabilistic);
     template <typename T>
     void uncropPoints(std::vector<cv::Point_<T>>& points);
+    template <typename T>
+    void uncropPoint(cv::Point_<T>& point);
 private:
     std::ostream& log;
     void findSkywalk();
@@ -29,4 +31,9 @@ void MaskedImage::uncropPoints(std::vector<cv::Point_<T>>& points) {
    for (auto& point : points) {
        point.y += top_crop;
    } 
+}
+
+template <typename T>
+void MaskedImage::uncropPoint(cv::Point_<T>& point) {
+    point.y += top_crop;
 }

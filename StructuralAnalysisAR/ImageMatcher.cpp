@@ -32,6 +32,10 @@ ImageMatcher::ImageMatcher(const Mat& ref_img, int n_features, double ratio, dou
     feat_matcher->train();
 }
 
+const std::vector<cv::KeyPoint>& ImageMatcher::getRefKeypoints() const {
+    return ref_keypoints;
+}
+
 ImageMatcher::Correspondences ImageMatcher::getMatches(const cv::Mat test_img) {
     // Find keypoints and descriptors
     vector<KeyPoint> keypoints;
@@ -85,7 +89,8 @@ ImageMatcher::Correspondences ImageMatcher::getMatches(const cv::Mat test_img) {
     // 2D points from matches
     corr.model_pts.reserve(final_matches.size()); corr.img_pts.reserve(final_matches.size());
     for (const auto& match : final_matches) {
-        corr.model_pts.push_back(ref_keypoints[match.trainIdx].pt);
+//        corr.model_pts.push_back(ref_keypoints[match.trainIdx].pt);
+        corr.model_pts.push_back(match.trainIdx);
         corr.img_pts.push_back(keypoints[match.queryIdx].pt);
     }
     auto end_time = std::chrono::high_resolution_clock::now();
