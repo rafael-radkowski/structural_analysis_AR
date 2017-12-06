@@ -48,6 +48,8 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene)
     camera.defaultAVCaptureSessionPreset = AVCaptureSessionPreset1920x1080;
 #endif
     camera.defaultFPS = 30;
+    camera.rotateVideo = false;
+    camera.defaultAVCaptureVideoOrientation = AVCaptureVideoOrientationLandscapeRight;
     // Make lambda for calling this->processImage(). Lets the callback not have to worry that its a member function
     auto this_processImage = [this](cv::Mat& img) {processImage(img);};
     camDelegate = [[CvCameraDelegateObj alloc] initWithCallback:this_processImage];
@@ -90,7 +92,7 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene)
     scene.background.contents = videoTexture;
     
     // Allocate space for frame to hold frame being processed for tracking
-    working_frame = cv::Mat(video_height, video_width, CV_8UC4);
+    latest_frame = cv::Mat(video_height, video_width, CV_8UC4);
     // start background worker thread to perform tracking
     worker_thread = std::thread([this] () {while (1) performTracking();});
     
@@ -132,10 +134,7 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene)
 //    cv::Mat raw_intrinsic_mat(3, 3, CV_64F, intr_data);
 //    intrinsic_mat = cv::getOptimalNewCameraMatrix(raw_intrinsic_mat, std::vector<float>(4, 0), cv::Size(4032,3024), 0, cv::Size(video_width,video_height));
     
-    std::cout << "modified type: " << intrinsic_mat.type() << std::endl;
     intrinsic_mat = cv::Mat(3, 3, CV_64F, intr_data).clone();
-    
-    std::cout << "camera matrix: " << std::endl << intrinsic_mat << std::endl;
     
     // Load reference image
 #ifdef HIGH_RES
@@ -161,9 +160,21 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene)
         model_pts_3d[i].z = 0;
     }
     
+    cameraMatrix = GLKMatrix4Make(
+                                          -0.987822, -0.009307, 0.155310, 0.000000,
+                                          -0.045182, 0.981796, -0.184486, 0.000000,
+                                          -0.154240, -0.189710, -0.969649, 0.000000,
+                                          -8.753870, -31.452150, -204.253311, 1.000000);
+    
     // Copy image to background Metal texture
 //    static MTLRegion region = MTLRegionMake2D(0, 0, video_width, video_height);
 //    [videoTexture replaceRegion:region mipmapLevel:0 withBytes:cvMatFromUIImage(bgImage).data bytesPerRow:(video_width*4)];
+}
+
+void cvARManager::setBgImage(cv::Mat img) {
+    // Copy image to background Metal texture
+    static MTLRegion region = MTLRegionMake2D(0, 0, video_width, video_height);
+    [videoTexture replaceRegion:region mipmapLevel:0 withBytes:img.data bytesPerRow:(video_width*4)];
 }
 
 void cvARManager::saveImg() {
@@ -172,7 +183,7 @@ void cvARManager::saveImg() {
 
 void cvARManager::doFrame(int n_avg, std::function<void(CB_STATE)> cb_func) {
     captured_frames.clear();
-    captured_poses.clear();
+    most_inliers = 0;
     frames_to_capture = n_avg;
     frame_callback = cb_func;
 }
@@ -217,8 +228,6 @@ GLKMatrix4 cvARManager::getBgMatrix() {
 }
 
 void cvARManager::processImage(cv::Mat& image) {
-    // Negative value means flip in both X and Y axes
-    cv::flip(image, image, -1);
 //    cv::Mat overdrawn(image.size(), image.type());
     
     if (saveNext) {
@@ -232,16 +241,14 @@ void cvARManager::processImage(cv::Mat& image) {
         saveNext = false;
     }
     
-    // Copy image to background Metal texture
-    static MTLRegion region = MTLRegionMake2D(0, 0, video_width, video_height);
-    [videoTexture replaceRegion:region mipmapLevel:0 withBytes:image.data bytesPerRow:(video_width*4)];
+    setBgImage(image);
 
     if (!worker_busy && do_tracking) {
         // Obtain mutex for this scope
         std::unique_lock<std::mutex> lk(worker_mutex);
         
         worker_busy = true;
-        image.copyTo(working_frame);
+        image.copyTo(latest_frame);
         worker_cond_var.notify_one();
     }
     if (frames_to_capture) {
@@ -258,21 +265,24 @@ void cvARManager::processImage(cv::Mat& image) {
 
 void cvARManager::performTracking() {
     std::unique_lock<std::mutex> lk(worker_mutex);
-    // Wait only if there is no work to do, either in the form of live data in working_frame, or captured data in captured_frames
+    // Wait only if there is no work to do, either in the form of live data in latest_frame, or captured data in captured_frames
     while (!worker_busy && !captured_frames.size()) {
         worker_cond_var.wait(lk);
     }
     
     // image that will be processed
     cv::Mat frame;
+    // A copy that will be left unmodified by the crop operation. Only nececsary when not processing live
+    cv::Mat frame_copy;
     bool processed_live_frame = false;
     // Process captured frames with higher priority
     if (captured_frames.size()) {
         frame = captured_frames.front();
         captured_frames.pop_front();
+        frame_copy = frame.clone();
     }
     else {
-        frame = working_frame;
+        frame = latest_frame;
         processed_live_frame = true;
     }
     
@@ -293,19 +303,19 @@ void cvARManager::performTracking() {
             correspondence_model_pts3[i] = model_pt;
         }
         std::vector<float> dist_coeffs;
-        cv::solvePnP(correspondence_model_pts3, correspondences.img_pts, intrinsic_mat, dist_coeffs, rotation_vec, translation);
-//        cv::Mat pnp_inliers;
-//        cv::solvePnPRansac(correspondence_model_pts3, correspondences.img_pts, intrinsic_mat, dist_coeffs, rotation_vec, translation,
-//                           false, // useExtrinsicGuess
-//                           100, // iterationsCount
-//                           8.0, // reprojectionError
-//                           0.99, // confidence
-//                           pnp_inliers);
-//        std::cout << pnp_inliers.size() << " inliers" << std::endl;
+//        cv::solvePnP(correspondence_model_pts3, correspondences.img_pts, intrinsic_mat, dist_coeffs, rotation_vec, translation);
+        cv::Mat pnp_inliers;
+        cv::solvePnPRansac(correspondence_model_pts3, correspondences.img_pts, intrinsic_mat, dist_coeffs, rotation_vec, translation,
+                           false, // useExtrinsicGuess
+                           100, // iterationsCount
+                           8.0, // reprojectionError
+                           0.99, // confidence
+                           pnp_inliers);
+        std::cout << pnp_inliers.size[0] << " inliers" << std::endl;
         cv::Rodrigues(rotation_vec, rotation);
 
 //        std::cout << "Rotation:\n" << rotation << std::endl;
-        std::cout << "Translation:\n" << translation << std::endl;
+//        std::cout << "Translation:\n" << translation << std::endl;
         
         cv::Mat cvExtrinsic(4, 4, CV_64F);
         // copy rotation matrix into a larger 4x4 transformation matrix
@@ -339,30 +349,34 @@ void cvARManager::performTracking() {
 //            0, 0, 0, 1
 //        };
 //        static const cv::Mat rot_mat(3, 3, CV_64F, rot_mat_data);
-        GLKMatrix4 rotMat = GLKMatrix4MakeYRotation(0.174);
+        GLKMatrix4 rotMat = GLKMatrix4MakeYRotation(0.174 + M_PI);
         
         
-        cameraMatrix = GLKMatrix4Multiply(rotMat, CVMat4ToGLKMat4(skExtrinsic));
-                                
+        GLKMatrix4 pose_estimate = GLKMatrix4Multiply(rotMat, CVMat4ToGLKMat4(skExtrinsic));
+        
         // Keep the captured frame
         if (!processed_live_frame) {
-            bool within_range = (translation.at<double>(0) > 0 && translation.at<double>(0) < 50 &&
-                                 translation.at<double>(1) > -10 && translation.at<double>(1) < 20);
+            bool within_range = (translation.at<double>(0) > 10 && translation.at<double>(0) < 40 &&
+                                 translation.at<double>(1) > -10 && translation.at<double>(1) < 10 &&
+                                 translation.at<double>(2) > 190 && translation.at<double>(2) < 260);
             std::cout << "within range: " << within_range << std::endl;
-            captured_poses.push_back(skExtrinsic);
+            if (within_range) {
+                // If within range, just accept it
+                best_captured_pose = pose_estimate;
+                best_captured_frame = frame_copy;
+                frames_to_capture = 0;
+                captured_frames.clear();
+            }
+            else if (pnp_inliers.size[0] > most_inliers) {
+                    most_inliers = pnp_inliers.size[0];
+                    best_captured_pose = pose_estimate;
+                    best_captured_frame = frame_copy;
+            }
         }
-        
-//        GLKMatrix4 extrinsic = CVMat3ToGLKMat4(rotation);
-//        extrinsic.m03 = translation.at<double>(0) * scale;
-//        extrinsic.m13 = translation.at<double>(1) * scale;
-//        extrinsic.m23 = translation.at<double>(2) * scale;
-//        extrinsic.m33 = 1.0;
-//        bool invertible;
-//        GLKMatrix4 inverted = GLKMatrix4Invert(extrinsic, &invertible); // inverse matrix!
-//        assert(invertible);
-//        cameraMatrix = GLKMatrix4Make(inverted.m00,  inverted.m01,   inverted.m02, 0,
-//                                      inverted.m10,  inverted.m11,  -inverted.m12, 0,
-//                                      inverted.m20,  -inverted.m21,  inverted.m22, 0,
+        else {
+            // live tracking, so just go with the pose
+            cameraMatrix = pose_estimate;
+        }
     }
     else {
         std::cout << "Not enough points for cv::recoverPose" << std::endl;
@@ -371,11 +385,13 @@ void cvARManager::performTracking() {
         worker_busy = false;
     }
     else {
-        // If we just processed the last frame to capture
+        // If we're done processing frames
+        // Could be due to finding an acceptable solution or running out of attempts. Regardless, we want to return the best guess
         if (frames_to_capture == 0 && !captured_frames.size()) {
-            cameraMatrix = CVMat4ToGLKMat4(captured_poses[0]);
+            cameraMatrix = best_captured_pose;
+            frame_callback(DONE_CAPTURING);
+            setBgImage(best_captured_frame);
         }
-        frame_callback(PROCESSED_FRAME);
     }
 }
 

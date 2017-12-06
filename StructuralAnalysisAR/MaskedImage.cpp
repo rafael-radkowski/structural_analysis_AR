@@ -6,6 +6,8 @@
 
 #include <opencv2/imgproc/imgproc.hpp>
 
+#define MASKED_IMAGE_LOG
+
 using namespace cv;
 
 Vec4i paramToLine(Vec2d line_param, const Size img_size, float len=3000);
@@ -94,7 +96,9 @@ void MaskedImage::findSkywalk() {
     if (best_y == std::numeric_limits<float>::max()) {
         // no valid lines were found
         // assert(false);
+#ifdef MASKED_IMAGE_LOG
         log << "error: did not find a skywalk line" << std::endl;
+#endif
         found_skywalk = false;
     }
     else {

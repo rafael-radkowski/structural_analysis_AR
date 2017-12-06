@@ -36,10 +36,11 @@
 #include <cmath>
 #include <algorithm>
 
-#define COL1_POS -80
-#define COL2_POS -25
-#define COL3_POS 74
-#define COL4_POS 118
+#define COL_OFFSET (-10)
+#define COL1_POS (-80 + COL_OFFSET)
+#define COL2_POS (-25 + COL_OFFSET)
+#define COL3_POS (74 + COL_OFFSET)
+#define COL4_POS (118 + COL_OFFSET)
 
 // IDs of UISegmentedControl for scenario selection
 #define SCENARIO_VARIABLE 4
@@ -272,11 +273,12 @@
 - (void)setupVisualizations {
     SCNView *scnView = (SCNView*)self.view;
     float defaultThickness = 5;
+    float heightOffset = -17;
     
     GLKQuaternion beamOri = GLKQuaternionMakeWithAngleAndAxis(0, 0, 0, 1);
     // Create live load bar
     peopleLoad = LoadMarker(3);
-    peopleLoad.setPosition(GLKVector3Make(0, 33, 0));
+    peopleLoad.setPosition(GLKVector3Make(0, 33 + heightOffset, 0));
     peopleLoad.setOrientation(beamOri);
     peopleLoad.setInputRange(0, 1.5);
     peopleLoad.setMinHeight(15);
@@ -289,7 +291,7 @@
     deadLoad.setInputRange(0, 1.5);
     deadLoad.setLoad(1.2); // 1.2 k/ft
 //    float dead_z = self.guided ?
-    deadLoad.setPosition(GLKVector3Make(0, 5, 0));
+    deadLoad.setPosition(GLKVector3Make(0, 5 + heightOffset, 0));
     deadLoad.setOrientation(beamOri);
     deadLoad.setEnds(COL1_POS, COL4_POS);
     deadLoad.setMinHeight(15);
@@ -308,12 +310,13 @@
         reactionArrows[i].setRotationAxisAngle(GLKVector4Make(0, 0, 1, 3.1416));
         reactionArrows[i].setScenes(scene2d, scnView);
     }
-    reactionArrows[0].setPosition(GLKVector3Make(COL1_POS, 3, 0));
-    reactionArrows[1].setPosition(GLKVector3Make(COL2_POS, 3, 0));
-    reactionArrows[2].setPosition(GLKVector3Make(COL3_POS, 3, 0));
-    reactionArrows[3].setPosition(GLKVector3Make(COL4_POS, 3, 0));
+    reactionArrows[0].setPosition(GLKVector3Make(COL1_POS, 3 + heightOffset, 0));
+    reactionArrows[1].setPosition(GLKVector3Make(COL2_POS, 3 + heightOffset, 0));
+    reactionArrows[2].setPosition(GLKVector3Make(COL3_POS, 3 + heightOffset, 0));
+    reactionArrows[3].setPosition(GLKVector3Make(COL4_POS, 3 + heightOffset, 0));
     
     people = PeopleVis(10, cameraNode);
+    people.setPosition(GLKVector3Make(0, heightOffset, 0));
     people.addAsChild(scene.rootNode);
     
     double gap = 1.5;
@@ -343,9 +346,9 @@
     beam1.setOrientation(beamOri);
     beam2.setOrientation(beamOri);
     beam3.setOrientation(beamOri);
-    beam1.setPosition(GLKVector3Make(0, 2, 0));
-    beam2.setPosition(GLKVector3Make(0, 2, 0));
-    beam3.setPosition(GLKVector3Make(0, 2, 0));
+    beam1.setPosition(GLKVector3Make(0, 2 + heightOffset, 0));
+    beam2.setPosition(GLKVector3Make(0, 2 + heightOffset, 0));
+    beam3.setPosition(GLKVector3Make(0, 2 + heightOffset, 0));
     beam1.setScenes(scene2d, scnView);
     beam2.setScenes(scene2d, scnView);
     beam3.setScenes(scene2d, scnView);
@@ -465,9 +468,12 @@
     if (!camPaused) {
         camPaused = true;
         [self.freezeFrameBtn setEnabled:NO];
-        framesLeftToProcess = 5;
-        arManager->doFrame(framesLeftToProcess, [self](ARManager::CB_STATE update_type) {
+        arManager->doFrame(5, [self](ARManager::CB_STATE update_type) {
             if (update_type == ARManager::DONE_CAPTURING) {
+                // Set the calculated camera matrix
+                GLKMatrix4 camera_matrix = arManager->getCameraMatrix();
+                cameraNode.transform = SCNMatrix4FromGLKMatrix4(camera_matrix);
+                
                 // this callback function gets called from a different thread, so we must post UI chanages to the main thread
                 [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                     [self.freezeFrameBtn setEnabled:YES];
@@ -475,15 +481,6 @@
                 }];
                 arManager->stopCamera();
             }
-            if (update_type == ARManager::PROCESSED_FRAME) {
-                framesLeftToProcess--;
-                if (framesLeftToProcess == 0) {
-                std::cout << "done" << std::endl;
-                // Finished processing all frames
-                GLKMatrix4 camera_matrix = arManager->getCameraMatrix();
-                cameraNode.transform = SCNMatrix4FromGLKMatrix4(camera_matrix);
-            }
-        }
         });
     }
     else {

@@ -56,6 +56,7 @@ public:
     void saveImg();
     bool saveNext = false;
 private:
+    void setBgImage(cv::Mat img);
     CvVideoCamera* camera;
     CvCameraDelegateObj* camDelegate;
     bool cam_running = false;
@@ -72,7 +73,7 @@ private:
     std::vector<cv::Point3f> model_pts_3d;
     
     // holds the frame that is being
-    cv::Mat working_frame;
+    cv::Mat latest_frame;
     std::atomic<bool> worker_busy;
     std::condition_variable worker_cond_var;
     std::mutex worker_mutex;
@@ -81,8 +82,11 @@ private:
     
     // for single-frame tracking
     int frames_to_capture = 0;
+    int most_inliers = 0;
+    cv::Mat best_captured_frame;
+    GLKMatrix4 best_captured_pose;
     std::deque<cv::Mat> captured_frames;
-    std::vector<cv::Mat> captured_poses;
+    // std::vector<cv::Mat> captured_poses;
     std::function<void(CB_STATE)> frame_callback;
     
     GLKMatrix4 cameraMatrix;

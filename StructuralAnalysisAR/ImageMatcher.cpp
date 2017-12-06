@@ -2,6 +2,8 @@
 
 #include <chrono>
 
+//#define IMAGE_MATCHER_LOG
+
 using namespace cv;
 using std::vector;
 using std::endl;
@@ -24,7 +26,9 @@ ImageMatcher::ImageMatcher(const Mat& ref_img, int n_features, double ratio, dou
     // Extract features from reference
     feat_detector->detect(ref_img, ref_keypoints);
     feat_extractor->compute(ref_img, ref_keypoints, ref_descriptors);
+#ifdef IMAGE_MATCHER_LOG
     *log << "Ref image has " << ref_keypoints.size() << " descriptors" << std::endl;
+#endif
 
     // Train matcher on reference features
     auto ref_db = vector<Mat>({ref_descriptors});
@@ -54,12 +58,16 @@ ImageMatcher::Correspondences ImageMatcher::getMatches(const cv::Mat test_img) {
 
     // std::vector<DMatch> matches;
     // feat_matcher->match(descriptors, matches);
+#ifdef IMAGE_MATCHER_LOG
     *log << "Found " << matches.size() << " original matches" << endl;
+#endif
 
     // Remove ones which fail the ratio test
     int matches_removed = ratioTest(matches);
     // int matches_removed = 0;
+#ifdef IMAGE_MATCHER_LOG
     *log << "Removed " << matches_removed << " matches with ratio test" << endl;
+#endif
 
     // Take just the top match
     vector<DMatch> top_matches;
@@ -72,14 +80,18 @@ ImageMatcher::Correspondences ImageMatcher::getMatches(const cv::Mat test_img) {
 
     if (top_matches.size() < 4) {
         // Write 0 matches for log consistency
+#ifdef IMAGE_MATCHER_LOG
         *log << "After RANSAC, 0 matches" << endl;
+#endif
         return corr;
     }
 
     // Epipolar test
     auto final_matches = ransacTest(top_matches, keypoints, ref_keypoints);
 
+#ifdef IMAGE_MATCHER_LOG
     *log << "After RANSAC, " << final_matches.size() << " matches" << endl;
+#endif
 
     // if (final_matches.size() < 4) {
     //     log << "error: not enough points, skipping homography" << std::endl;
@@ -95,7 +107,9 @@ ImageMatcher::Correspondences ImageMatcher::getMatches(const cv::Mat test_img) {
     }
     auto end_time = std::chrono::high_resolution_clock::now();
     auto duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
+#ifdef IMAGE_MATCHER_LOG
     *log << "Took " << duration_ms.count() << " ms to perform matching" << std::endl;
+#endif
     return corr;
     
     // Mat homography_mat = cv::findHomography(img_pts, model_pts, cv::RANSAC /*CV_LMEDS*/, 1);

@@ -21,7 +21,6 @@ class ARManager {
 public:
     virtual bool startAR() = 0;
     enum CB_STATE {
-        PROCESSED_FRAME, // When a single frame has just completed processing
         DONE_CAPTURING // When all frames to be captured have been saved, but not necessarily processed yet
     };
     virtual void doFrame(int n_avg, std::function<void(CB_STATE)> cb_func) = 0;
