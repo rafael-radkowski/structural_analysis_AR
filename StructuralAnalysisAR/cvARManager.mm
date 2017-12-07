@@ -140,7 +140,8 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene)
 #ifdef HIGH_RES
     UIImage* bgImage = [UIImage imageNamed:@"cutout_skywalk_3840x2160.png"];
 #else
-    UIImage* bgImage = [UIImage imageNamed:@"cutout_skywalk_1920x1080.png"];
+//    UIImage* bgImage = [UIImage imageNamed:@"cutout_skywalk_1920x1080.png"];
+    UIImage* bgImage = [UIImage imageNamed:@"skywalk_sunny_1920.png"];
 #endif
     
     MaskedImage masked(cvMatFromUIImage(bgImage));
@@ -148,14 +149,16 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene)
     matcher = ImageMatcher(cropped, 6000, 0.8, 0.98, 4.0, std::cout);
     
     
-    const float model_width = 200;
+    const float model_width = 170;
     const float model_height = (model_width * ((double)video_height / video_width));
     const std::vector<cv::KeyPoint>& model_keypoints = matcher.getRefKeypoints();
     model_pts_3d.resize(model_keypoints.size());
+    float model_x_offset = -10;
     for (size_t i = 0; i < model_keypoints.size(); ++i) {
         auto model_pt = model_keypoints[i].pt;
         masked.uncropPoint(model_pt);
         model_pts_3d[i].x = model_pt.x * (model_width / video_width) - (model_width / 2);
+        model_pts_3d[i].x += model_x_offset;
         model_pts_3d[i].y = model_pt.y * (model_height / video_height) - (model_height / 2);
         model_pts_3d[i].z = 0;
     }
@@ -315,7 +318,7 @@ void cvARManager::performTracking() {
         cv::Rodrigues(rotation_vec, rotation);
 
 //        std::cout << "Rotation:\n" << rotation << std::endl;
-//        std::cout << "Translation:\n" << translation << std::endl;
+        std::cout << "Translation:\n" << translation << std::endl;
         
         cv::Mat cvExtrinsic(4, 4, CV_64F);
         // copy rotation matrix into a larger 4x4 transformation matrix
@@ -349,7 +352,7 @@ void cvARManager::performTracking() {
 //            0, 0, 0, 1
 //        };
 //        static const cv::Mat rot_mat(3, 3, CV_64F, rot_mat_data);
-        GLKMatrix4 rotMat = GLKMatrix4MakeYRotation(0.174 + M_PI);
+        GLKMatrix4 rotMat = GLKMatrix4MakeYRotation(0.2 + M_PI);
         
         
         GLKMatrix4 pose_estimate = GLKMatrix4Multiply(rotMat, CVMat4ToGLKMat4(skExtrinsic));
@@ -357,8 +360,8 @@ void cvARManager::performTracking() {
         // Keep the captured frame
         if (!processed_live_frame) {
             bool within_range = (translation.at<double>(0) > 10 && translation.at<double>(0) < 40 &&
-                                 translation.at<double>(1) > -10 && translation.at<double>(1) < 10 &&
-                                 translation.at<double>(2) > 190 && translation.at<double>(2) < 260);
+                                 translation.at<double>(1) > -10 && translation.at<double>(1) &&
+                                 translation.at<double>(2) > 150 && translation.at<double>(2) < 260);
             std::cout << "within range: " << within_range << std::endl;
             if (within_range) {
                 // If within range, just accept it

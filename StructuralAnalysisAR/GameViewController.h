@@ -116,6 +116,9 @@
 //@property (weak, nonatomic) IBOutlet UILabel *x_label;
 //@property (weak, nonatomic) IBOutlet UILabel *y_label;
 //@property (weak, nonatomic) IBOutlet UILabel *z_label;
+@property (weak, nonatomic) IBOutlet UILabel *x_label;
+@property (weak, nonatomic) IBOutlet UILabel *y_label;
+@property (weak, nonatomic) IBOutlet UILabel *z_label;
 
 //@property (weak, nonatomic) IBOutlet UISwitch *extendedSwitch;
 //- (IBAction)extendedChanged:(id)sender;

@@ -19,6 +19,7 @@
 		0B1FCD461FBCA2F2002DBE98 /* VuforiaARManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B1FCD441FBCA2F2002DBE98 /* VuforiaARManager.mm */; };
 		0B1FCD471FBDDFB6002DBE98 /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B1FCD3F1FBB429F002DBE98 /* opencv2.framework */; };
 		0B1FCD4A1FBDE1C4002DBE98 /* cvARManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B1FCD481FBDE1C4002DBE98 /* cvARManager.mm */; };
+		0B2AAB851FD87D4100DD477B /* skywalk_sunny_1920.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B2AAB841FD87D4100DD477B /* skywalk_sunny_1920.png */; };
 		0B41E99A1F72BC04001DB823 /* home_blue.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B41E9991F72BC04001DB823 /* home_blue.png */; };
 		0B483BFB1F4DDB6F007A1D29 /* skywalk.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0B483BFA1F4DDB6F007A1D29 /* skywalk.jpg */; };
 		0B483C001F4F8AF9007A1D29 /* arrow_base.obj in Resources */ = {isa = PBXBuildFile; fileRef = 0B483BFE1F4F8AF9007A1D29 /* arrow_base.obj */; };
@@ -85,6 +86,7 @@
 		0B1FCD451FBCA2F2002DBE98 /* VuforiaARManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VuforiaARManager.h; sourceTree = "<group>"; };
 		0B1FCD481FBDE1C4002DBE98 /* cvARManager.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = cvARManager.mm; sourceTree = "<group>"; };
 		0B1FCD491FBDE1C4002DBE98 /* cvARManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = cvARManager.h; sourceTree = "<group>"; };
+		0B2AAB841FD87D4100DD477B /* skywalk_sunny_1920.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = skywalk_sunny_1920.png; path = image_assets/skywalk_sunny_1920.png; sourceTree = "<group>"; };
 		0B41E9991F72BC04001DB823 /* home_blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = home_blue.png; path = image_assets/home_blue.png; sourceTree = "<group>"; };
 		0B483BFA1F4DDB6F007A1D29 /* skywalk.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = skywalk.jpg; path = image_assets/skywalk.jpg; sourceTree = "<group>"; };
 		0B483BFD1F4F1016007A1D29 /* grabbableArrow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = grabbableArrow.h; sourceTree = "<group>"; };
@@ -181,6 +183,7 @@
 				0BDE98E21FBE521C003673F4 /* cutout_skywalk_1280x720.png */,
 				0BB5AD0F1FD1B3C7001C78CD /* cutout_skywalk_1920x1080.png */,
 				0B6E6A9C1FCF7EB500EE7950 /* cutout_skywalk_3840x2160.png */,
+				0B2AAB841FD87D4100DD477B /* skywalk_sunny_1920.png */,
 				0BD038A41F97B38F004B65F6 /* low_clearance_sign.dat */,
 				0BD038A51F97B38F004B65F6 /* low_clearance_sign.xml */,
 				0B5F39E31F844CEF004870DE /* skywalk_far.dat */,
@@ -399,6 +402,7 @@
 				0BD038A71F97B38F004B65F6 /* low_clearance_sign.xml in Resources */,
 				0B483BFB1F4DDB6F007A1D29 /* skywalk.jpg in Resources */,
 				0B483C001F4F8AF9007A1D29 /* arrow_base.obj in Resources */,
+				0B2AAB851FD87D4100DD477B /* skywalk_sunny_1920.png in Resources */,
 				0B483C011F4F8AF9007A1D29 /* arrow_tip.obj in Resources */,
 				0B15734D1F545CCC004CE1BE /* isuofficallogo_cropped.png in Resources */,
 				0B1573531F54615D004CE1BE /* campanile_stock_cropped.jpg in Resources */,

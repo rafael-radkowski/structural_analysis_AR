@@ -138,21 +138,23 @@
     [scene.rootNode addChildNode:cameraNode];
     cameraNode.camera.zFar = 500;
 //    cameraNode.camera.focalLength = 0.0108268; // 3.3mm
-    cameraNode.camera.xFov = 45.12 * 0.6666666; // Background image cropped roughly at 2/3 the size
-    cameraNode.camera.yFov = 57.96 * 0.6666666;
+//    cameraNode.camera.xFov = 45.12 * 0.6666666; // Background image cropped roughly at 2/3 the size
+//    cameraNode.camera.yFov = 57.96 * 0.6666666;
+    cameraNode.camera.yFov = 36.909; // From calibration of iPad Air 2
+
+    auto addLight = [self] (float x, float y, float z, float intensity) {
+        SCNNode *lightNode = [SCNNode node];
+        lightNode.light = [SCNLight light];
+        lightNode.light.type = SCNLightTypeOmni;
+        lightNode.light.intensity = intensity;
+        lightNode.position = SCNVector3Make(x, y, z);
+        [scene.rootNode addChildNode:lightNode];
+    };
+    addLight(100, 50, 30, 700);
+    addLight(-100, 50, 80, 700);
+    addLight(-50, 30, -60, 700);
+    addLight(0, 50, -80, 700);
     
-    SCNNode *lightNode = [SCNNode node];
-    lightNode.light = [SCNLight light];
-    lightNode.light.type = SCNLightTypeOmni;
-    lightNode.position = SCNVector3Make(100, 50, 30);
-    lightNode.light.intensity = 700;
-    [scene.rootNode addChildNode:lightNode];
-    SCNNode *lightNode2 = [SCNNode node];
-    lightNode2.light = [SCNLight light];
-    lightNode2.light.type = SCNLightTypeOmni;
-    lightNode2.light.intensity = 700;
-    lightNode2.position = SCNVector3Make(-100, 50, 80);
-    [scene.rootNode addChildNode:lightNode2];
     
     // create and add an ambient light to the scene
     SCNNode *ambientLightNode = [SCNNode node];
@@ -273,7 +275,8 @@
 - (void)setupVisualizations {
     SCNView *scnView = (SCNView*)self.view;
     float defaultThickness = 5;
-    float heightOffset = -17;
+//    float heightOffset = -17;
+    float heightOffset = -5;
     
     GLKQuaternion beamOri = GLKQuaternionMakeWithAngleAndAxis(0, 0, 0, 1);
     // Create live load bar
@@ -478,6 +481,10 @@
                 [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                     [self.freezeFrameBtn setEnabled:YES];
                     [self.freezeFrameBtn setTitle:@"Resume Camera" forState:UIControlStateNormal];
+                    
+                    [self.x_label setText:[NSString stringWithFormat:@"%f", camera_matrix.m30]];
+                    [self.y_label setText:[NSString stringWithFormat:@"%f", camera_matrix.m31]];
+                    [self.z_label setText:[NSString stringWithFormat:@"%f", camera_matrix.m32]];
                 }];
                 arManager->stopCamera();
             }
