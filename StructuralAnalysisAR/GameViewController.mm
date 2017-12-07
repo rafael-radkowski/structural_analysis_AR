@@ -213,6 +213,10 @@
     self.freezeFrameBtn.layer.borderColor = textColor;
     self.freezeFrameBtn.layer.cornerRadius = 5;
     
+    self.processingCurtainView.hidden = YES;
+    self.procesingOuterBox.layer.cornerRadius = 8;
+    self.processingSpinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
+    
     self.visOptionsBox.layer.borderWidth = 1.5;
     self.visOptionsBox.layer.borderColor = UIColor.grayColor.CGColor;
     
@@ -471,6 +475,7 @@
     if (!camPaused) {
         camPaused = true;
         [self.freezeFrameBtn setEnabled:NO];
+        self.processingCurtainView.hidden = NO;
         arManager->doFrame(5, [self](ARManager::CB_STATE update_type) {
             if (update_type == ARManager::DONE_CAPTURING) {
                 // Set the calculated camera matrix
@@ -480,6 +485,7 @@
                 // this callback function gets called from a different thread, so we must post UI chanages to the main thread
                 [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                     [self.freezeFrameBtn setEnabled:YES];
+                    self.processingCurtainView.hidden = YES;
                     [self.freezeFrameBtn setTitle:@"Resume Camera" forState:UIControlStateNormal];
                     
                     [self.x_label setText:[NSString stringWithFormat:@"%f", camera_matrix.m30]];

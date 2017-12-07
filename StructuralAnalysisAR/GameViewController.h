@@ -105,6 +105,10 @@
 @property (weak, nonatomic) IBOutlet UIButton *prevBtn;
 @property (weak, nonatomic) IBOutlet UIButton *nextBtn;
 @property (weak, nonatomic) IBOutlet UIButton *freezeFrameBtn;
+// To hide the interface when processing frames
+@property (weak, nonatomic) IBOutlet UIView *processingCurtainView;
+@property (weak, nonatomic) IBOutlet UIView *procesingOuterBox;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *processingSpinner;
 
 
 //@property (weak, nonatomic) IBOutlet UIStepper *x_stepper_thing;

@@ -259,10 +259,6 @@ void cvARManager::processImage(cv::Mat& image) {
         frames_to_capture--;
         // wake up the tracking thread
         worker_cond_var.notify_one();
-        // All frames have been captured, so notify callback
-        if (!frames_to_capture) {
-            frame_callback(DONE_CAPTURING);
-        }
     }
 }
 
