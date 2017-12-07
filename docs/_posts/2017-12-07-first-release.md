@@ -2,8 +2,6 @@
 layout: post
 title: "First Test Release of AR Structures App"
 ---
-![ar-poster]({{site.baseurl}}/assets/1-pages-teaser.png)
-
 After some preliminary meetings, research, and calculations, our team has released the first test version of the AR Structures App. The overall goal of the app is to enhance beginning civil engineering student's understanding of structural analysis by providing a mobile augmented reality via an iPad, alongside the traditional structural analysis teaching pedagogy. 
 
 The augmented reality incorporated into the app will superimpose what a student would normally see with a computer generated model, shown through the lens of an iPad. Augmented reality utilizes computer graphics, rapid video processing, and tracking, in order to combine the physical environment with a computer generated virtual world.
