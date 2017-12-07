@@ -1,3 +1,6 @@
+---
+layout: home
+---
 # Structural Analysis AR Application
 ### Iowa State University
 
