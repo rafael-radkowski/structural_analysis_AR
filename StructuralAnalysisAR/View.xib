@@ -218,13 +218,13 @@
                     <rect key="frame" x="0.0" y="0.0" width="1112" height="834"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Processing..." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1PH-2z-qgd">
-                            <rect key="frame" x="468.5" y="398.5" width="177" height="38.5"/>
+                            <rect key="frame" x="467.5" y="398.5" width="177" height="38.5"/>
                             <fontDescription key="fontDescription" type="system" pointSize="32"/>
                             <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="cSq-Bv-9lN">
-                            <rect key="frame" x="440.5" y="407" width="20" height="20"/>
+                            <rect key="frame" x="439.5" y="407" width="20" height="20"/>
                         </activityIndicatorView>
                     </subviews>
                     <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.66307255993150682" colorSpace="custom" customColorSpace="sRGB"/>

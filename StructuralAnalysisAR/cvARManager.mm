@@ -169,6 +169,9 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene)
                                           -0.154240, -0.189710, -0.969649, 0.000000,
                                           -8.753870, -31.452150, -204.253311, 1.000000);
     
+    printf("aspect screen: %f\n", aspectScreen);
+    projectionMatrix = GLKMatrix4MakePerspective(36.909 * (M_PI / 180.0), aspectScreen, 0.1, 500);
+    
     // Copy image to background Metal texture
 //    static MTLRegion region = MTLRegionMake2D(0, 0, video_width, video_height);
 //    [videoTexture replaceRegion:region mipmapLevel:0 withBytes:cvMatFromUIImage(bgImage).data bytesPerRow:(video_width*4)];
@@ -219,7 +222,7 @@ GLKMatrix4 cvARManager::getCameraMatrix() {
 }
 
 GLKMatrix4 cvARManager::getProjectionMatrix() {
-    return GLKMatrix4Identity;
+    return projectionMatrix;
 }
 
 id<MTLTexture> cvARManager::getBgTexture() {

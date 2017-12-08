@@ -90,6 +90,7 @@ private:
     std::function<void(CB_STATE)> frame_callback;
     
     GLKMatrix4 cameraMatrix;
+    GLKMatrix4 projectionMatrix;
     // AR things
     ImageMatcher matcher;
     
