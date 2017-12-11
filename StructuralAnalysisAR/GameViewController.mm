@@ -467,6 +467,13 @@
     }
 }
 
+- (void) setPausedCameraLabel {
+    [self.freezeFrameBtn setTitle:@"Resume Camera" forState:UIControlStateNormal];
+}
+- (void) setRunningCameraLabel {
+    [self.freezeFrameBtn setTitle:@"Pause Camera" forState:UIControlStateNormal];
+}
+
 - (IBAction)freezePressed:(id)sender {
     if (!camPaused) {
         if (tracking_mode == TrackingMode::vuforia) {
@@ -489,7 +496,7 @@
                     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                         [self.freezeFrameBtn setEnabled:YES];
                         self.processingCurtainView.hidden = YES;
-                        [self.freezeFrameBtn setTitle:@"Resume Camera" forState:UIControlStateNormal];
+                        [self setPausedCameraLabel];
                         
                         [self.x_label setText:[NSString stringWithFormat:@"%f", camera_matrix.m30]];
                         [self.y_label setText:[NSString stringWithFormat:@"%f", camera_matrix.m31]];
@@ -502,7 +509,7 @@
     }
     else { // camPaused == true
         camPaused = false;
-        [self.freezeFrameBtn setTitle:@"Pause Camera" forState:UIControlStateNormal];
+        [self setRunningCameraLabel];
         arManager->startCamera();
     }
     
@@ -821,7 +828,6 @@
     enum TrackingMode new_mode = static_cast<TrackingMode>(self.trackingModeBtn.selectedSegmentIndex);
     // temporarily disable button to indicate we are switching
     self.trackingModeBtn.enabled = NO;
-    bool camera_was_paused = camPaused;
     arManager->stopCamera();
     // Indoor
     if (new_mode == TrackingMode::vuforia && tracking_mode == TrackingMode::opencv) {
@@ -834,12 +840,9 @@
         arManager = new cvARManager(self.view, scene);
     }
     tracking_mode = new_mode;
-    if (camera_was_paused) {
-        arManager->stopCamera();
-    }
-    else {
-        arManager->startCamera();
-    }
+    camPaused = false;
+    arManager->startCamera();
+    [self setRunningCameraLabel];
     
     self.trackingModeBtn.enabled = YES;
 }

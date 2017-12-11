@@ -66,6 +66,7 @@
     enum TrackingMode tracking_mode;
     id<MTLTexture> staticBgTex;
     UIImage* scaled_img;
+
     bool camPaused;
     int framesLeftToProcess;
     SCNMatrix4 bgImgScale;
@@ -86,6 +87,10 @@
 - (void)setVisibilities;
 - (void)setupVisualizations;
 - (void)setupInstructions;
+
+// A couple helper functions for setting the label for pause/resume camera button
+- (void)setPausedCameraLabel;
+- (void)setRunningCameraLabel;
 
 - (void)calculateDeflection:(std::vector<float>&)deflection forValues:(const std::vector<float>&)vals rcnL:(double&)rcnL rcnR:(double&)rcnR beamStarts:(double)beamStart beamEnds:(double)beamEnds loadStarts:(double)loadStart loadEnds:(double)loadEnd loadMagnitude:(double)totalLoad;
 - (void)updateBeamForces;
