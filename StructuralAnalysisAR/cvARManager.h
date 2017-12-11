@@ -42,6 +42,7 @@
 class cvARManager : public ARManager {
 public:
     cvARManager(UIView* view, SCNScene* scene);
+    ~cvARManager() override;
     void doFrame(int n_avg, std::function<void(CB_STATE)> cb_func) override;
     bool startAR() override;
     size_t stopAR() override;
@@ -74,6 +75,8 @@ private:
     
     // holds the frame that is being
     cv::Mat latest_frame;
+    // Whether to keep the worker thread alive
+    bool thread_live;
     std::atomic<bool> worker_busy;
     std::condition_variable worker_cond_var;
     std::mutex worker_mutex;

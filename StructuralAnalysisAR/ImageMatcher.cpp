@@ -36,6 +36,7 @@ ImageMatcher::ImageMatcher(const Mat& ref_img, int n_features, double ratio, dou
     feat_matcher->train();
 }
 
+
 const std::vector<cv::KeyPoint>& ImageMatcher::getRefKeypoints() const {
     return ref_keypoints;
 }

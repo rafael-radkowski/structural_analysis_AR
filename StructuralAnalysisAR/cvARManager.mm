@@ -94,7 +94,9 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene)
     // Allocate space for frame to hold frame being processed for tracking
     latest_frame = cv::Mat(video_height, video_width, CV_8UC4);
     // start background worker thread to perform tracking
-    worker_thread = std::thread([this] () {while (1) performTracking();});
+    
+    thread_live = true;
+    worker_thread = std::thread([this] () {while (thread_live) performTracking();});
     
     cameraMatrix = GLKMatrix4Identity;
     
@@ -187,6 +189,23 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene)
 //    [videoTexture replaceRegion:region mipmapLevel:0 withBytes:cvMatFromUIImage(bgImage).data bytesPerRow:(video_width*4)];
 }
 
+// destructor
+cvARManager::~cvARManager() {
+    // stop the camera, if it's not already stopped
+    // ARC should clean it up once the object is deleted upon class destruction (I think)
+    [camera stop];
+    
+    // stop the background processing thread
+    thread_live = false;
+    // wake up the background thread
+    {
+        std::unique_lock<std::mutex> lk(worker_mutex);
+        worker_cond_var.notify_one();
+    }
+    worker_thread.join();
+    std::cout << "cvARManager destructor done" << std::endl;
+}
+
 void cvARManager::setBgImage(cv::Mat img) {
     // Copy image to background Metal texture
     static MTLRegion region = MTLRegionMake2D(0, 0, video_width, video_height);
@@ -277,9 +296,11 @@ void cvARManager::processImage(cv::Mat& image) {
         worker_cond_var.notify_one();
     }
     if (frames_to_capture) {
+        // wake up the tracking thread
+        std::unique_lock<std::mutex> lk(worker_mutex);
+        
         captured_frames.push_back(image.clone());
         frames_to_capture--;
-        // wake up the tracking thread
         worker_cond_var.notify_one();
     }
 }
@@ -287,8 +308,13 @@ void cvARManager::processImage(cv::Mat& image) {
 void cvARManager::performTracking() {
     std::unique_lock<std::mutex> lk(worker_mutex);
     // Wait only if there is no work to do, either in the form of live data in latest_frame, or captured data in captured_frames
-    while (!worker_busy && !captured_frames.size()) {
+    // Also only wait if we're supposed to be alive
+    while (!worker_busy && !captured_frames.size() && thread_live) {
         worker_cond_var.wait(lk);
+    }
+    if (!thread_live) {
+        // Thread was told to end, so return
+        return;
     }
     
     // image that will be processed

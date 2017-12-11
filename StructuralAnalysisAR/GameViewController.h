@@ -59,6 +59,11 @@
     bool deflectLive;
     
     ARManager* arManager;
+    enum TrackingMode {
+        vuforia = 0,
+        opencv = 1
+    };
+    enum TrackingMode tracking_mode;
     id<MTLTexture> staticBgTex;
     UIImage* scaled_img;
     bool camPaused;
@@ -105,9 +110,10 @@
 @property (weak, nonatomic) IBOutlet UIButton *prevBtn;
 @property (weak, nonatomic) IBOutlet UIButton *nextBtn;
 @property (weak, nonatomic) IBOutlet UIButton *freezeFrameBtn;
+// Tracking Mode (indoor/outdoor)
+@property (weak, nonatomic) IBOutlet UISegmentedControl *trackingModeBtn;
 // To hide the interface when processing frames
 @property (weak, nonatomic) IBOutlet UIView *processingCurtainView;
-@property (weak, nonatomic) IBOutlet UIView *procesingOuterBox;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *processingSpinner;
 
 
@@ -136,6 +142,8 @@
 - (IBAction)prevStepPressed:(id)sender;
 - (IBAction)nextStepPressed:(id)sender;
 - (IBAction)freezePressed:(id)sender;
+// When the indoor/outdoor toggle switch is touched. Goes between OpenCV ARManager adn Vuforia ARManager
+- (IBAction)trackingModeChanged:(id)sender;
 
 
 

@@ -76,6 +76,7 @@
     extendedTrackingEnabled = YES;
 //    arManager = new VuforiaARManager((ARView*)self.view, scene, Vuforia::METAL, self.interfaceOrientation);
     arManager = new cvARManager(self.view, scene);
+    tracking_mode = TrackingMode::opencv;
     arManager->startCamera();
 //    arManager->startAR();
 
@@ -209,7 +210,6 @@
     self.freezeFrameBtn.layer.cornerRadius = 5;
     
     self.processingCurtainView.hidden = YES;
-    self.procesingOuterBox.layer.cornerRadius = 8;
     self.processingSpinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
     
     self.visOptionsBox.layer.borderWidth = 1.5;
@@ -263,8 +263,10 @@
 }
 
 - (void)renderer:(id<SCNSceneRenderer>)renderer willRenderScene:(SCNScene *)scene atTime:(NSTimeInterval)time {
-    if (!camPaused) {
-        GLKMatrix4 camera_matrix =arManager->getCameraMatrix();
+    // We need to check that arManager is valid, because during switching, it is temporarily null, and this function
+    // is called from a separate SceneKit thread
+    if (!camPaused && arManager) {
+        GLKMatrix4 camera_matrix = arManager->getCameraMatrix();
 //        [self printMatrix:camera_matrix];
         cameraNode.transform = SCNMatrix4FromGLKMatrix4(camera_matrix);
         cameraNode.camera.projectionTransform = SCNMatrix4FromGLKMatrix4(arManager->getProjectionMatrix());
@@ -466,32 +468,39 @@
 }
 
 - (IBAction)freezePressed:(id)sender {
-//    ((cvARManager*)arManager)->saveImg();
     if (!camPaused) {
-        camPaused = true;
-        [self.freezeFrameBtn setEnabled:NO];
-        self.processingCurtainView.hidden = NO;
-        arManager->doFrame(5, [self](ARManager::CB_STATE update_type) {
-            if (update_type == ARManager::DONE_CAPTURING) {
-                // Set the calculated camera matrix
-                GLKMatrix4 camera_matrix = arManager->getCameraMatrix();
-                cameraNode.transform = SCNMatrix4FromGLKMatrix4(camera_matrix);
-                
-                // this callback function gets called from a different thread, so we must post UI chanages to the main thread
-                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                    [self.freezeFrameBtn setEnabled:YES];
-                    self.processingCurtainView.hidden = YES;
-                    [self.freezeFrameBtn setTitle:@"Resume Camera" forState:UIControlStateNormal];
+        if (tracking_mode == TrackingMode::vuforia) {
+            camPaused = true;
+            arManager->stopCamera();
+            [self.freezeFrameBtn setTitle:@"Resume Camera" forState:UIControlStateNormal];
+        }
+        else if (tracking_mode == TrackingMode::opencv) {
+//            ((cvARManager*)arManager)->saveImg();
+            camPaused = true;
+            [self.freezeFrameBtn setEnabled:NO];
+            self.processingCurtainView.hidden = NO;
+            arManager->doFrame(5, [self](ARManager::CB_STATE update_type) {
+                if (update_type == ARManager::DONE_CAPTURING) {
+                    // Set the calculated camera matrix
+                    GLKMatrix4 camera_matrix = arManager->getCameraMatrix();
+                    cameraNode.transform = SCNMatrix4FromGLKMatrix4(camera_matrix);
                     
-                    [self.x_label setText:[NSString stringWithFormat:@"%f", camera_matrix.m30]];
-                    [self.y_label setText:[NSString stringWithFormat:@"%f", camera_matrix.m31]];
-                    [self.z_label setText:[NSString stringWithFormat:@"%f", camera_matrix.m32]];
-                }];
-                arManager->stopCamera();
-            }
-        });
+                    // this callback function gets called from a different thread, so we must post UI chanages to the main thread
+                    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                        [self.freezeFrameBtn setEnabled:YES];
+                        self.processingCurtainView.hidden = YES;
+                        [self.freezeFrameBtn setTitle:@"Resume Camera" forState:UIControlStateNormal];
+                        
+                        [self.x_label setText:[NSString stringWithFormat:@"%f", camera_matrix.m30]];
+                        [self.y_label setText:[NSString stringWithFormat:@"%f", camera_matrix.m31]];
+                        [self.z_label setText:[NSString stringWithFormat:@"%f", camera_matrix.m32]];
+                    }];
+                    arManager->stopCamera();
+                }
+            });
+        }
     }
-    else {
+    else { // camPaused == true
         camPaused = false;
         [self.freezeFrameBtn setTitle:@"Pause Camera" forState:UIControlStateNormal];
         arManager->startCamera();
@@ -807,5 +816,31 @@
         rcnL += 0.6*L + w * b * (2*L - 2*a - b) / (2*L);
         rcnR += 0.6*L + w * b * (2*a + b) / (2*L);
     }
+}
+- (IBAction)trackingModeChanged:(id)sender {
+    enum TrackingMode new_mode = static_cast<TrackingMode>(self.trackingModeBtn.selectedSegmentIndex);
+    // temporarily disable button to indicate we are switching
+    self.trackingModeBtn.enabled = NO;
+    bool camera_was_paused = camPaused;
+    arManager->stopCamera();
+    // Indoor
+    if (new_mode == TrackingMode::vuforia && tracking_mode == TrackingMode::opencv) {
+        delete arManager;
+        arManager = new VuforiaARManager((ARView*)self.view, scene, Vuforia::METAL, self.interfaceOrientation);
+    }
+    // Outdoor
+    else if (new_mode == TrackingMode::opencv && tracking_mode == TrackingMode::vuforia) {
+        delete arManager;
+        arManager = new cvARManager(self.view, scene);
+    }
+    tracking_mode = new_mode;
+    if (camera_was_paused) {
+        arManager->stopCamera();
+    }
+    else {
+        arManager->startCamera();
+    }
+    
+    self.trackingModeBtn.enabled = YES;
 }
 @end

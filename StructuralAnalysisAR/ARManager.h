@@ -19,6 +19,7 @@
 
 class ARManager {
 public:
+    virtual ~ARManager() {};
     virtual bool startAR() = 0;
     enum CB_STATE {
         DONE_CAPTURING // When all frames to be captured have been saved, but not necessarily processed yet

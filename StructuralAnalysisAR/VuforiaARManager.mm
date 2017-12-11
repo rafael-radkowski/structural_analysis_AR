@@ -33,16 +33,26 @@ VuforiaARManager::VuforiaARManager(ARView* view, SCNScene* scene, int VuforiaIni
      [view setVuforiaApp:vapp];
 }
 
+VuforiaARManager::~VuforiaARManager() {
+    stopAR();
+}
+
 void VuforiaARManager::doFrame(int n_avg, std::function<void(CB_STATE)> cb_func) {
     
 }
 
 void VuforiaARManager::startCamera() {
-    
+    NSError* error = [NSError alloc];
+    [vapp resumeAR:&error];
+    if (error) {printf("Failed to call resumeAR\n");}
+    view.renderVideo = true;
 }
 
 void VuforiaARManager::stopCamera() {
-    
+    NSError* error = [NSError alloc];
+    [vapp pauseAR:&error];
+    if (error) {printf("Failed to call pauseAR\n");}
+    view.renderVideo = false;
 }
 
 bool VuforiaARManager::startAR() {
@@ -226,7 +236,7 @@ bool VuforiaARManager::doUnloadTrackersData() {
     Vuforia::ObjectTracker* objectTracker = static_cast<Vuforia::ObjectTracker*>(trackerManager.getTracker(Vuforia::ObjectTracker::getClassType()));
     
     // Destroy the data sets:
-    if (!objectTracker->destroyDataSet(dataSetStonesAndChips.get()))
+    if (!objectTracker->destroyDataSet(dataSetStonesAndChips))
     {
         NSLog(@"Failed to destroy data set Stones and Chips.");
     }
@@ -241,7 +251,7 @@ bool VuforiaARManager::doDeinitTrackers() {
     return YES;
 }
 
-std::shared_ptr<Vuforia::DataSet> VuforiaARManager::loadObjectTrackerDataSet(NSString *dataFile) {
+Vuforia::DataSet* VuforiaARManager::loadObjectTrackerDataSet(NSString *dataFile) {
     NSLog(@"loadObjectTrackerDataSet (%@)", dataFile);
     Vuforia::DataSet * dataSet = NULL;
     
@@ -270,11 +280,11 @@ std::shared_ptr<Vuforia::DataSet> VuforiaARManager::loadObjectTrackerDataSet(NSS
         }
     }
     
-    return std::shared_ptr<Vuforia::DataSet>(dataSet);
+    return dataSet;
 }
 
 
-bool VuforiaARManager::activateDataSet(std::shared_ptr<Vuforia::DataSet> theDataSet) {
+bool VuforiaARManager::activateDataSet(Vuforia::DataSet* theDataSet) {
     // if we've previously recorded an activation, deactivate it
     if (dataSetCurrent != nil)
     {
@@ -292,7 +302,7 @@ bool VuforiaARManager::activateDataSet(std::shared_ptr<Vuforia::DataSet> theData
     else
     {
         // Activate the data set:
-        if (!objectTracker->activateDataSet(theDataSet.get()))
+        if (!objectTracker->activateDataSet(theDataSet))
         {
             NSLog(@"Failed to activate data set.");
         }
@@ -313,7 +323,7 @@ bool VuforiaARManager::activateDataSet(std::shared_ptr<Vuforia::DataSet> theData
 }
 
 
-bool VuforiaARManager::deactivateDataSet(std::shared_ptr<Vuforia::DataSet> theDataSet) {
+bool VuforiaARManager::deactivateDataSet(Vuforia::DataSet* theDataSet) {
     if ((dataSetCurrent == nil) || (theDataSet != dataSetCurrent))
     {
         NSLog(@"Invalid request to deactivate data set.");
@@ -336,7 +346,7 @@ bool VuforiaARManager::deactivateDataSet(std::shared_ptr<Vuforia::DataSet> theDa
     else
     {
         // Activate the data set:
-        if (!objectTracker->deactivateDataSet(theDataSet.get()))
+        if (!objectTracker->deactivateDataSet(theDataSet))
         {
             NSLog(@"Failed to deactivate data set.");
         }
@@ -352,7 +362,7 @@ bool VuforiaARManager::deactivateDataSet(std::shared_ptr<Vuforia::DataSet> theDa
 }
 
 
-bool VuforiaARManager::setExtendedTrackingForDataSet(std::shared_ptr<Vuforia::DataSet> theDataSet, bool start) {
+bool VuforiaARManager::setExtendedTrackingForDataSet(Vuforia::DataSet* theDataSet, bool start) {
     BOOL result = YES;
     for (int tIdx = 0; tIdx < theDataSet->getNumTrackables(); tIdx++) {
         Vuforia::Trackable* trackable = theDataSet->getTrackable(tIdx);

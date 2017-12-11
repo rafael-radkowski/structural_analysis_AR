@@ -26,6 +26,7 @@
 class VuforiaARManager : public ARManager, SampleApplicationControlCpp {
 public:
     VuforiaARManager(ARView* view, SCNScene* scene, int VuforiaInitFlags, UIInterfaceOrientation ARViewOrientation);
+    ~VuforiaARManager() override;
     void doFrame(int n_avg, std::function<void(CB_STATE)> cb_func) override;
     bool startAR() override;
     size_t stopAR() override;
@@ -49,10 +50,10 @@ public:
     // get called by Vuforia library
     void onVuforiaUpdate(Vuforia::State* state) override;
 private:
-    std::shared_ptr<Vuforia::DataSet> loadObjectTrackerDataSet(NSString* dataFile);
-    bool activateDataSet(std::shared_ptr<Vuforia::DataSet> theDataSet);
-    bool deactivateDataSet(std::shared_ptr<Vuforia::DataSet> thedataSet);
-    bool setExtendedTrackingForDataSet(std::shared_ptr<Vuforia::DataSet> theDataSet, bool start);
+    Vuforia::DataSet* loadObjectTrackerDataSet(NSString* dataFile);
+    bool activateDataSet(Vuforia::DataSet* theDataSet);
+    bool deactivateDataSet(Vuforia::DataSet* thedataSet);
+    bool setExtendedTrackingForDataSet(Vuforia::DataSet* theDataSet, bool start);
     
     // utilities
     GLKMatrix4 GLKMatrix4FromQCARMatrix44(const Vuforia::Matrix44F& matrix);
@@ -68,8 +69,8 @@ private:
     id<MTLTexture> staticBgTex;
     GLKMatrix4 bgImgScale;
     
-    std::shared_ptr<Vuforia::DataSet>  dataSetStonesAndChips;
-    std::shared_ptr<Vuforia::DataSet>  dataSetCurrent;
+    Vuforia::DataSet*  dataSetStonesAndChips = nullptr;
+    Vuforia::DataSet*  dataSetCurrent = nullptr;
     bool extendedTrackingEnabled;
 };
 
