@@ -141,7 +141,7 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene)
     UIImage* bgImage = [UIImage imageNamed:@"cutout_skywalk_3840x2160.png"];
 #else
 //    UIImage* bgImage = [UIImage imageNamed:@"cutout_skywalk_1920x1080.png"];
-    UIImage* bgImage = [UIImage imageNamed:@"skywalk_sunny_1920.png"];
+    UIImage* bgImage = [UIImage imageNamed:@"skywalk_1920_back.png"];
 #endif
     
     MaskedImage masked(cvMatFromUIImage(bgImage));
@@ -149,17 +149,27 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene)
     matcher = ImageMatcher(cropped, 6000, 0.8, 0.98, 4.0, std::cout);
     
     
-    const float model_width = 170;
+    const float model_width = 200;
     const float model_height = (model_width * ((double)video_height / video_width));
     const std::vector<cv::KeyPoint>& model_keypoints = matcher.getRefKeypoints();
     model_pts_3d.resize(model_keypoints.size());
-    float model_x_offset = -10;
+    float model_x_offset = -7;
+    float model_y_offset = -25;
+    float model_rotation_offset = 0.0;
+    float cos_angle = std::cos(model_rotation_offset);
+    float sin_angle = std::sin(model_rotation_offset);
     for (size_t i = 0; i < model_keypoints.size(); ++i) {
         auto model_pt = model_keypoints[i].pt;
         masked.uncropPoint(model_pt);
-        model_pts_3d[i].x = model_pt.x * (model_width / video_width) - (model_width / 2);
+        float unrotated_x = model_pt.x * (model_width / video_width) - (model_width / 2);
+        float unrotated_y = model_pt.y * (model_height / video_height) - (model_height / 2);
+        // rotate
+        model_pts_3d[i].x = unrotated_x * cos_angle - unrotated_y * sin_angle;
+        model_pts_3d[i].y = unrotated_x * sin_angle + unrotated_y * cos_angle;
+        // Add offsets
         model_pts_3d[i].x += model_x_offset;
-        model_pts_3d[i].y = model_pt.y * (model_height / video_height) - (model_height / 2);
+        model_pts_3d[i].y += model_y_offset;
+        
         model_pts_3d[i].z = 0;
     }
     
@@ -192,6 +202,15 @@ void cvARManager::doFrame(int n_avg, std::function<void(CB_STATE)> cb_func) {
     most_inliers = 0;
     frames_to_capture = n_avg;
     frame_callback = cb_func;
+    
+    
+//    UIImage* bgImage = [UIImage imageNamed:@"skywalk_1920_back.png"];
+//    std::unique_lock<std::mutex> lk(worker_mutex);
+//    worker_busy = true;
+//    cvMatFromUIImage(bgImage).copyTo(latest_frame);
+//    setBgImage(latest_frame);
+//    captured_frames.push_back(latest_frame);
+//    worker_cond_var.notify_one();
 }
 
 bool cvARManager::startAR() {
@@ -351,15 +370,17 @@ void cvARManager::performTracking() {
 //            0, 0, 0, 1
 //        };
 //        static const cv::Mat rot_mat(3, 3, CV_64F, rot_mat_data);
-        GLKMatrix4 rotMat = GLKMatrix4MakeYRotation(0.2 + M_PI);
+        GLKMatrix4 rotMat_y = GLKMatrix4MakeYRotation(0.2 + M_PI);
+        GLKMatrix4 rotMat_x = GLKMatrix4MakeXRotation(0.2);
+        GLKMatrix4 rotMat = GLKMatrix4Multiply(rotMat_y, rotMat_x);
         
         
         GLKMatrix4 pose_estimate = GLKMatrix4Multiply(rotMat, CVMat4ToGLKMat4(skExtrinsic));
         
         // Keep the captured frame
         if (!processed_live_frame) {
-            bool within_range = (translation.at<double>(0) > 10 && translation.at<double>(0) < 40 &&
-                                 translation.at<double>(1) > -10 && translation.at<double>(1) &&
+            bool within_range = (translation.at<double>(0) > -15 && translation.at<double>(0) < 15 &&
+                                 translation.at<double>(1) > -20 && translation.at<double>(1) < 20 &&
                                  translation.at<double>(2) > 150 && translation.at<double>(2) < 260);
             std::cout << "within range: " << within_range << std::endl;
             if (within_range) {

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0B0BEE6E1F87EFD4008BC076 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B0BEE6D1F87EFD4008BC076 /* GLKit.framework */; };
 		0B0C0E971F8D053A00A173E7 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B0C0E961F8D053A00A173E7 /* Metal.framework */; };
+		0B0CBD0F1FDB40C800A9B223 /* skywalk_1920_back.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B0CBD0E1FDB40C800A9B223 /* skywalk_1920_back.png */; };
 		0B15734B1F5451BF004CE1BE /* MainPageViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B15734A1F5451BF004CE1BE /* MainPageViewController.mm */; };
 		0B15734D1F545CCC004CE1BE /* isuofficallogo_cropped.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B15734C1F545CCC004CE1BE /* isuofficallogo_cropped.png */; };
 		0B1573511F54601F004CE1BE /* campanile_stock_bw.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0B1573501F54601F004CE1BE /* campanile_stock_bw.jpg */; };
@@ -70,6 +71,7 @@
 /* Begin PBXFileReference section */
 		0B0BEE6D1F87EFD4008BC076 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
 		0B0C0E961F8D053A00A173E7 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
+		0B0CBD0E1FDB40C800A9B223 /* skywalk_1920_back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = skywalk_1920_back.png; path = image_assets/skywalk_1920_back.png; sourceTree = "<group>"; };
 		0B1573491F5451BF004CE1BE /* MainPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainPageViewController.h; sourceTree = "<group>"; };
 		0B15734A1F5451BF004CE1BE /* MainPageViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MainPageViewController.mm; sourceTree = "<group>"; };
 		0B15734C1F545CCC004CE1BE /* isuofficallogo_cropped.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = isuofficallogo_cropped.png; path = ../../assets/isuofficallogo_cropped.png; sourceTree = "<group>"; };
@@ -184,6 +186,7 @@
 				0BB5AD0F1FD1B3C7001C78CD /* cutout_skywalk_1920x1080.png */,
 				0B6E6A9C1FCF7EB500EE7950 /* cutout_skywalk_3840x2160.png */,
 				0B2AAB841FD87D4100DD477B /* skywalk_sunny_1920.png */,
+				0B0CBD0E1FDB40C800A9B223 /* skywalk_1920_back.png */,
 				0BD038A41F97B38F004B65F6 /* low_clearance_sign.dat */,
 				0BD038A51F97B38F004B65F6 /* low_clearance_sign.xml */,
 				0B5F39E31F844CEF004870DE /* skywalk_far.dat */,
@@ -411,6 +414,7 @@
 				0BAD78781F66CDDE003CAE93 /* stick_man.png in Resources */,
 				0BAD78791F66CDDE003CAE93 /* stick_woman.png in Resources */,
 				0B5F39E61F844CEF004870DE /* skywalk_far.xml in Resources */,
+				0B0CBD0F1FDB40C800A9B223 /* skywalk_1920_back.png in Resources */,
 				0B41E99A1F72BC04001DB823 /* home_blue.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

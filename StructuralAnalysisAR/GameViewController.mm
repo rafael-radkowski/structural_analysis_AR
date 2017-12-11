@@ -136,11 +136,6 @@
     cameraNode = [SCNNode node];
     cameraNode.camera = [SCNCamera camera];
     [scene.rootNode addChildNode:cameraNode];
-    cameraNode.camera.zFar = 500;
-//    cameraNode.camera.focalLength = 0.0108268; // 3.3mm
-//    cameraNode.camera.xFov = 45.12 * 0.6666666; // Background image cropped roughly at 2/3 the size
-//    cameraNode.camera.yFov = 57.96 * 0.6666666;
-    cameraNode.camera.yFov = 36.909; // From calibration of iPad Air 2
 
     auto addLight = [self] (float x, float y, float z, float intensity) {
         SCNNode *lightNode = [SCNNode node];
@@ -280,7 +275,7 @@
     SCNView *scnView = (SCNView*)self.view;
     float defaultThickness = 5;
 //    float heightOffset = -17;
-    float heightOffset = -5;
+    float heightOffset = 0;
     
     GLKQuaternion beamOri = GLKQuaternionMakeWithAngleAndAxis(0, 0, 0, 1);
     // Create live load bar
