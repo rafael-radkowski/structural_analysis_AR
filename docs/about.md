@@ -7,3 +7,5 @@ Structural Analysis is an introductory core course that is taught in every civil
 
 Improved methods for teaching structural analysis, like the project described, will not only be impactful by increasing understanding and engagement of students in structural analysis classes, but will help prepare students for STEM careers that will be model-centric in the future. 
 
+Below is a video demonstrating our application. You can find more videos on our [YouTube channel](https://www.youtube.com/channel/UCJYTkPvh-aNwow1DVk_5rdQ)
+<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/kANM-r5Fh0k?rel=0" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen></iframe>
