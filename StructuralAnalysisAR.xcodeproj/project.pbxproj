@@ -31,6 +31,7 @@
 		0B483C031F4F8BF5007A1D29 /* grabbableArrow.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B483C021F4F8BF5007A1D29 /* grabbableArrow.mm */; };
 		0B483C061F4F9051007A1D29 /* SceneKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B483C051F4F9051007A1D29 /* SceneKit.framework */; };
 		0B483C081F4F9063007A1D29 /* ModelIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B483C071F4F9063007A1D29 /* ModelIO.framework */; };
+		0B4F29B11FE0846C0067C439 /* skywalk_south_far.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0B4F29B01FE0846C0067C439 /* skywalk_south_far.jpg */; };
 		0B5F39DE1F843975004870DE /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0B5F39DD1F843975004870DE /* Shaders.metal */; };
 		0B5F39E51F844CEF004870DE /* skywalk_far.dat in Resources */ = {isa = PBXBuildFile; fileRef = 0B5F39E31F844CEF004870DE /* skywalk_far.dat */; };
 		0B5F39E61F844CEF004870DE /* skywalk_far.xml in Resources */ = {isa = PBXBuildFile; fileRef = 0B5F39E41F844CEF004870DE /* skywalk_far.xml */; };
@@ -104,6 +105,7 @@
 		0B483C021F4F8BF5007A1D29 /* grabbableArrow.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = grabbableArrow.mm; sourceTree = "<group>"; };
 		0B483C051F4F9051007A1D29 /* SceneKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SceneKit.framework; path = System/Library/Frameworks/SceneKit.framework; sourceTree = SDKROOT; };
 		0B483C071F4F9063007A1D29 /* ModelIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ModelIO.framework; path = System/Library/Frameworks/ModelIO.framework; sourceTree = SDKROOT; };
+		0B4F29B01FE0846C0067C439 /* skywalk_south_far.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = skywalk_south_far.jpg; path = image_assets/skywalk_south_far.jpg; sourceTree = "<group>"; };
 		0B5F39DD1F843975004870DE /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
 		0B5F39E31F844CEF004870DE /* skywalk_far.dat */ = {isa = PBXFileReference; lastKnownFileType = file; name = skywalk_far.dat; path = image_assets/skywalk_far.dat; sourceTree = "<group>"; };
 		0B5F39E41F844CEF004870DE /* skywalk_far.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = skywalk_far.xml; path = image_assets/skywalk_far.xml; sourceTree = "<group>"; };
@@ -196,6 +198,7 @@
 				0B0CBD0E1FDB40C800A9B223 /* skywalk_1920_back.png */,
 				0B0CBD131FE0547600A9B223 /* skywalk_south1.dat */,
 				0B0CBD141FE0547600A9B223 /* skywalk_south1.xml */,
+				0B4F29B01FE0846C0067C439 /* skywalk_south_far.jpg */,
 				0BD038A41F97B38F004B65F6 /* low_clearance_sign.dat */,
 				0BD038A51F97B38F004B65F6 /* low_clearance_sign.xml */,
 				0B5F39E31F844CEF004870DE /* skywalk_far.dat */,
@@ -426,6 +429,7 @@
 				0B6E6A9D1FCF7EB500EE7950 /* cutout_skywalk_3840x2160.png in Resources */,
 				0BAD78781F66CDDE003CAE93 /* stick_man.png in Resources */,
 				0BAD78791F66CDDE003CAE93 /* stick_woman.png in Resources */,
+				0B4F29B11FE0846C0067C439 /* skywalk_south_far.jpg in Resources */,
 				0B5F39E61F844CEF004870DE /* skywalk_far.xml in Resources */,
 				0B0CBD0F1FDB40C800A9B223 /* skywalk_1920_back.png in Resources */,
 				0B41E99A1F72BC04001DB823 /* home_blue.png in Resources */,
