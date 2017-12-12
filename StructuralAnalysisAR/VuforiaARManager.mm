@@ -109,15 +109,6 @@ GLKMatrix4 VuforiaARManager::getProjectionMatrix() {
     return projectionMatrix;
 }
 
-id<MTLTexture> VuforiaARManager::getBgTexture() {
-    return videoTexture;
-}
-
-GLKMatrix4 VuforiaARManager::getBgMatrix() {
-    return bgImgScale;
-}
-
-
 
 void VuforiaARManager::onInitARDone(NSError* initError) {
     if (initError == nil) {
@@ -187,7 +178,7 @@ bool VuforiaARManager::doInitTrackers() {
 }
 
 bool VuforiaARManager::doLoadTrackersData() {
-    dataSetStonesAndChips = loadObjectTrackerDataSet(@"skywalk_far.xml");
+    dataSetStonesAndChips = loadObjectTrackerDataSet(@"skywalk_south1.xml");
     if (dataSetStonesAndChips == NULL) {
         NSLog(@"Failed to load datasets");
         return NO;

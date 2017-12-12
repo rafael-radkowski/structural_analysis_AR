@@ -60,8 +60,9 @@
     
     ARManager* arManager;
     enum TrackingMode {
-        vuforia = 0,
-        opencv = 1
+        untracked = 0,
+        vuforia = 1,
+        opencv = 2
     };
     enum TrackingMode tracking_mode;
     id<MTLTexture> staticBgTex;

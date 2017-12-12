@@ -31,8 +31,6 @@ public:
     virtual void stopCamera() = 0;
     virtual GLKMatrix4 getCameraMatrix() = 0;
     virtual GLKMatrix4 getProjectionMatrix() = 0;
-    virtual id<MTLTexture> getBgTexture() = 0;
-    virtual GLKMatrix4 getBgMatrix() = 0;
 };
 
 #endif /* ARManager_hpp */

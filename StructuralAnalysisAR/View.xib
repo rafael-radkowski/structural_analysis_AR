@@ -82,9 +82,10 @@
                                 <action selector="freezePressed:" destination="-1" eventType="touchUpInside" id="pmx-cM-8F0"/>
                             </connections>
                         </button>
-                        <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="1" translatesAutoresizingMaskIntoConstraints="NO" id="UUW-je-c5C">
-                            <rect key="frame" x="743" y="11" width="131" height="29"/>
+                        <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="2" translatesAutoresizingMaskIntoConstraints="NO" id="UUW-je-c5C">
+                            <rect key="frame" x="641" y="11" width="233" height="29"/>
                             <segments>
+                                <segment title="Untracked"/>
                                 <segment title="Indoor"/>
                                 <segment title="Outdoor"/>
                             </segments>
@@ -93,7 +94,7 @@
                             </connections>
                         </segmentedControl>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tracking Mode" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8Ot-qN-ELu">
-                            <rect key="frame" x="621.5" y="14" width="113.5" height="21"/>
+                            <rect key="frame" x="519.5" y="14" width="113.5" height="21"/>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>

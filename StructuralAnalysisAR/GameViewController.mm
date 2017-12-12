@@ -11,6 +11,7 @@
 #import "GameViewController.h"
 #import "ARView.h"
 #include "VuforiaARManager.h"
+#include "StaticARManager.h"
 #import <ModelIO/ModelIO.h>
 #import <SceneKit/ModelIO.h>
 #import <GLKit/GLKQuaternion.h>
@@ -830,14 +831,22 @@
     self.trackingModeBtn.enabled = NO;
     arManager->stopCamera();
     // Indoor
-    if (new_mode == TrackingMode::vuforia && tracking_mode == TrackingMode::opencv) {
-        delete arManager;
+    if (new_mode == TrackingMode::vuforia) {
+        if (tracking_mode == TrackingMode::opencv) {
+            delete arManager;
+        }
         arManager = new VuforiaARManager((ARView*)self.view, scene, Vuforia::METAL, self.interfaceOrientation);
     }
     // Outdoor
-    else if (new_mode == TrackingMode::opencv && tracking_mode == TrackingMode::vuforia) {
-        delete arManager;
+    else if (new_mode == TrackingMode::opencv) {
+        if (tracking_mode == TrackingMode::vuforia) {
+            delete arManager;
+        }
         arManager = new cvARManager(self.view, scene);
+    }
+    else if (new_mode == TrackingMode::untracked) {
+        delete arManager;
+        arManager = new StaticARManager(self.view, scene);
     }
     tracking_mode = new_mode;
     camPaused = false;

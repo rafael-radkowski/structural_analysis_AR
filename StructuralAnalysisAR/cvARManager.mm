@@ -263,14 +263,6 @@ GLKMatrix4 cvARManager::getProjectionMatrix() {
     return projectionMatrix;
 }
 
-id<MTLTexture> cvARManager::getBgTexture() {
-    return nil;
-}
-
-GLKMatrix4 cvARManager::getBgMatrix() {
-    return GLKMatrix4Identity;
-}
-
 void cvARManager::processImage(cv::Mat& image) {
 //    cv::Mat overdrawn(image.size(), image.type());
     

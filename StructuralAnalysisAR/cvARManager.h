@@ -51,8 +51,6 @@ public:
     void stopCamera() override;
     GLKMatrix4 getCameraMatrix() override;
     GLKMatrix4 getProjectionMatrix() override;
-    id<MTLTexture> getBgTexture() override;
-    GLKMatrix4 getBgMatrix() override;
     
     void saveImg();
     bool saveNext = false;
