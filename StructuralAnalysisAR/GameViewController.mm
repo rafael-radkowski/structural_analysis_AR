@@ -147,10 +147,8 @@
         lightNode.position = SCNVector3Make(x, y, z);
         [scene.rootNode addChildNode:lightNode];
     };
-    addLight(100, 50, 30, 700);
-    addLight(-100, 50, 80, 700);
-    addLight(-50, 30, -60, 700);
-    addLight(0, 50, -80, 700);
+    addLight(100, 50, -50, 700);
+    addLight(0, 30, -100, 500);
     
     
     // create and add an ambient light to the scene
@@ -158,7 +156,7 @@
     ambientLightNode.light = [SCNLight light];
     ambientLightNode.light.type = SCNLightTypeAmbient;
     ambientLightNode.light.color = [UIColor darkGrayColor];
-    ambientLightNode.light.intensity = 0.6;
+    ambientLightNode.light.intensity = 0.8;
     [scene.rootNode addChildNode:ambientLightNode];
     
     // Get the view and set our scene to it
@@ -636,17 +634,6 @@
             reactionArrows[3].setIntensity(13.191);
             break;
         case 2: // left
-            peopleLoad.setEnds(COL1_POS, COL2_POS);
-            peopleLoad.setLoad(0.8);
-            people.setPosition(GLKVector3Make(COL1_POS, top_posL - 12, 0));
-            people.setLength(COL2_POS - COL1_POS);
-            people.setWeight((COL2_POS - COL1_POS) * 0.8 * 1000);
-            reactionArrows[0].setIntensity(37.441);
-            reactionArrows[1].setIntensity(113.919);
-            reactionArrows[2].setIntensity(101.376);
-            reactionArrows[3].setIntensity(8.863);
-            break;
-        case 3: // right
             peopleLoad.setEnds(COL3_POS, COL4_POS);
             peopleLoad.setLoad(0.8);
             people.setPosition(GLKVector3Make(COL3_POS, top_posR - 12, 0));
@@ -656,6 +643,17 @@
             reactionArrows[1].setIntensity(106.792);
             reactionArrows[2].setIntensity(123.978);
             reactionArrows[3].setIntensity(23.997);
+            break;
+        case 3: // right
+            peopleLoad.setEnds(COL1_POS, COL2_POS);
+            peopleLoad.setLoad(0.8);
+            people.setPosition(GLKVector3Make(COL1_POS, top_posL - 12, 0));
+            people.setLength(COL2_POS - COL1_POS);
+            people.setWeight((COL2_POS - COL1_POS) * 0.8 * 1000);
+            reactionArrows[0].setIntensity(37.441);
+            reactionArrows[1].setIntensity(113.919);
+            reactionArrows[2].setIntensity(101.376);
+            reactionArrows[3].setIntensity(8.863);
             break;
         case SCENARIO_VARIABLE: // variable
 //            peopleLoad.setPosition(GLKVector3Make(COL1_POS, top_posL, 0), GLKVector3Make(COL4_POS, top_posR, 0));

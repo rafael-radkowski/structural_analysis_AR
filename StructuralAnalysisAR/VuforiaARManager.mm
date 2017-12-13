@@ -87,11 +87,11 @@ void VuforiaARManager::onVuforiaUpdate(Vuforia::State* state) {
         const Vuforia::TrackableResult* track_result = state->getTrackableResult(0);
         
         Vuforia::Matrix44F modelViewMatrix = Vuforia::Tool::convertPose2GLMatrix(track_result->getPose());
-        SampleApplicationUtils::translatePoseMatrix(-17.0f, -21.0f, 0, &modelViewMatrix.data[0]);
+        SampleApplicationUtils::translatePoseMatrix(10.0f, -21.0f, 0, &modelViewMatrix.data[0]);
         //        SampleApplicationUtils::scalePoseMatrix(kObjectScaleNormal, kObjectScaleNormal, kObjectScaleNormal, &modelViewMatrix.data[0]);
         
         
-        SampleApplicationUtils::rotatePoseMatrix(M_PI, 0, 1, 0, &modelViewMatrix.data[0]);
+        SampleApplicationUtils::rotatePoseMatrix(180, 0, 1, 0, &modelViewMatrix.data[0]);
 //        [SampleApplicationUtils::translatePoseMatrix(self.x_stepper_thing.value, self.y_stepper_thing.value, self.z_stepper_thing.value, &modelViewMatrix.data[0]);]
         
         // Calculate inverse matrix and assign it to cameraNode
