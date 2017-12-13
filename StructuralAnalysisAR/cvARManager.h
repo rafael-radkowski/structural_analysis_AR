@@ -51,6 +51,7 @@ public:
     void stopCamera() override;
     GLKMatrix4 getCameraMatrix() override;
     GLKMatrix4 getProjectionMatrix() override;
+    bool isTracked() override;
     
     void saveImg();
     bool saveNext = false;
@@ -64,6 +65,7 @@ private:
     id<MTLTexture> videoTexture;
     
     cv::Mat intrinsic_mat;
+    bool is_tracked = false;
     
     void processImage(cv::Mat& image);
     bool do_tracking = false;

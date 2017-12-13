@@ -31,6 +31,7 @@ public:
     virtual void stopCamera() = 0;
     virtual GLKMatrix4 getCameraMatrix() = 0;
     virtual GLKMatrix4 getProjectionMatrix() = 0;
+    virtual bool isTracked() = 0;
 };
 
 #endif /* ARManager_hpp */

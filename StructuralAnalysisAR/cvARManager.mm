@@ -263,6 +263,10 @@ GLKMatrix4 cvARManager::getProjectionMatrix() {
     return projectionMatrix;
 }
 
+bool cvARManager::isTracked() {
+    return is_tracked;
+}
+
 void cvARManager::processImage(cv::Mat& image) {
 //    cv::Mat overdrawn(image.size(), image.type());
     
@@ -329,6 +333,9 @@ void cvARManager::performTracking() {
     cv::Mat cropped = masked.getCropped();
     auto correspondences = matcher.getMatches(cropped);
     masked.uncropPoints(correspondences.img_pts);
+    
+    // Number of consecutive missed frames in tracking
+    static int missed_frames = 0;
     
     if (correspondences.img_pts.size() >= 5) {
         cv::Mat mask;
@@ -417,10 +424,19 @@ void cvARManager::performTracking() {
         else {
             // live tracking, so just go with the pose
             cameraMatrix = pose_estimate;
+            is_tracked = true;
+            missed_frames = 0;
         }
     }
     else {
         std::cout << "Not enough points for cv::recoverPose" << std::endl;
+        // If live tracking say that tracking has been lost when we miss 5 frames in a row
+        if (processed_live_frame) {
+            missed_frames++;
+            if (missed_frames >= 5) {
+                is_tracked = false;
+            }
+        }
     }
     if (processed_live_frame) {
         worker_busy = false;
@@ -429,6 +445,7 @@ void cvARManager::performTracking() {
         // If we're done processing frames
         // Could be due to finding an acceptable solution or running out of attempts. Regardless, we want to return the best guess
         if (frames_to_capture == 0 && !captured_frames.size()) {
+            is_tracked = true;
             cameraMatrix = best_captured_pose;
             frame_callback(DONE_CAPTURING);
             setBgImage(best_captured_frame);

@@ -35,6 +35,7 @@ public:
     void stopCamera() override;
     GLKMatrix4 getCameraMatrix() override;
     GLKMatrix4 getProjectionMatrix() override;
+    bool isTracked();
     
     // For SampleApplicationControlCpp
     void onInitARDone(NSError* error) override;
@@ -70,6 +71,8 @@ private:
     Vuforia::DataSet*  dataSetStonesAndChips = nullptr;
     Vuforia::DataSet*  dataSetCurrent = nullptr;
     bool extendedTrackingEnabled;
+    
+    bool is_tracked = false;
 };
 
 

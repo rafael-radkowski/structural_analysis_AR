@@ -23,6 +23,7 @@ public:
     void stopCamera() override {};
     virtual GLKMatrix4 getCameraMatrix() override;
     virtual GLKMatrix4 getProjectionMatrix() override;
+    bool isTracked() override { return true; }
 private:
     GLKMatrix4 cameraMatrix, projectionMatrix;
 };

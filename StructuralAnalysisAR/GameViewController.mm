@@ -263,10 +263,22 @@
     beam3.doUpdate();
 }
 
+// called every frame by the renderer
 - (void)renderer:(id<SCNSceneRenderer>)renderer willRenderScene:(SCNScene *)scene atTime:(NSTimeInterval)time {
     // We need to check that arManager is valid, because during switching, it is temporarily null, and this function
     // is called from a separate SceneKit thread
     if (!camPaused && arManager) {
+        // Hide scene if untracked
+        scene.rootNode.hidden = !arManager->isTracked();
+        // For the SpriteKit scene, we have to hide it by changing overlaySKScene, rather than setting the scene2d.hidden attribute
+        //      When the SKScene is hidden, the label widths become infinity, which messes up their placement in OverlayLabel
+        if (arManager->isTracked()) {
+            ((SCNView*) self.view).overlaySKScene = scene2d;
+        }
+        else {
+            ((SCNView*) self.view).overlaySKScene = nil;
+        }
+        
         GLKMatrix4 camera_matrix = arManager->getCameraMatrix();
 //        [self printMatrix:camera_matrix];
         cameraNode.transform = SCNMatrix4FromGLKMatrix4(camera_matrix);

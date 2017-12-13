@@ -78,11 +78,16 @@ void VuforiaARManager::onVuforiaUpdate(Vuforia::State* state) {
     projectionMatrix.m22 = -projectionMatrix.m22;
     projectionMatrix.m23 = -projectionMatrix.m23;
     
+    // The number of frames that have not been tracked
+    static int missed_frames = 0;
     if (state->getNumTrackableResults()) {
+        is_tracked = true;
+        missed_frames = 0; // reset missed frames count
+        
         const Vuforia::TrackableResult* track_result = state->getTrackableResult(0);
         
         Vuforia::Matrix44F modelViewMatrix = Vuforia::Tool::convertPose2GLMatrix(track_result->getPose());
-        //        SampleApplicationUtils::translatePoseMatrix(0.0f, -16.0f, kObjectScaleNormal, &modelViewMatrix.data[0]);
+        SampleApplicationUtils::translatePoseMatrix(-17.0f, -21.0f, 0, &modelViewMatrix.data[0]);
         //        SampleApplicationUtils::scalePoseMatrix(kObjectScaleNormal, kObjectScaleNormal, kObjectScaleNormal, &modelViewMatrix.data[0]);
         
         
@@ -99,6 +104,13 @@ void VuforiaARManager::onVuforiaUpdate(Vuforia::State* state) {
                                                -inverted.m20,  -inverted.m21,  -inverted.m22, 0,
                                                inverted.m30, inverted.m31, inverted.m32, 1);
     }
+    else {
+        missed_frames++;
+        // Say that tracking has been lost if we've missed more than 8 frames
+        if (missed_frames >= 10) {
+            is_tracked = false;
+        }
+    }
 }
 
 GLKMatrix4 VuforiaARManager::getCameraMatrix() {
@@ -107,6 +119,10 @@ GLKMatrix4 VuforiaARManager::getCameraMatrix() {
 
 GLKMatrix4 VuforiaARManager::getProjectionMatrix() {
     return projectionMatrix;
+}
+
+bool VuforiaARManager::isTracked() {
+    return is_tracked;
 }
 
 
