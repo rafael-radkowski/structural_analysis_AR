@@ -35,6 +35,7 @@ private:
     
     SKScene* scene2d;
     SCNView* objectView;
+    int viewHeight;
     SKLabelNode* label;
     SKSpriteNode* backgroundBox;
     bool hidden = false;

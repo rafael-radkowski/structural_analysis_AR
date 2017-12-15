@@ -24,6 +24,9 @@ OverlayLabel::OverlayLabel() {
 void OverlayLabel::setScenes(SKScene *scene, SCNView *view3d) {
     scene2d = scene;
     objectView = view3d;
+    // We get the height here, because it's not allowed to access viewHeight.frame from a non-UI thread,
+    // which is where we need it (doUpdate)
+    viewHeight = view3d.frame.size.height;
     if (!hidden) {
         // In case setTextHidden() is called before setScenes()
         [scene2d addChild:label];
@@ -86,7 +89,8 @@ void OverlayLabel::placeLabel() {
         SCNVector3 worldPos = [attachedNode convertPosition:SCNVector3Make(0, 0, 0) toNode:nil];
         SCNVector3 screenCoords = [objectView projectPoint:worldPos];
         // Spritekit uses bottom-left as (0,0), while screen coordinates use top-right
-        int reversedY = objectView.frame.size.height - screenCoords.y;
+//        int reversedY = objectView.frame.size.height - screenCoords.y;
+        int reversedY = viewHeight - screenCoords.y;
         float width = label.frame.size.width;
         float height = label.frame.size.height;
         label.position = CGPointMake(screenCoords.x - width*centerXNorm, reversedY - height*centerYNorm);

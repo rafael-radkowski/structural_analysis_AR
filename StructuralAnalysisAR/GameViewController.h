@@ -30,6 +30,8 @@
     SCNNode *cameraNode;
     SCNScene *scene;
     SKScene *scene2d;
+    // Holds all the skywalk parts
+    SCNNode* skywalk;
 //    SCNNode *arrowNode;
 //    SCNNode *arrowBase;
     SCNNode *targetSphere;

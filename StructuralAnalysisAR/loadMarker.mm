@@ -243,7 +243,7 @@ GLKVector3 LoadMarker::projectRay(const GLKVector3 origin, const GLKVector3 touc
 }
 
 float LoadMarker::getDragValue(GLKVector3 origin, GLKVector3 touchRay) {
-    double value = lastIntensity;
+    double value;
     if (dragState & vertically) {
         GLKVector3 hitPoint = projectRay(origin, touchRay);
         

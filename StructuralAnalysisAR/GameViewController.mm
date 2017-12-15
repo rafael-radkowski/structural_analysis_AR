@@ -262,12 +262,12 @@
 }
 
 // called every frame by the renderer
-- (void)renderer:(id<SCNSceneRenderer>)renderer willRenderScene:(SCNScene *)scene atTime:(NSTimeInterval)time {
+- (void)renderer:(id<SCNSceneRenderer>)renderer updateAtTime:(NSTimeInterval)time {
     // We need to check that arManager is valid, because during switching, it is temporarily null, and this function
     // is called from a separate SceneKit thread
-    if (!camPaused && arManager) {
+    if (arManager) {
         // Hide scene if untracked
-        scene.rootNode.hidden = !arManager->isTracked();
+        skywalk.hidden = !arManager->isTracked();
         // For the SpriteKit scene, we have to hide it by changing overlaySKScene, rather than setting the scene2d.hidden attribute
         //      When the SKScene is hidden, the label widths become infinity, which messes up their placement in OverlayLabel
         if (arManager->isTracked()) {
@@ -276,7 +276,9 @@
         else {
             ((SCNView*) self.view).overlaySKScene = nil;
         }
-        
+    }
+    
+    if (!camPaused && arManager) {
         GLKMatrix4 camera_matrix = arManager->getCameraMatrix();
 //        [self printMatrix:camera_matrix];
         cameraNode.transform = SCNMatrix4FromGLKMatrix4(camera_matrix);
@@ -286,6 +288,9 @@
 
 - (void)setupVisualizations {
     SCNView *scnView = (SCNView*)self.view;
+    skywalk = [SCNNode node];
+    [scene.rootNode addChildNode:skywalk];
+    
     float defaultThickness = 5;
 //    float heightOffset = -17;
     float heightOffset = 0;
@@ -299,7 +304,7 @@
     peopleLoad.setMinHeight(15);
     peopleLoad.setMaxHeight(40);
     peopleLoad.setThickness(defaultThickness);
-    peopleLoad.addAsChild(scene.rootNode);
+    peopleLoad.addAsChild(skywalk);
     
     // Create dead load bar
     deadLoad = LoadMarker(6);
@@ -312,11 +317,11 @@
     deadLoad.setMinHeight(15);
     deadLoad.setMaxHeight(28);
     deadLoad.setThickness(defaultThickness);
-    deadLoad.addAsChild(scene.rootNode);
+    deadLoad.addAsChild(skywalk);
     
     reactionArrows.resize(4);
     for (int i = 0; i < reactionArrows.size(); ++i) {
-        reactionArrows[i].addAsChild(scene.rootNode);
+        reactionArrows[i].addAsChild(skywalk);
         reactionArrows[i].setFormatString(@"%.1f k");
         reactionArrows[i].setThickness(defaultThickness);
         reactionArrows[i].setMinLength(15);
@@ -332,7 +337,7 @@
     
     people = PeopleVis(10, cameraNode);
     people.setPosition(GLKVector3Make(0, heightOffset, 0));
-    people.addAsChild(scene.rootNode);
+    people.addAsChild(skywalk);
     
     double gap = 1.5;
     int resolution = 10;
@@ -355,9 +360,9 @@
     beam1.setMagnification(4000);
     beam2.setMagnification(4000);
     beam3.setMagnification(4000);
-    beam1.addAsChild(scene.rootNode);
-    beam2.addAsChild(scene.rootNode);
-    beam3.addAsChild(scene.rootNode);
+    beam1.addAsChild(skywalk);
+    beam2.addAsChild(skywalk);
+    beam3.addAsChild(skywalk);
     beam1.setOrientation(beamOri);
     beam2.setOrientation(beamOri);
     beam3.setOrientation(beamOri);

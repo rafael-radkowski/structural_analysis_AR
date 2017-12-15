@@ -58,6 +58,7 @@ private:
     GLKMatrix4 GLKMatrix4FromQCARMatrix44(const Vuforia::Matrix44F& matrix);
     
     ARView* view;
+    CGSize viewSize;
     SCNScene* scene;
     SampleApplicationSession* vapp;
     

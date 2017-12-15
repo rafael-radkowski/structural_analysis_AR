@@ -27,6 +27,8 @@
 VuforiaARManager::VuforiaARManager(ARView* view, SCNScene* scene, int VuforiaInitFlags, UIInterfaceOrientation ARViewOrientation)
  : view(view)
  , scene(scene) {
+     // Get this property here to be used in onInitARDone, since we can only access this from the main thread
+     viewSize = view.frame.size;
      vapp = [[SampleApplicationSession alloc] initWithDelegate:this];
      [vapp initAR:Vuforia::METAL orientation:ARViewOrientation];
      
@@ -143,7 +145,6 @@ void VuforiaARManager::onInitARDone(NSError* initError) {
         // Calculate texture coordinate scaling to make video fit
         // Vuforia expects this scaling for augmentations to match
         float aspectVideo = (float)vapp.videoMode.mWidth / vapp.videoMode.mHeight;
-        CGSize viewSize = view.frame.size;
         float aspectScreen = (float)viewSize.width / viewSize.height;
         float xScale, yScale;
         xScale = yScale = 1;
