@@ -32,6 +32,8 @@ public:
     virtual GLKMatrix4 getCameraMatrix() = 0;
     virtual GLKMatrix4 getProjectionMatrix() = 0;
     virtual bool isTracked() = 0;
+    // We should only draw to the background texture during this call to prevent collisions with the renderer
+    virtual void drawBackground() = 0;
 };
 
 #endif /* ARManager_hpp */

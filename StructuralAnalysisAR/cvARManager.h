@@ -52,17 +52,22 @@ public:
     GLKMatrix4 getCameraMatrix() override;
     GLKMatrix4 getProjectionMatrix() override;
     bool isTracked() override;
+    void drawBackground() override;
     
     void saveImg();
     bool saveNext = false;
 private:
+    SCNScene* scene;
+    
     void setBgImage(cv::Mat img);
     CvVideoCamera* camera;
     CvCameraDelegateObj* camDelegate;
     bool cam_running = false;
     int video_width, video_height;
-    // Metal texture for the background video
-    id<MTLTexture> videoTexture;
+    // Metal textures for double-buffering the background video
+    id<MTLTexture> videoTextures[2];
+    std::atomic<size_t> currentTexture; // = 0
+    std::atomic<bool> texUpdated; // = false
     
     cv::Mat intrinsic_mat;
     bool is_tracked = false;

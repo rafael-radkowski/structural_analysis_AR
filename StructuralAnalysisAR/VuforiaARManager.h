@@ -35,7 +35,8 @@ public:
     void stopCamera() override;
     GLKMatrix4 getCameraMatrix() override;
     GLKMatrix4 getProjectionMatrix() override;
-    bool isTracked();
+    bool isTracked() override;
+    void drawBackground() override {};
     
     // For SampleApplicationControlCpp
     void onInitARDone(NSError* error) override;

@@ -24,6 +24,8 @@ public:
     virtual GLKMatrix4 getCameraMatrix() override;
     virtual GLKMatrix4 getProjectionMatrix() override;
     bool isTracked() override { return true; }
+    // Background never changes, so we never have to redraw
+    void drawBackground() override {};
 private:
     GLKMatrix4 cameraMatrix, projectionMatrix;
 };

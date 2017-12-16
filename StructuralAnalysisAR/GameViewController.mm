@@ -279,6 +279,7 @@
     }
     
     if (!camPaused && arManager) {
+        arManager->drawBackground();
         GLKMatrix4 camera_matrix = arManager->getCameraMatrix();
 //        [self printMatrix:camera_matrix];
         cameraNode.transform = SCNMatrix4FromGLKMatrix4(camera_matrix);

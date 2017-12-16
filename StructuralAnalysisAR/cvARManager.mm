@@ -37,7 +37,10 @@ GLKMatrix4 CVMat4ToGLKMat4(const cv::Mat& cvMat);
 @end
 
 cvARManager::cvARManager(UIView* view, SCNScene* scene)
-: worker_busy(false) {
+: worker_busy(false)
+, scene(scene)
+, texUpdated(false)
+, currentTexture(0) {
 //    cv::setNumThreads(0);
     // Set up camera callbacks
     camera = [[CvVideoCamera alloc] initWithParentView:nil];
@@ -86,10 +89,12 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene)
     
     
     // Create texture for holding video
-    MTLTextureDescriptor* texDescription = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:MTLPixelFormatBGRA8Unorm width:video_width height:video_height mipmapped:NO];
-    id<MTLDevice> gpu = MTLCreateSystemDefaultDevice();
-    videoTexture = [gpu newTextureWithDescriptor:texDescription];
-    scene.background.contents = videoTexture;
+    for (int i = 0; i < 2; ++i) {
+        MTLTextureDescriptor* texDescription = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:MTLPixelFormatBGRA8Unorm width:video_width height:video_height mipmapped:NO];
+        id<MTLDevice> gpu = MTLCreateSystemDefaultDevice();
+        videoTextures[i] = [gpu newTextureWithDescriptor:texDescription];
+    }
+    scene.background.contents = videoTextures[currentTexture];
     
     // Allocate space for frame to hold frame being processed for tracking
     latest_frame = cv::Mat(video_height, video_width, CV_8UC4);
@@ -203,13 +208,25 @@ cvARManager::~cvARManager() {
         worker_cond_var.notify_one();
     }
     worker_thread.join();
+    
+    scene.background.contents = nil;
     std::cout << "cvARManager destructor done" << std::endl;
 }
 
 void cvARManager::setBgImage(cv::Mat img) {
-    // Copy image to background Metal texture
+    // Copy image to the unused background Metal texture
     static MTLRegion region = MTLRegionMake2D(0, 0, video_width, video_height);
-    [videoTexture replaceRegion:region mipmapLevel:0 withBytes:img.data bytesPerRow:(video_width*4)];
+    [videoTextures[1-currentTexture] replaceRegion:region mipmapLevel:0 withBytes:img.data bytesPerRow:(video_width*4)];
+    texUpdated = true;
+}
+
+void cvARManager::drawBackground() {
+    if (texUpdated) {
+        // Swap background textures
+        currentTexture = 1 - currentTexture;
+        scene.background.contents = videoTextures[currentTexture];
+        texUpdated = false;
+    }
 }
 
 void cvARManager::saveImg() {
@@ -302,31 +319,34 @@ void cvARManager::processImage(cv::Mat& image) {
 }
 
 void cvARManager::performTracking() {
-    std::unique_lock<std::mutex> lk(worker_mutex);
-    // Wait only if there is no work to do, either in the form of live data in latest_frame, or captured data in captured_frames
-    // Also only wait if we're supposed to be alive
-    while (!worker_busy && !captured_frames.size() && thread_live) {
-        worker_cond_var.wait(lk);
-    }
-    if (!thread_live) {
-        // Thread was told to end, so return
-        return;
-    }
-    
     // image that will be processed
     cv::Mat frame;
     // A copy that will be left unmodified by the crop operation. Only nececsary when not processing live
     cv::Mat frame_copy;
     bool processed_live_frame = false;
-    // Process captured frames with higher priority
-    if (captured_frames.size()) {
-        frame = captured_frames.front();
-        captured_frames.pop_front();
-        frame_copy = frame.clone();
-    }
-    else {
-        frame = latest_frame;
-        processed_live_frame = true;
+    
+    // Only need to hold the mutex for this block, since we modify worker_busy and captured_frames here
+    {
+        std::unique_lock<std::mutex> lk(worker_mutex);
+        // Wait only if there is no work to do, either in the form of live data in latest_frame, or captured data in captured_frames
+        // Also only wait if we're supposed to be alive
+        while (!worker_busy && !captured_frames.size() && thread_live) {
+            worker_cond_var.wait(lk);
+        }
+        if (!thread_live) {
+            // Thread was told to end, so return
+            return;
+        }
+        // Process captured frames with higher priority
+        if (captured_frames.size()) {
+            frame = captured_frames.front();
+            captured_frames.pop_front();
+            frame_copy = frame.clone();
+        }
+        else {
+            frame = latest_frame;
+            processed_live_frame = true;
+        }
     }
     
     MaskedImage masked(frame);
@@ -439,6 +459,7 @@ void cvARManager::performTracking() {
         }
     }
     if (processed_live_frame) {
+        std::unique_lock<std::mutex> lk(worker_mutex);
         worker_busy = false;
     }
     else {
