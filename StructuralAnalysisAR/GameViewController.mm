@@ -75,12 +75,15 @@
      
     // Vuforia stuff
     extendedTrackingEnabled = YES;
-//    arManager = new VuforiaARManager((ARView*)self.view, scene, Vuforia::METAL, self.interfaceOrientation);
-//    arManager = new cvARManager(self.view, scene);
-//    tracking_mode = TrackingMode::opencv;
-    arManager = new StaticARManager(self.view, scene);
-    tracking_mode = TrackingMode::untracked;
-    arManager->startCamera();
+    {
+        std::lock_guard<std::mutex> lock(arManagerLock);
+    //    arManager = new VuforiaARManager((ARView*)self.view, scene, Vuforia::METAL, self.interfaceOrientation);
+    //    arManager = new cvARManager(self.view, scene);
+    //    tracking_mode = TrackingMode::opencv;
+        arManager = new StaticARManager(self.view, scene);
+        tracking_mode = TrackingMode::untracked;
+        arManager->startCamera();
+    }
 
 //    [self setAREnabled:YES];
 //    self.vapp = [[SampleApplicationSession alloc] initWithDelegate:self];
@@ -236,10 +239,8 @@
 - (void)viewDidDisappear:(BOOL)animated {
 //    NSError* error;
 //    [self.vapp stopAR:&error];
-    size_t error = arManager->stopAR();
-    if (error) {
-        printf("Error on stopAR\n");
-    }
+    std::lock_guard<std::mutex> lock(arManagerLock);
+    delete arManager;
 }
 
 //- (void)viewDidDisappear:(BOOL)animated {
@@ -264,22 +265,20 @@
 
 // called every frame by the renderer
 - (void)renderer:(id<SCNSceneRenderer>)renderer updateAtTime:(NSTimeInterval)time {
-    // We need to check that arManager is valid, because during switching, it is temporarily null, and this function
-    // is called from a separate SceneKit thread
-    if (arManager) {
-        // Hide scene if untracked
-        skywalk.hidden = !arManager->isTracked();
-        // For the SpriteKit scene, we have to hide it by changing overlaySKScene, rather than setting the scene2d.hidden attribute
-        //      When the SKScene is hidden, the label widths become infinity, which messes up their placement in OverlayLabel
-        if (arManager->isTracked()) {
-            ((SCNView*) self.view).overlaySKScene = scene2d;
-        }
-        else {
-            ((SCNView*) self.view).overlaySKScene = nil;
-        }
+    std::lock_guard<std::mutex> lock(arManagerLock);
+    
+    // Hide scene if untracked
+    skywalk.hidden = !arManager->isTracked();
+    // For the SpriteKit scene, we have to hide it by changing overlaySKScene, rather than setting the scene2d.hidden attribute
+    //      When the SKScene is hidden, the label widths become infinity, which messes up their placement in OverlayLabel
+    if (arManager->isTracked()) {
+        ((SCNView*) self.view).overlaySKScene = scene2d;
+    }
+    else {
+        ((SCNView*) self.view).overlaySKScene = nil;
     }
     
-    if (!camPaused && arManager) {
+    if (!camPaused) {
         arManager->drawBackground();
         GLKMatrix4 camera_matrix = arManager->getCameraMatrix();
 //        [self printMatrix:camera_matrix];
@@ -493,6 +492,7 @@
 }
 
 - (IBAction)freezePressed:(id)sender {
+    std::lock_guard<std::mutex> lock(arManagerLock);
     if (!camPaused) {
         if (tracking_mode == TrackingMode::vuforia) {
             camPaused = true;
@@ -846,6 +846,8 @@
     enum TrackingMode new_mode = static_cast<TrackingMode>(self.trackingModeBtn.selectedSegmentIndex);
     // temporarily disable button to indicate we are switching
     self.trackingModeBtn.enabled = NO;
+    // obtain arManagerLock so we can make calls and re-create arManager if needed
+    std::lock_guard<std::mutex> lock(arManagerLock);
     arManager->stopCamera();
     // Indoor
     if (new_mode == TrackingMode::vuforia) {

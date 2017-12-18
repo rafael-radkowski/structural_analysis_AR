@@ -23,6 +23,7 @@
 
 #include <vector>
 #include <string>
+#include <mutex>
 
 @interface GameViewController : UIViewController <SKSceneDelegate, SCNSceneRendererDelegate> {
     // Private vars
@@ -60,6 +61,8 @@
     bool deflectDead;
     bool deflectLive;
     
+    // Should be obtained whenever calling arManager and when deleting/creating it
+    std::mutex arManagerLock;
     ARManager* arManager;
     enum TrackingMode {
         untracked = 0,
