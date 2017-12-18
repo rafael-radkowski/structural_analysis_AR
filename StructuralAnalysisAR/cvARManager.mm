@@ -94,7 +94,7 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene)
         id<MTLDevice> gpu = MTLCreateSystemDefaultDevice();
         videoTextures[i] = [gpu newTextureWithDescriptor:texDescription];
     }
-    scene.background.contents = videoTextures[currentTexture];
+    scene.background.contents = videoTextures[static_cast<size_t>(currentTexture)];
     
     // Allocate space for frame to hold frame being processed for tracking
     latest_frame = cv::Mat(video_height, video_width, CV_8UC4);
@@ -424,7 +424,7 @@ void cvARManager::performTracking() {
         
         // Keep the captured frame
         if (!processed_live_frame) {
-            bool within_range = (translation.at<double>(0) > -15 && translation.at<double>(0) < 15 &&
+            bool within_range = (translation.at<double>(0) > -25 && translation.at<double>(0) < 25 &&
                                  translation.at<double>(1) > -20 && translation.at<double>(1) < 20 &&
                                  translation.at<double>(2) > 150 && translation.at<double>(2) < 260);
             std::cout << "within range: " << within_range << std::endl;

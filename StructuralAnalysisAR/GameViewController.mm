@@ -76,10 +76,11 @@
     // Vuforia stuff
     extendedTrackingEnabled = YES;
 //    arManager = new VuforiaARManager((ARView*)self.view, scene, Vuforia::METAL, self.interfaceOrientation);
-    arManager = new cvARManager(self.view, scene);
-    tracking_mode = TrackingMode::opencv;
+//    arManager = new cvARManager(self.view, scene);
+//    tracking_mode = TrackingMode::opencv;
+    arManager = new StaticARManager(self.view, scene);
+    tracking_mode = TrackingMode::untracked;
     arManager->startCamera();
-//    arManager->startAR();
 
 //    [self setAREnabled:YES];
 //    self.vapp = [[SampleApplicationSession alloc] initWithDelegate:self];
