@@ -265,6 +265,8 @@ void cvARManager::pauseAR() {
 
 void cvARManager::startCamera() {
     [camera start];
+    // Camera was paused, so new images will not match returned pose. Invalidate tracking
+    is_tracked = false;
 }
 
 void cvARManager::stopCamera() {
