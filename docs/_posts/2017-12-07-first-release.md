@@ -2,7 +2,7 @@
 layout: post
 title: "First Test Release of AR Structures App"
 ---
-The project addresses augmented reality for structural analysis education. Our goal is to evaluate the learning outcome gain of engineering students when using AR-based learning in comparison to traditional learning environments, such as lecturing, problem sessions, etc.  
+Our project addresses augmented reality for structural analysis education. The goal is to evaluate the learning outcome gain of engineering students when using AR-based learning in comparison to traditional learning environments, such as lecturing, problem sessions, etc.  
 
 The augmented reality incorporated into the app will superimpose what a student would normally see with a computer generated model, shown through the lens of an iPad. Augmented reality utilizes computer graphics, rapid video processing, and tracking, in order to combine the physical environment with a computer generated virtual world.
 
