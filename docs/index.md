@@ -1,4 +1,4 @@
 ---
 layout: home
 ---
-![ar-poster]({{site.baseurl}}/assets/1-pages-teaser.jpg)
+![ar-poster]({{site.baseurl}}/assets/Updated Cover Picture.JPG)
