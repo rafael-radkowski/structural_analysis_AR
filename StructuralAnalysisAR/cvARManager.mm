@@ -37,10 +37,10 @@ GLKMatrix4 CVMat4ToGLKMat4(const cv::Mat& cvMat);
 @end
 
 cvARManager::cvARManager(UIView* view, SCNScene* scene)
-: worker_busy(false)
-, scene(scene)
+: scene(scene)
 , texUpdated(false)
-, currentTexture(0) {
+, currentTexture(0)
+, worker_busy(false) {
 //    cv::setNumThreads(0);
     // Set up camera callbacks
     camera = [[CvVideoCamera alloc] initWithParentView:nil];

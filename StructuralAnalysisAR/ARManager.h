@@ -36,4 +36,10 @@ public:
     virtual void drawBackground() = 0;
 };
 
+enum TrackingMode {
+    untracked = 0,
+    vuforia = 1,
+    opencv = 2
+};
+
 #endif /* ARManager_hpp */

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0B03582E2000128B00F75CD2 /* StructureScene.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B03582C2000128B00F75CD2 /* StructureScene.mm */; };
+		0B0358322000167100F75CD2 /* SkywalkScene.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B0358302000167100F75CD2 /* SkywalkScene.mm */; };
 		0B0BEE6E1F87EFD4008BC076 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B0BEE6D1F87EFD4008BC076 /* GLKit.framework */; };
 		0B0C0E971F8D053A00A173E7 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B0C0E961F8D053A00A173E7 /* Metal.framework */; };
 		0B0CBD0F1FDB40C800A9B223 /* skywalk_1920_back.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B0CBD0E1FDB40C800A9B223 /* skywalk_1920_back.png */; };
@@ -73,6 +75,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0B03582C2000128B00F75CD2 /* StructureScene.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = StructureScene.mm; sourceTree = "<group>"; };
+		0B03582D2000128B00F75CD2 /* StructureScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StructureScene.h; sourceTree = "<group>"; };
+		0B0358302000167100F75CD2 /* SkywalkScene.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SkywalkScene.mm; sourceTree = "<group>"; };
+		0B0358312000167100F75CD2 /* SkywalkScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SkywalkScene.h; sourceTree = "<group>"; };
 		0B0BEE6D1F87EFD4008BC076 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
 		0B0C0E961F8D053A00A173E7 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		0B0CBD0E1FDB40C800A9B223 /* skywalk_1920_back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = skywalk_1920_back.png; path = image_assets/skywalk_1920_back.png; sourceTree = "<group>"; };
@@ -188,6 +194,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0B03582F2000165600F75CD2 /* Scenes */ = {
+			isa = PBXGroup;
+			children = (
+				0B03582C2000128B00F75CD2 /* StructureScene.mm */,
+				0B03582D2000128B00F75CD2 /* StructureScene.h */,
+				0B0358302000167100F75CD2 /* SkywalkScene.mm */,
+				0B0358312000167100F75CD2 /* SkywalkScene.h */,
+			);
+			path = Scenes;
+			sourceTree = "<group>";
+		};
 		0B483BFC1F4DDB89007A1D29 /* image_assets */ = {
 			isa = PBXGroup;
 			children = (
@@ -282,6 +299,7 @@
 		0BB164391F4732DC0053CA3B /* StructuralAnalysisAR */ = {
 			isa = PBXGroup;
 			children = (
+				0B03582F2000165600F75CD2 /* Scenes */,
 				0BAFBB4C1F7EBAFE007B1FC6 /* SampleApplication */,
 				0B483BFC1F4DDB89007A1D29 /* image_assets */,
 				0BDF88E21F4B22750014BFB7 /* 3d_assets */,
@@ -459,9 +477,11 @@
 				0BE42D261F688DDA00937359 /* BezierLine.mm in Sources */,
 				0B79A12E1F7ABA5300632CE4 /* OverlayLabel.mm in Sources */,
 				0BB1643F1F4732DC0053CA3B /* AppDelegate.m in Sources */,
+				0B03582E2000128B00F75CD2 /* StructureScene.mm in Sources */,
 				0B1FCD461FBCA2F2002DBE98 /* VuforiaARManager.mm in Sources */,
 				0BAD78751F66C622003CAE93 /* PeopleVis.mm in Sources */,
 				0BB164441F4732DC0053CA3B /* GameViewController.mm in Sources */,
+				0B0358322000167100F75CD2 /* SkywalkScene.mm in Sources */,
 				0BAFBB641F7EBAFE007B1FC6 /* SampleApplication3DModel.m in Sources */,
 				0BB1643C1F4732DC0053CA3B /* main.m in Sources */,
 			);
