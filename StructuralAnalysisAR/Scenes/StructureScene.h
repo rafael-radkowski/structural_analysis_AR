@@ -46,5 +46,9 @@
 - (void)touchesEnded:(NSSet<UITouch *> *) touches withEvent:(UIEvent *)event;
 - (void)touchesCancelled:(NSSet<UITouch *> *) touches withEvent:(UIEvent *)event;
 
+// Instantiate various ARManager types
+- (ARManager*)makeStaticTracker;
+- (ARManager*)makeIndoorTracker;
+- (ARManager*)makeOutdoorTracker;
 @end
 #endif /* StructureScene_hpp */

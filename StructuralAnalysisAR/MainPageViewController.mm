@@ -9,6 +9,9 @@
 #import "MainPageViewController.h"
 #import "GameViewController.h"
 
+#import "SkywalkScene.h"
+#import "CampanileScene.h"
+
 @interface MainPageViewController ()
 
 @end
@@ -66,11 +69,17 @@
     // Get the new view controller using [segue destinationViewController].
     if ([segue.identifier isEqualToString:@"skywalkGuidedSegue"]) {
         GameViewController* viewController = (GameViewController*) [segue destinationViewController];
+        viewController.sceneClass = SkywalkScene.class;
         viewController.guided = true;
     }
-    if ([segue.identifier isEqualToString:@"skywalkSegue"]) {
+    else if ([segue.identifier isEqualToString:@"skywalkSegue"]) {
         GameViewController* viewController = (GameViewController*) [segue destinationViewController];
+        viewController.sceneClass = SkywalkScene.class;
         viewController.guided = false;
+    }
+    else if ([segue.identifier isEqualToString:@"campanileSegue"]) {
+        GameViewController* viewController = (GameViewController*) [segue destinationViewController];
+        viewController.sceneClass = CampanileScene.class;
     }
     // Pass the selected object to the new view controller.
 }

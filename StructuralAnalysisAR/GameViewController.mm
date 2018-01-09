@@ -100,7 +100,8 @@
     scnView.overlaySKScene = scene2d;
     scene2d.userInteractionEnabled = NO;
  
-    structureScene = [[SkywalkScene alloc] initWithController:self];
+//    structureScene = [[SkywalkScene alloc] initWithController:self];
+    structureScene = [[(Class)self.sceneClass alloc] initWithController:self];
     
     sceneNode = [structureScene createScene:scnView skScene:scene2d withCamera:cameraNode];
     [scene.rootNode addChildNode:sceneNode];

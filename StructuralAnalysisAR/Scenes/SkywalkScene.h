@@ -62,18 +62,6 @@
     bool deflectLive;
 }
 
-// StructureScene protocol implementations
-- (id)initWithController:(id<ARViewController>)controller;
-- (SCNNode*) createScene:(SCNView*)scnView skScene:(SKScene*)skScene withCamera:(SCNNode*)camera;
-- (void) setupUIWithScene:(SCNView*)scnView screenBounds:(CGRect)screenRect isGuided:(bool)guided;
-- (void) skUpdate;
-- (void) scnRendererUpdate;
-    // touches
-- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event;
-- (void)touchesMoved:(NSSet<UITouch *> *) touches withEvent:(UIEvent *)event;
-- (void)touchesEnded:(NSSet<UITouch *> *) touches withEvent:(UIEvent *)event;
-- (void)touchesCancelled:(NSSet<UITouch *> *) touches withEvent:(UIEvent *)event;
-
 // MARK: Properties
 @property (nonatomic) bool guided;
 @property (nonatomic, retain) IBOutlet UIView *viewFromNib;

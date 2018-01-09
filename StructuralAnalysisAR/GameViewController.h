@@ -52,6 +52,7 @@
 }
 // Set from MainPageViewController to determine if guided or not
 @property (nonatomic) bool guided;
+@property (nonatomic) Class<StructureScene> sceneClass;
 
 // SKSceneDelegate implementations
 - (void)update:(NSTimeInterval)currentTime forScene:(SKScene *)scene;

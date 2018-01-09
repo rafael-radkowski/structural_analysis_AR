@@ -10,8 +10,11 @@
 #define cvARManager_hpp
 
 // Apparently include openCV things before any other iOS-specific headers
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Weverything"
 #import <opencv2/opencv.hpp>
 #import <opencv2/videoio/cap_ios.h>
+#pragma clang diagnostic pop
 // these reference openCV includes
 #include "ImageMatcher.hpp"
 #include "MaskedImage.hpp"
@@ -62,7 +65,6 @@ private:
     void setBgImage(cv::Mat img);
     CvVideoCamera* camera;
     CvCameraDelegateObj* camDelegate;
-    bool cam_running = false;
     int video_width, video_height;
     // Metal textures for double-buffering the background video
     id<MTLTexture> videoTextures[2];

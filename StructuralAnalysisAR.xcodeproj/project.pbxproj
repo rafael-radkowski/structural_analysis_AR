@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		0B03582E2000128B00F75CD2 /* StructureScene.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B03582C2000128B00F75CD2 /* StructureScene.mm */; };
 		0B0358322000167100F75CD2 /* SkywalkScene.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B0358302000167100F75CD2 /* SkywalkScene.mm */; };
+		0B03583520054BAA00F75CD2 /* CampanileScene.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B03583320054BAA00F75CD2 /* CampanileScene.mm */; };
+		0B03583720055ABB00F75CD2 /* campanileView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B03583620055ABB00F75CD2 /* campanileView.xib */; };
 		0B0BEE6E1F87EFD4008BC076 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B0BEE6D1F87EFD4008BC076 /* GLKit.framework */; };
 		0B0C0E971F8D053A00A173E7 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B0C0E961F8D053A00A173E7 /* Metal.framework */; };
 		0B0CBD0F1FDB40C800A9B223 /* skywalk_1920_back.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B0CBD0E1FDB40C800A9B223 /* skywalk_1920_back.png */; };
@@ -39,7 +41,7 @@
 		0B5F39E61F844CEF004870DE /* skywalk_far.xml in Resources */ = {isa = PBXBuildFile; fileRef = 0B5F39E41F844CEF004870DE /* skywalk_far.xml */; };
 		0B6E6A9D1FCF7EB500EE7950 /* cutout_skywalk_3840x2160.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B6E6A9C1FCF7EB500EE7950 /* cutout_skywalk_3840x2160.png */; };
 		0B79A12E1F7ABA5300632CE4 /* OverlayLabel.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B79A12C1F7ABA5300632CE4 /* OverlayLabel.mm */; };
-		0B99FF611F47A79D00431996 /* View.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B99FF601F47A79D00431996 /* View.xib */; };
+		0B99FF611F47A79D00431996 /* skywalkView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B99FF601F47A79D00431996 /* skywalkView.xib */; };
 		0BAD78751F66C622003CAE93 /* PeopleVis.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0BAD78731F66C622003CAE93 /* PeopleVis.mm */; };
 		0BAD78781F66CDDE003CAE93 /* stick_man.png in Resources */ = {isa = PBXBuildFile; fileRef = 0BAD78761F66CDDE003CAE93 /* stick_man.png */; };
 		0BAD78791F66CDDE003CAE93 /* stick_woman.png in Resources */ = {isa = PBXBuildFile; fileRef = 0BAD78771F66CDDE003CAE93 /* stick_woman.png */; };
@@ -79,6 +81,9 @@
 		0B03582D2000128B00F75CD2 /* StructureScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StructureScene.h; sourceTree = "<group>"; };
 		0B0358302000167100F75CD2 /* SkywalkScene.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SkywalkScene.mm; sourceTree = "<group>"; };
 		0B0358312000167100F75CD2 /* SkywalkScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SkywalkScene.h; sourceTree = "<group>"; };
+		0B03583320054BAA00F75CD2 /* CampanileScene.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = CampanileScene.mm; sourceTree = "<group>"; };
+		0B03583420054BAA00F75CD2 /* CampanileScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CampanileScene.h; sourceTree = "<group>"; };
+		0B03583620055ABB00F75CD2 /* campanileView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = campanileView.xib; sourceTree = "<group>"; };
 		0B0BEE6D1F87EFD4008BC076 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
 		0B0C0E961F8D053A00A173E7 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		0B0CBD0E1FDB40C800A9B223 /* skywalk_1920_back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = skywalk_1920_back.png; path = image_assets/skywalk_1920_back.png; sourceTree = "<group>"; };
@@ -118,7 +123,7 @@
 		0B6E6A9C1FCF7EB500EE7950 /* cutout_skywalk_3840x2160.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = cutout_skywalk_3840x2160.png; path = image_assets/cutout_skywalk_3840x2160.png; sourceTree = "<group>"; };
 		0B79A12C1F7ABA5300632CE4 /* OverlayLabel.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OverlayLabel.mm; sourceTree = "<group>"; };
 		0B79A12D1F7ABA5300632CE4 /* OverlayLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverlayLabel.h; sourceTree = "<group>"; };
-		0B99FF601F47A79D00431996 /* View.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = View.xib; sourceTree = "<group>"; };
+		0B99FF601F47A79D00431996 /* skywalkView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = skywalkView.xib; sourceTree = "<group>"; };
 		0BAD78731F66C622003CAE93 /* PeopleVis.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PeopleVis.mm; sourceTree = "<group>"; };
 		0BAD78741F66C622003CAE93 /* PeopleVis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeopleVis.h; sourceTree = "<group>"; };
 		0BAD78761F66CDDE003CAE93 /* stick_man.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = stick_man.png; path = image_assets/stick_man.png; sourceTree = "<group>"; };
@@ -201,6 +206,8 @@
 				0B03582D2000128B00F75CD2 /* StructureScene.h */,
 				0B0358302000167100F75CD2 /* SkywalkScene.mm */,
 				0B0358312000167100F75CD2 /* SkywalkScene.h */,
+				0B03583320054BAA00F75CD2 /* CampanileScene.mm */,
+				0B03583420054BAA00F75CD2 /* CampanileScene.h */,
 			);
 			path = Scenes;
 			sourceTree = "<group>";
@@ -317,7 +324,8 @@
 				0BB1644A1F4732DC0053CA3B /* LaunchScreen.storyboard */,
 				0BB1644D1F4732DC0053CA3B /* Info.plist */,
 				0BB1643A1F4732DC0053CA3B /* Supporting Files */,
-				0B99FF601F47A79D00431996 /* View.xib */,
+				0B99FF601F47A79D00431996 /* skywalkView.xib */,
+				0B03583620055ABB00F75CD2 /* campanileView.xib */,
 				0BDF88E51F4B3BAE0014BFB7 /* testScene.scn */,
 				0B483BFD1F4F1016007A1D29 /* grabbableArrow.h */,
 				0B483C021F4F8BF5007A1D29 /* grabbableArrow.mm */,
@@ -426,7 +434,7 @@
 				0B0CBD161FE0547700A9B223 /* skywalk_south1.xml in Resources */,
 				0B0CBD151FE0547700A9B223 /* skywalk_south1.dat in Resources */,
 				0BB5AD101FD1B3C8001C78CD /* cutout_skywalk_1920x1080.png in Resources */,
-				0B99FF611F47A79D00431996 /* View.xib in Resources */,
+				0B99FF611F47A79D00431996 /* skywalkView.xib in Resources */,
 				0BB1644C1F4732DC0053CA3B /* LaunchScreen.storyboard in Resources */,
 				0BB164491F4732DC0053CA3B /* Assets.xcassets in Resources */,
 				0BB164471F4732DC0053CA3B /* Main.storyboard in Resources */,
@@ -446,6 +454,7 @@
 				0B1573551F5463A4004CE1BE /* isuofficallogo_light.png in Resources */,
 				0B6E6A9D1FCF7EB500EE7950 /* cutout_skywalk_3840x2160.png in Resources */,
 				0BAD78781F66CDDE003CAE93 /* stick_man.png in Resources */,
+				0B03583720055ABB00F75CD2 /* campanileView.xib in Resources */,
 				0BAD78791F66CDDE003CAE93 /* stick_woman.png in Resources */,
 				0B4F29B11FE0846C0067C439 /* skywalk_south_far.jpg in Resources */,
 				0B5F39E61F844CEF004870DE /* skywalk_far.xml in Resources */,
@@ -480,6 +489,7 @@
 				0B03582E2000128B00F75CD2 /* StructureScene.mm in Sources */,
 				0B1FCD461FBCA2F2002DBE98 /* VuforiaARManager.mm in Sources */,
 				0BAD78751F66C622003CAE93 /* PeopleVis.mm in Sources */,
+				0B03583520054BAA00F75CD2 /* CampanileScene.mm in Sources */,
 				0BB164441F4732DC0053CA3B /* GameViewController.mm in Sources */,
 				0B0358322000167100F75CD2 /* SkywalkScene.mm in Sources */,
 				0BAFBB641F7EBAFE007B1FC6 /* SampleApplication3DModel.m in Sources */,
@@ -610,6 +620,8 @@
 				DEVELOPMENT_TEAM = 8X28YXWGUD;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = "~/cv_build/ios";
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = "StructuralAnalysisAR/vuforia-sdk-ios/build/include";
 				INFOPLIST_FILE = StructuralAnalysisAR/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -639,6 +651,8 @@
 				DEVELOPMENT_TEAM = 8X28YXWGUD;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = "~/cv_build/ios";
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = "StructuralAnalysisAR/vuforia-sdk-ios/build/include";
 				INFOPLIST_FILE = StructuralAnalysisAR/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
