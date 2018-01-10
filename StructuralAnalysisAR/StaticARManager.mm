@@ -11,7 +11,7 @@
 #import <GLKit/GLKMatrix4.h>
 #import <MetalKit/MetalKit.h>
 
-StaticARManager::StaticARManager(UIView* view, SCNScene* scene) {
+StaticARManager::StaticARManager(UIView* view, SCNScene* scene, GLKMatrix4 desiredPose) {
     UIImage* bgImage = [UIImage imageNamed:@"skywalk_south_far.jpg"];
     int img_width = bgImage.size.width;
     int img_height = bgImage.size.height;
@@ -47,13 +47,7 @@ StaticARManager::StaticARManager(UIView* view, SCNScene* scene) {
     
     projectionMatrix = GLKMatrix4MakePerspective(36.909 * (M_PI / 180.0), aspectScreen, 0.1, 500);
     
-    GLKMatrix4 trans_mat = GLKMatrix4MakeTranslation(-15, 7, 280);
-    GLKMatrix4 rot_y_mat = GLKMatrix4MakeYRotation(M_PI);
-    GLKMatrix4 rot_x_mat = GLKMatrix4MakeXRotation(0.1);
-    GLKMatrix4 rot_z_mat = GLKMatrix4MakeZRotation(0.02);
-    // Rotate by Y, then X
-    GLKMatrix4 rot_mat = GLKMatrix4Multiply(rot_z_mat, GLKMatrix4Multiply(rot_y_mat, rot_x_mat));
-    cameraMatrix = GLKMatrix4Multiply(rot_mat, trans_mat);
+    cameraMatrix = desiredPose;
 }
 
 

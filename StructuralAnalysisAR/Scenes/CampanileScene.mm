@@ -8,6 +8,9 @@
 
 #include "CampanileScene.h"
 
+#include "VuforiaARManager.h"
+#include "StaticARManager.h"
+
 @implementation CampanileScene
 
 - (id)initWithController:(id<ARViewController>)controller {
@@ -93,6 +96,21 @@
     windwardRoofLoad.doUpdate();
     leewardSideLoad.doUpdate();
     leewardRoofLoad.doUpdate();
+}
+
+
+// Make various AR Managers
+- (ARManager*)makeStaticTracker {
+    GLKMatrix4 trans_mat = GLKMatrix4MakeTranslation(-15, 7, 280);
+    return new StaticARManager(scnView, scnView.scene, trans_mat);
+}
+
+- (ARManager*)makeIndoorTracker {
+    return nullptr;
+}
+
+- (ARManager*)makeOutdoorTracker {
+    return nullptr;
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event { 

@@ -7,11 +7,8 @@
 //
 
 // Must #include openCV stuff before other things
-#include "cvARManager.h"
 #import "GameViewController.h"
 #import "ARView.h"
-#include "VuforiaARManager.h"
-#include "StaticARManager.h"
 #import "SkywalkScene.h"
 
 #import <ModelIO/ModelIO.h>
@@ -64,19 +61,7 @@
     [super viewDidLoad];
     
     scene = [SCNScene scene];
-     
-    // Vuforia stuff
-    extendedTrackingEnabled = YES;
-    {
-        std::lock_guard<std::mutex> lock(arManagerLock);
-    //    arManager = new VuforiaARManager((ARView*)self.view, scene, Vuforia::METAL, self.interfaceOrientation);
-    //    arManager = new cvARManager(self.view, scene);
-    //    tracking_mode = TrackingMode::opencv;
-        arManager = new StaticARManager(self.view, scene);
-        tracking_mode = TrackingMode::untracked;
-        arManager->startCamera();
-    }
-    
+
     // Make a camera
     cameraNode = [SCNNode node];
     cameraNode.camera = [SCNCamera camera];
@@ -107,6 +92,19 @@
     [scene.rootNode addChildNode:sceneNode];
     
     [structureScene setupUIWithScene:scnView screenBounds:screenRect isGuided:self.guided];
+    
+    // AR stuff
+    extendedTrackingEnabled = YES;
+    {
+        std::lock_guard<std::mutex> lock(arManagerLock);
+        //    arManager = new VuforiaARManager((ARView*)self.view, scene, Vuforia::METAL, self.interfaceOrientation);
+        //    arManager = new cvARManager(self.view, scene);
+        //    tracking_mode = TrackingMode::opencv;
+        //        arManager = new StaticARManager(self.view, scene);
+        arManager = [structureScene makeStaticTracker];
+        tracking_mode = TrackingMode::untracked;
+        arManager->startCamera();
+    }
 }
 
 //- (void)viewDidAppear:(BOOL)animated {
@@ -217,18 +215,21 @@
         if (tracking_mode == TrackingMode::opencv) {
             delete arManager;
         }
-        arManager = new VuforiaARManager((ARView*)self.view, scene, Vuforia::METAL, self.interfaceOrientation);
+//        arManager = new VuforiaARManager((ARView*)self.view, scene, Vuforia::METAL, self.interfaceOrientation);
+        arManager = [structureScene makeIndoorTracker];
     }
     // Outdoor
     else if (new_mode == TrackingMode::opencv) {
         if (tracking_mode == TrackingMode::vuforia) {
             delete arManager;
         }
-        arManager = new cvARManager(self.view, scene);
+//        arManager = new cvARManager(self.view, scene);
+        arManager = [structureScene makeOutdoorTracker];
     }
     else if (new_mode == TrackingMode::untracked) {
         delete arManager;
-        arManager = new StaticARManager(self.view, scene);
+//        arManager = new StaticARManager(self.view, scene);
+        arManager = [structureScene makeStaticTracker];
     }
     tracking_mode = new_mode;
     camPaused = false;

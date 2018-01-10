@@ -6,7 +6,13 @@
 //  Copyright © 2018 David Wehr. All rights reserved.
 //
 
+// must include OpenCV-related headers before any iOS ones
+#include "cvARManager.h"
+
 #import "SkywalkScene.h"
+
+#include "VuforiaARManager.h"
+#include "StaticARManager.h"
 
 #define COL_OFFSET (-10)
 #define COL1_POS (-80 + COL_OFFSET)
@@ -503,6 +509,27 @@
     }
 }
 
+// Make various AR Managers
+- (ARManager*)makeStaticTracker {
+    GLKMatrix4 trans_mat = GLKMatrix4MakeTranslation(-15, 7, 280);
+    GLKMatrix4 rot_y_mat = GLKMatrix4MakeYRotation(M_PI);
+    GLKMatrix4 rot_x_mat = GLKMatrix4MakeXRotation(0.1);
+    GLKMatrix4 rot_z_mat = GLKMatrix4MakeZRotation(0.02);
+    // Rotate by Y, then X
+    GLKMatrix4 rot_mat = GLKMatrix4Multiply(rot_z_mat, GLKMatrix4Multiply(rot_y_mat, rot_x_mat));
+    GLKMatrix4 cameraMatrix = GLKMatrix4Multiply(rot_mat, trans_mat);
+    
+    return new StaticARManager(scnView, scnView.scene, cameraMatrix);
+}
+
+- (ARManager*)makeIndoorTracker {
+//    return new VuforiaARManager((ARView*)scnView, scnView.scene, Vuforia::METAL, managingParent.interfaceOrientation);
+    return new VuforiaARManager((ARView*)scnView, scnView.scene, Vuforia::METAL, UIInterfaceOrientationLandscapeLeft);
+}
+
+- (ARManager*)makeOutdoorTracker {
+    return new cvARManager(scnView, scnView.scene);
+}
 
 // Touch handling
 
