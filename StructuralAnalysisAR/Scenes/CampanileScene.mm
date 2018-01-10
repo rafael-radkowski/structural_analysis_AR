@@ -51,23 +51,23 @@
     const float roof_height = 20 + 4.5 / 12;
     const float roof_angle = 1.1965977338;
     
-    windwardSideLoad = LoadMarker(5);
+    windwardSideLoad = LoadMarker(2);
     windwardSideLoad.setPosition(GLKVector3Make(-base_width/2, 0, 0));
     windwardSideLoad.setOrientation(GLKQuaternionMakeWithAngleAndAxis(M_PI/2.f, 0, 0, 1));
     windwardSideLoad.setEnds(0, 89 + 2.f/12);
 
-    windwardRoofLoad = LoadMarker(3);
+    windwardRoofLoad = LoadMarker(2);
     windwardRoofLoad.setPosition(GLKVector3Make(-base_width/2, base_height, 0));
     windwardRoofLoad.setOrientation(GLKQuaternionMakeWithAngleAndAxis(roof_angle, 0, 0, 1));
     float roof_length = roof_height / std::sin(roof_angle);
     windwardRoofLoad.setEnds(0, roof_length);
     
-    leewardRoofLoad = LoadMarker(3, true);
+    leewardRoofLoad = LoadMarker(2, true);
     leewardRoofLoad.setPosition(GLKVector3Make(base_width/2, base_height, 0));
     leewardRoofLoad.setOrientation(GLKQuaternionMakeWithAngleAndAxis(M_PI - roof_angle, 0, 0, 1));
     leewardRoofLoad.setEnds(0, roof_length);
     
-    leewardSideLoad = LoadMarker(5, true);
+    leewardSideLoad = LoadMarker(2, true);
     leewardSideLoad.setPosition(GLKVector3Make(base_width/2, 0, 0));
     leewardSideLoad.setOrientation(GLKQuaternionMakeWithAngleAndAxis(M_PI/2.f, 0, 0, 1));
     leewardSideLoad.setEnds(0, 89 + 2.f/12);
@@ -180,6 +180,28 @@
 }
 
 - (IBAction)windSpeedChanged:(id)sender {
+    float slider_val = self.windSpeedSlider.value;
+    float velocity = slider_val * 50;
+    [self calculatePressuresFrom:velocity];
+    
+    // Set intensities
+    windwardSideLoad.setLoad(0, pressures.windward_base);
+    windwardSideLoad.setLoad(1, pressures.windward_side_top);
+    windwardRoofLoad.setLoad(pressures.windward_roof);
+    leewardRoofLoad.setLoad(-pressures.leeward_roof);
+    leewardSideLoad.setLoad(-pressures.leeward_side);
+}
+
+// velocity in mph
+- (void)calculatePressuresFrom:(double)velocity {
+    double v2 = velocity * velocity;
+    
+    // In pounds / square foot
+    pressures.windward_base = 0.000843 * v2;
+    pressures.windward_side_top = 0.0014 * v2;
+    pressures.leeward_side = -0.00093 * v2;
+    pressures.windward_roof = 0.00128 * v2;
+    pressures.leeward_roof = -0.0012 * v2;
 }
 
 @end

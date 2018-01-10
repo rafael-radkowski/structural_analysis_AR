@@ -25,6 +25,13 @@
     LoadMarker leewardSideLoad;
     LoadMarker leewardRoofLoad;
     
+    struct WindPressures {
+        double windward_base;
+        double windward_side_top;
+        double windward_roof;
+        double leeward_roof;
+        double leeward_side;
+    } pressures;
 }
 
 @property (nonatomic, retain) IBOutlet UIView *viewFromNib;
@@ -43,6 +50,8 @@
 - (IBAction)trackingModeChanged:(id)sender;
 
 - (IBAction)windSpeedChanged:(id)sender;
+
+- (void)calculatePressuresFrom:(double)velocity;
 
 @end
 
