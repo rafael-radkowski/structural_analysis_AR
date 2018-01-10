@@ -41,6 +41,7 @@ public:
     void doUpdate();
     void setLoad(size_t loadIndex, double value);
     void setLoad(double value);
+    void setLoadInterpolate(double val_l, double val_r);
     void setPosition(GLKVector3 pos);
     void setOrientation(GLKQuaternion);
     void setEnds(float start, float end);

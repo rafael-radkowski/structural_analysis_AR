@@ -25,6 +25,10 @@
     LoadMarker leewardSideLoad;
     LoadMarker leewardRoofLoad;
     
+    GrabbableArrow shearArrow;
+    GrabbableArrow axialArrow;
+    SCNNode* momentIndicator;
+    
     struct WindPressures {
         double windward_base;
         double windward_side_top;
@@ -32,6 +36,7 @@
         double leeward_roof;
         double leeward_side;
     } pressures;
+    
 }
 
 @property (nonatomic, retain) IBOutlet UIView *viewFromNib;

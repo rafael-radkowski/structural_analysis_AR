@@ -73,6 +73,16 @@ void LoadMarker::setLoad(double value) {
     refreshPositions();
 }
 
+void LoadMarker::setLoadInterpolate(double val_l, double val_r) {
+    for (int i = 0; i < loadValues.size(); ++i) {
+        double interp_fac = (double)i / (loadValues.size() - 1);
+        double interp_load = val_l + (val_r - val_l) * interp_fac;
+        loadValues[i] = interp_load;
+    }
+    textLabel.setText([NSString stringWithFormat:@"%.1f k/ft", (val_l + val_r) / 2]);
+    refreshPositions();
+}
+
 float LoadMarker::getLoad(size_t loadIndex) {
     return loadValues[loadIndex];
 }
