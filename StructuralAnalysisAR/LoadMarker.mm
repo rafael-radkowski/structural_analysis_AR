@@ -7,13 +7,14 @@
 //
 
 #include <assert.h>
-#include "loadMarker.h"
+#include "LoadMarker.h"
 #include <algorithm>
 
-LoadMarker::LoadMarker() : LoadMarker(2) { }
+LoadMarker::LoadMarker() : LoadMarker(2, false) { }
 
 
-LoadMarker::LoadMarker(size_t nLoads) {
+LoadMarker::LoadMarker(size_t nLoads, bool reversed)
+: reversed(reversed) {
     assert(nLoads >= 2);
     loadValues.resize(nLoads);
     loadArrows.resize(nLoads);
@@ -135,15 +136,31 @@ void LoadMarker::refreshPositions() {
     for (int i = 0; i < loadArrows.size(); ++i) {
         float proportion = (float)i / (loadArrows.size() - 1);
         GLKVector3 interpolatedPos = GLKVector3Add(GLKVector3MultiplyScalar(lineDirection, proportion), startPos);
-        loadArrows[i].setPosition(interpolatedPos);
-        loadArrows[i].setIntensity(loadValues[i]);
-        
+
         float prevNormalizedValue = (loadValues[i-1] - minInput) / (maxInput - minInput);
         float thisNormalizedValue = (loadValues[i] - minInput) / (maxInput - minInput);
+        
+        // actual height of load marker
+        float this_load_height = minHeight + lengthRange * thisNormalizedValue;
+        float prev_load_height = minHeight + lengthRange * prevNormalizedValue;
+        
+        // For "regular mode, arrow tips have y-position of 0. In "regular" mode, arrow tips are height of marker
+        GLKVector3 arrowPos = interpolatedPos;
+        if (reversed) {
+            arrowPos = GLKVector3Add(interpolatedPos, GLKVector3Make(0, -(this_load_height), 0));
+        }
+        
+        loadArrows[i].setPosition(arrowPos);
+        loadArrows[i].setIntensity(loadValues[i]);
+        
         // Move load line
         if (i != 0) {
-            GLKVector3 adjusted_start = GLKVector3Make(lastPos.x, lastPos.y + minHeight + lengthRange*prevNormalizedValue, lastPos.z);
-            GLKVector3 adjusted_end = GLKVector3Make(interpolatedPos.x, interpolatedPos.y + minHeight + lengthRange*thisNormalizedValue, interpolatedPos.z);
+            GLKVector3 adjusted_start = GLKVector3Make(lastPos.x, lastPos.y + prev_load_height, lastPos.z);
+            GLKVector3 adjusted_end = GLKVector3Make(interpolatedPos.x, interpolatedPos.y + this_load_height, interpolatedPos.z);
+            if (reversed) {
+                adjusted_start.y = -adjusted_start.y;
+                adjusted_end.y = -adjusted_end.y;
+            }
             loadLines[i - 1].move(adjusted_start, adjusted_end);
             // TODO: This only looks at load line start. Assuming flat load line
             if (adjusted_start.y > maxY) {

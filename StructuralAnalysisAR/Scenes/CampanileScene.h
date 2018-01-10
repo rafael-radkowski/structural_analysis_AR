@@ -34,11 +34,15 @@
 // Tracking Mode (indoor/outdoor)
 @property (weak, nonatomic) IBOutlet UISegmentedControl *trackingModeBtn;
 
+@property (weak, nonatomic) IBOutlet UISlider *windSpeedSlider;
+
 
 - (IBAction)homeBtnPressed:(id)sender;
 - (IBAction)freezePressed:(id)sender;
 // When the indoor/outdoor toggle switch is touched. Goes between OpenCV ARManager adn Vuforia ARManager
 - (IBAction)trackingModeChanged:(id)sender;
+
+- (IBAction)windSpeedChanged:(id)sender;
 
 @end
 

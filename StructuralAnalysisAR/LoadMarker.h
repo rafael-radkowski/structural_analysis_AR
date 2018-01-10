@@ -28,7 +28,7 @@
 class LoadMarker {
 public:
     LoadMarker();
-    LoadMarker(size_t nLoads);
+    LoadMarker(size_t nLoads, bool reversed=false);
     enum Dragging : uint32_t {
         none = 0,
         vertically = 1,
@@ -94,6 +94,8 @@ private:
     // startPos and endPos whend touchBegan
     GLKVector3 startAtDragBegin;
     GLKVector3 endAtDragBegin;
+    
+    bool reversed;
 
     float lastIntensity = 0.5;
     float thickness;

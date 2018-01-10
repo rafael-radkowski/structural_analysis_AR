@@ -55,6 +55,13 @@
     }
     self.btnSkywalk.hidden = [skywalk_hidden boolValue];
     self.btnWaterTower.hidden = [skywalk_guided_hidden boolValue];
+    
+    // Test
+    [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(doSegue:) userInfo:nil repeats:NO];
+}
+
+- (void) doSegue:(NSTimer*) timer {
+    [self.btnCampanile sendActionsForControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)didReceiveMemoryWarning {

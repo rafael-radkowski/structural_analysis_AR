@@ -16,6 +16,7 @@
                 <outlet property="homeBtn" destination="YBy-td-PUW" id="vM5-HT-k4N"/>
                 <outlet property="trackingModeBtn" destination="PAH-rJ-EDa" id="Lmt-Kc-tZa"/>
                 <outlet property="viewFromNib" destination="iN0-l3-epB" id="Aqt-hj-vvb"/>
+                <outlet property="windSpeedSlider" destination="rFT-yd-gcM" id="cKO-zr-PfI"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
@@ -64,6 +65,21 @@
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Wind Speed" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yVH-Dr-5Yv">
+                            <rect key="frame" x="8" y="14" width="101" height="21"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="rFT-yd-gcM">
+                            <rect key="frame" x="109" y="9.5" width="218" height="31"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="214" id="QUN-M2-MeV"/>
+                            </constraints>
+                            <connections>
+                                <action selector="windSpeedChanged:" destination="-1" eventType="valueChanged" id="JX0-h1-7yv"/>
+                            </connections>
+                        </slider>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <constraints>
@@ -71,11 +87,15 @@
                         <constraint firstItem="PAH-rJ-EDa" firstAttribute="leading" secondItem="xZ6-pB-OCK" secondAttribute="trailing" constant="8" id="EIe-Ka-HXc"/>
                         <constraint firstItem="f0Z-nd-D4D" firstAttribute="leading" secondItem="PAH-rJ-EDa" secondAttribute="trailing" constant="25" id="HOo-bL-CTT"/>
                         <constraint firstAttribute="height" constant="50" id="PY9-U6-EVg"/>
+                        <constraint firstItem="yVH-Dr-5Yv" firstAttribute="leading" secondItem="0oP-G4-DiJ" secondAttribute="leading" constant="8" id="SMV-rN-jco"/>
                         <constraint firstItem="YBy-td-PUW" firstAttribute="centerY" secondItem="0oP-G4-DiJ" secondAttribute="centerY" id="T2c-C9-9Sf"/>
                         <constraint firstItem="f0Z-nd-D4D" firstAttribute="centerY" secondItem="0oP-G4-DiJ" secondAttribute="centerY" id="Vuq-S4-4Ed"/>
                         <constraint firstItem="PAH-rJ-EDa" firstAttribute="centerY" secondItem="xZ6-pB-OCK" secondAttribute="centerY" id="W5U-Ik-ugZ"/>
+                        <constraint firstItem="rFT-yd-gcM" firstAttribute="leading" secondItem="yVH-Dr-5Yv" secondAttribute="trailing" constant="10" id="iqu-kn-WuB"/>
                         <constraint firstAttribute="trailing" secondItem="YBy-td-PUW" secondAttribute="trailing" constant="18" id="jxl-aE-O2a"/>
                         <constraint firstItem="YBy-td-PUW" firstAttribute="leading" secondItem="f0Z-nd-D4D" secondAttribute="trailing" constant="22" id="rXA-gG-vec"/>
+                        <constraint firstItem="rFT-yd-gcM" firstAttribute="centerY" secondItem="yVH-Dr-5Yv" secondAttribute="centerY" id="uR6-Xm-GnQ"/>
+                        <constraint firstItem="yVH-Dr-5Yv" firstAttribute="centerY" secondItem="0oP-G4-DiJ" secondAttribute="centerY" id="yfA-sG-cgO"/>
                     </constraints>
                 </view>
             </subviews>

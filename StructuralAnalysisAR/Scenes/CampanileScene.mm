@@ -42,20 +42,47 @@
     ambientLightNode.light.intensity = 0.8;
     [rootNode addChildNode:ambientLightNode];
     
+    float load_min_h = 15; float load_max_h = 40;
+    float input_range[2] = {0, 2};
+    float thickness = 3;
+    
+    const float base_width = 16;
+    const float base_height = 89 + 2.f / 12;
+    const float roof_height = 20 + 4.5 / 12;
+    const float roof_angle = 1.1965977338;
+    
     windwardSideLoad = LoadMarker(5);
-    windwardSideLoad.setPosition(GLKVector3Make(0, 0, 0));
-    windwardSideLoad.setOrientation(GLKQuaternionMakeWithAngleAndAxis(-M_PI/2.f, 0, 0, 1));
-    windwardSideLoad.setInputRange(0, 2);
-    windwardSideLoad.setMinHeight(15);
-    windwardSideLoad.setMaxHeight(40);
-    windwardSideLoad.setThickness(5);
-    windwardSideLoad.addAsChild(rootNode);
+    windwardSideLoad.setPosition(GLKVector3Make(-base_width/2, 0, 0));
+    windwardSideLoad.setOrientation(GLKQuaternionMakeWithAngleAndAxis(M_PI/2.f, 0, 0, 1));
+    windwardSideLoad.setEnds(0, 89 + 2.f/12);
+
+    windwardRoofLoad = LoadMarker(3);
+    windwardRoofLoad.setPosition(GLKVector3Make(-base_width/2, base_height, 0));
+    windwardRoofLoad.setOrientation(GLKQuaternionMakeWithAngleAndAxis(roof_angle, 0, 0, 1));
+    float roof_length = roof_height / std::sin(roof_angle);
+    windwardRoofLoad.setEnds(0, roof_length);
     
-    windwardSideLoad.setScenes(skScene, scnView);
+    leewardRoofLoad = LoadMarker(3, true);
+    leewardRoofLoad.setPosition(GLKVector3Make(base_width/2, base_height, 0));
+    leewardRoofLoad.setOrientation(GLKQuaternionMakeWithAngleAndAxis(M_PI - roof_angle, 0, 0, 1));
+    leewardRoofLoad.setEnds(0, roof_length);
     
-    windwardSideLoad.setEnds(0, 100);
-    windwardSideLoad.setLoad(0);
-    
+    leewardSideLoad = LoadMarker(5, true);
+    leewardSideLoad.setPosition(GLKVector3Make(base_width/2, 0, 0));
+    leewardSideLoad.setOrientation(GLKQuaternionMakeWithAngleAndAxis(M_PI/2.f, 0, 0, 1));
+    leewardSideLoad.setEnds(0, 89 + 2.f/12);
+
+    std::vector<LoadMarker*> loads = {&windwardSideLoad, &windwardRoofLoad, &leewardSideLoad, &leewardRoofLoad};
+    for (LoadMarker* load : loads) {
+        load->setScenes(skScene, scnView);
+        load->setInputRange(input_range[0], input_range[1]);
+        load->setMinHeight(load_min_h);
+        load->setMaxHeight(load_max_h);
+        load->setThickness(thickness);
+        load->addAsChild(rootNode);
+        load->setLoad(0.5);
+    }
+
     return rootNode;
 }
 
@@ -101,8 +128,10 @@
 
 // Make various AR Managers
 - (ARManager*)makeStaticTracker {
-    GLKMatrix4 trans_mat = GLKMatrix4MakeTranslation(-15, 7, 280);
-    return new StaticARManager(scnView, scnView.scene, trans_mat);
+    GLKMatrix4 trans_mat = GLKMatrix4MakeTranslation(0, 50, 210);
+    GLKMatrix4 rot_x_mat = GLKMatrix4MakeXRotation(0.3);
+    GLKMatrix4 cameraMatrix = GLKMatrix4Multiply(rot_x_mat, trans_mat);
+    return new StaticARManager(scnView, scnView.scene, cameraMatrix);
 }
 
 - (ARManager*)makeIndoorTracker {
@@ -148,6 +177,9 @@
     [self setCameraLabelPaused:NO];
     
     self.trackingModeBtn.enabled = YES;
+}
+
+- (IBAction)windSpeedChanged:(id)sender {
 }
 
 @end
