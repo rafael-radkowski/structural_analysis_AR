@@ -142,7 +142,7 @@ void LoadMarker::refreshPositions() {
     
     float lengthRange = maxHeight - minHeight;
     GLKVector3 lastPos;
-    float maxY = 0;
+    float maxY = 0; float minY = 0;
     for (int i = 0; i < loadArrows.size(); ++i) {
         float proportion = (float)i / (loadArrows.size() - 1);
         GLKVector3 interpolatedPos = GLKVector3Add(GLKVector3MultiplyScalar(lineDirection, proportion), startPos);
@@ -173,16 +173,20 @@ void LoadMarker::refreshPositions() {
             }
             loadLines[i - 1].move(adjusted_start, adjusted_end);
             // TODO: This only looks at load line start. Assuming flat load line
-            if (adjusted_start.y > maxY) {
-                maxY = adjusted_start.y;
-            }
+            maxY = std::max(maxY, adjusted_start.y);
+            minY = std::min(minY, adjusted_start.y);
         }
         
         lastPos = interpolatedPos;
     }
     // Set position of text empty
     float middleX = (endPos.x + startPos.x) / 2;
-    labelEmpty.position = SCNVector3Make(middleX, maxY + thickness, lastPos.z);
+    if (reversed) {
+        labelEmpty.position = SCNVector3Make(middleX, minY - thickness, lastPos.z);
+    }
+    else {
+        labelEmpty.position = SCNVector3Make(middleX, maxY + thickness, lastPos.z);
+    }
     textLabel.markPosDirty();
 }
 

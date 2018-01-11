@@ -83,6 +83,7 @@ static const float roof_angle = 1.1965977338;
         load->setLoad(0.5);
     }
     
+    shearArrow = GrabbableArrow(true);
     shearArrow.setRotationAxisAngle(GLKVector4Make(0, 0, 1, -M_PI/2));
     shearArrow.setPosition(GLKVector3Make(0, -5, 0));
     
@@ -90,10 +91,16 @@ static const float roof_angle = 1.1965977338;
     shearArrow.setMaxLength(load_max_h);
     shearArrow.setInputRange(0, 1);
     shearArrow.setThickness(thickness);
+    axialArrow = GrabbableArrow(true);
     axialArrow.setMinLength(load_min_h);
     axialArrow.setMaxLength(load_max_h);
     axialArrow.setInputRange(154, 156);
     axialArrow.setThickness(thickness);
+    axialArrow.setIntensity(154);
+    axialArrow.setRotationAxisAngle(GLKVector4Make(0, 0, 1, M_PI));
+    
+    shearArrow.setFormatString(@"%.1f k");
+    axialArrow.setFormatString(@"%.1f k");
     
     shearArrow.setScenes(skScene, scnView);
     axialArrow.setScenes(skScene, scnView);
@@ -109,6 +116,9 @@ static const float roof_angle = 1.1965977338;
     momentMat.diffuse.contents = [UIColor colorWithRed:0.0 green:1.0 blue:0 alpha:1.0];
     momentIndicator.geometry.firstMaterial = momentMat;
     momentIndicator.position = SCNVector3Make(0, -10, 0);
+    GLKQuaternion moment_ori = GLKQuaternionMultiply(GLKQuaternionMakeWithAngleAndAxis(-M_PI/2, 1, 0, 0), GLKQuaternionMakeWithAngleAndAxis(-M_PI/2, 0, 1, 0));
+    GLKVector4 axis_angle_rot = GLKVector4MakeWithVector3(GLKQuaternionAxis(moment_ori), GLKQuaternionAngle(moment_ori));
+    momentIndicator.rotation = SCNVector4FromGLKVector4(axis_angle_rot);
     [rootNode addChildNode:momentIndicator];
     
     return rootNode;
@@ -158,7 +168,7 @@ static const float roof_angle = 1.1965977338;
 
 // Make various AR Managers
 - (ARManager*)makeStaticTracker {
-    GLKMatrix4 trans_mat = GLKMatrix4MakeTranslation(0, 40, 210);
+    GLKMatrix4 trans_mat = GLKMatrix4MakeTranslation(0, 40, 240);
     GLKMatrix4 rot_x_mat = GLKMatrix4MakeXRotation(0.3);
     GLKMatrix4 cameraMatrix = GLKMatrix4Multiply(rot_x_mat, trans_mat);
     return new StaticARManager(scnView, scnView.scene, cameraMatrix);

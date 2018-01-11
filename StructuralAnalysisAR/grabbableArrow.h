@@ -20,7 +20,7 @@
 
 class GrabbableArrow {
 public:
-    GrabbableArrow();
+    GrabbableArrow(bool reversed = false);
     void setFormatString(NSString* str);
     void setScenes(SKScene* scene2d, SCNView* view3d);
     void addAsChild(SCNNode* node);
@@ -65,6 +65,8 @@ public:
     bool dragging = false;
     
 private:
+    bool reversed;
+    
     NSString* formatString;
     OverlayLabel valueLabel;
     SCNNode* labelEmpty;
