@@ -641,7 +641,7 @@
 				);
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				"OTHER_CPLUSPLUSFLAGS[arch=*]" = "$(OTHER_CFLAGS)";
-				PRODUCT_BUNDLE_IDENTIFIER = vrac.sceneKitTest;
+				PRODUCT_BUNDLE_IDENTIFIER = edu.iastate.vrac.arlab.istructar;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = 2;
 			};
@@ -666,7 +666,7 @@
 					"$(PROJECT_DIR)/StructuralAnalysisAR/vuforia-sdk-ios/build/lib/arm",
 				);
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
-				PRODUCT_BUNDLE_IDENTIFIER = vrac.sceneKitTest;
+				PRODUCT_BUNDLE_IDENTIFIER = edu.iastate.vrac.arlab.istructar;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = 2;
 			};
