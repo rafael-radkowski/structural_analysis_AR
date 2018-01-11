@@ -48,7 +48,7 @@ static const float roof_angle = 1.1965977338;
     [rootNode addChildNode:ambientLightNode];
     
     float load_min_h = 10; float load_max_h = 35;
-    float input_range[2] = {0, 3.5};
+    float input_range[2] = {0, 13};
     float thickness = 3;
 
     windwardSideLoad = LoadMarker(5);
@@ -89,14 +89,13 @@ static const float roof_angle = 1.1965977338;
     
     shearArrow.setMinLength(load_min_h);
     shearArrow.setMaxLength(load_max_h);
-    shearArrow.setInputRange(0, 1);
+    shearArrow.setInputRange(0, 18);
     shearArrow.setThickness(thickness);
     axialArrow = GrabbableArrow(true);
     axialArrow.setMinLength(load_min_h);
     axialArrow.setMaxLength(load_max_h);
-    axialArrow.setInputRange(154, 156);
+    axialArrow.setInputRange(154, 163);
     axialArrow.setThickness(thickness);
-    axialArrow.setIntensity(154);
     axialArrow.setRotationAxisAngle(GLKVector4Make(0, 0, 1, M_PI));
     
     shearArrow.setFormatString(@"%.1f k");
@@ -130,14 +129,19 @@ static const float roof_angle = 1.1965977338;
         deflVals[1].push_back(0);
     }
 //    tower = BezierLine(deflVals);
-    tower.setThickness(5);
-    tower.setPosition(GLKVector3Make(2.5, 0, 0));
-    tower.setMagnification(400);
-    tower.addAsChild(rootNode);
-    tower.setOrientation(GLKQuaternionMakeWithAngleAndAxis(M_PI/2, 0, 0, 1));
-    tower.setScenes(skScene, scnView);
-    tower.updatePath(deflVals);
-    
+    towerL.setPosition(GLKVector3Make(-base_width/2 + thickness/2, 0, 0));
+    towerR.setPosition(GLKVector3Make(base_width/2 + thickness/2, 0, 0));
+    towerL.setTextLocX(0.9);
+    towerR.setTextHidden(true);
+    for (BezierLine* tower : {&towerL, &towerR}) {
+        tower->setThickness(thickness);
+        tower->setMagnification(40);
+        tower->addAsChild(rootNode);
+        tower->setOrientation(GLKQuaternionMakeWithAngleAndAxis(M_PI/2, 0, 0, 1));
+        tower->setScenes(skScene, scnView);
+        tower->updatePath(deflVals);
+    }
+
     return rootNode;
 }
 
@@ -171,6 +175,10 @@ static const float roof_angle = 1.1965977338;
     self.freezeFrameBtn.layer.borderWidth = 1.5;
     self.freezeFrameBtn.layer.borderColor = textColor;
     self.freezeFrameBtn.layer.cornerRadius = 5;
+    
+    // Set initial wind speed and notify so callback gets called
+    [self.windSpeedSlider setValue:0.5];
+    [self.windSpeedSlider sendActionsForControlEvents:UIControlEventValueChanged];
 }
 
 - (void)skUpdate {
@@ -180,12 +188,14 @@ static const float roof_angle = 1.1965977338;
     leewardRoofLoad.doUpdate();
     shearArrow.doUpdate();
     axialArrow.doUpdate();
+    towerL.doUpdate();
+    towerR.doUpdate();
 }
 
 
 // Make various AR Managers
 - (ARManager*)makeStaticTracker {
-    GLKMatrix4 trans_mat = GLKMatrix4MakeTranslation(0, 40, 240);
+    GLKMatrix4 trans_mat = GLKMatrix4MakeTranslation(0, 40, 200);
     GLKMatrix4 rot_x_mat = GLKMatrix4MakeXRotation(0.3);
     GLKMatrix4 cameraMatrix = GLKMatrix4Multiply(rot_x_mat, trans_mat);
     return new StaticARManager(scnView, scnView.scene, cameraMatrix);
@@ -238,7 +248,7 @@ static const float roof_angle = 1.1965977338;
 
 - (IBAction)windSpeedChanged:(id)sender {
     float slider_val = self.windSpeedSlider.value;
-    float v = slider_val * 50;
+    float v = slider_val * 100;
     [self calculatePressuresFrom:v];
     
     // Set intensities
@@ -281,7 +291,7 @@ static const float roof_angle = 1.1965977338;
     // Update indicators
     shearArrow.setIntensity(shear);
     axialArrow.setIntensity(axial);
-    double moment_scale = 0.1;
+    double moment_scale = 0.07;
     double min_moment_scale = 10;
     momentIndicator.scale = SCNVector3Make(min_moment_scale + moment_scale * moment, min_moment_scale + moment_scale * moment, min_moment_scale + moment_scale * moment);
     
@@ -332,7 +342,8 @@ static const float roof_angle = 1.1965977338;
         double defl_feet = 12 * sum_defl / (2.016e8 * 2334);
         deflVals[1][i] = defl_feet * 10;
     }
-    tower.updatePath(deflVals);
+    towerL.updatePath(deflVals);
+    towerR.updatePath(deflVals);
 }
 
 // velocity in mph

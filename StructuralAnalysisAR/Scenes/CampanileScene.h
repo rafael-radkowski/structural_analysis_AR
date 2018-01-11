@@ -39,7 +39,8 @@
     } pressures;
     
     std::vector<std::vector<float>> deflVals;
-    BezierLine tower;
+    BezierLine towerL;
+    BezierLine towerR;
 }
 
 @property (nonatomic, retain) IBOutlet UIView *viewFromNib;

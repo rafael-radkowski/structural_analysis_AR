@@ -93,6 +93,11 @@ void BezierLine::setMagnification(float new_mag) {
     magnification = new_mag;
 }
 
+void BezierLine::setTextLocX(float fac_along_x) {
+    x_pos_frac = fac_along_x;
+    defLabel.markPosDirty();
+}
+
 void BezierLine::updatePath(const std::vector<std::vector<float>>& points) {
     SCNShape* shapeGeom = (SCNShape*) lineNode.geometry;
     std::vector<std::vector<float>> pointsCopy(2);
@@ -101,8 +106,11 @@ void BezierLine::updatePath(const std::vector<std::vector<float>>& points) {
     std::transform(points[1].begin(), points[1].end(), pointsCopy[1].begin(), [this](float orig_y) {return orig_y * magnification;});
     shapeGeom.path = interpolatePoints(pointsCopy, thickness);
     float min_y = *std::min_element(points[1].begin(), points[1].end());
-    float x_middle = (points[0][points[0].size() - 1] + points[0][0]) / 2;
-    labelEmpty.position = SCNVector3Make(x_middle, min_y * magnification, 0);
+    float x_range = points[0][points[0].size() - 1] + points[0][0];
+    float desired_x = x_range * x_pos_frac;
+//    auto closest_elem = std::find_if(points[0].begin(), points[0].end(), [desired_x] (float val) {return val >= desired_x;});
+//    size_t idx = (closest_elem - points[0].begin());
+    labelEmpty.position = SCNVector3Make(desired_x, min_y * magnification, 0);
     defLabel.setText([NSString stringWithFormat:@"%.3f in.", min_y * 12]);
     defLabel.markPosDirty();
 }
