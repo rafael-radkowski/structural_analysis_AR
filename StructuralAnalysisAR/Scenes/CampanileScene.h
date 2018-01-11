@@ -10,6 +10,7 @@
 #define CampanileScene_hpp
 
 #include <stdio.h>
+#include <vector>
 
 #import "StructureScene.h"
 #include "loadMarker.h"
@@ -37,6 +38,8 @@
         double leeward_side;
     } pressures;
     
+    std::vector<std::vector<float>> deflVals;
+    BezierLine tower;
 }
 
 @property (nonatomic, retain) IBOutlet UIView *viewFromNib;
