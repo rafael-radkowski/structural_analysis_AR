@@ -16,7 +16,7 @@
 static const float base_width = 16;
 static const float base_height = 89 + 2.f / 12;
 static const float roof_height = 20 + 4.5 / 12;
-static const float roof_angle = 1.1965977338;
+static const float roof_angle = (M_PI / 180.0) * 68.56;
 
 - (id)initWithController:(id<ARViewController>)controller {
     managingParent = controller;
@@ -48,10 +48,9 @@ static const float roof_angle = 1.1965977338;
     [rootNode addChildNode:ambientLightNode];
     
     float load_min_h = 10; float load_max_h = 35;
-    float input_range[2] = {0, 13};
     float thickness = 3;
 
-    windwardSideLoad = LoadMarker(5);
+    windwardSideLoad = LoadMarker(5, false, 2);
     windwardSideLoad.setPosition(GLKVector3Make(-base_width/2, 0, 0));
     windwardSideLoad.setOrientation(GLKQuaternionMakeWithAngleAndAxis(M_PI/2.f, 0, 0, 1));
     windwardSideLoad.setEnds(0, 89 + 2.f/12);
@@ -75,7 +74,7 @@ static const float roof_angle = 1.1965977338;
     std::vector<LoadMarker*> loads = {&windwardSideLoad, &windwardRoofLoad, &leewardSideLoad, &leewardRoofLoad};
     for (LoadMarker* load : loads) {
         load->setScenes(skScene, scnView);
-        load->setInputRange(input_range[0], input_range[1]);
+        load->setInputRange(0, 29);
         load->setMinHeight(load_min_h);
         load->setMaxHeight(load_max_h);
         load->setThickness(thickness);
@@ -83,22 +82,20 @@ static const float roof_angle = 1.1965977338;
         load->setLoad(0.5);
     }
     
-    shearArrow = GrabbableArrow(true);
     shearArrow.setRotationAxisAngle(GLKVector4Make(0, 0, 1, -M_PI/2));
     shearArrow.setPosition(GLKVector3Make(0, -5, 0));
     
     shearArrow.setMinLength(load_min_h);
     shearArrow.setMaxLength(load_max_h);
-    shearArrow.setInputRange(0, 18);
+    shearArrow.setInputRange(0, 89);
     shearArrow.setThickness(thickness);
-    axialArrow = GrabbableArrow(true);
-    axialArrow.setMinLength(load_min_h);
-    axialArrow.setMaxLength(load_max_h);
-    axialArrow.setInputRange(154, 163);
+    axialArrow.setMinLength(5);
+    axialArrow.setMaxLength(30);
+    axialArrow.setInputRange(1540, 1559);
     axialArrow.setThickness(thickness);
     axialArrow.setRotationAxisAngle(GLKVector4Make(0, 0, 1, M_PI));
     
-    shearArrow.setFormatString(@"%.1f k");
+    shearArrow.setFormatString(@"%.2f k");
     axialArrow.setFormatString(@"%.1f k");
     
     shearArrow.setScenes(skScene, scnView);
@@ -131,11 +128,11 @@ static const float roof_angle = 1.1965977338;
 //    tower = BezierLine(deflVals);
     towerL.setPosition(GLKVector3Make(-base_width/2 + thickness/2, 0, 0));
     towerR.setPosition(GLKVector3Make(base_width/2 + thickness/2, 0, 0));
-    towerL.setTextLocX(0.9);
+    towerL.setTextLocX(1.1);
     towerR.setTextHidden(true);
     for (BezierLine* tower : {&towerL, &towerR}) {
         tower->setThickness(thickness);
-        tower->setMagnification(40);
+        tower->setMagnification(2000);
         tower->addAsChild(rootNode);
         tower->setOrientation(GLKQuaternionMakeWithAngleAndAxis(M_PI/2, 0, 0, 1));
         tower->setScenes(skScene, scnView);
@@ -195,7 +192,7 @@ static const float roof_angle = 1.1965977338;
 
 // Make various AR Managers
 - (ARManager*)makeStaticTracker {
-    GLKMatrix4 trans_mat = GLKMatrix4MakeTranslation(0, 40, 200);
+    GLKMatrix4 trans_mat = GLKMatrix4MakeTranslation(0, 30, 250);
     GLKMatrix4 rot_x_mat = GLKMatrix4MakeXRotation(0.3);
     GLKMatrix4 cameraMatrix = GLKMatrix4Multiply(rot_x_mat, trans_mat);
     return new StaticARManager(scnView, scnView.scene, cameraMatrix);
@@ -248,7 +245,9 @@ static const float roof_angle = 1.1965977338;
 
 - (IBAction)windSpeedChanged:(id)sender {
     float slider_val = self.windSpeedSlider.value;
-    float v = slider_val * 100;
+    float v = slider_val * 150;
+//    label.text = [NSString stringWithFormat:@"%.1f k/ft", 123.3f];
+    [self.windSpeedLabel setText:[NSString stringWithFormat:@"%.0f mph", v]];
     [self calculatePressuresFrom:v];
     
     // Set intensities
@@ -270,7 +269,7 @@ static const float roof_angle = 1.1965977338;
     
     double cos_theta = std::cos(roof_angle);
     double sin_theta = std::sin(roof_angle);
-    double inv_tan = cos_theta / sin_theta;
+    double cotan = cos_theta / sin_theta;
 //    double wd1h = cos_theta * wd1;
 //    double wd1v = sin_theta * wd1;
 //    double wd2h = cos_theta * wd2;
@@ -281,8 +280,8 @@ static const float roof_angle = 1.1965977338;
     const double h1_4 = h1_3 * h1;
     const double h2_2 = h2 * h2;
     // Calculate shear, axial, and moment
-    double shear = (16./1000) * (h1*(ww1/2 + ww2/2 + wl) * h2 * inv_tan * (wd1 + wd2));
-    double axial = (16./1000) * h2 * (wd1 - wd2) + 154;
+    double shear = (16./1000) * (h1*(ww1/2 + ww2/2 + wl) + h2 * cotan * (wd1 + wd2));
+    double axial = (16./1000) * h2 * (wd1 - wd2) + 1540;
     double moment = (16./1000) *
         (h1_2/2 * (ww1 + wl) +
          h1_2/2 * (ww2 - ww1) +
@@ -291,7 +290,7 @@ static const float roof_angle = 1.1965977338;
     // Update indicators
     shearArrow.setIntensity(shear);
     axialArrow.setIntensity(axial);
-    double moment_scale = 0.07;
+    double moment_scale = 0.006;
     double min_moment_scale = 10;
     momentIndicator.scale = SCNVector3Make(min_moment_scale + moment_scale * moment, min_moment_scale + moment_scale * moment, min_moment_scale + moment_scale * moment);
     
@@ -312,8 +311,8 @@ static const float roof_angle = 1.1965977338;
             defl2 = (2*(ww2-ww1)*x2 / 15) * (10*h1*x - x3/h1 - 20*h1_2);
 
             double defl45_common = x2 * (x + 1.5*h2 + 3*h1);
-            defl4 = (-8 * h2 * wd1 * inv_tan / 3) * defl45_common;
-            defl5 = (-8 * h2 * wd2 * inv_tan / 3) * defl45_common;
+            defl4 = (-8 * h2 * wd1 * cotan / 3) * defl45_common;
+            defl5 = (-8 * h2 * wd2 * cotan / 3) * defl45_common;
             
 //            defl1 = 2*ww1*x2 * (356.67*x - x2 - 47704.5) / 3;
 //            defl2 = (2./15) * (ww2 - ww1) * x2 * (891.67*x - 0.0112*x3 - 159015.08);
@@ -327,8 +326,8 @@ static const float roof_angle = 1.1965977338;
             defl3 = 2 * wl * h1_3 * (-4*x + h1) / 3;
 
             double defl45_common = x3*h2/6 - x4/24 + x2*(h1_2-h2_2)/4 + x*(h2_2*h1 + h1_2*h2 - h1_3/3) - h2_2*h1_2/2 + h1_4/8 - h1_3*h2/2;
-            defl4 = -16 * inv_tan * wd1 * defl45_common;
-            defl5 = -16 * inv_tan * wd2 * defl45_common;
+            defl4 = -16 * cotan * wd1 * defl45_common;
+            defl5 = -16 * cotan * wd2 * defl45_common;
             
 //            defl1 = 472629.92 * ww1 * (-4*x + 89.167);
 //            defl2 = 5671558.98 * (ww2 - ww1) * (5.94 - 0.25 * x);
@@ -339,8 +338,9 @@ static const float roof_angle = 1.1965977338;
         }
         else {assert(false);}
         double sum_defl = defl1 + defl2 + defl3 + defl4 + defl5;
-        double defl_feet = 12 * sum_defl / (2.016e8 * 2334);
-        deflVals[1][i] = defl_feet * 10;
+        double defl_ft = sum_defl / (2.016e8 * 2334);
+//        double defl_in = sum_defl / (2.016e8. * 2334. / 12.);
+        deflVals[1][i] = defl_ft;
     }
     towerL.updatePath(deflVals);
     towerR.updatePath(deflVals);
@@ -355,7 +355,7 @@ static const float roof_angle = 1.1965977338;
     pressures.windward_side_top = 0.0014 * v2;
     pressures.leeward_side = -0.00093 * v2;
     pressures.windward_roof = 0.00128 * v2;
-    pressures.leeward_roof = -0.0012 * v2;
+    pressures.leeward_roof = -0.00112 * v2;
 }
 
 @end

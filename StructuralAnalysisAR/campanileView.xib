@@ -16,6 +16,7 @@
                 <outlet property="homeBtn" destination="YBy-td-PUW" id="vM5-HT-k4N"/>
                 <outlet property="trackingModeBtn" destination="PAH-rJ-EDa" id="Lmt-Kc-tZa"/>
                 <outlet property="viewFromNib" destination="iN0-l3-epB" id="Aqt-hj-vvb"/>
+                <outlet property="windSpeedLabel" destination="IS9-83-e7Z" id="eEh-FR-Khp"/>
                 <outlet property="windSpeedSlider" destination="rFT-yd-gcM" id="cKO-zr-PfI"/>
             </connections>
         </placeholder>
@@ -80,10 +81,18 @@
                                 <action selector="windSpeedChanged:" destination="-1" eventType="valueChanged" id="JX0-h1-7yv"/>
                             </connections>
                         </slider>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="mph" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IS9-83-e7Z">
+                            <rect key="frame" x="333" y="14" width="34.5" height="21"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <constraints>
+                        <constraint firstItem="IS9-83-e7Z" firstAttribute="centerY" secondItem="rFT-yd-gcM" secondAttribute="centerY" id="5JV-19-iXE"/>
                         <constraint firstItem="xZ6-pB-OCK" firstAttribute="centerY" secondItem="0oP-G4-DiJ" secondAttribute="centerY" id="5YN-Dd-mKP"/>
+                        <constraint firstItem="IS9-83-e7Z" firstAttribute="leading" secondItem="rFT-yd-gcM" secondAttribute="trailing" constant="8" id="5gK-0d-KHZ"/>
                         <constraint firstItem="PAH-rJ-EDa" firstAttribute="leading" secondItem="xZ6-pB-OCK" secondAttribute="trailing" constant="8" id="EIe-Ka-HXc"/>
                         <constraint firstItem="f0Z-nd-D4D" firstAttribute="leading" secondItem="PAH-rJ-EDa" secondAttribute="trailing" constant="25" id="HOo-bL-CTT"/>
                         <constraint firstAttribute="height" constant="50" id="PY9-U6-EVg"/>

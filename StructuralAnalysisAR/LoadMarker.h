@@ -28,7 +28,7 @@
 class LoadMarker {
 public:
     LoadMarker();
-    LoadMarker(size_t nLoads, bool reversed=false);
+    LoadMarker(size_t nLoads, bool reversed=false, int n_labels=1);
     enum Dragging : uint32_t {
         none = 0,
         vertically = 1,
@@ -102,8 +102,8 @@ private:
     float thickness;
     
     // Label
-    OverlayLabel textLabel;
-    SCNNode* labelEmpty;
+    std::vector<OverlayLabel> textLabels;
+    std::vector<SCNNode*> labelEmpties;
 };
 
 #endif /* loadMarker_hpp */

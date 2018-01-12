@@ -1,13 +1,13 @@
 //
-//  CampanileScene.hpp
+//  CampanileSeismicScene.h
 //  StructuralAnalysisAR
 //
-//  Created by David Wehr on 1/9/18.
+//  Created by David Wehr on 1/12/18.
 //  Copyright © 2018 David Wehr. All rights reserved.
 //
 
-#ifndef CampanileScene_h
-#define CampanileScene_h
+#ifndef CampanileSeismicScene_h
+#define CampanileSeismicScene_h
 
 #include <vector>
 
@@ -15,28 +15,17 @@
 #include "loadMarker.h"
 #include "BezierLine.h"
 
-@interface CampanileScene: NSObject <StructureScene> {
+@interface CampanileSeismicScene: NSObject <StructureScene> {
     id<ARViewController> managingParent;
     SCNView* scnView;
     SCNNode* cameraNode;
-    
-    LoadMarker windwardSideLoad;
-    LoadMarker windwardRoofLoad;
-    LoadMarker leewardSideLoad;
-    LoadMarker leewardRoofLoad;
-    
-    GrabbableArrow shearArrow;
-    GrabbableArrow axialArrow;
-    SCNNode* momentIndicator;
-    
-    struct WindPressures {
-        double windward_base;
-        double windward_side_top;
-        double windward_roof;
-        double leeward_roof;
-        double leeward_side;
-    } pressures;
-    
+
+    GrabbableArrow seismicForce1;
+    GrabbableArrow seismicForce2;
+    GrabbableArrow seismicForce3;
+    GrabbableArrow seismicForce4;
+    GrabbableArrow seismicForce5;
+
     std::vector<std::vector<float>> deflVals;
     BezierLine towerL;
     BezierLine towerR;
@@ -49,19 +38,12 @@
 // Tracking Mode (indoor/outdoor)
 @property (weak, nonatomic) IBOutlet UISegmentedControl *trackingModeBtn;
 
-@property (weak, nonatomic) IBOutlet UISlider *windSpeedSlider;
-@property (weak, nonatomic) IBOutlet UILabel *windSpeedLabel;
-
 
 - (IBAction)homeBtnPressed:(id)sender;
 - (IBAction)freezePressed:(id)sender;
 // When the indoor/outdoor toggle switch is touched. Goes between OpenCV ARManager adn Vuforia ARManager
 - (IBAction)trackingModeChanged:(id)sender;
 
-- (IBAction)windSpeedChanged:(id)sender;
-
-- (void)calculatePressuresFrom:(double)velocity;
-
 @end
 
-#endif /* CampanileScene_h */
+#endif /* CampanileSeismicScene_h */

@@ -13,7 +13,7 @@
 LoadMarker::LoadMarker() : LoadMarker(2, false) { }
 
 
-LoadMarker::LoadMarker(size_t nLoads, bool reversed)
+LoadMarker::LoadMarker(size_t nLoads, bool reversed, int n_labels)
 : reversed(reversed) {
     assert(nLoads >= 2);
     loadValues.resize(nLoads);
@@ -33,17 +33,23 @@ LoadMarker::LoadMarker(size_t nLoads, bool reversed)
     }
     
     // Make an empty that the label will follow
-    labelEmpty = [SCNNode node];
-    textLabel.setObject(labelEmpty);
-    textLabel.setCenter(0.5, 0);
-    [rootNode addChildNode:labelEmpty];
+    textLabels.resize(n_labels);
+    labelEmpties.resize(n_labels);
+    for (int i = 0; i < n_labels; ++i) {
+        labelEmpties[i] = [SCNNode node];
+        textLabels[i].setObject(labelEmpties[i]);
+        textLabels[i].setCenter(0.5, 0);
+        [rootNode addChildNode:labelEmpties[i]];
+    }
 }
 
 void LoadMarker::setScenes(SKScene* scene2d, SCNView* view3d) {
     for (int i = 0; i < loadArrows.size(); ++i) {
         loadArrows[i].setScenes(scene2d, view3d);
     }
-    textLabel.setScenes(scene2d, view3d);
+    for (OverlayLabel& textLabel : textLabels) {
+        textLabel.setScenes(scene2d, view3d);
+    }
 }
 
 void LoadMarker::addAsChild(SCNNode *node) {
@@ -54,7 +60,9 @@ void LoadMarker::doUpdate() {
     for (GrabbableArrow& arrow : loadArrows) {
         arrow.doUpdate();
     }
-    textLabel.doUpdate();
+    for (OverlayLabel& textLabel : textLabels) {
+        textLabel.doUpdate();
+    }
 }
 
 void LoadMarker::setLoad(size_t loadIndex, double value) {
@@ -69,7 +77,9 @@ void LoadMarker::setLoad(double value) {
     for (int i = 0; i < loadValues.size(); ++i) {
         loadValues[i] = value;
     }
-    textLabel.setText([NSString stringWithFormat:@"%.1f k/ft", value]);
+    for (OverlayLabel& textLabel : textLabels) {
+        textLabel.setText([NSString stringWithFormat:@"%.1f k/ft", value]);
+    }
     refreshPositions();
 }
 
@@ -79,7 +89,17 @@ void LoadMarker::setLoadInterpolate(double val_l, double val_r) {
         double interp_load = val_l + (val_r - val_l) * interp_fac;
         loadValues[i] = interp_load;
     }
-    textLabel.setText([NSString stringWithFormat:@"%.1f k/ft", (val_l + val_r) / 2]);
+    size_t n_labels = textLabels.size();
+    // One label should be in the middle, averaged
+    if (n_labels == 1) {
+        textLabels[0].setText([NSString stringWithFormat:@"%.1f k/ft", (val_l + val_r) / 2]);
+    }
+    // Multiple labels should include the endpoints
+    for (int i = 0; i < n_labels; ++i) {
+        double interp_fac = static_cast<float>(i) / (n_labels - 1);
+        double interp_load = val_l + (val_r - val_l) * interp_fac;
+        textLabels[i].setText([NSString stringWithFormat:@"%.1f k/ft", interp_load]);
+    }
     refreshPositions();
 }
 
@@ -179,15 +199,22 @@ void LoadMarker::refreshPositions() {
         
         lastPos = interpolatedPos;
     }
-    // Set position of text empty
-    float middleX = (endPos.x + startPos.x) / 2;
-    if (reversed) {
-        labelEmpty.position = SCNVector3Make(middleX, minY - thickness, lastPos.z);
+    // Set position of text empties
+    
+    size_t n_labels = textLabels.size();
+    // Weird stuff, since when there's one label, it should be in the middle, but multiple should have one at each endpoint
+    float separation = n_labels == 1 ? 0 : (endPos.x - startPos.x) / (n_labels - 1);
+    float start_x = n_labels == 1 ? (endPos.x + startPos.x) / 2 : 0;
+    for (int i = 0; i < n_labels; ++i) {
+        float posX = start_x + static_cast<float>(i) * separation;
+        if (reversed) {
+            labelEmpties[i].position = SCNVector3Make(posX, minY - thickness, lastPos.z);
+        }
+        else {
+            labelEmpties[i].position = SCNVector3Make(posX, maxY + thickness, lastPos.z);
+        }
+        textLabels[i].markPosDirty();
     }
-    else {
-        labelEmpty.position = SCNVector3Make(middleX, maxY + thickness, lastPos.z);
-    }
-    textLabel.markPosDirty();
 }
 
 void LoadMarker::setHidden(bool hidden) {
@@ -197,7 +224,9 @@ void LoadMarker::setHidden(bool hidden) {
     for (int i = 0; i < loadLines.size(); ++i) {
         loadLines[i].setHidden(hidden);
     }
-    textLabel.setHidden(hidden);
+    for (OverlayLabel& textLabel : textLabels) {
+        textLabel.setHidden(hidden);
+    }
 }
 
 void LoadMarker::setInputRange(float minValue, float maxValue) {
