@@ -14,6 +14,7 @@
 #import "StructureScene.h"
 #include "loadMarker.h"
 #include "BezierLine.h"
+#include "CircleArrow.h"
 
 @interface CampanileScene: NSObject <StructureScene> {
     id<ARViewController> managingParent;
@@ -27,7 +28,7 @@
     
     GrabbableArrow shearArrow;
     GrabbableArrow axialArrow;
-    SCNNode* momentIndicator;
+    CircleArrow momentIndicator;
     
     struct WindPressures {
         double windward_base;

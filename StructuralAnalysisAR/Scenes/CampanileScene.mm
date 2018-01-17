@@ -103,20 +103,26 @@ static const float roof_angle = (M_PI / 180.0) * 68.56;
     shearArrow.addAsChild(rootNode);
     axialArrow.addAsChild(rootNode);
 
-    NSString* momentArrowPath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"moment_arrow"] ofType:@"obj"];
-    NSURL* momentArrowUrl = [NSURL fileURLWithPath:momentArrowPath];
-    MDLAsset* momentArrowAsset = [[MDLAsset alloc] initWithURL:momentArrowUrl];
-    momentIndicator = [SCNNode nodeWithMDLObject:[momentArrowAsset objectAtIndex:0]];
-    momentIndicator.scale = SCNVector3Make(10, 10, 10);
-    SCNMaterial* momentMat = [SCNMaterial material];
-    momentMat.diffuse.contents = [UIColor colorWithRed:0.0 green:1.0 blue:0 alpha:1.0];
-    momentIndicator.geometry.firstMaterial = momentMat;
-    momentIndicator.position = SCNVector3Make(0, -10, 0);
-    GLKQuaternion moment_ori = GLKQuaternionMultiply(GLKQuaternionMakeWithAngleAndAxis(-M_PI/2, 1, 0, 0), GLKQuaternionMakeWithAngleAndAxis(-M_PI/2, 0, 1, 0));
-    GLKVector4 axis_angle_rot = GLKVector4MakeWithVector3(GLKQuaternionAxis(moment_ori), GLKQuaternionAngle(moment_ori));
-    momentIndicator.rotation = SCNVector4FromGLKVector4(axis_angle_rot);
-    [rootNode addChildNode:momentIndicator];
-    
+//    NSString* momentArrowPath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"moment_arrow"] ofType:@"obj"];
+//    NSURL* momentArrowUrl = [NSURL fileURLWithPath:momentArrowPath];
+//    MDLAsset* momentArrowAsset = [[MDLAsset alloc] initWithURL:momentArrowUrl];
+//    momentIndicator = [SCNNode nodeWithMDLObject:[momentArrowAsset objectAtIndex:0]];
+//    momentIndicator.scale = SCNVector3Make(10, 10, 10);
+//    SCNMaterial* momentMat = [SCNMaterial material];
+//    momentMat.diffuse.contents = [UIColor colorWithRed:0.0 green:1.0 blue:0 alpha:1.0];
+//    momentIndicator.geometry.firstMaterial = momentMat;
+//    momentIndicator.position = SCNVector3Make(0, -10, 0);
+//    GLKQuaternion moment_ori = GLKQuaternionMultiply(GLKQuaternionMakeWithAngleAndAxis(-M_PI/2, 1, 0, 0), GLKQuaternionMakeWithAngleAndAxis(-M_PI/2, 0, 1, 0));
+//    GLKVector4 axis_angle_rot = GLKVector4MakeWithVector3(GLKQuaternionAxis(moment_ori), GLKQuaternionAngle(moment_ori));
+//    momentIndicator.rotation = SCNVector4FromGLKVector4(axis_angle_rot);
+//    [rootNode addChildNode:momentIndicator];
+    momentIndicator.addAsChild(rootNode);
+    momentIndicator.setInputRange(-100, 800);
+    momentIndicator.setRotationAxisAngle(GLKVector4Make(1, 0, 0, M_PI));
+    momentIndicator.setThickness(thickness);
+    momentIndicator.setRadius(18);
+    momentIndicator.setScenes(skScene, scnView);
+
     // Tower deflection
     deflVals.resize(2);
     int resolution = 8;
@@ -187,6 +193,7 @@ static const float roof_angle = (M_PI / 180.0) * 68.56;
     axialArrow.doUpdate();
     towerL.doUpdate();
     towerR.doUpdate();
+    momentIndicator.doUpdate();
 }
 
 
@@ -290,9 +297,7 @@ static const float roof_angle = (M_PI / 180.0) * 68.56;
     // Update indicators
     shearArrow.setIntensity(shear);
     axialArrow.setIntensity(axial);
-    double moment_scale = 0.006;
-    double min_moment_scale = 10;
-    momentIndicator.scale = SCNVector3Make(min_moment_scale + moment_scale * moment, min_moment_scale + moment_scale * moment, min_moment_scale + moment_scale * moment);
+    momentIndicator.setIntensity(moment);
     
     // Calculate deflection
     size_t resolution = deflVals[0].size();

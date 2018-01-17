@@ -69,7 +69,7 @@ void BezierLine::setHidden(bool new_hidden) {
 
 SCNShape* BezierLine::meshFromPath(UIBezierPath* path) {
     SCNShape* shape = [SCNShape shapeWithPath:path extrusionDepth:thickness];
-//    shape.chamferRadius = 1;
+//    shape.chamferRadius = thickness / 2;
     return shape;
 }
 

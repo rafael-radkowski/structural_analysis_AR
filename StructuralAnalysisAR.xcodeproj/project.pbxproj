@@ -28,6 +28,7 @@
 		0B1FCD471FBDDFB6002DBE98 /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B1FCD3F1FBB429F002DBE98 /* opencv2.framework */; };
 		0B1FCD4A1FBDE1C4002DBE98 /* cvARManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B1FCD481FBDE1C4002DBE98 /* cvARManager.mm */; };
 		0B2AAB851FD87D4100DD477B /* skywalk_sunny_1920.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B2AAB841FD87D4100DD477B /* skywalk_sunny_1920.png */; };
+		0B2ACE1A200E814900230D67 /* CircleArrow.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B2ACE19200E814900230D67 /* CircleArrow.mm */; };
 		0B41E99A1F72BC04001DB823 /* home_blue.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B41E9991F72BC04001DB823 /* home_blue.png */; };
 		0B483BFB1F4DDB6F007A1D29 /* skywalk.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0B483BFA1F4DDB6F007A1D29 /* skywalk.jpg */; };
 		0B483C001F4F8AF9007A1D29 /* arrow_base.obj in Resources */ = {isa = PBXBuildFile; fileRef = 0B483BFE1F4F8AF9007A1D29 /* arrow_base.obj */; };
@@ -111,6 +112,8 @@
 		0B1FCD481FBDE1C4002DBE98 /* cvARManager.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = cvARManager.mm; sourceTree = "<group>"; };
 		0B1FCD491FBDE1C4002DBE98 /* cvARManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = cvARManager.h; sourceTree = "<group>"; };
 		0B2AAB841FD87D4100DD477B /* skywalk_sunny_1920.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = skywalk_sunny_1920.png; path = image_assets/skywalk_sunny_1920.png; sourceTree = "<group>"; };
+		0B2ACE19200E814900230D67 /* CircleArrow.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = CircleArrow.mm; sourceTree = "<group>"; };
+		0B2ACE1B200E815D00230D67 /* CircleArrow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CircleArrow.h; sourceTree = "<group>"; };
 		0B41E9991F72BC04001DB823 /* home_blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = home_blue.png; path = image_assets/home_blue.png; sourceTree = "<group>"; };
 		0B483BFA1F4DDB6F007A1D29 /* skywalk.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = skywalk.jpg; path = image_assets/skywalk.jpg; sourceTree = "<group>"; };
 		0B483BFD1F4F1016007A1D29 /* grabbableArrow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = grabbableArrow.h; sourceTree = "<group>"; };
@@ -343,6 +346,8 @@
 				0B1573561F55BE3C004CE1BE /* line3d.mm */,
 				0BE42D251F688DDA00937359 /* BezierLine.h */,
 				0BE42D241F688DDA00937359 /* BezierLine.mm */,
+				0B2ACE19200E814900230D67 /* CircleArrow.mm */,
+				0B2ACE1B200E815D00230D67 /* CircleArrow.h */,
 				0BDE98DC1FBE4D42003673F4 /* ImageMatcher.hpp */,
 				0BDE98DB1FBE4D42003673F4 /* ImageMatcher.cpp */,
 				0BDE98DD1FBE4D42003673F4 /* MaskedImage.hpp */,
@@ -492,6 +497,7 @@
 				0BAFBB701F7EBAFE007B1FC6 /* Texture.mm in Sources */,
 				0B15734B1F5451BF004CE1BE /* MainPageViewController.mm in Sources */,
 				0B483C031F4F8BF5007A1D29 /* grabbableArrow.mm in Sources */,
+				0B2ACE1A200E814900230D67 /* CircleArrow.mm in Sources */,
 				0B5F39DE1F843975004870DE /* Shaders.metal in Sources */,
 				0B1573581F55BE3C004CE1BE /* line3d.mm in Sources */,
 				0BAFBB861F7ED394007B1FC6 /* ARView.mm in Sources */,
