@@ -205,7 +205,6 @@
     //    scnView.renderVideo = !scnView.renderVideo;
 }
 
-
 - (void) setTrackingMode:(enum TrackingMode)new_mode {
     // obtain arManagerLock so we can make calls and re-create arManager if needed
     std::lock_guard<std::mutex> lock(arManagerLock);
@@ -234,6 +233,52 @@
     tracking_mode = new_mode;
     camPaused = false;
     arManager->startCamera();
+}
+
+- (void) changeTrackingMode:(CGRect)anchorRect {
+    UIAlertController *customActionSheet = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    customActionSheet.popoverPresentationController.sourceView = self.view;
+    customActionSheet.popoverPresentationController.sourceRect = anchorRect;
+    
+    UIAlertAction *untracked_btn = [UIAlertAction actionWithTitle:@"Untracked" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+        [self setTrackingMode:TrackingMode::untracked];
+    }];
+    [untracked_btn setValue:[UIColor blackColor] forKey:@"titleTextColor"];
+    [untracked_btn setValue:[UIColor blackColor] forKey:@"imageTintColor"];
+
+    UIAlertAction *indoor_btn = [UIAlertAction actionWithTitle:@"Indoor" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+        [self setTrackingMode:TrackingMode::vuforia];
+    }];
+    [indoor_btn setValue:[UIColor blackColor] forKey:@"titleTextColor"];
+    
+    UIAlertAction *outdoor_btn = [UIAlertAction actionWithTitle:@"Outdoor" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+        [self setTrackingMode:TrackingMode::opencv];
+    }];
+    [outdoor_btn setValue:[UIColor blackColor] forKey:@"titleTextColor"];
+    
+    UIAlertAction *cancelButton = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action){
+        //cancel
+    }];
+    [cancelButton setValue:[UIColor blackColor] forKey:@"titleTextColor"];
+    
+    switch (tracking_mode) {
+        case TrackingMode::untracked:
+            [untracked_btn setValue:@true forKey:@"checked"];
+            break;
+        case TrackingMode::vuforia:
+            [indoor_btn setValue:@true forKey:@"checked"];
+            break;
+        case TrackingMode::opencv:
+            [outdoor_btn setValue:@true forKey:@"checked"];
+            break;
+    }
+    
+    [customActionSheet addAction:untracked_btn];
+    [customActionSheet addAction:indoor_btn];
+    [customActionSheet addAction:outdoor_btn];
+    [customActionSheet addAction:cancelButton];
+    
+    [self presentViewController:customActionSheet animated:YES completion:nil];
 }
 
 - (BOOL)shouldAutorotate

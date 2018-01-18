@@ -18,6 +18,9 @@ static const float base_height = 89 + 2.f / 12;
 static const float roof_height = 20 + 4.5 / 12;
 static const float roof_angle = (M_PI / 180.0) * 68.56;
 
+static const double MOD_ELASTICITY = 2.016e8;
+static const double MOM_OF_INERTIA = 2334;
+
 - (id)initWithController:(id<ARViewController>)controller {
     managingParent = controller;
     return [self init];
@@ -26,6 +29,7 @@ static const float roof_angle = (M_PI / 180.0) * 68.56;
 - (SCNNode *)createScene:(SCNView *)the_scnView skScene:(SKScene *)skScene withCamera:(SCNNode *)camera {
     scnView = the_scnView;
     cameraNode = camera;
+    activeScenario = wind;
     SCNNode* rootNode = [SCNNode node];
     
     auto addLight = [rootNode] (float x, float y, float z, float intensity) {
@@ -85,14 +89,15 @@ static const float roof_angle = (M_PI / 180.0) * 68.56;
     shearArrow.setRotationAxisAngle(GLKVector4Make(0, 0, 1, -M_PI/2));
     shearArrow.setPosition(GLKVector3Make(0, -5, 0));
     
-    shearArrow.setMinLength(load_min_h);
-    shearArrow.setMaxLength(load_max_h);
-    shearArrow.setInputRange(0, 89);
+    shearArrow.setMinLength(20);
+    shearArrow.setMaxLength(50);
+    shearArrow.setInputRange(0, 73);
     shearArrow.setThickness(thickness);
     axialArrow.setMinLength(5);
     axialArrow.setMaxLength(30);
-    axialArrow.setInputRange(1540, 1559);
+    axialArrow.setInputRange(1540, 1541.2);
     axialArrow.setThickness(thickness);
+    axialArrow.setLabelFollow(false);
     axialArrow.setRotationAxisAngle(GLKVector4Make(0, 0, 1, M_PI));
     
     shearArrow.setFormatString(@"%.2f k");
@@ -117,8 +122,8 @@ static const float roof_angle = (M_PI / 180.0) * 68.56;
 //    momentIndicator.rotation = SCNVector4FromGLKVector4(axis_angle_rot);
 //    [rootNode addChildNode:momentIndicator];
     momentIndicator.addAsChild(rootNode);
-    momentIndicator.setInputRange(-100, 800);
-    momentIndicator.setRotationAxisAngle(GLKVector4Make(1, 0, 0, M_PI));
+    momentIndicator.setInputRange(-100, 4000);
+    momentIndicator.setRotationAxisAngle(GLKVector4Make(0, 0, 1, M_PI));
     momentIndicator.setThickness(thickness);
     momentIndicator.setRadius(18);
     momentIndicator.setScenes(skScene, scnView);
@@ -138,7 +143,7 @@ static const float roof_angle = (M_PI / 180.0) * 68.56;
     towerR.setTextHidden(true);
     for (BezierLine* tower : {&towerL, &towerR}) {
         tower->setThickness(thickness);
-        tower->setMagnification(2000);
+        tower->setMagnification(500);
         tower->addAsChild(rootNode);
         tower->setOrientation(GLKQuaternionMakeWithAngleAndAxis(M_PI/2, 0, 0, 1));
         tower->setScenes(skScene, scnView);
@@ -179,9 +184,14 @@ static const float roof_angle = (M_PI / 180.0) * 68.56;
     self.freezeFrameBtn.layer.borderColor = textColor;
     self.freezeFrameBtn.layer.cornerRadius = 5;
     
+    // Setup change tracking button
+    self.changeTrackingBtn.layer.borderWidth = 1.5;
+    self.changeTrackingBtn.layer.borderColor = textColor;
+    self.changeTrackingBtn.layer.cornerRadius = 5;
+    
     // Set initial wind speed and notify so callback gets called
-    [self.windSpeedSlider setValue:0.5];
-    [self.windSpeedSlider sendActionsForControlEvents:UIControlEventValueChanged];
+    [self.slider setValue:0.5];
+    [self.slider sendActionsForControlEvents:UIControlEventValueChanged];
 }
 
 - (void)skUpdate {
@@ -239,23 +249,60 @@ static const float roof_angle = (M_PI / 180.0) * 68.56;
     return [managingParent homeBtnPressed:sender];
 }
 
-- (IBAction)trackingModeChanged:(id)sender {
-    enum TrackingMode new_mode = static_cast<TrackingMode>(self.trackingModeBtn.selectedSegmentIndex);
-    // temporarily disable button to indicate we are switching
-    self.trackingModeBtn.enabled = NO;
-    
-    [managingParent setTrackingMode:new_mode];
+- (IBAction)changeTrackingBtnPressed:(id)sender {
+    CGRect frame = [self.changeTrackingBtn.superview convertRect:self.changeTrackingBtn.frame toView:scnView];
+    [managingParent changeTrackingMode:frame];
     [self setCameraLabelPaused:NO];
-    
-    self.trackingModeBtn.enabled = YES;
 }
 
-- (IBAction)windSpeedChanged:(id)sender {
-    float slider_val = self.windSpeedSlider.value;
-    float v = slider_val * 150;
-//    label.text = [NSString stringWithFormat:@"%.1f k/ft", 123.3f];
-    [self.windSpeedLabel setText:[NSString stringWithFormat:@"%.0f mph", v]];
-    [self calculatePressuresFrom:v];
+- (IBAction)sliderChanged:(id)sender {
+    float slider_val = self.slider.value;
+    switch (activeScenario) {
+        case wind: {
+            double vel = slider_val * 150;
+            [self calculateForcesWind:vel];
+            break;
+        }
+        case seismic: {
+            const double Ss_vals[8] = {0.05, 0.25, 0.5, 0.75, 1, 1.25, 2, 3};
+            const size_t n_elems = sizeof(Ss_vals) / sizeof(Ss_vals[0]);
+            double scaled_val = slider_val * (Ss_vals[n_elems - 1] - Ss_vals[0]) + Ss_vals[0];
+            auto closest_elem = std::min_element(&Ss_vals[0], &Ss_vals[n_elems],
+                 [&] (double a, double b) {
+                    return std::abs(a - scaled_val) < std::abs(b - scaled_val);
+            });
+            size_t closest_idx = closest_elem - Ss_vals;
+            
+            // Find nearest value
+            double Ss = Ss_vals[closest_idx];
+            snappedSliderPos  = (Ss - Ss_vals[0]) / (Ss_vals[n_elems - 1] - Ss_vals[0]);
+            // Allow the actual slider position to "rubber-band" to the sticky positions
+            const double alpha = 0.7;
+            double ss_slider_stretched = (alpha * snappedSliderPos) + ((1 - alpha) * slider_val);
+            [self.slider setValue:ss_slider_stretched animated:NO];
+            [self calculateForcesSeismic:closest_idx];
+            break;
+        }
+        default: {
+            assert(false);
+            break;
+        }
+    }
+    towerL.updatePath(deflVals);
+    towerR.updatePath(deflVals);
+}
+
+- (IBAction)sliderReleased:(id)sender {
+    if (activeScenario == seismic) {
+        // Have slider go to final position when released (Don't want it to remain at rubber-band location)
+        [self.slider setValue:snappedSliderPos animated:YES];
+    }
+}
+
+- (void)calculateForcesWind:(double)velocity {
+    //    label.text = [NSString stringWithFormat:@"%.1f k/ft", 123.3f];
+    [self.sliderValLabel setText:[NSString stringWithFormat:@"%.0f mph", velocity]];
+    [self calculatePressuresFrom:velocity];
     
     // Set intensities
     windwardSideLoad.setLoadInterpolate(pressures.windward_base, pressures.windward_side_top);
@@ -264,23 +311,23 @@ static const float roof_angle = (M_PI / 180.0) * 68.56;
     leewardSideLoad.setLoad(-pressures.leeward_side);
     
     // breakdown roof pressures into components
-
+    
     // convenience
     const double h1 = base_height;
     const double h2 = roof_height;
     const double ww1 = pressures.windward_base;
     const double ww2 = pressures.windward_side_top;
     const double wd1 = pressures.windward_roof;
-    const double wd2 = pressures.leeward_roof;
-    const double wl = pressures.leeward_side;
+    const double wd2 = -pressures.leeward_roof;
+    const double wl = -pressures.leeward_side;
     
     double cos_theta = std::cos(roof_angle);
     double sin_theta = std::sin(roof_angle);
     double cotan = cos_theta / sin_theta;
-//    double wd1h = cos_theta * wd1;
-//    double wd1v = sin_theta * wd1;
-//    double wd2h = cos_theta * wd2;
-//    double wd2v = sin_theta * wd2;
+    //    double wd1h = cos_theta * wd1;
+    //    double wd1v = sin_theta * wd1;
+    //    double wd2h = cos_theta * wd2;
+    //    double wd2v = sin_theta * wd2;
     
     const double h1_2 = h1 * h1;
     const double h1_3 = h1_2 * h1;
@@ -290,9 +337,9 @@ static const float roof_angle = (M_PI / 180.0) * 68.56;
     double shear = (16./1000) * (h1*(ww1/2 + ww2/2 + wl) + h2 * cotan * (wd1 + wd2));
     double axial = (16./1000) * h2 * (wd1 - wd2) + 1540;
     double moment = (16./1000) *
-        (h1_2/2 * (ww1 + wl) +
-         h1_2/2 * (ww2 - ww1) +
-         h2 * (cos_theta/sin_theta) * (wd1 + wd2) * (h1 + h2/2));
+    (h1_2/2 * (ww1 + wl) +
+     h1_2/2 * (ww2 - ww1) +
+     h2 * (cos_theta/sin_theta) * (wd1 + wd2) * (h1 + h2/2));
     
     // Update indicators
     shearArrow.setIntensity(shear);
@@ -312,43 +359,125 @@ static const float roof_angle = (M_PI / 180.0) * 68.56;
             double defl13_common = 4*h1*x - x2 - 6*h1_2;
             defl1 = (2*ww1*x2 / 3) * defl13_common;
             defl3 = (2*wl*x2 / 3) * defl13_common;
-
+            
             defl2 = (2*(ww2-ww1)*x2 / 15) * (10*h1*x - x3/h1 - 20*h1_2);
-
+            
             double defl45_common = x2 * (x + 1.5*h2 + 3*h1);
             defl4 = (-8 * h2 * wd1 * cotan / 3) * defl45_common;
             defl5 = (-8 * h2 * wd2 * cotan / 3) * defl45_common;
             
-//            defl1 = 2*ww1*x2 * (356.67*x - x2 - 47704.5) / 3;
-//            defl2 = (2./15) * (ww2 - ww1) * x2 * (891.67*x - 0.0112*x3 - 159015.08);
-//            defl3 = 2*wl*x2 * (356.67*x - x2 - 47704.5) / 3;
-//            defl4 = -21.34 * wd1 * x2 * (x + 298.06);
-//            defl5 = -21.34  *wd2 * x2 * (x + 298.06);
+            //            defl1 = 2*ww1*x2 * (356.67*x - x2 - 47704.5) / 3;
+            //            defl2 = (2./15) * (ww2 - ww1) * x2 * (891.67*x - 0.0112*x3 - 159015.08);
+            //            defl3 = 2*wl*x2 * (356.67*x - x2 - 47704.5) / 3;
+            //            defl4 = -21.34 * wd1 * x2 * (x + 298.06);
+            //            defl5 = -21.34  *wd2 * x2 * (x + 298.06);
         }
         else if (x <= (h1 + h2)) {
             defl1 = 2 * ww1 * h1_3 * (-4*x + h1) / 3;
             defl2 = 8 * h1_3 * (ww2 - ww1) * (h1/15 - x/4);
             defl3 = 2 * wl * h1_3 * (-4*x + h1) / 3;
-
+            
             double defl45_common = x3*h2/6 - x4/24 + x2*(h1_2-h2_2)/4 + x*(h2_2*h1 + h1_2*h2 - h1_3/3) - h2_2*h1_2/2 + h1_4/8 - h1_3*h2/2;
             defl4 = -16 * cotan * wd1 * defl45_common;
             defl5 = -16 * cotan * wd2 * defl45_common;
             
-//            defl1 = 472629.92 * ww1 * (-4*x + 89.167);
-//            defl2 = 5671558.98 * (ww2 - ww1) * (5.94 - 0.25 * x);
-//            defl3 = 472629.92 * wl * (-4*x + 89.167);
-//            double defl45_common = (3.4 * x3 - 0.042 * x4 + 1883.9 * x2 - 37301.5 * x - 970905.42);
-//            defl4 = -6.28 * wd1 * defl45_common;
-//            defl5 = -6.28 * wd2 * defl45_common;
+            //            defl1 = 472629.92 * ww1 * (-4*x + 89.167);
+            //            defl2 = 5671558.98 * (ww2 - ww1) * (5.94 - 0.25 * x);
+            //            defl3 = 472629.92 * wl * (-4*x + 89.167);
+            //            double defl45_common = (3.4 * x3 - 0.042 * x4 + 1883.9 * x2 - 37301.5 * x - 970905.42);
+            //            defl4 = -6.28 * wd1 * defl45_common;
+            //            defl5 = -6.28 * wd2 * defl45_common;
         }
         else {assert(false);}
         double sum_defl = defl1 + defl2 + defl3 + defl4 + defl5;
-        double defl_ft = sum_defl / (2.016e8 * 2334);
-//        double defl_in = sum_defl / (2.016e8. * 2334. / 12.);
+        double defl_ft = sum_defl / (MOD_ELASTICITY * MOM_OF_INERTIA);
+        //        double defl_in = sum_defl / (2.016e8. * 2334. / 12.);
         deflVals[1][i] = defl_ft;
     }
-    towerL.updatePath(deflVals);
-    towerR.updatePath(deflVals);
+}
+
+- (void)calculateForcesSeismic:(size_t)scale_idx {
+    const double Ss_vals[8] = {0.05, 0.25, 0.5, 0.75, 1, 1.25, 2, 3};
+    const double S1_vals[8] = {0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.8, 1.2};
+    const double V_vals[8]= {49.26, 246.28, 410.46, 554.12, 656.74, 769.62, 1231.38, 1847.08};
+    const double F1_vals[8]= {0.49, 2.46, 4.10, 5.54, 6.57, 7.70, 12.31, 18.47};
+    const double F2_vals[8]= {5.47, 27.34, 45.56, 61.51, 72.90, 85.43, 136.68, 205.03};
+    const double F3_vals[8]= {8.62, 43.10, 71.83, 96.97, 114.93, 134.68, 215.49, 323.24};
+    const double F4_vals[8]= {13.69, 68.46, 114.11, 154.05, 182.57, 213.95, 342.32, 513.49};
+    const double F5_vals[8]= {20.98, 104.91, 174.86, 236.06, 279.77, 327.86, 524.57, 786.85};
+    
+    double F1 = F1_vals[scale_idx];
+    double F2 = F2_vals[scale_idx];
+    double F3 = F3_vals[scale_idx];
+    double F4 = F4_vals[scale_idx];
+    double F5 = F5_vals[scale_idx];
+    double V = V_vals[scale_idx];
+    double Ss = Ss_vals[scale_idx];
+    double S1 = S1_vals[scale_idx];
+    
+    
+    size_t resolution = deflVals[0].size();
+    for (int i = 0; i < resolution; ++i) {
+        double x = deflVals[0][i] - deflVals[0][0];
+        double x2 = x * x;
+        double defl_sum = 0;
+        if (x < 17.75) {
+            defl_sum += (53.25 - x) * F1 * x2 / 6;
+        }
+        else {
+            defl_sum += (3*x - 17.75) * 52.5 * F1;
+        }
+        if (x < 57.5) {
+            defl_sum += (172.5 - x) * F2 * x2 / 6;
+        }
+        else {
+            defl_sum += (3*x - 57.5) * 551.04 * F2;
+        }
+        if (x < 71.5) {
+            defl_sum += (214.5 - x) * F3 * x2 / 6;
+        }
+        else {
+            defl_sum += (3*x - 71.5) * 852.04 * F2;
+        }
+        if (x < 89.2) {
+            defl_sum += (267.6 - x) * F4 * x2 / 6;
+        }
+        else {
+            defl_sum += (3*x - 89.2) * 1326.11 * F4;
+        }
+        if (x < 109.54) {
+            defl_sum += (328.62 - x) * F5 * x2 / 6;
+        }
+        else {
+            defl_sum += (3*x - 109.54) * 1999.84 * F5;
+        }
+        double defl_ft = defl_sum / (MOD_ELASTICITY * MOM_OF_INERTIA);
+        deflVals[1][i] = defl_ft;
+    }
+}
+
+- (IBAction)scenarioChanged:(id)sender {
+    switch ([self.scenarioToggle selectedSegmentIndex]) {
+        case 0:
+            activeScenario = wind;
+            towerL.setMagnification(500);
+            towerR.setMagnification(500);
+            axialArrow.setHidden(false);
+            momentIndicator.setHidden(false);
+            [self.sliderLabel setText:@"Wind Speed"];
+            break;
+        case 1:
+            activeScenario  = seismic;
+            towerL.setMagnification(8000);
+            towerR.setMagnification(8000);
+            axialArrow.setHidden(true);
+            momentIndicator.setHidden(true);
+            [self.sliderLabel setText:@"Seismic Scale"];
+            break;
+        default:
+            assert(false);
+            break;
+    }
 }
 
 // velocity in mph
@@ -362,5 +491,4 @@ static const float roof_angle = (M_PI / 180.0) * 68.56;
     pressures.windward_roof = 0.00128 * v2;
     pressures.leeward_roof = -0.00112 * v2;
 }
-
 @end

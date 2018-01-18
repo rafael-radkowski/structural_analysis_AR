@@ -105,13 +105,16 @@ void BezierLine::updatePath(const std::vector<std::vector<float>>& points) {
     pointsCopy[1] = std::vector<float>(points[1].size());
     std::transform(points[1].begin(), points[1].end(), pointsCopy[1].begin(), [this](float orig_y) {return orig_y * magnification;});
     shapeGeom.path = interpolatePoints(pointsCopy, thickness);
-    float min_y = *std::min_element(points[1].begin(), points[1].end());
+    float extreme_y = 0;
+    for (const float y : points[1]) {
+        if (std::abs(y) > std::abs(extreme_y)) {extreme_y = y;}
+    }
     float x_range = points[0][points[0].size() - 1] + points[0][0];
     float desired_x = x_range * x_pos_frac;
 //    auto closest_elem = std::find_if(points[0].begin(), points[0].end(), [desired_x] (float val) {return val >= desired_x;});
 //    size_t idx = (closest_elem - points[0].begin());
-    labelEmpty.position = SCNVector3Make(desired_x, min_y * magnification, 0);
-    defLabel.setText([NSString stringWithFormat:@"%.3f in.", min_y * 12]);
+    labelEmpty.position = SCNVector3Make(desired_x, extreme_y * magnification, 0);
+    defLabel.setText([NSString stringWithFormat:@"%.3f in.", extreme_y * 12]);
     defLabel.markPosDirty();
 }
 

@@ -17,7 +17,7 @@
 #include "ARManager.h"
 
 @protocol ARViewController
-- (void) setTrackingMode:(enum TrackingMode)new_mode;
+- (void) changeTrackingMode:(CGRect)anchorRect;
 - (void)freezePressed:(id)sender freezeBtn:(UIButton*)freezeBtn curtain:(UIView*)curtain;
 - (IBAction)homeBtnPressed:(id)sender;
 @end

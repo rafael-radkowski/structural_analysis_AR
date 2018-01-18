@@ -81,7 +81,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *nextBtn;
 @property (weak, nonatomic) IBOutlet UIButton *freezeFrameBtn;
 // Tracking Mode (indoor/outdoor)
-@property (weak, nonatomic) IBOutlet UISegmentedControl *trackingModeBtn;
+@property (weak, nonatomic) IBOutlet UIButton *changeTrackingBtn;
 // To hide the interface when processing frames
 @property (weak, nonatomic) IBOutlet UIView *processingCurtainView;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *processingSpinner;
@@ -95,8 +95,7 @@
 - (IBAction)prevStepPressed:(id)sender;
 - (IBAction)nextStepPressed:(id)sender;
 - (IBAction)freezePressed:(id)sender;
-// When the indoor/outdoor toggle switch is touched. Goes between OpenCV ARManager adn Vuforia ARManager
-- (IBAction)trackingModeChanged:(id)sender;
+- (IBAction)changeTrackingBtnPressed:(id)sender;
 
 // Sets the "pause camera"/"resume camera" button
 - (void)setCameraLabelPaused:(bool)isPaused;

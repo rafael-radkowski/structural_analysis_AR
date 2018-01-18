@@ -21,6 +21,11 @@
     SCNView* scnView;
     SCNNode* cameraNode;
     
+    enum Scenario {
+        wind,
+        seismic
+    } activeScenario;
+    
     LoadMarker windwardSideLoad;
     LoadMarker windwardRoofLoad;
     LoadMarker leewardSideLoad;
@@ -37,7 +42,9 @@
         double leeward_roof;
         double leeward_side;
     } pressures;
-    
+    double seismicScaleSg, seismicScaleS1;
+    double snappedSliderPos;
+
     std::vector<std::vector<float>> deflVals;
     BezierLine towerL;
     BezierLine towerR;
@@ -48,20 +55,25 @@
 @property (weak, nonatomic) IBOutlet UIButton *homeBtn;
 @property (weak, nonatomic) IBOutlet UIButton *freezeFrameBtn;
 // Tracking Mode (indoor/outdoor)
-@property (weak, nonatomic) IBOutlet UISegmentedControl *trackingModeBtn;
+@property (weak, nonatomic) IBOutlet UIButton *changeTrackingBtn;
+- (IBAction)changeTrackingBtnPressed:(id)sender;
 
-@property (weak, nonatomic) IBOutlet UISlider *windSpeedSlider;
-@property (weak, nonatomic) IBOutlet UILabel *windSpeedLabel;
+@property (weak, nonatomic) IBOutlet UILabel *sliderLabel;
+@property (weak, nonatomic) IBOutlet UISlider *slider;
+- (IBAction)sliderReleased:(id)sender;
+@property (weak, nonatomic) IBOutlet UILabel *sliderValLabel;
+@property (weak, nonatomic) IBOutlet UISegmentedControl *scenarioToggle;
 
 
 - (IBAction)homeBtnPressed:(id)sender;
 - (IBAction)freezePressed:(id)sender;
-// When the indoor/outdoor toggle switch is touched. Goes between OpenCV ARManager adn Vuforia ARManager
-- (IBAction)trackingModeChanged:(id)sender;
 
-- (IBAction)windSpeedChanged:(id)sender;
+- (IBAction)sliderChanged:(id)sender;
+- (IBAction)scenarioChanged:(id)sender;
 
 - (void)calculatePressuresFrom:(double)velocity;
+- (void)calculateForcesWind:(double)velocity;
+- (void)calculateForcesSeismic:(size_t)scale_idx;
 
 @end
 

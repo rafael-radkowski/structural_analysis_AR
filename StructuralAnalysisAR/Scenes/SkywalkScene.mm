@@ -178,6 +178,11 @@
     self.freezeFrameBtn.layer.borderColor = textColor;
     self.freezeFrameBtn.layer.cornerRadius = 5;
     
+    // Setup change tracking mode button
+    self.changeTrackingBtn.layer.borderWidth = 1.5;
+    self.changeTrackingBtn.layer.borderColor = textColor;
+    self.changeTrackingBtn.layer.cornerRadius = 5;
+    
     self.processingCurtainView.hidden = YES;
     self.processingSpinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
     
@@ -395,15 +400,10 @@
 }
 
 
-- (IBAction)trackingModeChanged:(id)sender {
-    enum TrackingMode new_mode = static_cast<TrackingMode>(self.trackingModeBtn.selectedSegmentIndex);
-    // temporarily disable button to indicate we are switching
-    self.trackingModeBtn.enabled = NO;
-    
-    [managingParent setTrackingMode:new_mode];
+- (IBAction)changeTrackingBtnPressed:(id)sender {
+    CGRect frame = [self.changeTrackingBtn.superview convertRect:self.changeTrackingBtn.frame toView:scnView];
+    [managingParent changeTrackingMode:frame];
     [self setCameraLabelPaused:NO];
-    
-    self.trackingModeBtn.enabled = YES;
 }
 
 

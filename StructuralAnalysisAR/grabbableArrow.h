@@ -32,6 +32,7 @@ public:
     void setHidden(bool hidden);
     void setPosition(GLKVector3 pos);
     void setRotationAxisAngle(GLKVector4 axisAngle);
+    void setLabelFollow(bool follow);
     
     void setMaxLength(float newLength);
     float getMaxLength();
@@ -71,6 +72,7 @@ private:
     OverlayLabel valueLabel;
     SCNNode* labelEmpty;
     bool labelHidden = false;
+    bool labelFollows = true;
     
     SCNNode* arrowHead;
     SCNNode* arrowBase;

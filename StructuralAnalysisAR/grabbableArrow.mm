@@ -77,6 +77,12 @@ void GrabbableArrow::setTextHidden(bool hide) {
     valueLabel.setHidden(hide);
 }
 
+void GrabbableArrow::setLabelFollow(bool follow) {
+    labelFollows = follow;
+    labelEmpty.position = SCNVector3Make(0, 0, 0);
+    setIntensity(lastArrowValue);
+}
+
 void GrabbableArrow::setHidden(bool hidden) {
     root.hidden = hidden;
     valueLabel.setHidden(hidden || labelHidden);
@@ -208,16 +214,18 @@ void GrabbableArrow::setIntensity(float value) {
     float desiredLength = (minLength - tipSize) + lengthRange * normalizedValue;
     arrowBase.scale = SCNVector3Make(arrowBase.scale.x, desiredLength, arrowBase.scale.z);
     
-    if (reversed) {
-        arrowBase.position = SCNVector3Make(0, -desiredLength, 0);
-        arrowHead.position = SCNVector3Make(0, -desiredLength - tipSize, 0);
-        labelEmpty.position = SCNVector3Make(0, -desiredLength - tipSize, 0);
+    if (labelFollows) {
+        if (reversed) {
+            arrowBase.position = SCNVector3Make(0, -desiredLength, 0);
+            arrowHead.position = SCNVector3Make(0, -desiredLength - tipSize, 0);
+            labelEmpty.position = SCNVector3Make(0, -desiredLength - tipSize, 0);
+        }
+        else {
+            labelEmpty.position = SCNVector3Make(0, desiredLength + tipSize, 0);
+        }
+        valueLabel.markPosDirty();
     }
-    else {
-        labelEmpty.position = SCNVector3Make(0, desiredLength + tipSize, 0);
-    }
-    valueLabel.markPosDirty();
-    
+
     // adjust color
 //    double reverse_value = 1 - normalizedValue ;
 //    double hue = 0.667 * reverse_value;
