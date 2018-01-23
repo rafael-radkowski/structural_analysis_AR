@@ -457,6 +457,7 @@ static const double MOM_OF_INERTIA = 2334;
     seismicArrows[3].setIntensity(F4);
     seismicArrows[4].setIntensity(F5);
     
+    [self.sliderValLabel setText:[NSString stringWithFormat:@"Ss=%.2f S1=%.2f", Ss, S1]];
     
     size_t resolution = fullDeflVals[0].size();
     for (int i = 0; i < resolution; ++i) {
@@ -502,6 +503,7 @@ static const double MOM_OF_INERTIA = 2334;
     switch ([self.scenarioToggle selectedSegmentIndex]) {
         case 0:
             activeScenario = wind;
+            shearArrow.setInputRange(0, 73);
             towerL.setMagnification(500);
             towerR.setMagnification(500);
             axialArrow.setHidden(false);
@@ -517,6 +519,7 @@ static const double MOM_OF_INERTIA = 2334;
             break;
         case 1:
             activeScenario  = seismic;
+            shearArrow.setInputRange(0, 2000);
             towerL.setMagnification(8000);
             towerR.setMagnification(8000);
             axialArrow.setHidden(true);
@@ -528,7 +531,7 @@ static const double MOM_OF_INERTIA = 2334;
             for (GrabbableArrow& arrow : seismicArrows) {
                 arrow.setHidden(false);
             }
-            [self.sliderLabel setText:@"Seismic Scale"];
+            [self.sliderLabel setText:@"Intensity"];
             break;
         default:
             assert(false);
