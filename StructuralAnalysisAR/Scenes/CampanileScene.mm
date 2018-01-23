@@ -92,7 +92,6 @@ static const double MOM_OF_INERTIA = 2334;
     
     shearArrow.setMinLength(20);
     shearArrow.setMaxLength(50);
-    shearArrow.setInputRange(0, 73);
     shearArrow.setThickness(thickness);
     axialArrow.setMinLength(5);
     axialArrow.setMaxLength(30);
@@ -109,19 +108,6 @@ static const double MOM_OF_INERTIA = 2334;
     shearArrow.addAsChild(rootNode);
     axialArrow.addAsChild(rootNode);
 
-//    NSString* momentArrowPath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"moment_arrow"] ofType:@"obj"];
-//    NSURL* momentArrowUrl = [NSURL fileURLWithPath:momentArrowPath];
-//    MDLAsset* momentArrowAsset = [[MDLAsset alloc] initWithURL:momentArrowUrl];
-//    momentIndicator = [SCNNode nodeWithMDLObject:[momentArrowAsset objectAtIndex:0]];
-//    momentIndicator.scale = SCNVector3Make(10, 10, 10);
-//    SCNMaterial* momentMat = [SCNMaterial material];
-//    momentMat.diffuse.contents = [UIColor colorWithRed:0.0 green:1.0 blue:0 alpha:1.0];
-//    momentIndicator.geometry.firstMaterial = momentMat;
-//    momentIndicator.position = SCNVector3Make(0, -10, 0);
-//    GLKQuaternion moment_ori = GLKQuaternionMultiply(GLKQuaternionMakeWithAngleAndAxis(-M_PI/2, 1, 0, 0), GLKQuaternionMakeWithAngleAndAxis(-M_PI/2, 0, 1, 0));
-//    GLKVector4 axis_angle_rot = GLKVector4MakeWithVector3(GLKQuaternionAxis(moment_ori), GLKQuaternionAngle(moment_ori));
-//    momentIndicator.rotation = SCNVector4FromGLKVector4(axis_angle_rot);
-//    [rootNode addChildNode:momentIndicator];
     momentIndicator.addAsChild(rootNode);
     momentIndicator.setInputRange(-100, 4000);
     momentIndicator.setRotationAxisAngle(GLKVector4Make(0, 0, 1, M_PI));
@@ -140,20 +126,19 @@ static const double MOM_OF_INERTIA = 2334;
         partialDeflVals[0].push_back(step_size * i);
         partialDeflVals[1].push_back(0);
     }
-//    tower = BezierLine(deflVals);
     towerL.setPosition(GLKVector3Make(-base_width/2 + thickness/2, 0, 0));
     towerR.setPosition(GLKVector3Make(base_width/2 + thickness/2, 0, 0));
     towerL.setTextLocX(1.1);
     towerR.setTextHidden(true);
     for (BezierLine* tower : {&towerL, &towerR}) {
         tower->setThickness(thickness);
-        tower->setMagnification(500);
         tower->addAsChild(rootNode);
         tower->setOrientation(GLKQuaternionMakeWithAngleAndAxis(M_PI/2, 0, 0, 1));
         tower->setScenes(skScene, scnView);
         tower->updatePath(fullDeflVals);
     }
 
+    // Seismic force arrows
     for (int i = 0; i < 5; i++) {
         seismicArrows.emplace_back();
         seismicArrows[i].addAsChild(rootNode);
@@ -161,8 +146,8 @@ static const double MOM_OF_INERTIA = 2334;
         seismicArrows[i].setMinLength(5);
         seismicArrows[i].setMaxLength(30);
         seismicArrows[i].setThickness(thickness);
-        seismicArrows[i].setHidden(true);
         seismicArrows[i].setScenes(skScene, scnView);
+        seismicArrows[i].setFormatString(@"%.2f k");
         seismicArrows[i].setRotationAxisAngle(GLKVector4Make(0, 0, 1, -M_PI/2));
     }
     seismicArrows[0].setPosition(GLKVector3Make(0, 17.75, 0));
@@ -223,7 +208,7 @@ static const double MOM_OF_INERTIA = 2334;
     
     // Set initial wind speed and notify so callback gets called
     [self.slider setValue:0.5];
-    [self.slider sendActionsForControlEvents:UIControlEventValueChanged];
+    [self.scenarioToggle sendActionsForControlEvents:UIControlEventValueChanged];
 }
 
 - (void)skUpdate {
