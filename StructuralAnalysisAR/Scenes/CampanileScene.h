@@ -31,6 +31,8 @@
     LoadMarker leewardSideLoad;
     LoadMarker leewardRoofLoad;
     
+    std::vector<GrabbableArrow> seismicArrows;
+    
     GrabbableArrow shearArrow;
     GrabbableArrow axialArrow;
     CircleArrow momentIndicator;
@@ -45,7 +47,10 @@
     double seismicScaleSg, seismicScaleS1;
     double snappedSliderPos;
 
-    std::vector<std::vector<float>> deflVals;
+    std::vector<std::vector<float>> fullDeflVals;
+    std::vector<std::vector<float>> partialDeflVals;
+    float seismicPhase;
+    
     BezierLine towerL;
     BezierLine towerR;
 }

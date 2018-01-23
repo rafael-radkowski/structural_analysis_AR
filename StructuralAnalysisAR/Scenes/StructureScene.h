@@ -36,7 +36,7 @@
 - (void) skUpdate;
 
 // Same as the renderer:updateAtTime() call for SceneKit
-- (void) scnRendererUpdate;
+- (void) scnRendererUpdateAt:(NSTimeInterval)time;
 
 // Sets the "pause camera"/"resume camera" button
 - (void)setCameraLabelPaused:(bool)isPaused;

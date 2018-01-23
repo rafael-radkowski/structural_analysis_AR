@@ -210,7 +210,7 @@
     beam3.doUpdate();
 }
 
-- (void) scnRendererUpdate {
+- (void) scnRendererUpdateAt:(NSTimeInterval)time {
 }
 
 - (void)setupInstructions {

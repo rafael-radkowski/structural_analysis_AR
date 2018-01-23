@@ -23,6 +23,7 @@ static const double MOM_OF_INERTIA = 2334;
 
 - (id)initWithController:(id<ARViewController>)controller {
     managingParent = controller;
+    seismicPhase = 0;
     return [self init];
 }
 
@@ -129,12 +130,15 @@ static const double MOM_OF_INERTIA = 2334;
     momentIndicator.setScenes(skScene, scnView);
 
     // Tower deflection
-    deflVals.resize(2);
+    fullDeflVals.resize(2);
+    partialDeflVals.resize(2);
     int resolution = 8;
     double step_size = (base_height + roof_height) / (resolution - 1);
     for (int i = 0; i < resolution; ++i) {
-        deflVals[0].push_back(step_size * i);
-        deflVals[1].push_back(0);
+        fullDeflVals[0].push_back(step_size * i);
+        fullDeflVals[1].push_back(0);
+        partialDeflVals[0].push_back(step_size * i);
+        partialDeflVals[1].push_back(0);
     }
 //    tower = BezierLine(deflVals);
     towerL.setPosition(GLKVector3Make(-base_width/2 + thickness/2, 0, 0));
@@ -147,14 +151,42 @@ static const double MOM_OF_INERTIA = 2334;
         tower->addAsChild(rootNode);
         tower->setOrientation(GLKQuaternionMakeWithAngleAndAxis(M_PI/2, 0, 0, 1));
         tower->setScenes(skScene, scnView);
-        tower->updatePath(deflVals);
+        tower->updatePath(fullDeflVals);
     }
+
+    for (int i = 0; i < 5; i++) {
+        seismicArrows.emplace_back();
+        seismicArrows[i].addAsChild(rootNode);
+        seismicArrows[i].setInputRange(10, 800);
+        seismicArrows[i].setMinLength(5);
+        seismicArrows[i].setMaxLength(30);
+        seismicArrows[i].setThickness(thickness);
+        seismicArrows[i].setHidden(true);
+        seismicArrows[i].setScenes(skScene, scnView);
+        seismicArrows[i].setRotationAxisAngle(GLKVector4Make(0, 0, 1, -M_PI/2));
+    }
+    seismicArrows[0].setPosition(GLKVector3Make(0, 17.75, 0));
+    seismicArrows[1].setPosition(GLKVector3Make(0, 57.5, 0));
+    seismicArrows[2].setPosition(GLKVector3Make(0, 71.5, 0));
+    seismicArrows[3].setPosition(GLKVector3Make(0, 89.16667, 0));
+    seismicArrows[4].setPosition(GLKVector3Make(0, 109.5, 0));
 
     return rootNode;
 }
 
-- (void)scnRendererUpdate {
-    
+- (void)scnRendererUpdateAt:(NSTimeInterval)time {
+    if (activeScenario == seismic) {
+        const double period = 0.677;
+        static double initial_time = time;
+        double scaled_phase = (initial_time - time) * (1 / period) * M_PI * 2;
+        double proportion = std::sin(scaled_phase);
+        size_t n_steps = fullDeflVals[0].size();
+        for (size_t i = 0; i < n_steps; ++i) {
+            partialDeflVals[1][i] = fullDeflVals[1][i] * proportion;
+        }
+        towerL.updatePath(partialDeflVals);
+        towerR.updatePath(partialDeflVals);
+    }
 }
 
 - (void)setCameraLabelPaused:(bool)isPaused {
@@ -204,6 +236,9 @@ static const double MOM_OF_INERTIA = 2334;
     towerL.doUpdate();
     towerR.doUpdate();
     momentIndicator.doUpdate();
+    for (GrabbableArrow& arrow : seismicArrows) {
+        arrow.doUpdate();
+    }
 }
 
 
@@ -261,6 +296,8 @@ static const double MOM_OF_INERTIA = 2334;
         case wind: {
             double vel = slider_val * 150;
             [self calculateForcesWind:vel];
+            towerL.updatePath(fullDeflVals);
+            towerR.updatePath(fullDeflVals);
             break;
         }
         case seismic: {
@@ -288,8 +325,6 @@ static const double MOM_OF_INERTIA = 2334;
             break;
         }
     }
-    towerL.updatePath(deflVals);
-    towerR.updatePath(deflVals);
 }
 
 - (IBAction)sliderReleased:(id)sender {
@@ -347,9 +382,9 @@ static const double MOM_OF_INERTIA = 2334;
     momentIndicator.setIntensity(moment);
     
     // Calculate deflection
-    size_t resolution = deflVals[0].size();
+    size_t resolution = fullDeflVals[0].size();
     for (int i = 0; i < resolution; ++i) {
-        double x = deflVals[0][i] - deflVals[0][0];
+        double x = fullDeflVals[0][i] - fullDeflVals[0][0];
         double x2 = x * x;
         double x3 = x2 * x;
         double x4 = x3 * x;
@@ -392,7 +427,7 @@ static const double MOM_OF_INERTIA = 2334;
         double sum_defl = defl1 + defl2 + defl3 + defl4 + defl5;
         double defl_ft = sum_defl / (MOD_ELASTICITY * MOM_OF_INERTIA);
         //        double defl_in = sum_defl / (2.016e8. * 2334. / 12.);
-        deflVals[1][i] = defl_ft;
+        fullDeflVals[1][i] = defl_ft;
     }
 }
 
@@ -415,10 +450,17 @@ static const double MOM_OF_INERTIA = 2334;
     double Ss = Ss_vals[scale_idx];
     double S1 = S1_vals[scale_idx];
     
+    shearArrow.setIntensity(V);
+    seismicArrows[0].setIntensity(F1);
+    seismicArrows[1].setIntensity(F2);
+    seismicArrows[2].setIntensity(F3);
+    seismicArrows[3].setIntensity(F4);
+    seismicArrows[4].setIntensity(F5);
     
-    size_t resolution = deflVals[0].size();
+    
+    size_t resolution = fullDeflVals[0].size();
     for (int i = 0; i < resolution; ++i) {
-        double x = deflVals[0][i] - deflVals[0][0];
+        double x = fullDeflVals[0][i] - fullDeflVals[0][0];
         double x2 = x * x;
         double defl_sum = 0;
         if (x < 17.75) {
@@ -452,7 +494,7 @@ static const double MOM_OF_INERTIA = 2334;
             defl_sum += (3*x - 109.54) * 1999.84 * F5;
         }
         double defl_ft = defl_sum / (MOD_ELASTICITY * MOM_OF_INERTIA);
-        deflVals[1][i] = defl_ft;
+        fullDeflVals[1][i] = defl_ft;
     }
 }
 
@@ -464,6 +506,13 @@ static const double MOM_OF_INERTIA = 2334;
             towerR.setMagnification(500);
             axialArrow.setHidden(false);
             momentIndicator.setHidden(false);
+            windwardSideLoad.setHidden(false);
+            windwardRoofLoad.setHidden(false);
+            leewardRoofLoad.setHidden(false);
+            leewardSideLoad.setHidden(false);
+            for (GrabbableArrow& arrow : seismicArrows) {
+                arrow.setHidden(true);
+            }
             [self.sliderLabel setText:@"Wind Speed"];
             break;
         case 1:
@@ -472,12 +521,22 @@ static const double MOM_OF_INERTIA = 2334;
             towerR.setMagnification(8000);
             axialArrow.setHidden(true);
             momentIndicator.setHidden(true);
+            windwardSideLoad.setHidden(true);
+            windwardRoofLoad.setHidden(true);
+            leewardRoofLoad.setHidden(true);
+            leewardSideLoad.setHidden(true);
+            for (GrabbableArrow& arrow : seismicArrows) {
+                arrow.setHidden(false);
+            }
             [self.sliderLabel setText:@"Seismic Scale"];
             break;
         default:
             assert(false);
             break;
     }
+    
+    // Trigger re-calculation of forces
+    [self.slider sendActionsForControlEvents:UIControlEventValueChanged];
 }
 
 // velocity in mph

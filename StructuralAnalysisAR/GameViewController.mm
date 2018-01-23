@@ -159,7 +159,7 @@
         cameraNode.camera.projectionTransform = SCNMatrix4FromGLKMatrix4(arManager->getProjectionMatrix());
     }
     // TODO: call scene
-    [structureScene scnRendererUpdate];
+    [structureScene scnRendererUpdateAt:time];
 }
 
 
