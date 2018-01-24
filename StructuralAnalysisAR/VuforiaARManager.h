@@ -25,7 +25,7 @@
 
 class VuforiaARManager : public ARManager, SampleApplicationControlCpp {
 public:
-    VuforiaARManager(ARView* view, SCNScene* scene, int VuforiaInitFlags, UIInterfaceOrientation ARViewOrientation);
+    VuforiaARManager(ARView* view, SCNScene* scene, UIInterfaceOrientation ARViewOrientation, NSString* dataset_path);
     ~VuforiaARManager() override;
     void doFrame(int n_avg, std::function<void(CB_STATE)> cb_func) override;
     bool startAR() override;
@@ -58,6 +58,7 @@ private:
     // utilities
     GLKMatrix4 GLKMatrix4FromQCARMatrix44(const Vuforia::Matrix44F& matrix);
     
+    NSString* datasetPath;
     ARView* view;
     CGSize viewSize;
     SCNScene* scene;

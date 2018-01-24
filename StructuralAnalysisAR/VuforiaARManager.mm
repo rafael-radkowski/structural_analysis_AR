@@ -24,9 +24,10 @@
 #include "SampleApplicationUtils.h"
 
 
-VuforiaARManager::VuforiaARManager(ARView* view, SCNScene* scene, int VuforiaInitFlags, UIInterfaceOrientation ARViewOrientation)
+VuforiaARManager::VuforiaARManager(ARView* view, SCNScene* scene, UIInterfaceOrientation ARViewOrientation, NSString* dataset_path)
  : view(view)
  , scene(scene) {
+     datasetPath = dataset_path;
      // Get this property here to be used in onInitARDone, since we can only access this from the main thread
      viewSize = view.frame.size;
      vapp = [[SampleApplicationSession alloc] initWithDelegate:this];
@@ -139,8 +140,7 @@ void VuforiaARManager::onInitARDone(NSError* initError) {
         videoTexture = [gpu newTextureWithDescriptor:texDescription];
         staticBgTex = [gpu newTextureWithDescriptor:texDescription];
         [view setVideoTexture:videoTexture];
-        printf("onInitARDone\n");
-        
+
         
         // Calculate texture coordinate scaling to make video fit
         // Vuforia expects this scaling for augmentations to match
@@ -195,7 +195,7 @@ bool VuforiaARManager::doInitTrackers() {
 }
 
 bool VuforiaARManager::doLoadTrackersData() {
-    dataSetStonesAndChips = loadObjectTrackerDataSet(@"skywalk_south1.xml");
+    dataSetStonesAndChips = loadObjectTrackerDataSet(datasetPath);
     if (dataSetStonesAndChips == NULL) {
         NSLog(@"Failed to load datasets");
         return NO;

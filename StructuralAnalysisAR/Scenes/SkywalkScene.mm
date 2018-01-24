@@ -524,7 +524,7 @@
 
 - (ARManager*)makeIndoorTracker {
 //    return new VuforiaARManager((ARView*)scnView, scnView.scene, Vuforia::METAL, managingParent.interfaceOrientation);
-    return new VuforiaARManager((ARView*)scnView, scnView.scene, Vuforia::METAL, UIInterfaceOrientationLandscapeLeft);
+    return new VuforiaARManager((ARView*)scnView, scnView.scene, UIInterfaceOrientationLandscapeLeft, @"skywalk_south1.xml");
 }
 
 - (ARManager*)makeOutdoorTracker {
