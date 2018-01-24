@@ -232,7 +232,7 @@ static const double MOM_OF_INERTIA = 2334;
     GLKMatrix4 trans_mat = GLKMatrix4MakeTranslation(0, 30, 250);
     GLKMatrix4 rot_x_mat = GLKMatrix4MakeXRotation(0.3);
     GLKMatrix4 cameraMatrix = GLKMatrix4Multiply(rot_x_mat, trans_mat);
-    return new StaticARManager(scnView, scnView.scene, cameraMatrix);
+    return new StaticARManager(scnView, scnView.scene, cameraMatrix, @"campanile_stock_cropped.jpg");
 }
 
 - (ARManager*)makeIndoorTracker {

@@ -11,8 +11,8 @@
 #import <GLKit/GLKMatrix4.h>
 #import <MetalKit/MetalKit.h>
 
-StaticARManager::StaticARManager(UIView* view, SCNScene* scene, GLKMatrix4 desiredPose) {
-    UIImage* bgImage = [UIImage imageNamed:@"skywalk_south_far.jpg"];
+StaticARManager::StaticARManager(UIView* view, SCNScene* scene, GLKMatrix4 desiredPose, NSString* bgImagePath) {
+    UIImage* bgImage = [UIImage imageNamed:bgImagePath];
     int img_width = bgImage.size.width;
     int img_height = bgImage.size.height;
     

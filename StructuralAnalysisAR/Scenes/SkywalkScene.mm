@@ -519,7 +519,7 @@
     GLKMatrix4 rot_mat = GLKMatrix4Multiply(rot_z_mat, GLKMatrix4Multiply(rot_y_mat, rot_x_mat));
     GLKMatrix4 cameraMatrix = GLKMatrix4Multiply(rot_mat, trans_mat);
     
-    return new StaticARManager(scnView, scnView.scene, cameraMatrix);
+    return new StaticARManager(scnView, scnView.scene, cameraMatrix, @"skywalk_south_far.jpg");
 }
 
 - (ARManager*)makeIndoorTracker {

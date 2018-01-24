@@ -18,10 +18,6 @@
 		0B0CBD151FE0547700A9B223 /* skywalk_south1.dat in Resources */ = {isa = PBXBuildFile; fileRef = 0B0CBD131FE0547600A9B223 /* skywalk_south1.dat */; };
 		0B0CBD161FE0547700A9B223 /* skywalk_south1.xml in Resources */ = {isa = PBXBuildFile; fileRef = 0B0CBD141FE0547600A9B223 /* skywalk_south1.xml */; };
 		0B15734B1F5451BF004CE1BE /* MainPageViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B15734A1F5451BF004CE1BE /* MainPageViewController.mm */; };
-		0B15734D1F545CCC004CE1BE /* isuofficallogo_cropped.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B15734C1F545CCC004CE1BE /* isuofficallogo_cropped.png */; };
-		0B1573511F54601F004CE1BE /* campanile_stock_bw.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0B1573501F54601F004CE1BE /* campanile_stock_bw.jpg */; };
-		0B1573531F54615D004CE1BE /* campanile_stock_cropped.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0B1573521F54615D004CE1BE /* campanile_stock_cropped.jpg */; };
-		0B1573551F5463A4004CE1BE /* isuofficallogo_light.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B1573541F5463A4004CE1BE /* isuofficallogo_light.png */; };
 		0B1573581F55BE3C004CE1BE /* line3d.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B1573561F55BE3C004CE1BE /* line3d.mm */; };
 		0B15735B1F5621C9004CE1BE /* LoadMarker.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B1573591F5621C9004CE1BE /* LoadMarker.mm */; };
 		0B1FCD461FBCA2F2002DBE98 /* VuforiaARManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B1FCD441FBCA2F2002DBE98 /* VuforiaARManager.mm */; };
@@ -29,6 +25,8 @@
 		0B1FCD4A1FBDE1C4002DBE98 /* cvARManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B1FCD481FBDE1C4002DBE98 /* cvARManager.mm */; };
 		0B2AAB851FD87D4100DD477B /* skywalk_sunny_1920.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B2AAB841FD87D4100DD477B /* skywalk_sunny_1920.png */; };
 		0B2ACE1A200E814900230D67 /* CircleArrow.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B2ACE19200E814900230D67 /* CircleArrow.mm */; };
+		0B2ACE1D2018F8F000230D67 /* campanile_stock_cropped.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0B2ACE1C2018F8F000230D67 /* campanile_stock_cropped.jpg */; };
+		0B2ACE1F2018F95900230D67 /* isuofficallogo_light.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B2ACE1E2018F95800230D67 /* isuofficallogo_light.png */; };
 		0B41E99A1F72BC04001DB823 /* home_blue.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B41E9991F72BC04001DB823 /* home_blue.png */; };
 		0B483BFB1F4DDB6F007A1D29 /* skywalk.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0B483BFA1F4DDB6F007A1D29 /* skywalk.jpg */; };
 		0B483C001F4F8AF9007A1D29 /* arrow_base.obj in Resources */ = {isa = PBXBuildFile; fileRef = 0B483BFE1F4F8AF9007A1D29 /* arrow_base.obj */; };
@@ -97,10 +95,6 @@
 		0B0CBD141FE0547600A9B223 /* skywalk_south1.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = skywalk_south1.xml; path = image_assets/skywalk_south1.xml; sourceTree = "<group>"; };
 		0B1573491F5451BF004CE1BE /* MainPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainPageViewController.h; sourceTree = "<group>"; };
 		0B15734A1F5451BF004CE1BE /* MainPageViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MainPageViewController.mm; sourceTree = "<group>"; };
-		0B15734C1F545CCC004CE1BE /* isuofficallogo_cropped.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = isuofficallogo_cropped.png; path = ../../assets/isuofficallogo_cropped.png; sourceTree = "<group>"; };
-		0B1573501F54601F004CE1BE /* campanile_stock_bw.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = campanile_stock_bw.jpg; path = ../../assets/campanile_stock_bw.jpg; sourceTree = "<group>"; };
-		0B1573521F54615D004CE1BE /* campanile_stock_cropped.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = campanile_stock_cropped.jpg; path = ../../assets/campanile_stock_cropped.jpg; sourceTree = "<group>"; };
-		0B1573541F5463A4004CE1BE /* isuofficallogo_light.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = isuofficallogo_light.png; path = ../../assets/isuofficallogo_light.png; sourceTree = "<group>"; };
 		0B1573561F55BE3C004CE1BE /* line3d.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = line3d.mm; sourceTree = "<group>"; };
 		0B1573571F55BE3C004CE1BE /* line3d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = line3d.h; sourceTree = "<group>"; };
 		0B1573591F5621C9004CE1BE /* LoadMarker.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LoadMarker.mm; sourceTree = "<group>"; };
@@ -114,6 +108,8 @@
 		0B2AAB841FD87D4100DD477B /* skywalk_sunny_1920.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = skywalk_sunny_1920.png; path = image_assets/skywalk_sunny_1920.png; sourceTree = "<group>"; };
 		0B2ACE19200E814900230D67 /* CircleArrow.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = CircleArrow.mm; sourceTree = "<group>"; };
 		0B2ACE1B200E815D00230D67 /* CircleArrow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CircleArrow.h; sourceTree = "<group>"; };
+		0B2ACE1C2018F8F000230D67 /* campanile_stock_cropped.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = campanile_stock_cropped.jpg; path = image_assets/campanile_stock_cropped.jpg; sourceTree = "<group>"; };
+		0B2ACE1E2018F95800230D67 /* isuofficallogo_light.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = isuofficallogo_light.png; path = image_assets/isuofficallogo_light.png; sourceTree = "<group>"; };
 		0B41E9991F72BC04001DB823 /* home_blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = home_blue.png; path = image_assets/home_blue.png; sourceTree = "<group>"; };
 		0B483BFA1F4DDB6F007A1D29 /* skywalk.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = skywalk.jpg; path = image_assets/skywalk.jpg; sourceTree = "<group>"; };
 		0B483BFD1F4F1016007A1D29 /* grabbableArrow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = grabbableArrow.h; sourceTree = "<group>"; };
@@ -240,13 +236,11 @@
 				0B5F39E31F844CEF004870DE /* skywalk_far.dat */,
 				0B5F39E41F844CEF004870DE /* skywalk_far.xml */,
 				0B41E9991F72BC04001DB823 /* home_blue.png */,
-				0B1573541F5463A4004CE1BE /* isuofficallogo_light.png */,
-				0B1573521F54615D004CE1BE /* campanile_stock_cropped.jpg */,
-				0B1573501F54601F004CE1BE /* campanile_stock_bw.jpg */,
-				0B15734C1F545CCC004CE1BE /* isuofficallogo_cropped.png */,
 				0B483BFA1F4DDB6F007A1D29 /* skywalk.jpg */,
 				0BAD78761F66CDDE003CAE93 /* stick_man.png */,
 				0BAD78771F66CDDE003CAE93 /* stick_woman.png */,
+				0B2ACE1E2018F95800230D67 /* isuofficallogo_light.png */,
+				0B2ACE1C2018F8F000230D67 /* campanile_stock_cropped.jpg */,
 			);
 			name = image_assets;
 			sourceTree = "<group>";
@@ -450,15 +444,16 @@
 				0B0CBD161FE0547700A9B223 /* skywalk_south1.xml in Resources */,
 				0B0CBD151FE0547700A9B223 /* skywalk_south1.dat in Resources */,
 				0BB5AD101FD1B3C8001C78CD /* cutout_skywalk_1920x1080.png in Resources */,
+				0B2ACE1D2018F8F000230D67 /* campanile_stock_cropped.jpg in Resources */,
 				0BD8F1A62009109800DBF55D /* campanileSeismicView.xib in Resources */,
 				0B99FF611F47A79D00431996 /* skywalkView.xib in Resources */,
 				0BB1644C1F4732DC0053CA3B /* LaunchScreen.storyboard in Resources */,
 				0BB164491F4732DC0053CA3B /* Assets.xcassets in Resources */,
 				0BB164471F4732DC0053CA3B /* Main.storyboard in Resources */,
 				0BE4C5E11FAFB0E500A501C9 /* user_prefs.plist in Resources */,
+				0B2ACE1F2018F95900230D67 /* isuofficallogo_light.png in Resources */,
 				0BD038A61F97B38F004B65F6 /* low_clearance_sign.dat in Resources */,
 				0B5F39E51F844CEF004870DE /* skywalk_far.dat in Resources */,
-				0B1573511F54601F004CE1BE /* campanile_stock_bw.jpg in Resources */,
 				0BDE98E31FBE521C003673F4 /* cutout_skywalk_1280x720.png in Resources */,
 				0BDF88E61F4B3BAE0014BFB7 /* testScene.scn in Resources */,
 				0BD038A71F97B38F004B65F6 /* low_clearance_sign.xml in Resources */,
@@ -466,10 +461,7 @@
 				0B483C001F4F8AF9007A1D29 /* arrow_base.obj in Resources */,
 				0B2AAB851FD87D4100DD477B /* skywalk_sunny_1920.png in Resources */,
 				0B483C011F4F8AF9007A1D29 /* arrow_tip.obj in Resources */,
-				0B15734D1F545CCC004CE1BE /* isuofficallogo_cropped.png in Resources */,
 				0B5A92BB2006BA6D00D58422 /* moment_arrow.obj in Resources */,
-				0B1573531F54615D004CE1BE /* campanile_stock_cropped.jpg in Resources */,
-				0B1573551F5463A4004CE1BE /* isuofficallogo_light.png in Resources */,
 				0B6E6A9D1FCF7EB500EE7950 /* cutout_skywalk_3840x2160.png in Resources */,
 				0BAD78781F66CDDE003CAE93 /* stick_man.png in Resources */,
 				0B03583720055ABB00F75CD2 /* campanileView.xib in Resources */,
