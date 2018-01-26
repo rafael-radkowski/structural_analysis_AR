@@ -27,10 +27,7 @@
     } activeScenario;
     
     LoadMarker windwardSideLoad;
-    LoadMarker windwardRoofLoad;
-    LoadMarker leewardSideLoad;
-    LoadMarker leewardRoofLoad;
-    
+
     std::vector<GrabbableArrow> seismicArrows;
     
     GrabbableArrow shearArrow;

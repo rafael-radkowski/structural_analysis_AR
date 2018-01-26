@@ -52,41 +52,34 @@ static const double MOM_OF_INERTIA = 2334;
     ambientLightNode.light.intensity = 0.8;
     [rootNode addChildNode:ambientLightNode];
     
+    // Load overlay model
+    NSString* modelPath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"campanile"] ofType:@"obj"];
+    NSURL* modelUrl = [NSURL fileURLWithPath:modelPath];
+    MDLAsset* modelAsset = [[MDLAsset alloc] initWithURL:modelUrl];
+    SCNNode* campanileOverlay = [SCNNode nodeWithMDLObject:[modelAsset objectAtIndex:0]];
+    [rootNode addChildNode:campanileOverlay];
+    SCNMaterial* campanileMat = [SCNMaterial material];
+    campanileMat.diffuse.contents = [UIColor colorWithRed:1.0 green:0.68 blue:0.478 alpha:0.6];
+    campanileOverlay.geometry.firstMaterial = campanileMat;
+//    MDLObject* exterior = [modelAsset objectAtPath:@"exterior_Basic_Wall_Generic_-_12__Masonry__Brick___527010__Geometry"];
+
     float load_min_h = 10; float load_max_h = 35;
     float thickness = 3;
 
-    windwardSideLoad = LoadMarker(5, false, 2);
+    windwardSideLoad = LoadMarker(7, false, 2);
     windwardSideLoad.setPosition(GLKVector3Make(-base_width/2, 0, 0));
     windwardSideLoad.setOrientation(GLKQuaternionMakeWithAngleAndAxis(M_PI/2.f, 0, 0, 1));
     windwardSideLoad.setEnds(0, 89 + 2.f/12);
 
-    windwardRoofLoad = LoadMarker(3);
-    windwardRoofLoad.setPosition(GLKVector3Make(-base_width/2, base_height, 0));
-    windwardRoofLoad.setOrientation(GLKQuaternionMakeWithAngleAndAxis(roof_angle, 0, 0, 1));
-    float roof_length = roof_height / std::sin(roof_angle);
-    windwardRoofLoad.setEnds(0, roof_length);
-    
-    leewardRoofLoad = LoadMarker(3, true);
-    leewardRoofLoad.setPosition(GLKVector3Make(base_width/2, base_height, 0));
-    leewardRoofLoad.setOrientation(GLKQuaternionMakeWithAngleAndAxis(M_PI - roof_angle, 0, 0, 1));
-    leewardRoofLoad.setEnds(0, roof_length);
-    
-    leewardSideLoad = LoadMarker(5, true);
-    leewardSideLoad.setPosition(GLKVector3Make(base_width/2, 0, 0));
-    leewardSideLoad.setOrientation(GLKQuaternionMakeWithAngleAndAxis(M_PI/2.f, 0, 0, 1));
-    leewardSideLoad.setEnds(0, 89 + 2.f/12);
+    windwardSideLoad.setScenes(skScene, scnView);
+    windwardSideLoad.setFormatString(@"%.1f psf");
+    windwardSideLoad.setInputRange(0, 55);
+    windwardSideLoad.setMinHeight(load_min_h);
+    windwardSideLoad.setMaxHeight(load_max_h);
+    windwardSideLoad.setThickness(thickness);
+    windwardSideLoad.addAsChild(rootNode);
+    windwardSideLoad.setLoad(0.5);
 
-    std::vector<LoadMarker*> loads = {&windwardSideLoad, &windwardRoofLoad, &leewardSideLoad, &leewardRoofLoad};
-    for (LoadMarker* load : loads) {
-        load->setScenes(skScene, scnView);
-        load->setInputRange(0, 29);
-        load->setMinHeight(load_min_h);
-        load->setMaxHeight(load_max_h);
-        load->setThickness(thickness);
-        load->addAsChild(rootNode);
-        load->setLoad(0.5);
-    }
-    
     shearArrow.setRotationAxisAngle(GLKVector4Make(0, 0, 1, -M_PI/2));
     shearArrow.setPosition(GLKVector3Make(0, -5, 0));
     
@@ -94,8 +87,8 @@ static const double MOM_OF_INERTIA = 2334;
     shearArrow.setMaxLength(50);
     shearArrow.setThickness(thickness);
     axialArrow.setMinLength(5);
-    axialArrow.setMaxLength(30);
-    axialArrow.setInputRange(1540, 1541.2);
+    axialArrow.setMaxLength(20);
+    axialArrow.setInputRange(0, 1540);
     axialArrow.setThickness(thickness);
     axialArrow.setLabelFollow(false);
     axialArrow.setRotationAxisAngle(GLKVector4Make(0, 0, 1, M_PI));
@@ -119,7 +112,7 @@ static const double MOM_OF_INERTIA = 2334;
     fullDeflVals.resize(2);
     partialDeflVals.resize(2);
     int resolution = 8;
-    double step_size = (base_height + roof_height) / (resolution - 1);
+    double step_size = (base_height) / (resolution - 1);
     for (int i = 0; i < resolution; ++i) {
         fullDeflVals[0].push_back(step_size * i);
         fullDeflVals[1].push_back(0);
@@ -213,9 +206,6 @@ static const double MOM_OF_INERTIA = 2334;
 
 - (void)skUpdate {
     windwardSideLoad.doUpdate();
-    windwardRoofLoad.doUpdate();
-    leewardSideLoad.doUpdate();
-    leewardRoofLoad.doUpdate();
     shearArrow.doUpdate();
     axialArrow.doUpdate();
     towerL.doUpdate();
@@ -325,11 +315,8 @@ static const double MOM_OF_INERTIA = 2334;
     [self calculatePressuresFrom:velocity];
     
     // Set intensities
-    windwardSideLoad.setLoadInterpolate(pressures.windward_base, pressures.windward_side_top);
-    windwardRoofLoad.setLoad(pressures.windward_roof);
-    leewardRoofLoad.setLoad(-pressures.leeward_roof);
-    leewardSideLoad.setLoad(-pressures.leeward_side);
-    
+    windwardSideLoad.setLoadInterpolate(pressures.windward_base - pressures.leeward_side, pressures.windward_side_top - pressures.leeward_side);
+
     // breakdown roof pressures into components
     
     // convenience
@@ -337,30 +324,17 @@ static const double MOM_OF_INERTIA = 2334;
     const double h2 = roof_height;
     const double ww1 = pressures.windward_base;
     const double ww2 = pressures.windward_side_top;
-    const double wd1 = pressures.windward_roof;
-    const double wd2 = -pressures.leeward_roof;
     const double wl = -pressures.leeward_side;
-    
-    double cos_theta = std::cos(roof_angle);
-    double sin_theta = std::sin(roof_angle);
-    double cotan = cos_theta / sin_theta;
-    //    double wd1h = cos_theta * wd1;
-    //    double wd1v = sin_theta * wd1;
-    //    double wd2h = cos_theta * wd2;
-    //    double wd2v = sin_theta * wd2;
     
     const double h1_2 = h1 * h1;
     const double h1_3 = h1_2 * h1;
-    const double h1_4 = h1_3 * h1;
-    const double h2_2 = h2 * h2;
     // Calculate shear, axial, and moment
-    double shear = (16./1000) * (h1*(ww1/2 + ww2/2 + wl) + h2 * cotan * (wd1 + wd2));
-    double axial = (16./1000) * h2 * (wd1 - wd2) + 1540;
+    double shear = (16./1000) * (h1*(ww1/2 + ww2/2 + wl));
+    double axial = 1540;
     double moment = (16./1000) *
-    (h1_2/2 * (ww1 + wl) +
-     h1_2/2 * (ww2 - ww1) +
-     h2 * (cos_theta/sin_theta) * (wd1 + wd2) * (h1 + h2/2));
-    
+        (h1_2/2 * (ww1 + wl) +
+         h1_2/2 * (ww2 - ww1));
+
     // Update indicators
     shearArrow.setIntensity(shear);
     axialArrow.setIntensity(axial);
@@ -372,9 +346,8 @@ static const double MOM_OF_INERTIA = 2334;
         double x = fullDeflVals[0][i] - fullDeflVals[0][0];
         double x2 = x * x;
         double x3 = x2 * x;
-        double x4 = x3 * x;
-        
-        double defl1, defl2, defl3, defl4, defl5;
+
+        double defl1, defl2, defl3;
         if (x <= h1) {
             double defl13_common = 4*h1*x - x2 - 6*h1_2;
             defl1 = (2*ww1*x2 / 3) * defl13_common;
@@ -382,9 +355,9 @@ static const double MOM_OF_INERTIA = 2334;
             
             defl2 = (2*(ww2-ww1)*x2 / 15) * (10*h1*x - x3/h1 - 20*h1_2);
             
-            double defl45_common = x2 * (x + 1.5*h2 + 3*h1);
-            defl4 = (-8 * h2 * wd1 * cotan / 3) * defl45_common;
-            defl5 = (-8 * h2 * wd2 * cotan / 3) * defl45_common;
+//            double defl45_common = x2 * (x + 1.5*h2 + 3*h1);
+//            defl4 = (-8 * h2 * wd1 * cotan / 3) * defl45_common;
+//            defl5 = (-8 * h2 * wd2 * cotan / 3) * defl45_common;
             
             //            defl1 = 2*ww1*x2 * (356.67*x - x2 - 47704.5) / 3;
             //            defl2 = (2./15) * (ww2 - ww1) * x2 * (891.67*x - 0.0112*x3 - 159015.08);
@@ -397,9 +370,9 @@ static const double MOM_OF_INERTIA = 2334;
             defl2 = 8 * h1_3 * (ww2 - ww1) * (h1/15 - x/4);
             defl3 = 2 * wl * h1_3 * (-4*x + h1) / 3;
             
-            double defl45_common = x3*h2/6 - x4/24 + x2*(h1_2-h2_2)/4 + x*(h2_2*h1 + h1_2*h2 - h1_3/3) - h2_2*h1_2/2 + h1_4/8 - h1_3*h2/2;
-            defl4 = -16 * cotan * wd1 * defl45_common;
-            defl5 = -16 * cotan * wd2 * defl45_common;
+//            double defl45_common = x3*h2/6 - x4/24 + x2*(h1_2-h2_2)/4 + x*(h2_2*h1 + h1_2*h2 - h1_3/3) - h2_2*h1_2/2 + h1_4/8 - h1_3*h2/2;
+//            defl4 = -16 * cotan * wd1 * defl45_common;
+//            defl5 = -16 * cotan * wd2 * defl45_common;
             
             //            defl1 = 472629.92 * ww1 * (-4*x + 89.167);
             //            defl2 = 5671558.98 * (ww2 - ww1) * (5.94 - 0.25 * x);
@@ -409,7 +382,7 @@ static const double MOM_OF_INERTIA = 2334;
             //            defl5 = -6.28 * wd2 * defl45_common;
         }
         else {assert(false);}
-        double sum_defl = defl1 + defl2 + defl3 + defl4 + defl5;
+        double sum_defl = defl1 + defl2 + defl3;
         double defl_ft = sum_defl / (MOD_ELASTICITY * MOM_OF_INERTIA);
         //        double defl_in = sum_defl / (2.016e8. * 2334. / 12.);
         fullDeflVals[1][i] = defl_ft;
@@ -488,15 +461,12 @@ static const double MOM_OF_INERTIA = 2334;
     switch ([self.scenarioToggle selectedSegmentIndex]) {
         case 0:
             activeScenario = wind;
-            shearArrow.setInputRange(0, 73);
+            shearArrow.setInputRange(0, 66);
             towerL.setMagnification(500);
             towerR.setMagnification(500);
             axialArrow.setHidden(false);
             momentIndicator.setHidden(false);
             windwardSideLoad.setHidden(false);
-            windwardRoofLoad.setHidden(false);
-            leewardRoofLoad.setHidden(false);
-            leewardSideLoad.setHidden(false);
             for (GrabbableArrow& arrow : seismicArrows) {
                 arrow.setHidden(true);
             }
@@ -510,9 +480,6 @@ static const double MOM_OF_INERTIA = 2334;
             axialArrow.setHidden(true);
             momentIndicator.setHidden(true);
             windwardSideLoad.setHidden(true);
-            windwardRoofLoad.setHidden(true);
-            leewardRoofLoad.setHidden(true);
-            leewardSideLoad.setHidden(true);
             for (GrabbableArrow& arrow : seismicArrows) {
                 arrow.setHidden(false);
             }

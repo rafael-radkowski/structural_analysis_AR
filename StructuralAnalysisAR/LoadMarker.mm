@@ -41,6 +41,8 @@ LoadMarker::LoadMarker(size_t nLoads, bool reversed, int n_labels)
         textLabels[i].setCenter(0.5, 0);
         [rootNode addChildNode:labelEmpties[i]];
     }
+    
+    setFormatString(@"%.1f k/ft");
 }
 
 void LoadMarker::setScenes(SKScene* scene2d, SCNView* view3d) {
@@ -65,6 +67,10 @@ void LoadMarker::doUpdate() {
     }
 }
 
+void LoadMarker::setFormatString(NSString* str) {
+    formatString = str;
+}
+
 void LoadMarker::setLoad(size_t loadIndex, double value) {
     assert(loadIndex < loadValues.size() && loadIndex >= 0);
     lastIntensity = value;
@@ -78,7 +84,7 @@ void LoadMarker::setLoad(double value) {
         loadValues[i] = value;
     }
     for (OverlayLabel& textLabel : textLabels) {
-        textLabel.setText([NSString stringWithFormat:@"%.1f k/ft", value]);
+        textLabel.setText([NSString stringWithFormat:formatString, value]);
     }
     refreshPositions();
 }
@@ -92,13 +98,13 @@ void LoadMarker::setLoadInterpolate(double val_l, double val_r) {
     size_t n_labels = textLabels.size();
     // One label should be in the middle, averaged
     if (n_labels == 1) {
-        textLabels[0].setText([NSString stringWithFormat:@"%.1f k/ft", (val_l + val_r) / 2]);
+        textLabels[0].setText([NSString stringWithFormat:formatString, (val_l + val_r) / 2]);
     }
     // Multiple labels should include the endpoints
     for (int i = 0; i < n_labels; ++i) {
         double interp_fac = static_cast<float>(i) / (n_labels - 1);
         double interp_load = val_l + (val_r - val_l) * interp_fac;
-        textLabels[i].setText([NSString stringWithFormat:@"%.1f k/ft", interp_load]);
+        textLabels[i].setText([NSString stringWithFormat:formatString, interp_load]);
     }
     refreshPositions();
 }

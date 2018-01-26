@@ -29,6 +29,7 @@ class LoadMarker {
 public:
     LoadMarker();
     LoadMarker(size_t nLoads, bool reversed=false, int n_labels=1);
+    void setFormatString(NSString* str);
     enum Dragging : uint32_t {
         none = 0,
         vertically = 1,
@@ -71,6 +72,7 @@ public:
     
     
 private:
+    NSString* formatString;
     void refreshPositions();
 
     // Returns the 3D point where a touch ray intersects the "plane" created by the load marker
