@@ -28,7 +28,8 @@
 		0B2ACE1D2018F8F000230D67 /* campanile_stock_cropped.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0B2ACE1C2018F8F000230D67 /* campanile_stock_cropped.jpg */; };
 		0B2ACE1F2018F95900230D67 /* isuofficallogo_light.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B2ACE1E2018F95800230D67 /* isuofficallogo_light.png */; };
 		0B2ACE212019259900230D67 /* campanile_static.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 0B2ACE202019259900230D67 /* campanile_static.JPG */; };
-		0B36C098201BA78000D7B346 /* campanile.obj in Resources */ = {isa = PBXBuildFile; fileRef = 0B36C097201BA78000D7B346 /* campanile.obj */; };
+		0B36C09B201BD28600D7B346 /* campanile_exterior.obj in Resources */ = {isa = PBXBuildFile; fileRef = 0B36C099201BD28600D7B346 /* campanile_exterior.obj */; };
+		0B36C09C201BD28600D7B346 /* campanile_interior.obj in Resources */ = {isa = PBXBuildFile; fileRef = 0B36C09A201BD28600D7B346 /* campanile_interior.obj */; };
 		0B41E99A1F72BC04001DB823 /* home_blue.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B41E9991F72BC04001DB823 /* home_blue.png */; };
 		0B483BFB1F4DDB6F007A1D29 /* skywalk.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0B483BFA1F4DDB6F007A1D29 /* skywalk.jpg */; };
 		0B483C001F4F8AF9007A1D29 /* arrow_base.obj in Resources */ = {isa = PBXBuildFile; fileRef = 0B483BFE1F4F8AF9007A1D29 /* arrow_base.obj */; };
@@ -113,7 +114,8 @@
 		0B2ACE1C2018F8F000230D67 /* campanile_stock_cropped.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = campanile_stock_cropped.jpg; path = image_assets/campanile_stock_cropped.jpg; sourceTree = "<group>"; };
 		0B2ACE1E2018F95800230D67 /* isuofficallogo_light.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = isuofficallogo_light.png; path = image_assets/isuofficallogo_light.png; sourceTree = "<group>"; };
 		0B2ACE202019259900230D67 /* campanile_static.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = campanile_static.JPG; path = image_assets/campanile_static.JPG; sourceTree = "<group>"; };
-		0B36C097201BA78000D7B346 /* campanile.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = campanile.obj; sourceTree = "<group>"; };
+		0B36C099201BD28600D7B346 /* campanile_exterior.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = campanile_exterior.obj; sourceTree = "<group>"; };
+		0B36C09A201BD28600D7B346 /* campanile_interior.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = campanile_interior.obj; sourceTree = "<group>"; };
 		0B41E9991F72BC04001DB823 /* home_blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = home_blue.png; path = image_assets/home_blue.png; sourceTree = "<group>"; };
 		0B483BFA1F4DDB6F007A1D29 /* skywalk.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = skywalk.jpg; path = image_assets/skywalk.jpg; sourceTree = "<group>"; };
 		0B483BFD1F4F1016007A1D29 /* grabbableArrow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = grabbableArrow.h; sourceTree = "<group>"; };
@@ -380,7 +382,8 @@
 		0BDF88E21F4B22750014BFB7 /* 3d_assets */ = {
 			isa = PBXGroup;
 			children = (
-				0B36C097201BA78000D7B346 /* campanile.obj */,
+				0B36C099201BD28600D7B346 /* campanile_exterior.obj */,
+				0B36C09A201BD28600D7B346 /* campanile_interior.obj */,
 				0B483BFE1F4F8AF9007A1D29 /* arrow_base.obj */,
 				0B483BFF1F4F8AF9007A1D29 /* arrow_tip.obj */,
 				0B5A92BA2006BA6D00D58422 /* moment_arrow.obj */,
@@ -460,13 +463,14 @@
 				0B2ACE1F2018F95900230D67 /* isuofficallogo_light.png in Resources */,
 				0BD038A61F97B38F004B65F6 /* low_clearance_sign.dat in Resources */,
 				0B5F39E51F844CEF004870DE /* skywalk_far.dat in Resources */,
+				0B36C09B201BD28600D7B346 /* campanile_exterior.obj in Resources */,
 				0BDE98E31FBE521C003673F4 /* cutout_skywalk_1280x720.png in Resources */,
 				0BDF88E61F4B3BAE0014BFB7 /* testScene.scn in Resources */,
 				0BD038A71F97B38F004B65F6 /* low_clearance_sign.xml in Resources */,
-				0B36C098201BA78000D7B346 /* campanile.obj in Resources */,
 				0B483BFB1F4DDB6F007A1D29 /* skywalk.jpg in Resources */,
 				0B483C001F4F8AF9007A1D29 /* arrow_base.obj in Resources */,
 				0B2ACE212019259900230D67 /* campanile_static.JPG in Resources */,
+				0B36C09C201BD28600D7B346 /* campanile_interior.obj in Resources */,
 				0B2AAB851FD87D4100DD477B /* skywalk_sunny_1920.png in Resources */,
 				0B483C011F4F8AF9007A1D29 /* arrow_tip.obj in Resources */,
 				0B5A92BB2006BA6D00D58422 /* moment_arrow.obj in Resources */,

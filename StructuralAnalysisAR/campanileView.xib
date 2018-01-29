@@ -19,7 +19,9 @@
                 <outlet property="slider" destination="rFT-yd-gcM" id="cKO-zr-PfI"/>
                 <outlet property="sliderLabel" destination="yVH-Dr-5Yv" id="iud-iN-j5B"/>
                 <outlet property="sliderValLabel" destination="IS9-83-e7Z" id="eEh-FR-Khp"/>
+                <outlet property="swayVisSwitch" destination="Z8O-J9-LQH" id="JgH-KR-Cn6"/>
                 <outlet property="viewFromNib" destination="iN0-l3-epB" id="Aqt-hj-vvb"/>
+                <outlet property="visOptionsBox" destination="AEv-hd-8OU" id="ZVX-N8-sGK"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
@@ -113,12 +115,52 @@
                         <constraint firstItem="yVH-Dr-5Yv" firstAttribute="centerY" secondItem="0oP-G4-DiJ" secondAttribute="centerY" id="yfA-sG-cgO"/>
                     </constraints>
                 </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="AEv-hd-8OU">
+                    <rect key="frame" x="0.0" y="0.0" width="213" height="100"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Visualization" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ojJ-7h-JIT">
+                            <rect key="frame" x="0.0" y="8" width="213" height="32"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="32" id="J4f-D6-oob"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="23"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Z8O-J9-LQH">
+                            <rect key="frame" x="15" y="41" width="51" height="31"/>
+                            <connections>
+                                <action selector="swapVisToggled:" destination="-1" eventType="valueChanged" id="ezS-KD-14E"/>
+                            </connections>
+                        </switch>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Animations" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KSF-e9-Y6e">
+                            <rect key="frame" x="72" y="46" width="85.5" height="21"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="0.28438035099999998" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstItem="ojJ-7h-JIT" firstAttribute="leading" secondItem="AEv-hd-8OU" secondAttribute="leading" id="Aob-XB-aeo"/>
+                        <constraint firstItem="KSF-e9-Y6e" firstAttribute="centerY" secondItem="Z8O-J9-LQH" secondAttribute="centerY" id="OVr-EV-hGp"/>
+                        <constraint firstItem="Z8O-J9-LQH" firstAttribute="leading" secondItem="AEv-hd-8OU" secondAttribute="leading" constant="15" id="Yp7-Nm-krg"/>
+                        <constraint firstAttribute="trailing" secondItem="ojJ-7h-JIT" secondAttribute="trailing" id="c4o-FX-Y3z"/>
+                        <constraint firstItem="ojJ-7h-JIT" firstAttribute="top" secondItem="AEv-hd-8OU" secondAttribute="top" constant="8" id="cGs-7P-3Z3"/>
+                        <constraint firstItem="KSF-e9-Y6e" firstAttribute="leading" secondItem="Z8O-J9-LQH" secondAttribute="trailing" constant="8" id="hqz-FH-0D8"/>
+                        <constraint firstAttribute="width" constant="213" id="iVN-zs-VTg"/>
+                        <constraint firstItem="Z8O-J9-LQH" firstAttribute="top" secondItem="ojJ-7h-JIT" secondAttribute="bottom" constant="1" id="p2g-tK-ms2"/>
+                        <constraint firstAttribute="height" constant="100" id="yvy-M9-cJL"/>
+                    </constraints>
+                </view>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
+                <constraint firstItem="AEv-hd-8OU" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="1qI-Q2-dE5"/>
                 <constraint firstAttribute="bottom" secondItem="0oP-G4-DiJ" secondAttribute="bottom" id="9hi-yA-L5O"/>
                 <constraint firstAttribute="trailing" secondItem="0oP-G4-DiJ" secondAttribute="trailing" id="AC2-Hf-g3h"/>
                 <constraint firstItem="0oP-G4-DiJ" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="Vxy-kp-y0q"/>
+                <constraint firstItem="AEv-hd-8OU" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="WIv-MO-bry"/>
             </constraints>
         </view>
     </objects>

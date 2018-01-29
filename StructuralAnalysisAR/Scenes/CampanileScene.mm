@@ -43,6 +43,7 @@ static const double MOM_OF_INERTIA = 2334;
     };
     addLight(100, 50, 50, 700);
     addLight(0, 30, 100, 500);
+    addLight(0, -30, 0, 300);
     
     // create and add an ambient light to the scene
     SCNNode *ambientLightNode = [SCNNode node];
@@ -53,14 +54,28 @@ static const double MOM_OF_INERTIA = 2334;
     [rootNode addChildNode:ambientLightNode];
     
     // Load overlay model
-    NSString* modelPath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"campanile"] ofType:@"obj"];
-    NSURL* modelUrl = [NSURL fileURLWithPath:modelPath];
-    MDLAsset* modelAsset = [[MDLAsset alloc] initWithURL:modelUrl];
-    SCNNode* campanileOverlay = [SCNNode nodeWithMDLObject:[modelAsset objectAtIndex:0]];
-    [rootNode addChildNode:campanileOverlay];
-    SCNMaterial* campanileMat = [SCNMaterial material];
-    campanileMat.diffuse.contents = [UIColor colorWithRed:1.0 green:0.68 blue:0.478 alpha:0.6];
-    campanileOverlay.geometry.firstMaterial = campanileMat;
+    auto loadModel = [](NSString* path) {
+        NSString* modelPath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:path] ofType:@"obj"];
+        NSURL* modelUrl = [NSURL fileURLWithPath:modelPath];
+        MDLAsset* modelAsset = [[MDLAsset alloc] initWithURL:modelUrl];
+        SCNNode* model_node = [SCNNode nodeWithMDLObject:[modelAsset objectAtIndex:0]];
+        return model_node;
+    };
+    SCNNode* campanileInterior = loadModel(@"campanile_interior");
+    SCNNode* campanileExterior = loadModel(@"campanile_exterior");
+    [rootNode addChildNode:campanileExterior];
+    [rootNode addChildNode:campanileInterior];
+    SCNMaterial* campanileMatClear = [SCNMaterial material];
+    SCNMaterial* campanileMatOpaque = [SCNMaterial material];
+    campanileMatClear.diffuse.contents = [UIColor colorWithRed:1.0 green:0.68 blue:0.478 alpha:1.0];
+    campanileMatOpaque.diffuse.contents = [UIColor colorWithRed:1.0 green:0.68 blue:0.478 alpha:1.0];
+    campanileExterior.geometry.firstMaterial = campanileMatClear;
+    campanileInterior.geometry.firstMaterial = campanileMatOpaque;
+    campanileExterior.opacity = 0.3;
+    campanileInterior.opacity = 0.8;
+    // Force a rendering order, otherwise the interior does not appear
+    campanileInterior.renderingOrder = 50;
+    campanileExterior.renderingOrder = 100;
 //    MDLObject* exterior = [modelAsset objectAtPath:@"exterior_Basic_Wall_Generic_-_12__Masonry__Brick___527010__Geometry"];
 
     float load_min_h = 10; float load_max_h = 35;
@@ -143,17 +158,17 @@ static const double MOM_OF_INERTIA = 2334;
         seismicArrows[i].setFormatString(@"%.2f k");
         seismicArrows[i].setRotationAxisAngle(GLKVector4Make(0, 0, 1, -M_PI/2));
     }
-    seismicArrows[0].setPosition(GLKVector3Make(0, 17.75, 0));
-    seismicArrows[1].setPosition(GLKVector3Make(0, 57.5, 0));
-    seismicArrows[2].setPosition(GLKVector3Make(0, 71.5, 0));
-    seismicArrows[3].setPosition(GLKVector3Make(0, 89.16667, 0));
-    seismicArrows[4].setPosition(GLKVector3Make(0, 109.5, 0));
+    seismicArrows[0].setPosition(GLKVector3Make(base_width/2, 17.75, 0));
+    seismicArrows[1].setPosition(GLKVector3Make(base_width/2, 57.5, 0));
+    seismicArrows[2].setPosition(GLKVector3Make(base_width/2, 71.5, 0));
+    seismicArrows[3].setPosition(GLKVector3Make(base_width/2, 89.16667, 0));
+    seismicArrows[4].setPosition(GLKVector3Make(base_width/2, 109.5, 0));
 
     return rootNode;
 }
 
 - (void)scnRendererUpdateAt:(NSTimeInterval)time {
-    if (activeScenario == seismic) {
+    if (activeScenario == seismic && do_animations) {
         const double period = 0.677;
         static double initial_time = time;
         double scaled_phase = (initial_time - time) * (1 / period) * M_PI * 2;
@@ -202,6 +217,7 @@ static const double MOM_OF_INERTIA = 2334;
     // Set initial wind speed and notify so callback gets called
     [self.slider setValue:0.5];
     [self.scenarioToggle sendActionsForControlEvents:UIControlEventValueChanged];
+    [self setVisibilities];
 }
 
 - (void)skUpdate {
@@ -219,7 +235,7 @@ static const double MOM_OF_INERTIA = 2334;
 
 // Make various AR Managers
 - (ARManager*)makeStaticTracker {
-    GLKMatrix4 trans_mat = GLKMatrix4MakeTranslation(0, 40, 250);
+    GLKMatrix4 trans_mat = GLKMatrix4MakeTranslation(0, 37, 230);
     GLKMatrix4 rot_x_mat = GLKMatrix4MakeXRotation(0.3);
     GLKMatrix4 cameraMatrix = GLKMatrix4Multiply(rot_x_mat, trans_mat);
     return new StaticARManager(scnView, scnView.scene, cameraMatrix, @"campanile_static.JPG");
@@ -253,6 +269,19 @@ static const double MOM_OF_INERTIA = 2334;
 - (IBAction)freezePressed:(id)sender {
     // TODO
 //    [managingParent freezePressed:sender freezeBtn:self.freezeFrameBtn curtain:self.processingCurtainView];
+}
+
+- (IBAction)swapVisToggled:(id)sender {
+    [self setVisibilities];
+}
+
+- (void)setVisibilities {
+    do_animations = self.swayVisSwitch.on;
+    if (!do_animations) {
+        // Just toggled off. set towers to max deflections
+        towerL.updatePath(fullDeflVals);
+        towerR.updatePath(fullDeflVals);
+    }
 }
 
 - (IBAction)homeBtnPressed:(id)sender {

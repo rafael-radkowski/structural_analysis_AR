@@ -50,9 +50,13 @@
     
     BezierLine towerL;
     BezierLine towerR;
+    
+    bool do_animations;
 }
 
 @property (nonatomic, retain) IBOutlet UIView *viewFromNib;
+@property (weak, nonatomic) IBOutlet UIView *visOptionsBox;
+@property (weak, nonatomic) IBOutlet UISwitch *swayVisSwitch;
 
 @property (weak, nonatomic) IBOutlet UIButton *homeBtn;
 @property (weak, nonatomic) IBOutlet UIButton *freezeFrameBtn;
@@ -69,6 +73,7 @@
 
 - (IBAction)homeBtnPressed:(id)sender;
 - (IBAction)freezePressed:(id)sender;
+- (IBAction)swapVisToggled:(id)sender;
 
 - (IBAction)sliderChanged:(id)sender;
 - (IBAction)scenarioChanged:(id)sender;
@@ -76,6 +81,8 @@
 - (void)calculatePressuresFrom:(double)velocity;
 - (void)calculateForcesWind:(double)velocity;
 - (void)calculateForcesSeismic:(size_t)scale_idx;
+
+- (void)setVisibilities;
 
 @end
 
