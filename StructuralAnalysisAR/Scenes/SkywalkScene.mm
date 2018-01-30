@@ -148,6 +148,7 @@
 
 
 - (void) setupUIWithScene:(SCNView*)scnView screenBounds:(CGRect)screenRect isGuided:(bool)guided {
+    self.guided = guided;
     [[NSBundle mainBundle] loadNibNamed:@"skywalkView" owner:self options: nil];
     self.viewFromNib.frame = screenRect;
     self.viewFromNib.contentMode = UIViewContentModeScaleToFill;
