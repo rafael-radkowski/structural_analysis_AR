@@ -60,6 +60,8 @@
     // Whether to include the dead and live loads in the deflection and reaction calculations
     bool deflectDead;
     bool deflectLive;
+    
+    bool defnsVisible;
 }
 
 // MARK: Properties
@@ -85,6 +87,12 @@
 // To hide the interface when processing frames
 @property (weak, nonatomic) IBOutlet UIView *processingCurtainView;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *processingSpinner;
+
+@property (weak, nonatomic) IBOutlet UIView *defnsView;
+- (IBAction)defnsPressed:(id)sender;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *defnsHeight;
+@property (weak, nonatomic) IBOutlet UILabel *defnsExpandLabel;
+@property (weak, nonatomic) IBOutlet UIButton *defnsExpandBtn;
 
 
 // MARK: Actions

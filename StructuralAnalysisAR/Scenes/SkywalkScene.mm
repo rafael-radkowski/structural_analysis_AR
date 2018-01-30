@@ -156,6 +156,7 @@
     // Hide visualization toggles switches in guided mode
     if (self.guided) {
         self.visOptionsBox.hidden = YES;
+        self.defnsView.hidden = YES;
     }
     
     CGColor* textColor = [UIColor colorWithRed:0.08235 green:0.49412 blue:0.9843 alpha:1.0].CGColor;
@@ -188,6 +189,13 @@
     
     self.visOptionsBox.layer.borderWidth = 1.5;
     self.visOptionsBox.layer.borderColor = UIColor.grayColor.CGColor;
+    
+    // Definitiosn box border
+    self.defnsExpandBtn.layer.borderWidth = 1.5;
+    self.defnsExpandBtn.layer.borderColor = UIColor.grayColor.CGColor;
+    self.defnsView.layer.borderWidth = 1.5;
+    self.defnsView.layer.borderColor = UIColor.grayColor.CGColor;
+    self.defnsHeight.constant = 50;
     
     deflectLive = deflectDead = true;
     
@@ -424,6 +432,21 @@
             reactionArrows[i].setHidden(!self.rcnForceSwitch.on);
         }
     }
+}
+
+- (IBAction)defnsPressed:(id)sender {
+    defnsVisible = !defnsVisible;
+    if (defnsVisible) {
+        self.defnsHeight.constant = 250;
+        self.defnsExpandLabel.transform = CGAffineTransformMakeRotation(M_PI);
+    }
+    else {
+        self.defnsHeight.constant = 50;
+        self.defnsExpandLabel.transform = CGAffineTransformMakeRotation(0);
+    }
+    [UIView animateWithDuration:0.3 animations:^{
+        [scnView layoutIfNeeded];
+    }];
 }
 
 

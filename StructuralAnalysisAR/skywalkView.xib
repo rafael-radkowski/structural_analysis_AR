@@ -15,6 +15,10 @@
                 <outlet property="changeTrackingBtn" destination="2lO-aV-eNe" id="Dcq-0c-bdV"/>
                 <outlet property="deadLoadLabel" destination="Etl-2u-hJc" id="WdX-Rs-t9K"/>
                 <outlet property="deadLoadSwitch" destination="H19-hC-7p2" id="PFL-Ak-pyZ"/>
+                <outlet property="defnsExpandBtn" destination="MQM-c3-Ds2" id="taM-EB-5wT"/>
+                <outlet property="defnsExpandLabel" destination="yFG-Cx-pKf" id="vzz-8V-m8e"/>
+                <outlet property="defnsHeight" destination="4xx-Fv-bWs" id="8D1-0Q-7Ik"/>
+                <outlet property="defnsView" destination="hDx-kJ-8Kl" id="ClN-HW-yVf"/>
                 <outlet property="freezeFrameBtn" destination="YTf-tA-4gj" id="Acd-yx-XSQ"/>
                 <outlet property="homeBtn" destination="diD-35-5ij" id="xu7-yK-ZRl"/>
                 <outlet property="instructionBox" destination="HeG-xu-Jal" id="HyM-KW-1TU"/>
@@ -126,6 +130,79 @@
                         <constraint firstItem="pVc-5h-Jku" firstAttribute="leading" secondItem="rT0-Pm-RBQ" secondAttribute="trailing" constant="16.5" id="pt0-Hk-Clm"/>
                     </constraints>
                 </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hDx-kJ-8Kl">
+                    <rect key="frame" x="0.0" y="468" width="240" height="250"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MQM-c3-Ds2">
+                            <rect key="frame" x="0.0" y="0.0" width="240" height="50"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="50" id="I9W-6N-3gk"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" pointSize="19"/>
+                            <state key="normal" title="Definitions"/>
+                            <connections>
+                                <action selector="defnsPressed:" destination="-1" eventType="touchUpInside" id="IPh-Ff-rqO"/>
+                            </connections>
+                        </button>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="^" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yFG-Cx-pKf">
+                            <rect key="frame" x="220" y="8" width="12" height="33.5"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="28"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" usesAttributedText="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OBg-bB-55y">
+                            <rect key="frame" x="0.0" y="50" width="240" height="200"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <attributedString key="attributedText">
+                                <fragment content="Dead load">
+                                    <attributes>
+                                        <font key="NSFont" size="14" name=".AppleSystemUIFontEmphasized"/>
+                                        <font key="NSOriginalFont" size="14" name=".AppleSystemUIFontEmphasized"/>
+                                        <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                    </attributes>
+                                </fragment>
+                                <fragment>
+                                    <string key="content"> is the load associated with the weight of a structure and its permanent components, such as floors, ceilings, stairways, and walls. 
+
+</string>
+                                    <attributes>
+                                        <font key="NSFont" metaFont="system" size="14"/>
+                                        <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                    </attributes>
+                                </fragment>
+                                <fragment content="Live loads">
+                                    <attributes>
+                                        <font key="NSFont" size="14" name=".AppleSystemUIFontEmphasized"/>
+                                        <font key="NSOriginalFont" size="14" name=".AppleSystemUIFontEmphasized"/>
+                                        <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                    </attributes>
+                                </fragment>
+                                <fragment>
+                                    <string key="content"> are loads that can be moved on or off of a structure. These could include people and furniture, as well as types of machinery and equipment.</string>
+                                    <attributes>
+                                        <font key="NSFont" metaFont="system" size="14"/>
+                                        <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                    </attributes>
+                                </fragment>
+                            </attributedString>
+                            <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                        </textView>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="240" id="1NV-Ei-1h7"/>
+                        <constraint firstAttribute="height" constant="250" id="4xx-Fv-bWs"/>
+                        <constraint firstAttribute="trailing" secondItem="MQM-c3-Ds2" secondAttribute="trailing" id="Dsd-Is-HYa"/>
+                        <constraint firstItem="OBg-bB-55y" firstAttribute="top" secondItem="MQM-c3-Ds2" secondAttribute="bottom" id="Gc3-aS-0O9"/>
+                        <constraint firstAttribute="trailing" secondItem="OBg-bB-55y" secondAttribute="trailing" id="NvH-V1-LjH"/>
+                        <constraint firstAttribute="trailing" secondItem="yFG-Cx-pKf" secondAttribute="trailing" constant="8" id="fzL-px-RxH"/>
+                        <constraint firstItem="MQM-c3-Ds2" firstAttribute="leading" secondItem="hDx-kJ-8Kl" secondAttribute="leading" id="qpy-0T-PGx"/>
+                        <constraint firstAttribute="bottom" secondItem="OBg-bB-55y" secondAttribute="bottom" id="u0C-Vb-nle"/>
+                        <constraint firstItem="MQM-c3-Ds2" firstAttribute="top" secondItem="hDx-kJ-8Kl" secondAttribute="top" id="uIg-O0-9aZ"/>
+                        <constraint firstItem="OBg-bB-55y" firstAttribute="leading" secondItem="hDx-kJ-8Kl" secondAttribute="leading" id="vB7-Z5-WE7"/>
+                        <constraint firstItem="yFG-Cx-pKf" firstAttribute="centerY" secondItem="MQM-c3-Ds2" secondAttribute="centerY" id="xLE-nm-NJQ"/>
+                    </constraints>
+                </view>
                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" text="Instructions here" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="HeG-xu-Jal">
                     <rect key="frame" x="362" y="677" width="300" height="33"/>
                     <color key="backgroundColor" white="1" alpha="0.81298159246575341" colorSpace="calibratedWhite"/>
@@ -234,9 +311,11 @@
                 <constraint firstItem="DB0-Ij-iSD" firstAttribute="bottom" secondItem="HeG-xu-Jal" secondAttribute="bottom" id="47g-ic-cdY"/>
                 <constraint firstItem="36Q-fD-OQO" firstAttribute="top" secondItem="HeG-xu-Jal" secondAttribute="bottom" constant="8" id="JvO-Id-QDb"/>
                 <constraint firstItem="HeG-xu-Jal" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="MRe-q2-WZz"/>
+                <constraint firstItem="hDx-kJ-8Kl" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="OEh-mH-bwH"/>
                 <constraint firstItem="HeG-xu-Jal" firstAttribute="leading" secondItem="HkZ-zJ-3aS" secondAttribute="trailing" constant="8" id="SuL-0C-Gu5"/>
                 <constraint firstItem="HkZ-zJ-3aS" firstAttribute="bottom" secondItem="HeG-xu-Jal" secondAttribute="bottom" id="TiU-As-WVC"/>
                 <constraint firstItem="Tkv-HD-Ao2" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="aC4-ML-eUf"/>
+                <constraint firstItem="36Q-fD-OQO" firstAttribute="top" secondItem="hDx-kJ-8Kl" secondAttribute="bottom" id="aJA-my-g5Y"/>
                 <constraint firstAttribute="bottom" secondItem="YRs-IH-SNu" secondAttribute="bottom" id="cUr-4r-8Rv"/>
                 <constraint firstItem="YRs-IH-SNu" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="dzb-HO-7hO"/>
                 <constraint firstItem="DB0-Ij-iSD" firstAttribute="leading" secondItem="HeG-xu-Jal" secondAttribute="trailing" constant="8" id="gbd-bT-BVL"/>
