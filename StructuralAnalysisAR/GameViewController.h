@@ -82,6 +82,8 @@
     BOOL extendedTrackingEnabled;
     BOOL continuousAutofocusEnabled;
     id<MTLTexture> videoTexture;
+    
+    bool defnsVisible;
 }
 // Vuforia stuff
 //@property (nonatomic, strong) SampleApplicationSession * vapp;
@@ -156,6 +158,11 @@
 // When the indoor/outdoor toggle switch is touched. Goes between OpenCV ARManager adn Vuforia ARManager
 - (IBAction)trackingModeChanged:(id)sender;
 
+@property (weak, nonatomic) IBOutlet UIView *defnsView;
+- (IBAction)defnsPressed:(id)sender;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *defnsHeight;
+@property (weak, nonatomic) IBOutlet UILabel *defnsExpandLabel;
+@property (weak, nonatomic) IBOutlet UIButton *defnsExpandBtn;
 
 
 // override

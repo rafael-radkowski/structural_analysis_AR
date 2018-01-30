@@ -138,10 +138,10 @@ void LoadMarker::refreshPositions() {
         loadArrows[i].setPosition(interpolatedPos);
         loadArrows[i].setIntensity(loadValues[i]);
         
-        float prevNormalizedValue = (loadValues[i-1] - minInput) / (maxInput - minInput);
-        float thisNormalizedValue = (loadValues[i] - minInput) / (maxInput - minInput);
         // Move load line
         if (i != 0) {
+            float prevNormalizedValue = (loadValues[i-1] - minInput) / (maxInput - minInput);
+            float thisNormalizedValue = (loadValues[i] - minInput) / (maxInput - minInput);
             GLKVector3 adjusted_start = GLKVector3Make(lastPos.x, lastPos.y + minHeight + lengthRange*prevNormalizedValue, lastPos.z);
             GLKVector3 adjusted_end = GLKVector3Make(interpolatedPos.x, interpolatedPos.y + minHeight + lengthRange*thisNormalizedValue, interpolatedPos.z);
             loadLines[i - 1].move(adjusted_start, adjusted_end);
