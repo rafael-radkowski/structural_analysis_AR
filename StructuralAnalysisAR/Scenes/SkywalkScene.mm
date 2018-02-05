@@ -552,7 +552,7 @@
 }
 
 - (ARManager*)makeOutdoorTracker {
-    return new cvARManager(scnView, scnView.scene);
+    return new cvARManager(scnView, scnView.scene, cvStructure_t::skywalk);
 }
 
 // Touch handling

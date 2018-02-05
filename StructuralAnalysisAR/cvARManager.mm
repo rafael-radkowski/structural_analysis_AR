@@ -36,10 +36,10 @@ GLKMatrix4 CVMat4ToGLKMat4(const cv::Mat& cvMat);
 }
 @end
 
-cvARManager::cvARManager(UIView* view, SCNScene* scene)
+cvARManager::cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure)
 : scene(scene)
-, texUpdated(false)
 , currentTexture(0)
+, texUpdated(false)
 , worker_busy(false) {
 //    cv::setNumThreads(0);
     // Set up camera callbacks
@@ -144,15 +144,28 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene)
     intrinsic_mat = cv::Mat(3, 3, CV_64F, intr_data).clone();
     
     // Load reference image
+    UIImage* bgImage;
+    if (structure == skywalk) {
 #ifdef HIGH_RES
-    UIImage* bgImage = [UIImage imageNamed:@"cutout_skywalk_3840x2160.png"];
+        UIImage* bgImage = [UIImage imageNamed:@"cutout_skywalk_3840x2160.png"];
 #else
-//    UIImage* bgImage = [UIImage imageNamed:@"cutout_skywalk_1920x1080.png"];
-    UIImage* bgImage = [UIImage imageNamed:@"skywalk_1920_back.png"];
+    //    UIImage* bgImage = [UIImage imageNamed:@"cutout_skywalk_1920x1080.png"];
+        bgImage = [UIImage imageNamed:@"skywalk_1920_back.png"];
 #endif
-    
-    MaskedImage masked(cvMatFromUIImage(bgImage));
+        MaskedImage masked(cvMatFromUIImage(bgImage), 80, 0.6, cv::Vec2f(1, 0), cv::Vec2f(0, 0), 15);
+        mask_properties.edge_threshold = 80;
+        mask_properties.line_angle = cv::Vec2f(1, 0);
+        mask_properties.line_origin = cv::Vec2f(0, 0);
+    }
+    else if (structure == campanile) {
+        bgImage = [UIImage imageNamed:@"campanile_1920_model.png"];
+        mask_properties.edge_threshold = 130;
+        mask_properties.line_angle = cv::Vec2f(0, 1);
+        mask_properties.line_origin = cv::Vec2f(10000, 0);
+    }
+    MaskedImage masked(cvMatFromUIImage(bgImage), mask_properties.edge_threshold, 0.6, mask_properties.line_angle, mask_properties.line_origin, 15);
     cv::Mat cropped = masked.getCropped();
+    
     matcher = ImageMatcher(cropped, 6000, 0.8, 0.98, 4.0, std::cout);
     
     
@@ -351,7 +364,7 @@ void cvARManager::performTracking() {
         }
     }
     
-    MaskedImage masked(frame);
+    MaskedImage masked(frame, mask_properties.edge_threshold, 0.6, mask_properties.line_angle, mask_properties.line_origin, 15);
     cv::Mat cropped = masked.getCropped();
     auto correspondences = matcher.getMatches(cropped);
     masked.uncropPoints(correspondences.img_pts);

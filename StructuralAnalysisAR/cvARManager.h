@@ -42,9 +42,15 @@
 - (void)processImage:(cv::Mat&)image;
 @end
 
+
+typedef enum cvStructure {
+    skywalk,
+    campanile
+} cvStructure_t;
+
 class cvARManager : public ARManager {
 public:
-    cvARManager(UIView* view, SCNScene* scene);
+    cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure);
     ~cvARManager() override;
     void doFrame(int n_avg, std::function<void(CB_STATE)> cb_func) override;
     bool startAR() override;
@@ -59,6 +65,7 @@ public:
     
     void saveImg();
     bool saveNext = false;
+
 private:
     SCNScene* scene;
     
@@ -79,6 +86,11 @@ private:
     
     // Holds 3D points of the model image
     std::vector<cv::Point3f> model_pts_3d;
+    struct MaskProperties {
+        float edge_threshold;
+        cv::Vec2f line_angle;
+        cv::Vec2f line_origin;
+    } mask_properties;
     
     // holds the frame that is being
     cv::Mat latest_frame;
