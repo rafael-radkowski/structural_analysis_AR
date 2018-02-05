@@ -6,6 +6,8 @@
 //  Copyright © 2018 David Wehr. All rights reserved.
 //
 
+// must include cvARManager.h before others, because it includes openCV headers
+#include "cvARManager.h"
 #include "CampanileScene.h"
 
 #include "VuforiaARManager.h"
@@ -214,6 +216,10 @@ static const double MOM_OF_INERTIA = 2334;
     self.changeTrackingBtn.layer.borderColor = textColor;
     self.changeTrackingBtn.layer.cornerRadius = 5;
     
+    // Processing curtain view
+    self.processingCurtainView.hidden = YES;
+    self.processingSpinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
+    
     // Set initial wind speed and notify so callback gets called
     [self.slider setValue:0.5];
     [self.scenarioToggle sendActionsForControlEvents:UIControlEventValueChanged];
@@ -242,11 +248,11 @@ static const double MOM_OF_INERTIA = 2334;
 }
 
 - (ARManager*)makeIndoorTracker {
-    return nullptr;
+    return new VuforiaARManager((ARView*)scnView, scnView.scene, UIInterfaceOrientationLandscapeRight, @"campanile.xml");
 }
 
 - (ARManager*)makeOutdoorTracker {
-    return nullptr;
+    return new cvARManager(scnView, scnView.scene, cvStructure_t::campanile);
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
@@ -267,8 +273,7 @@ static const double MOM_OF_INERTIA = 2334;
 
 
 - (IBAction)freezePressed:(id)sender {
-    // TODO
-//    [managingParent freezePressed:sender freezeBtn:self.freezeFrameBtn curtain:self.processingCurtainView];
+    [managingParent freezePressed:sender freezeBtn:self.freezeFrameBtn curtain:self.processingCurtainView];
 }
 
 - (IBAction)swapVisToggled:(id)sender {

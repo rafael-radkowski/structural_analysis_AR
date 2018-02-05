@@ -63,6 +63,8 @@
 // Tracking Mode (indoor/outdoor)
 @property (weak, nonatomic) IBOutlet UIButton *changeTrackingBtn;
 - (IBAction)changeTrackingBtnPressed:(id)sender;
+@property (weak, nonatomic) IBOutlet UIView *processingCurtainView;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *processingSpinner;
 
 @property (weak, nonatomic) IBOutlet UILabel *sliderLabel;
 @property (weak, nonatomic) IBOutlet UISlider *slider;

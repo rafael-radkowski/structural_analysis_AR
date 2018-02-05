@@ -207,19 +207,19 @@ std::vector<Vec4i> MaskedImage::findLines(bool probabilistic) {
         }
     }
 
-    cv::Mat color_img(gray_img.size(), orig_img.type());
-    cv::cvtColor(gray_img, color_img, cv::COLOR_GRAY2BGR);
-    for (const Vec4i& found_line : lines) {
-        line(color_img,
-            Point(found_line[0], found_line[1]),
-            Point(found_line[2], found_line[3]),
-            cv::Scalar(0, 0, 255), 2, CV_AA);
-    }
-    // imwrite("edges_0038.png", gray_img);
-    namedWindow("window");
-    resize(color_img, color_img, Size(0, 0), 0.5, 0.5);
-    imshow("window", color_img);
-    waitKey(0);
+//    cv::Mat color_img(gray_img.size(), orig_img.type());
+//    cv::cvtColor(gray_img, color_img, cv::COLOR_GRAY2BGR);
+//    for (const Vec4i& found_line : lines) {
+//        line(color_img,
+//            Point(found_line[0], found_line[1]),
+//            Point(found_line[2], found_line[3]),
+//            cv::Scalar(0, 0, 255), 2, CV_AA);
+//    }
+//    // imwrite("edges_0038.png", gray_img);
+//    namedWindow("window");
+//    resize(color_img, color_img, Size(0, 0), 0.5, 0.5);
+//    imshow("window", color_img);
+//    waitKey(0);
 
     return lines;
 }

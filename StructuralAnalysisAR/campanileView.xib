@@ -15,6 +15,8 @@
                 <outlet property="changeTrackingBtn" destination="DoX-Jh-VXk" id="Y1X-Iv-0d7"/>
                 <outlet property="freezeFrameBtn" destination="f0Z-nd-D4D" id="K9p-zM-a3j"/>
                 <outlet property="homeBtn" destination="YBy-td-PUW" id="vM5-HT-k4N"/>
+                <outlet property="processingCurtainView" destination="ZwC-V0-6g2" id="hSy-E5-9s5"/>
+                <outlet property="processingSpinner" destination="AEC-tf-yQT" id="OMN-uA-dFD"/>
                 <outlet property="scenarioToggle" destination="efT-e8-JQe" id="VBe-yu-SGV"/>
                 <outlet property="slider" destination="rFT-yd-gcM" id="cKO-zr-PfI"/>
                 <outlet property="sliderLabel" destination="yVH-Dr-5Yv" id="iud-iN-j5B"/>
@@ -153,14 +155,39 @@
                         <constraint firstAttribute="height" constant="100" id="yvy-M9-cJL"/>
                     </constraints>
                 </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZwC-V0-6g2">
+                    <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Processing..." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QKe-PJ-ISS">
+                            <rect key="frame" x="423.5" y="365.5" width="177" height="38.5"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="32"/>
+                            <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="AEC-tf-yQT">
+                            <rect key="frame" x="395.5" y="374" width="20" height="20"/>
+                        </activityIndicatorView>
+                    </subviews>
+                    <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.66307255990000002" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <constraint firstItem="AEC-tf-yQT" firstAttribute="centerY" secondItem="QKe-PJ-ISS" secondAttribute="centerY" id="N6P-Ft-viW"/>
+                        <constraint firstItem="QKe-PJ-ISS" firstAttribute="centerX" secondItem="ZwC-V0-6g2" secondAttribute="centerX" id="QQ8-Do-uje"/>
+                        <constraint firstItem="QKe-PJ-ISS" firstAttribute="centerY" secondItem="ZwC-V0-6g2" secondAttribute="centerY" id="i4w-gx-zCK"/>
+                        <constraint firstItem="QKe-PJ-ISS" firstAttribute="leading" secondItem="AEC-tf-yQT" secondAttribute="trailing" constant="8" id="sEc-Gz-8WW"/>
+                    </constraints>
+                </view>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="AEv-hd-8OU" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="1qI-Q2-dE5"/>
+                <constraint firstAttribute="trailing" secondItem="ZwC-V0-6g2" secondAttribute="trailing" id="974-Tl-oB3"/>
                 <constraint firstAttribute="bottom" secondItem="0oP-G4-DiJ" secondAttribute="bottom" id="9hi-yA-L5O"/>
                 <constraint firstAttribute="trailing" secondItem="0oP-G4-DiJ" secondAttribute="trailing" id="AC2-Hf-g3h"/>
+                <constraint firstItem="ZwC-V0-6g2" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="BFx-Tk-Ooe"/>
                 <constraint firstItem="0oP-G4-DiJ" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="Vxy-kp-y0q"/>
                 <constraint firstItem="AEv-hd-8OU" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="WIv-MO-bry"/>
+                <constraint firstItem="ZwC-V0-6g2" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="c8R-F5-BRR"/>
+                <constraint firstAttribute="bottom" secondItem="ZwC-V0-6g2" secondAttribute="bottom" id="wqv-40-Gbs"/>
             </constraints>
         </view>
     </objects>
