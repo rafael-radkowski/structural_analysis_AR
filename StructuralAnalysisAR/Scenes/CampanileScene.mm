@@ -73,7 +73,7 @@ static const double MOM_OF_INERTIA = 2334;
     campanileMatOpaque.diffuse.contents = [UIColor colorWithRed:1.0 green:0.68 blue:0.478 alpha:1.0];
     campanileExterior.geometry.firstMaterial = campanileMatClear;
     campanileInterior.geometry.firstMaterial = campanileMatOpaque;
-    campanileExterior.opacity = 0.3;
+    campanileExterior.opacity = 0.4;
     campanileInterior.opacity = 0.8;
     // Force a rendering order, otherwise the interior does not appear
     campanileInterior.renderingOrder = 50;
@@ -248,11 +248,15 @@ static const double MOM_OF_INERTIA = 2334;
 }
 
 - (ARManager*)makeIndoorTracker {
-    return new VuforiaARManager((ARView*)scnView, scnView.scene, UIInterfaceOrientationLandscapeRight, @"campanile.xml");
+    GLKMatrix4 translation_mat = GLKMatrix4MakeTranslation(0, 50, 0);
+    GLKMatrix4 rot_x_mat = GLKMatrix4MakeXRotation(0.2);
+    GLKMatrix4 transform_mat = GLKMatrix4Multiply(rot_x_mat, translation_mat);
+    return new VuforiaARManager((ARView*)scnView, scnView.scene, UIInterfaceOrientationLandscapeRight, @"campanile.xml", transform_mat);
 }
 
 - (ARManager*)makeOutdoorTracker {
-    return new cvARManager(scnView, scnView.scene, cvStructure_t::campanile);
+    GLKMatrix4 rotMat = GLKMatrix4MakeYRotation(0.1);
+    return new cvARManager(scnView, scnView.scene, cvStructure_t::campanile, rotMat);
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {

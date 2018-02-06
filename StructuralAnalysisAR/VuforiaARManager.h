@@ -25,7 +25,7 @@
 
 class VuforiaARManager : public ARManager, SampleApplicationControlCpp {
 public:
-    VuforiaARManager(ARView* view, SCNScene* scene, UIInterfaceOrientation ARViewOrientation, NSString* dataset_path);
+    VuforiaARManager(ARView* view, SCNScene* scene, UIInterfaceOrientation ARViewOrientation, NSString* dataset_path, GLKMatrix4 pose_transform);
     ~VuforiaARManager() override;
     void doFrame(int n_avg, std::function<void(CB_STATE)> cb_func) override;
     bool startAR() override;
@@ -66,6 +66,7 @@ private:
     
     GLKMatrix4 projectionMatrix;
     GLKMatrix4 cameraMatrix;
+    GLKMatrix4 pose_transform;
     
     id<MTLTexture> videoTexture;
     id<MTLTexture> staticBgTex;
@@ -73,7 +74,7 @@ private:
     
     Vuforia::DataSet*  dataSetStonesAndChips = nullptr;
     Vuforia::DataSet*  dataSetCurrent = nullptr;
-    bool extendedTrackingEnabled;
+    bool extendedTrackingEnabled = false;
     
     bool is_tracked = false;
 };

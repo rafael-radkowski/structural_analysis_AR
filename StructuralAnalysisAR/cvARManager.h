@@ -50,7 +50,7 @@ typedef enum cvStructure {
 
 class cvARManager : public ARManager {
 public:
-    cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure);
+    cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure, GLKMatrix4 pose_transform);
     ~cvARManager() override;
     void doFrame(int n_avg, std::function<void(CB_STATE)> cb_func) override;
     bool startAR() override;
@@ -101,6 +101,9 @@ private:
     std::mutex worker_mutex;
     std::thread worker_thread;
     void performTracking();
+    
+    // Transform matrix to apply to the calculated pose
+    GLKMatrix4 pose_transform;
     
     // for single-frame tracking
     int frames_to_capture = 0;

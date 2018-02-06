@@ -548,11 +548,27 @@
 
 - (ARManager*)makeIndoorTracker {
 //    return new VuforiaARManager((ARView*)scnView, scnView.scene, Vuforia::METAL, managingParent.interfaceOrientation);
-    return new VuforiaARManager((ARView*)scnView, scnView.scene, UIInterfaceOrientationLandscapeRight, @"skywalk_south1.xml");
+    GLKMatrix4 translation_mat = GLKMatrix4MakeTranslation(-10, 21, 0);
+    GLKMatrix4 rot_y_mat = GLKMatrix4MakeYRotation(M_PI);
+    GLKMatrix4 transform_mat = GLKMatrix4Multiply(rot_y_mat, translation_mat);
+    return new VuforiaARManager((ARView*)scnView, scnView.scene, UIInterfaceOrientationLandscapeRight, @"skywalk_south1.xml", transform_mat);
 }
 
 - (ARManager*)makeOutdoorTracker {
-    return new cvARManager(scnView, scnView.scene, cvStructure_t::skywalk);
+    // Apply transformation to account for where the reference (model) image was taken from
+    //        static const double y_angle = 0.174;
+    //        static double rot_mat_data[16] = {
+    //            std::cos(y_angle), 0, 0, 0,
+    //            0, , -std::sin(y_angle), 0,
+    //            0, std::sin(y_angle), std::cos(y_angle), 0,
+    //            0, 0, 0, 1
+    //        };
+    //        static const cv::Mat rot_mat(3, 3, CV_64F, rot_mat_data);
+    GLKMatrix4 rotMat_y = GLKMatrix4MakeYRotation(0.2 + M_PI);
+    GLKMatrix4 rotMat_x = GLKMatrix4MakeXRotation(0.2);
+    GLKMatrix4 rotMat = GLKMatrix4Multiply(rotMat_y, rotMat_x);
+    
+    return new cvARManager(scnView, scnView.scene, cvStructure_t::skywalk, rotMat);
 }
 
 // Touch handling

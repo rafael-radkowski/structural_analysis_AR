@@ -36,11 +36,12 @@ GLKMatrix4 CVMat4ToGLKMat4(const cv::Mat& cvMat);
 }
 @end
 
-cvARManager::cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure)
+cvARManager::cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure, GLKMatrix4 pose_transform)
 : scene(scene)
 , currentTexture(0)
 , texUpdated(false)
-, worker_busy(false) {
+, worker_busy(false)
+, pose_transform(pose_transform) {
 //    cv::setNumThreads(0);
     // Set up camera callbacks
     camera = [[CvVideoCamera alloc] initWithParentView:nil];
@@ -145,12 +146,14 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure)
     
     // Load reference image
     UIImage* bgImage;
+    float model_width;
     if (structure == skywalk) {
 #ifdef HIGH_RES
         UIImage* bgImage = [UIImage imageNamed:@"cutout_skywalk_3840x2160.png"];
 #else
     //    UIImage* bgImage = [UIImage imageNamed:@"cutout_skywalk_1920x1080.png"];
         bgImage = [UIImage imageNamed:@"skywalk_1920_back.png"];
+        model_width = 200;
 #endif
         MaskedImage masked(cvMatFromUIImage(bgImage), 80, 0.6, cv::Vec2f(1, 0), cv::Vec2f(0, 0), 15);
         mask_properties.edge_threshold = 80;
@@ -159,6 +162,7 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure)
     }
     else if (structure == campanile) {
         bgImage = [UIImage imageNamed:@"campanile_1920_model.png"];
+        model_width = 300;
         mask_properties.edge_threshold = 130;
         mask_properties.line_angle = cv::Vec2f(0, 1);
         mask_properties.line_origin = cv::Vec2f(10000, 0);
@@ -169,7 +173,6 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure)
     matcher = ImageMatcher(cropped, 6000, 0.8, 0.98, 4.0, std::cout);
     
     
-    const float model_width = 200;
     const float model_height = (model_width * ((double)video_height / video_width));
     const std::vector<cv::KeyPoint>& model_keypoints = matcher.getRefKeypoints();
     model_pts_3d.resize(model_keypoints.size());
@@ -421,21 +424,8 @@ void cvARManager::performTracking() {
         negate(3,1);
         negate(3,2);
         
-        // Apply transformation to account for where the reference (model) image was taken from
-//        static const double y_angle = 0.174;
-//        static double rot_mat_data[16] = {
-//            std::cos(y_angle), 0, 0, 0,
-//            0, , -std::sin(y_angle), 0,
-//            0, std::sin(y_angle), std::cos(y_angle), 0,
-//            0, 0, 0, 1
-//        };
-//        static const cv::Mat rot_mat(3, 3, CV_64F, rot_mat_data);
-        GLKMatrix4 rotMat_y = GLKMatrix4MakeYRotation(0.2 + M_PI);
-        GLKMatrix4 rotMat_x = GLKMatrix4MakeXRotation(0.2);
-        GLKMatrix4 rotMat = GLKMatrix4Multiply(rotMat_y, rotMat_x);
-        
-        
-        GLKMatrix4 pose_estimate = GLKMatrix4Multiply(rotMat, CVMat4ToGLKMat4(skExtrinsic));
+
+        GLKMatrix4 pose_estimate = GLKMatrix4Multiply(pose_transform, CVMat4ToGLKMat4(skExtrinsic));
         
         // Keep the captured frame
         if (!processed_live_frame) {
