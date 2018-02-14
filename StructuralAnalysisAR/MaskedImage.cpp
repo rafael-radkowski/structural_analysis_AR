@@ -75,8 +75,18 @@ Mat MaskedImage::getCropped() {
             EdgeClipper::clipLineCV(Size2f(orig_img.size()), line1_endpoint1, line1_endpoint2);
             EdgeClipper::clipLineCV(Size2f(orig_img.size()), line2_endpoint1, line2_endpoint2);
 
-            auto x_range = std::minmax({line1_endpoint1[0], line1_endpoint2[0], line2_endpoint1[0], line2_endpoint2[0]});
-            auto y_range = std::minmax({line1_endpoint1[1], line1_endpoint2[1], line2_endpoint1[1], line2_endpoint2[1]});
+            auto x_range = std::minmax({static_cast<int>(line1_endpoint1[0]),
+                                        static_cast<int>(line1_endpoint2[0]),
+                                        static_cast<int>(line2_endpoint1[0]),
+                                        static_cast<int>(line2_endpoint2[0])});
+            auto y_range = std::minmax({static_cast<int>(line1_endpoint1[1]),
+                                        static_cast<int>(line1_endpoint2[1]),
+                                        static_cast<int>(line2_endpoint1[1]),
+                                        static_cast<int>(line2_endpoint2[1])});
+            // If either line1 or line2 don't intersect the window, then clipLineCV() will not clip the lines, and the region will be outside
+            //      the image size, so limit it here
+            x_range.first = std::max(0, x_range.first); x_range.second = std::min(orig_img.size().width, x_range.second);
+            y_range.first = std::max(0, y_range.first); y_range.second = std::min(orig_img.size().height, y_range.second);
             crop_window = Rect(Point(x_range.first, y_range.first), Point(x_range.second, y_range.second));
         
             cropped_img = Mat(orig_img, crop_window);

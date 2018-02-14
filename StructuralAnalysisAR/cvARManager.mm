@@ -215,7 +215,7 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure,
     printf("aspect screen: %f\n", aspectScreen);
     projectionMatrix = GLKMatrix4MakePerspective(36.909 * (M_PI / 180.0), aspectScreen, 0.1, 500);
 
-    startAR();
+//    startAR();
     
     // Copy image to background Metal texture
 //    static MTLRegion region = MTLRegionMake2D(0, 0, video_width, video_height);
