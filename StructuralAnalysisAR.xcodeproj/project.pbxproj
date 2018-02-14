@@ -73,6 +73,7 @@
 		0BD710F52029169B0095D753 /* campanile.dat in Resources */ = {isa = PBXBuildFile; fileRef = 0BD710F22029169A0095D753 /* campanile.dat */; };
 		0BD710F62029169B0095D753 /* campanile_1920_model.png in Resources */ = {isa = PBXBuildFile; fileRef = 0BD710F32029169B0095D753 /* campanile_1920_model.png */; };
 		0BD710F72029169B0095D753 /* campanile.xml in Resources */ = {isa = PBXBuildFile; fileRef = 0BD710F42029169B0095D753 /* campanile.xml */; };
+		0BD710F92034B2820095D753 /* campanile_1920_model_cutout.png in Resources */ = {isa = PBXBuildFile; fileRef = 0BD710F82034B2800095D753 /* campanile_1920_model_cutout.png */; };
 		0BD8F1A320090E3B00DBF55D /* CampanileSeismicScene.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0BD8F1A220090E3B00DBF55D /* CampanileSeismicScene.mm */; };
 		0BD8F1A62009109800DBF55D /* campanileSeismicView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0BD8F1A52009109800DBF55D /* campanileSeismicView.xib */; };
 		0BDE98DF1FBE4D43003673F4 /* ImageMatcher.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0BDE98DB1FBE4D42003673F4 /* ImageMatcher.cpp */; };
@@ -176,6 +177,7 @@
 		0BD710F22029169A0095D753 /* campanile.dat */ = {isa = PBXFileReference; lastKnownFileType = file; name = campanile.dat; path = image_assets/campanile.dat; sourceTree = "<group>"; };
 		0BD710F32029169B0095D753 /* campanile_1920_model.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = campanile_1920_model.png; path = image_assets/campanile_1920_model.png; sourceTree = "<group>"; };
 		0BD710F42029169B0095D753 /* campanile.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = campanile.xml; path = image_assets/campanile.xml; sourceTree = "<group>"; };
+		0BD710F82034B2800095D753 /* campanile_1920_model_cutout.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = campanile_1920_model_cutout.png; path = image_assets/campanile_1920_model_cutout.png; sourceTree = "<group>"; };
 		0BD8F1A220090E3B00DBF55D /* CampanileSeismicScene.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = CampanileSeismicScene.mm; sourceTree = "<group>"; };
 		0BD8F1A420090E5100DBF55D /* CampanileSeismicScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CampanileSeismicScene.h; sourceTree = "<group>"; };
 		0BD8F1A52009109800DBF55D /* campanileSeismicView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = campanileSeismicView.xib; path = StructuralAnalysisAR/campanileSeismicView.xib; sourceTree = SOURCE_ROOT; };
@@ -236,6 +238,7 @@
 			isa = PBXGroup;
 			children = (
 				0BD710F32029169B0095D753 /* campanile_1920_model.png */,
+				0BD710F82034B2800095D753 /* campanile_1920_model_cutout.png */,
 				0BD710F22029169A0095D753 /* campanile.dat */,
 				0BD710F42029169B0095D753 /* campanile.xml */,
 				0BDE98E21FBE521C003673F4 /* cutout_skywalk_1280x720.png */,
@@ -493,6 +496,7 @@
 				0B4F29B11FE0846C0067C439 /* skywalk_south_far.jpg in Resources */,
 				0B5F39E61F844CEF004870DE /* skywalk_far.xml in Resources */,
 				0B0CBD0F1FDB40C800A9B223 /* skywalk_1920_back.png in Resources */,
+				0BD710F92034B2820095D753 /* campanile_1920_model_cutout.png in Resources */,
 				0B41E99A1F72BC04001DB823 /* home_blue.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

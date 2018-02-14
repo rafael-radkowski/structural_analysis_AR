@@ -78,7 +78,10 @@ private:
     std::atomic<size_t> currentTexture; // = 0
     std::atomic<bool> texUpdated; // = false
     
+    // The structure being tracked
+    cvStructure_t structure;
     cv::Mat intrinsic_mat;
+    std::vector<double> distortion_coeffs;
     bool is_tracked = false;
     
     void processImage(cv::Mat& image);
@@ -88,6 +91,7 @@ private:
     std::vector<cv::Point3f> model_pts_3d;
     struct MaskProperties {
         float edge_threshold;
+        float min_length;
         cv::Vec2f line_angle;
         cv::Vec2f line_origin;
     } mask_properties;

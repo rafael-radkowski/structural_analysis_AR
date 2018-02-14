@@ -74,7 +74,7 @@ static const double MOM_OF_INERTIA = 2334;
     campanileExterior.geometry.firstMaterial = campanileMatClear;
     campanileInterior.geometry.firstMaterial = campanileMatOpaque;
     campanileExterior.opacity = 0.4;
-    campanileInterior.opacity = 0.8;
+    campanileInterior.opacity = 0.6;
     // Force a rendering order, otherwise the interior does not appear
     campanileInterior.renderingOrder = 50;
     campanileExterior.renderingOrder = 100;
@@ -255,7 +255,7 @@ static const double MOM_OF_INERTIA = 2334;
 }
 
 - (ARManager*)makeOutdoorTracker {
-    GLKMatrix4 rotMat = GLKMatrix4MakeYRotation(0.1);
+    GLKMatrix4 rotMat = GLKMatrix4MakeYRotation(0.0);
     return new cvARManager(scnView, scnView.scene, cvStructure_t::campanile, rotMat);
 }
 

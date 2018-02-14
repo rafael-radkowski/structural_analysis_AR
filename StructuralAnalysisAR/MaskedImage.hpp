@@ -47,6 +47,7 @@ void MaskedImage::uncropPoints(std::vector<cv::Point_<T>>& points) {
 
 template <typename T>
 void MaskedImage::uncropPoint(cv::Point_<T>& point) {
+    point.x += crop_window.x;
     point.y += crop_window.y;
 }
 

@@ -59,6 +59,7 @@ Mat MaskedImage::getCropped() {
             // Project reference line vector onto found (raw) line vector.
             // The resulting vector points along the found line, but in the direction of the reference vector.
             Vec2f projected_vec = raw_line_vec.dot(line_angle) * raw_line_vec;
+            assert(cv::norm(projected_vec) != 0);
             projected_vec  /= cv::norm(projected_vec);
             Vec2f found_line_origin(object_topline[0], object_topline[1]);
 
@@ -109,8 +110,8 @@ Mat MaskedImage::getCropped() {
             };
             poly1_pts[2] = furthest_pt(corners, line1_eqn);
             poly2_pts[2] = furthest_pt(corners, line2_eqn);
-            cropPoints(poly1_pts);
-            cropPoints(poly2_pts);
+           cropPoints(poly1_pts);
+           cropPoints(poly2_pts);
 
             // Draw the mask
             const Point* all_polys[2] = {poly1_pts.data(), poly2_pts.data()};
@@ -151,7 +152,7 @@ void MaskedImage::findObject() {
             if (theta >= CV_PI / 2) {theta -= M_PI;}
             if (theta <= -CV_PI / 2) {theta += M_PI;}
             // float theta = std::atan(delta_y / delta_x);
-            if (theta < angle_deviation) {
+            if (std::abs(theta) < angle_deviation) {
                 Vec3f line_center = calc_center(line);
                 float line_dist = std::abs(ref_line_eqn.dot(line_center));
                 if (line_dist < best_dist) {

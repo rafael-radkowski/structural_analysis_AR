@@ -40,6 +40,7 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure,
 : scene(scene)
 , currentTexture(0)
 , texUpdated(false)
+, structure(structure)
 , worker_busy(false)
 , pose_transform(pose_transform) {
 //    cv::setNumThreads(0);
@@ -135,7 +136,7 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure,
 //        0, 1049, 360,
 //        0, 0, 1};
     // From 1920x1080 video on iPad air
-    // distortion = [0.139796, -0.278091, 0.000479, -0.000284]
+    distortion_coeffs = {0.139796, -0.278091, 0.000479, -0.000284};
     double intr_data[9] = {1706.752, 0, 963.632,
                            0, 1732.817, 596.788,
                            0, 0, 1};
@@ -155,30 +156,39 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure,
         bgImage = [UIImage imageNamed:@"skywalk_1920_back.png"];
         model_width = 200;
 #endif
-        MaskedImage masked(cvMatFromUIImage(bgImage), 80, 0.6, cv::Vec2f(1, 0), cv::Vec2f(0, 0), 15);
         mask_properties.edge_threshold = 80;
+        mask_properties.min_length = 0.6;
         mask_properties.line_angle = cv::Vec2f(1, 0);
         mask_properties.line_origin = cv::Vec2f(0, 0);
     }
     else if (structure == campanile) {
-        bgImage = [UIImage imageNamed:@"campanile_1920_model.png"];
-        model_width = 300;
+        bgImage = [UIImage imageNamed:@"campanile_1920_model_cutout.png"];
+        model_width = 295; // calculated from campanile being 104px wide in image, and 16ft across
         mask_properties.edge_threshold = 130;
+        mask_properties.min_length = 0.15;
         mask_properties.line_angle = cv::Vec2f(0, 1);
         mask_properties.line_origin = cv::Vec2f(10000, 0);
     }
-    MaskedImage masked(cvMatFromUIImage(bgImage), mask_properties.edge_threshold, 0.6, mask_properties.line_angle, mask_properties.line_origin, 15);
+    MaskedImage masked(cvMatFromUIImage(bgImage), mask_properties.edge_threshold, mask_properties.min_length, mask_properties.line_angle, mask_properties.line_origin, 15);
     cv::Mat cropped = masked.getCropped();
-    
+
     matcher = ImageMatcher(cropped, 6000, 0.8, 0.98, 4.0, std::cout);
     
     
     const float model_height = (model_width * ((double)video_height / video_width));
     const std::vector<cv::KeyPoint>& model_keypoints = matcher.getRefKeypoints();
     model_pts_3d.resize(model_keypoints.size());
-    float model_x_offset = -7;
-    float model_y_offset = -25;
+    float model_x_offset = 0;
+    float model_y_offset = 0;
     float model_rotation_offset = 0.0;
+    if (structure == skywalk) {
+        model_x_offset = -7;
+        model_y_offset = -25;
+    }
+    else if (structure == campanile) {
+        model_x_offset = -6;
+        model_y_offset = -48;
+    }
     float cos_angle = std::cos(model_rotation_offset);
     float sin_angle = std::sin(model_rotation_offset);
     for (size_t i = 0; i < model_keypoints.size(); ++i) {
@@ -204,6 +214,8 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure,
     
     printf("aspect screen: %f\n", aspectScreen);
     projectionMatrix = GLKMatrix4MakePerspective(36.909 * (M_PI / 180.0), aspectScreen, 0.1, 500);
+
+    startAR();
     
     // Copy image to background Metal texture
 //    static MTLRegion region = MTLRegionMake2D(0, 0, video_width, video_height);
@@ -250,6 +262,7 @@ void cvARManager::saveImg() {
 }
 
 void cvARManager::doFrame(int n_avg, std::function<void(CB_STATE)> cb_func) {
+    // saveImg();
     captured_frames.clear();
     most_inliers = 0;
     frames_to_capture = n_avg;
@@ -367,7 +380,7 @@ void cvARManager::performTracking() {
         }
     }
     
-    MaskedImage masked(frame, mask_properties.edge_threshold, 0.6, mask_properties.line_angle, mask_properties.line_origin, 15);
+    MaskedImage masked(frame, mask_properties.edge_threshold, mask_properties.min_length, mask_properties.line_angle, mask_properties.line_origin, 15);
     cv::Mat cropped = masked.getCropped();
     auto correspondences = matcher.getMatches(cropped);
     masked.uncropPoints(correspondences.img_pts);
@@ -386,20 +399,24 @@ void cvARManager::performTracking() {
             const auto& model_pt = model_pts_3d[correspondences.model_pts[i]];
             correspondence_model_pts3[i] = model_pt;
         }
-        std::vector<float> dist_coeffs;
 //        cv::solvePnP(correspondence_model_pts3, correspondences.img_pts, intrinsic_mat, dist_coeffs, rotation_vec, translation);
         cv::Mat pnp_inliers;
-        cv::solvePnPRansac(correspondence_model_pts3, correspondences.img_pts, intrinsic_mat, dist_coeffs, rotation_vec, translation,
+        cv::solvePnPRansac(correspondence_model_pts3, correspondences.img_pts, intrinsic_mat, distortion_coeffs, rotation_vec, translation,
                            false, // useExtrinsicGuess
                            100, // iterationsCount
                            8.0, // reprojectionError
                            0.99, // confidence
                            pnp_inliers);
         std::cout << pnp_inliers.size[0] << " inliers" << std::endl;
+//        for (int i = 0; i < pnp_inliers.size[0]; ++i) {
+//            int inlier_idx = pnp_inliers.at<int>(i);
+//            cv::Point img_pt = correspondences.img_pts[inlier_idx];
+//            cv::circle(frame, img_pt, 3, cv::Scalar(0, 0, 255), -1);
+//        }
         cv::Rodrigues(rotation_vec, rotation);
-
-//        std::cout << "Rotation:\n" << rotation << std::endl;
-        std::cout << "Translation:\n" << translation << std::endl;
+//        rotation = rotation.t();
+//        translation = -rotation * translation;
+        
         
         cv::Mat cvExtrinsic(4, 4, CV_64F);
         // copy rotation matrix into a larger 4x4 transformation matrix
@@ -408,30 +425,30 @@ void cvARManager::performTracking() {
         translation.copyTo(cvExtrinsic.col(3).rowRange(0,3));
         cvExtrinsic.row(3).setTo(0);
         cvExtrinsic.at<double>(3,3) = 1;
-        cv::Mat inverted = cvExtrinsic.inv();
+        
+        // make rotation PI rad about X axis matrix
+        cv::Mat rot_x_mat = cv::Mat::zeros(4, 4, CV_64F);
+        rot_x_mat.at<double>(0,0) = 1; rot_x_mat.at<double>(1,1) = -1;
+        rot_x_mat.at<double>(2,2) = -1; rot_x_mat.at<double>(3,3) = 1;
+        
+        cv::Mat skExtrinsic = rot_x_mat * (rot_x_mat * cvExtrinsic).inv();
 
-        // Transform the OpenCV camera matrix into the compatible format for SceneKit
-        cv::Mat skExtrinsic(inverted);
-        // Set new bottom row to be the old rightmost column
-        skExtrinsic.col(3).copyTo(skExtrinsic.row(3).reshape(0,4));
-        // clear rightmost column
-        skExtrinsic.col(3).setTo(0);
-        skExtrinsic.at<double>(3,3) = 1;
-        // negate the necessary elements (why?)
-        auto negate = [&skExtrinsic](int row, int col) {skExtrinsic.at<double>(row,col) = -skExtrinsic.at<double>(row,col);};
-        negate(1,2);
-        negate(2,1);
-        negate(3,1);
-        negate(3,2);
         
 
         GLKMatrix4 pose_estimate = GLKMatrix4Multiply(pose_transform, CVMat4ToGLKMat4(skExtrinsic));
         
         // Keep the captured frame
         if (!processed_live_frame) {
-            bool within_range = (translation.at<double>(0) > -25 && translation.at<double>(0) < 25 &&
-                                 translation.at<double>(1) > -20 && translation.at<double>(1) < 20 &&
-                                 translation.at<double>(2) > 150 && translation.at<double>(2) < 260);
+            std::array<std::array<double, 2>, 3> range;
+            if (structure == skywalk) {
+                range = {{{-25, 25}, {-20, 20}, {150, 26}}};
+            }
+            else if (structure == campanile) {
+                range = {{{00, 0}, {00, 0}, {00, 0}}};
+            }
+            bool within_range = (translation.at<double>(0) > range[0][0] && translation.at<double>(0) < range[0][1] &&
+                                 translation.at<double>(1) > range[1][0] && translation.at<double>(1) < range[1][1] &&
+                                 translation.at<double>(2) > range[2][0] && translation.at<double>(2) < range[2][1] );
             std::cout << "within range: " << within_range << std::endl;
             if (within_range) {
                 // If within range, just accept it
@@ -552,18 +569,20 @@ UIImage* UIImageFromCVMat(cv::Mat cvMat)
 }
 
 GLKMatrix4 CVMat3ToGLKMat4(const cv::Mat& cvMat) {
+    // GLKMatrix4.mxy means column x, row y. Opposite of OpenCV
     GLKMatrix4 glkMat;
-    glkMat.m00 = cvMat.at<double>(0, 0);
-    glkMat.m01 = cvMat.at<double>(0, 1);
-    glkMat.m02 = cvMat.at<double>(0, 2);
+    // The explicit cast is so the runtime-error checking in XCode doesn't complain
+    glkMat.m00 = (float)cvMat.at<double>(0, 0);
+    glkMat.m10 = (float)cvMat.at<double>(0, 1);
+    glkMat.m20 = (float)cvMat.at<double>(0, 2);
     
-    glkMat.m10 = cvMat.at<double>(1, 0);
-    glkMat.m11 = cvMat.at<double>(1, 1);
-    glkMat.m12 = cvMat.at<double>(1, 2);
+    glkMat.m01 = (float)cvMat.at<double>(1, 0);
+    glkMat.m11 = (float)cvMat.at<double>(1, 1);
+    glkMat.m21 = (float)cvMat.at<double>(1, 2);
     
-    glkMat.m20 = cvMat.at<double>(2, 0);
-    glkMat.m21 = cvMat.at<double>(2, 1);
-    glkMat.m22 = cvMat.at<double>(2, 2);
+    glkMat.m02 = (float)cvMat.at<double>(2, 0);
+    glkMat.m12 = (float)cvMat.at<double>(2, 1);
+    glkMat.m22 = (float)cvMat.at<double>(2, 2);
     return glkMat;
 }
 
@@ -572,14 +591,14 @@ GLKMatrix4 CVMat4ToGLKMat4(const cv::Mat& cvMat) {
     GLKMatrix4 glkMat = CVMat3ToGLKMat4(cvMat);
     
     // then copy the last column and row
-    glkMat.m30 = cvMat.at<double>(3, 0);
-    glkMat.m31 = cvMat.at<double>(3, 1);
-    glkMat.m32 = cvMat.at<double>(3, 2);
+    glkMat.m03 = (float)cvMat.at<double>(3, 0);
+    glkMat.m13 = (float)cvMat.at<double>(3, 1);
+    glkMat.m23 = (float)cvMat.at<double>(3, 2);
     
     
-    glkMat.m03 = cvMat.at<double>(0, 3);
-    glkMat.m13 = cvMat.at<double>(1, 3);
-    glkMat.m23 = cvMat.at<double>(2, 3);
-    glkMat.m33 = cvMat.at<double>(3, 3);
+    glkMat.m30 = (float)cvMat.at<double>(0, 3);
+    glkMat.m31 = (float)cvMat.at<double>(1, 3);
+    glkMat.m32 = (float)cvMat.at<double>(2, 3);
+    glkMat.m33 = (float)cvMat.at<double>(3, 3);
     return glkMat;
 }
