@@ -60,7 +60,7 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure,
     camDelegate = [[CvCameraDelegateObj alloc] initWithCallback:this_processImage];
     camera.delegate = camDelegate;
     
-    
+
 //    std::cout << "sessio nloaded: " << camera.captureSessionLoaded << std::endl;
 //    if ([camera.captureSession canSetSessionPreset:AVCaptureSessionPreset3840x2160]) {
 //        std::cout << "3840" << std::endl;
@@ -173,8 +173,8 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure,
     cv::Mat cropped = masked.getCropped();
 
     matcher = ImageMatcher(cropped, 6000, 0.8, 0.98, 4.0, std::cout);
-    
-    
+
+
     const float model_height = (model_width * ((double)video_height / video_width));
     const std::vector<cv::KeyPoint>& model_keypoints = matcher.getRefKeypoints();
     model_pts_3d.resize(model_keypoints.size());
@@ -317,7 +317,7 @@ bool cvARManager::isTracked() {
 
 void cvARManager::processImage(cv::Mat& image) {
 //    cv::Mat overdrawn(image.size(), image.type());
-    
+
     if (saveNext) {
         static int img_idx = 0;
         // Create path.
@@ -444,7 +444,7 @@ void cvARManager::performTracking() {
                 range = {{{-25, 25}, {-20, 20}, {150, 26}}};
             }
             else if (structure == campanile) {
-                range = {{{00, 0}, {00, 0}, {00, 0}}};
+                range = {{{-100, 100}, {-30, 60}, {200, 300}}};
             }
             bool within_range = (translation.at<double>(0) > range[0][0] && translation.at<double>(0) < range[0][1] &&
                                  translation.at<double>(1) > range[1][0] && translation.at<double>(1) < range[1][1] &&
