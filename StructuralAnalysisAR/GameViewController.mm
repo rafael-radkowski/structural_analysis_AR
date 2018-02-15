@@ -103,6 +103,7 @@
         //        arManager = new StaticARManager(self.view, scene);
         arManager = [structureScene makeStaticTracker];
         tracking_mode = TrackingMode::untracked;
+        [structureScene setCameraLabelPaused:YES isEnabled:NO];
         arManager->startCamera();
     }
 }
@@ -186,7 +187,7 @@
                     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                         [freezeBtn setEnabled:YES];
                         curtain.hidden = YES;
-                        [structureScene setCameraLabelPaused:YES];
+                        [structureScene setCameraLabelPaused:YES isEnabled:YES];
                     }];
                     arManager->stopCamera();
                 }
@@ -195,7 +196,7 @@
     }
     else { // camPaused == true
         camPaused = false;
-        [structureScene setCameraLabelPaused:NO];
+        [structureScene setCameraLabelPaused:NO isEnabled:YES];
         arManager->startCamera();
     }
     
@@ -232,6 +233,8 @@
     }
     tracking_mode = new_mode;
     camPaused = false;
+    bool is_tracking = new_mode != TrackingMode::untracked;
+    [structureScene setCameraLabelPaused:!is_tracking isEnabled:is_tracking];
     arManager->startCamera();
 }
 

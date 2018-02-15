@@ -184,13 +184,14 @@ static const double MOM_OF_INERTIA = 2334;
     }
 }
 
-- (void)setCameraLabelPaused:(bool)isPaused {
+- (void)setCameraLabelPaused:(bool)isPaused isEnabled:(bool)enabled {
     if (isPaused) {
         [self.freezeFrameBtn setTitle:@"Resume Camera" forState:UIControlStateNormal];
     }
     else {
         [self.freezeFrameBtn setTitle:@"Pause Camera" forState:UIControlStateNormal];
     }
+    self.freezeFrameBtn.enabled = enabled;
 }
 
 - (void)setupUIWithScene:(SCNView *)scnView screenBounds:(CGRect)screenRect isGuided:(bool)guided {
@@ -299,8 +300,7 @@ static const double MOM_OF_INERTIA = 2334;
 
 - (IBAction)changeTrackingBtnPressed:(id)sender {
     CGRect frame = [self.changeTrackingBtn.superview convertRect:self.changeTrackingBtn.frame toView:scnView];
-    [managingParent changeTrackingMode:frame];
-    [self setCameraLabelPaused:NO];
+    TrackingMode new_mode = [managingParent changeTrackingMode:frame];
 }
 
 - (IBAction)sliderChanged:(id)sender {

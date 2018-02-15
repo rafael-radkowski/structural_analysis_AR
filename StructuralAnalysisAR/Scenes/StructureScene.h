@@ -39,7 +39,7 @@
 - (void) scnRendererUpdateAt:(NSTimeInterval)time;
 
 // Sets the "pause camera"/"resume camera" button
-- (void)setCameraLabelPaused:(bool)isPaused;
+- (void)setCameraLabelPaused:(bool)isPaused isEnabled:(bool)enabled;
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event;
 - (void)touchesMoved:(NSSet<UITouch *> *) touches withEvent:(UIEvent *)event;

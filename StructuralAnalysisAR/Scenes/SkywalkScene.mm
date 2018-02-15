@@ -399,20 +399,19 @@
     [SCNTransaction commit];
 }
 
-- (void)setCameraLabelPaused:(bool)isPaused {
+- (void)setCameraLabelPaused:(bool)isPaused isEnabled:(bool)enabled {
     if (isPaused) {
         [self.freezeFrameBtn setTitle:@"Resume Camera" forState:UIControlStateNormal];
     }
     else {
         [self.freezeFrameBtn setTitle:@"Pause Camera" forState:UIControlStateNormal];
     }
+    self.freezeFrameBtn.enabled = enabled;
 }
-
 
 - (IBAction)changeTrackingBtnPressed:(id)sender {
     CGRect frame = [self.changeTrackingBtn.superview convertRect:self.changeTrackingBtn.frame toView:scnView];
     [managingParent changeTrackingMode:frame];
-    [self setCameraLabelPaused:NO];
 }
 
 

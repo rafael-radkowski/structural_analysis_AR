@@ -58,7 +58,7 @@
 - (void)update:(NSTimeInterval)currentTime forScene:(SKScene *)scene;
 
 - (void) setTrackingMode:(enum TrackingMode)new_mode;
-- (IBAction)freezePressed:(id)sender;
+- (void)freezePressed:(id)sender freezeBtn:(UIButton*)freezeBtn curtain:(UIView*)curtain;
 
 // override
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event;
