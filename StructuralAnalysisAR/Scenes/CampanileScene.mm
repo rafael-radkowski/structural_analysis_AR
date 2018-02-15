@@ -300,7 +300,7 @@ static const double MOM_OF_INERTIA = 2334;
 
 - (IBAction)changeTrackingBtnPressed:(id)sender {
     CGRect frame = [self.changeTrackingBtn.superview convertRect:self.changeTrackingBtn.frame toView:scnView];
-    TrackingMode new_mode = [managingParent changeTrackingMode:frame];
+    [managingParent changeTrackingMode:frame];
 }
 
 - (IBAction)sliderChanged:(id)sender {
