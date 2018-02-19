@@ -65,20 +65,26 @@ static const double MOM_OF_INERTIA = 2334;
     };
     SCNNode* campanileInterior = loadModel(@"campanile_interior");
     SCNNode* campanileExterior = loadModel(@"campanile_exterior");
+    SCNNode* campanileExteriorWarped = loadModel(@"warped_campanile");
     [rootNode addChildNode:campanileExterior];
     [rootNode addChildNode:campanileInterior];
     SCNMaterial* campanileMatClear = [SCNMaterial material];
     SCNMaterial* campanileMatOpaque = [SCNMaterial material];
-    campanileMatClear.diffuse.contents = [UIColor colorWithRed:1.0 green:0.68 blue:0.478 alpha:1.0];
+    campanileMatClear.diffuse.contents = [UIColor colorWithRed:1.0 green:0.68 blue:0.478 alpha:0.5];
     campanileMatOpaque.diffuse.contents = [UIColor colorWithRed:1.0 green:0.68 blue:0.478 alpha:1.0];
     campanileExterior.geometry.firstMaterial = campanileMatClear;
+    // Needed for semi-transparent objects to render correctly
+    campanileExterior.geometry.firstMaterial.writesToDepthBuffer = NO;
     campanileInterior.geometry.firstMaterial = campanileMatOpaque;
-    campanileExterior.opacity = 0.4;
-    campanileInterior.opacity = 0.6;
+//    campanileExterior.opacity = 0.5;
+//    campanileInterior.opacity = 0.6;
     // Force a rendering order, otherwise the interior does not appear
     campanileInterior.renderingOrder = 50;
     campanileExterior.renderingOrder = 100;
 //    MDLObject* exterior = [modelAsset objectAtPath:@"exterior_Basic_Wall_Generic_-_12__Masonry__Brick___527010__Geometry"];
+    
+//    campanileExterior.morpher = [[SCNMorpher alloc] init];
+//    campanileExterior.morpher.targets = [NSArray arrayWithObject:campanileExteriorWarped.geometry];
 
     float load_min_h = 10; float load_max_h = 35;
     float thickness = 3;
@@ -182,6 +188,10 @@ static const double MOM_OF_INERTIA = 2334;
         towerL.updatePath(partialDeflVals);
         towerR.updatePath(partialDeflVals);
     }
+//    static float phase = 0;
+//    float weight = 0.5 * (std::sin(phase) + 1);
+//    phase += 0.02;
+//    [campanileExterior.morpher setWeight:weight forTargetAtIndex:0];
 }
 
 - (void)setCameraLabelPaused:(bool)isPaused isEnabled:(bool)enabled {

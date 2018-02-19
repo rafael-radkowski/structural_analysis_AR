@@ -28,7 +28,8 @@ StaticARManager::StaticARManager(UIView* view, SCNScene* scene, GLKMatrix4 desir
     }
     // Set texture as background
     scene.background.contents = staticBgTex;
-    
+//    scene.background.contents = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:1.0];;
+
     // Calculate scaling so image is not stretched
     float aspectImage = (float)img_width / img_height;
     CGSize viewSize = view.frame.size;
@@ -52,6 +53,11 @@ StaticARManager::StaticARManager(UIView* view, SCNScene* scene, GLKMatrix4 desir
 
 
 GLKMatrix4 StaticARManager::getCameraMatrix() {
+//    static float phase = 0;
+//    phase += 0.01;
+//    float angle = 0.2 * std::sin(phase);
+//    GLKMatrix4 rotMat = GLKMatrix4MakeYRotation(angle);
+//    return GLKMatrix4Multiply(rotMat, cameraMatrix);
     return cameraMatrix;
 }
 

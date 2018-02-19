@@ -50,7 +50,7 @@
     
     BezierLine towerL;
     BezierLine towerR;
-    
+
     bool do_animations;
 }
 
