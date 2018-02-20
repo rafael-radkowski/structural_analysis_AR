@@ -71,8 +71,11 @@
                                 <action selector="sliderReleased:" destination="-1" eventType="touchUpInside" id="pvv-xR-YX8"/>
                             </connections>
                         </slider>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="mph" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IS9-83-e7Z">
-                            <rect key="frame" x="333" y="14" width="34.5" height="21"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="mph" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IS9-83-e7Z">
+                            <rect key="frame" x="333" y="14" width="70" height="21"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="70" id="gZ0-gd-Gut"/>
+                            </constraints>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
@@ -88,7 +91,7 @@
                             </connections>
                         </button>
                         <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="efT-e8-JQe">
-                            <rect key="frame" x="388" y="11" width="123" height="29"/>
+                            <rect key="frame" x="423.5" y="11" width="123" height="29"/>
                             <segments>
                                 <segment title="Wind"/>
                                 <segment title="Seismic"/>
