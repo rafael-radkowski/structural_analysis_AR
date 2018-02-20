@@ -13,6 +13,8 @@
 #include "VuforiaARManager.h"
 #include "StaticARManager.h"
 
+#include <random>
+
 @implementation CampanileScene
 
 static const float base_width = 16;
@@ -65,7 +67,7 @@ static const double MOM_OF_INERTIA = 2334;
     };
     SCNNode* campanileInterior = loadModel(@"campanile_interior");
     SCNNode* campanileExterior = loadModel(@"campanile_exterior");
-    SCNNode* campanileExteriorWarped = loadModel(@"warped_campanile");
+//    SCNNode* campanileExteriorWarped = loadModel(@"warped_campanile");
     [rootNode addChildNode:campanileExterior];
     [rootNode addChildNode:campanileInterior];
     SCNMaterial* campanileMatClear = [SCNMaterial material];
@@ -235,6 +237,21 @@ static const double MOM_OF_INERTIA = 2334;
     [self.slider setValue:0.5];
     [self.scenarioToggle sendActionsForControlEvents:UIControlEventValueChanged];
     [self setVisibilities];
+    
+    breakerThread = std::thread([self] () {
+        using namespace std::chrono_literals;
+        std::random_device rnd_dev;
+        std::uniform_real_distribution<float> dist(0, 1);
+        std::mt19937 generator(rnd_dev());
+        while(1) {
+            float val = dist(generator);
+            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                [self.slider setValue:val];
+                [self.slider sendActionsForControlEvents:UIControlEventValueChanged];
+            }];
+            std::this_thread::sleep_for(20ms);
+        }
+    });
 }
 
 - (void)skUpdate {

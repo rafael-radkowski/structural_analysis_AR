@@ -10,6 +10,7 @@
 #define CampanileScene_h
 
 #include <vector>
+#include <thread>
 
 #import "StructureScene.h"
 #include "loadMarker.h"
@@ -52,6 +53,9 @@
     BezierLine towerR;
 
     bool do_animations;
+    
+    // TODO: Delete, for testing
+    std::thread breakerThread;
 }
 
 @property (nonatomic, retain) IBOutlet UIView *viewFromNib;
