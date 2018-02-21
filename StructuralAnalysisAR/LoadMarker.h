@@ -62,6 +62,8 @@ public:
     void touchBegan(GLKVector3 origin, GLKVector3 touchRay);
     // The value, and whether it is a new value
     float getDragValue(GLKVector3 origin, GLKVector3 touchRay);
+    // The distance from the left-hand end of the load marker to the point that's being dragged
+    float getDragPoint(GLKVector3 origin, GLKVector3 touchRay);
     // Returns the dragged start and end x position
     std::pair<float, float> getDragPosition(GLKVector3 origin, GLKVector3 farHit);
     void touchEnded();

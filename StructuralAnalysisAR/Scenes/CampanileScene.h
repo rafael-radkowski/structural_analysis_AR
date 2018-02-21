@@ -57,6 +57,7 @@
     // TODO: Delete, for testing
     std::thread breakerThread;
 }
+- (void)updateForces;
 
 @property (nonatomic, retain) IBOutlet UIView *viewFromNib;
 @property (weak, nonatomic) IBOutlet UIView *visOptionsBox;

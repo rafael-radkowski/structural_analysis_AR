@@ -298,7 +298,7 @@ void LoadMarker::touchBegan(GLKVector3 origin, GLKVector3 farHit) {
 }
 
 GLKVector3 LoadMarker::projectRay(const GLKVector3 origin, const GLKVector3 touchRay) {
-        GLKVector3 planeNormal = GLKVector3Make(rootNode.transform.m13, rootNode.transform.m23, rootNode.transform.m33);
+        GLKVector3 planeNormal = GLKVector3Make(rootNode.transform.m31, rootNode.transform.m32, rootNode.transform.m33);
         double numerator = GLKVector3DotProduct(planeNormal, GLKVector3Subtract(startPos, origin));
         double denominator = GLKVector3DotProduct(planeNormal, touchRay);
         
@@ -308,15 +308,23 @@ GLKVector3 LoadMarker::projectRay(const GLKVector3 origin, const GLKVector3 touc
         return hitPoint;
 }
 
+float LoadMarker::getDragPoint(GLKVector3 origin, GLKVector3 touchRay) {
+    GLKVector3 hitPoint = projectRay(origin, touchRay);
+    // global direction of x-axis
+    GLKVector3 lineDir = GLKVector3Make(rootNode.transform.m11, rootNode.transform.m12, rootNode.transform.m13);
+    
+    GLKVector3 shiftedHitPoint = GLKVector3Subtract(hitPoint, SCNVector3ToGLKVector3(rootNode.position));
+    double dragDistance = GLKVector3DotProduct(lineDir, shiftedHitPoint);
+    return dragDistance;
+}
+
 float LoadMarker::getDragValue(GLKVector3 origin, GLKVector3 touchRay) {
     double value;
     if (dragState & vertically) {
         GLKVector3 hitPoint = projectRay(origin, touchRay);
         
         GLKVector3 lineDir = GLKVector3Make(1, 0, 0);
-        GLKVector3 loadDir = GLKVector3CrossProduct(GLKVector3Make(rootNode.transform.m13, rootNode.transform.m23, rootNode.transform.m33), lineDir);
-        // Unsure about the negative on the x-axis, but it works?
-//        GLKVector3 loadDir = GLKVector3Make(-rootNode.transform.m12, rootNode.transform.m22, rootNode.transform.m32);
+        GLKVector3 loadDir = GLKVector3Make(rootNode.transform.m21, rootNode.transform.m22, rootNode.transform.m23);
         // Position of startPos + arrow min length along load direction
         GLKVector3 shiftedHitPoint = GLKVector3Subtract(hitPoint, SCNVector3ToGLKVector3(rootNode.position));
         GLKVector3 loadPos = GLKVector3Add(startPos, GLKVector3MultiplyScalar(loadDir, minHeight));

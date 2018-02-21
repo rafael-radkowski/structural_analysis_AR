@@ -22,6 +22,8 @@ static const float base_height = 89 + 2.f / 12;
 static const float roof_height = 20 + 4.5 / 12;
 static const float roof_angle = (M_PI / 180.0) * 68.56;
 
+static const float max_vel = 150;
+
 static const double MOD_ELASTICITY = 2.016e8;
 static const double MOM_OF_INERTIA = 2334;
 
@@ -238,20 +240,20 @@ static const double MOM_OF_INERTIA = 2334;
     [self.scenarioToggle sendActionsForControlEvents:UIControlEventValueChanged];
     [self setVisibilities];
     
-    breakerThread = std::thread([self] () {
-        using namespace std::chrono_literals;
-        std::random_device rnd_dev;
-        std::uniform_real_distribution<float> dist(0, 1);
-        std::mt19937 generator(rnd_dev());
-        while(1) {
-            float val = dist(generator);
-            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                [self.slider setValue:val];
-                [self.slider sendActionsForControlEvents:UIControlEventValueChanged];
-            }];
-            std::this_thread::sleep_for(20ms);
-        }
-    });
+//    breakerThread = std::thread([self] () {
+//        using namespace std::chrono_literals;
+//        std::random_device rnd_dev;
+//        std::uniform_real_distribution<float> dist(0, 1);
+//        std::mt19937 generator(rnd_dev());
+//        while(1) {
+//            float val = dist(generator);
+//            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+//                [self.slider setValue:val];
+//                [self.slider sendActionsForControlEvents:UIControlEventValueChanged];
+//            }];
+//            std::this_thread::sleep_for(20ms);
+//        }
+//    });
 }
 
 - (void)skUpdate {
@@ -288,21 +290,79 @@ static const double MOM_OF_INERTIA = 2334;
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    
-}
+    CGPoint p = [[touches anyObject] locationInView:scnView];
+    GLKVector3 farClipHit = SCNVector3ToGLKVector3([scnView unprojectPoint:SCNVector3Make(p.x, p.y, 1.0)]);
 
-- (void)touchesCancelled:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    
-}
-
-- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    
+    windwardSideLoad.touchBegan(SCNVector3ToGLKVector3(cameraNode.position), farClipHit);
 }
 
 - (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     
+    CGPoint p = [[touches anyObject] locationInView:scnView];
+    GLKVector3 farClipHit = SCNVector3ToGLKVector3([scnView unprojectPoint:SCNVector3Make(p.x, p.y, 1.0)]);
+    GLKVector3 cameraPos = SCNVector3ToGLKVector3(cameraNode.position);
+    GLKVector3  touchRay = GLKVector3Normalize(GLKVector3Subtract(farClipHit, cameraPos));
+
+    if (windwardSideLoad.draggingMode() & LoadMarker::vertically) {
+        float dragValue = windwardSideLoad.getDragValue(cameraPos, touchRay);
+        // calculate wind velocity from dragged value
+        double height_frac = windwardSideLoad.getDragPoint(cameraPos, touchRay) / base_height;
+        double a = 0.000843;
+        double b = 0.0014;
+        double c = -0.00093;
+        double v2 = dragValue / ((1. - height_frac)*a + height_frac*b - c);
+        double v = std::sqrt(v2);
+        [self.slider setValue:(v / max_vel)];
+        [self updateForces];
+        // Set intensities
+        windwardSideLoad.setLoadInterpolate(pressures.windward_base - pressures.leeward_side, pressures.windward_side_top - pressures.leeward_side);
+    }
 }
 
+- (void)touchesCancelled:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    windwardSideLoad.touchCancelled();
+}
+
+- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    windwardSideLoad.touchEnded();
+}
+
+- (void)updateForces {
+    float slider_val = self.slider.value;
+    switch (activeScenario) {
+        case wind: {
+            double vel = slider_val * max_vel;
+            [self calculateForcesWind:vel];
+            towerL.updatePath(fullDeflVals);
+            towerR.updatePath(fullDeflVals);
+            break;
+        }
+        case seismic: {
+            const double Ss_vals[8] = {0.05, 0.25, 0.5, 0.75, 1, 1.25, 2, 3};
+            const size_t n_elems = sizeof(Ss_vals) / sizeof(Ss_vals[0]);
+            double scaled_val = slider_val * (Ss_vals[n_elems - 1] - Ss_vals[0]) + Ss_vals[0];
+            auto closest_elem = std::min_element(&Ss_vals[0], &Ss_vals[n_elems],
+                                                 [&] (double a, double b) {
+                                                     return std::abs(a - scaled_val) < std::abs(b - scaled_val);
+                                                 });
+            size_t closest_idx = closest_elem - Ss_vals;
+            
+            // Find nearest value
+            double Ss = Ss_vals[closest_idx];
+            snappedSliderPos  = (Ss - Ss_vals[0]) / (Ss_vals[n_elems - 1] - Ss_vals[0]);
+            // Allow the actual slider position to "rubber-band" to the sticky positions
+            const double alpha = 0.7;
+            double ss_slider_stretched = (alpha * snappedSliderPos) + ((1 - alpha) * slider_val);
+            [self.slider setValue:ss_slider_stretched animated:NO];
+            [self calculateForcesSeismic:closest_idx];
+            break;
+        }
+        default: {
+            assert(false);
+            break;
+        }
+    }
+}
 
 - (IBAction)freezePressed:(id)sender {
     [managingParent freezePressed:sender freezeBtn:self.freezeFrameBtn curtain:self.processingCurtainView];
@@ -331,40 +391,10 @@ static const double MOM_OF_INERTIA = 2334;
 }
 
 - (IBAction)sliderChanged:(id)sender {
-    float slider_val = self.slider.value;
-    switch (activeScenario) {
-        case wind: {
-            double vel = slider_val * 150;
-            [self calculateForcesWind:vel];
-            towerL.updatePath(fullDeflVals);
-            towerR.updatePath(fullDeflVals);
-            break;
-        }
-        case seismic: {
-            const double Ss_vals[8] = {0.05, 0.25, 0.5, 0.75, 1, 1.25, 2, 3};
-            const size_t n_elems = sizeof(Ss_vals) / sizeof(Ss_vals[0]);
-            double scaled_val = slider_val * (Ss_vals[n_elems - 1] - Ss_vals[0]) + Ss_vals[0];
-            auto closest_elem = std::min_element(&Ss_vals[0], &Ss_vals[n_elems],
-                 [&] (double a, double b) {
-                    return std::abs(a - scaled_val) < std::abs(b - scaled_val);
-            });
-            size_t closest_idx = closest_elem - Ss_vals;
-            
-            // Find nearest value
-            double Ss = Ss_vals[closest_idx];
-            snappedSliderPos  = (Ss - Ss_vals[0]) / (Ss_vals[n_elems - 1] - Ss_vals[0]);
-            // Allow the actual slider position to "rubber-band" to the sticky positions
-            const double alpha = 0.7;
-            double ss_slider_stretched = (alpha * snappedSliderPos) + ((1 - alpha) * slider_val);
-            [self.slider setValue:ss_slider_stretched animated:NO];
-            [self calculateForcesSeismic:closest_idx];
-            break;
-        }
-        default: {
-            assert(false);
-            break;
-        }
-    }
+    [self updateForces];
+    
+    // Set intensities
+    windwardSideLoad.setLoadInterpolate(pressures.windward_base - pressures.leeward_side, pressures.windward_side_top - pressures.leeward_side);
 }
 
 - (IBAction)sliderReleased:(id)sender {
@@ -378,9 +408,6 @@ static const double MOM_OF_INERTIA = 2334;
     //    label.text = [NSString stringWithFormat:@"%.1f k/ft", 123.3f];
     [self.sliderValLabel setText:[NSString stringWithFormat:@"%.0f mph", velocity]];
     [self calculatePressuresFrom:velocity];
-    
-    // Set intensities
-    windwardSideLoad.setLoadInterpolate(pressures.windward_base - pressures.leeward_side, pressures.windward_side_top - pressures.leeward_side);
 
     // breakdown roof pressures into components
     
