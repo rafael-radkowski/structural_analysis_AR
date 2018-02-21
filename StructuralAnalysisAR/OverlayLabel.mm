@@ -8,6 +8,43 @@
 
 #include "OverlayLabel.h"
 
+ExclusiveNSString& ExclusiveNSString::operator=(const NSString* other) {
+    std::lock_guard<std::mutex> lock(mut);
+    // TODO: Is copy necessary?
+    str = [[NSString alloc] initWithBytes:[other cStringUsingEncoding:other.fastestEncoding] length:other.length encoding:other.fastestEncoding];
+    return *this;
+}
+
+ExclusiveNSString::ExclusiveNSString(ExclusiveNSString&& other) {
+    std::lock_guard<std::mutex> lock(mut);
+    str = std::move(other.str);
+}
+
+ExclusiveNSString::ExclusiveNSString(const ExclusiveNSString& other) {
+    std::lock_guard<std::mutex> lock(other.mut);
+    str = other.str;
+}
+
+ExclusiveNSString& ExclusiveNSString::operator=(const ExclusiveNSString& other) {
+    if (this != &other) {
+        std::unique_lock<std::mutex> lock1(mut, std::defer_lock);
+        std::unique_lock<std::mutex> lock2(other.mut, std::defer_lock);
+        std::lock(lock1, lock2);
+        str = other.str;
+    }
+    return *this;
+}
+
+ExclusiveNSString& ExclusiveNSString::operator=(ExclusiveNSString&& other) {
+    if (this != &other) {
+        std::unique_lock<std::mutex> lock1(mut, std::defer_lock);
+        std::unique_lock<std::mutex> lock2(other.mut, std::defer_lock);
+        std::lock(lock1, lock2);
+        str = std::move(other.str);
+    }
+    return *this;
+}
+
 OverlayLabel::OverlayLabel() {
 //    label = [SKLabelNode labelNodeWithText:[NSString stringWithFormat:@"%f", lastArrowValue]];
     label = [SKLabelNode labelNodeWithFontNamed:@"Helvetica"];
