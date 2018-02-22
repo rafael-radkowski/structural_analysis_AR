@@ -23,7 +23,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>$(PRODUCT_NAME) camera use</string>
+	<string>$(PRODUCT_NAME) needs the camera to perform augmented reality</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>$(PRODUCT_NAME) needs to add screenshots to your photo library</string>
 	<key>SCNDisableLinearSpaceRendering</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>

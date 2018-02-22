@@ -64,6 +64,8 @@
 @property (weak, nonatomic) IBOutlet UISwitch *swayVisSwitch;
 
 @property (weak, nonatomic) IBOutlet UIButton *homeBtn;
+@property (weak, nonatomic) IBOutlet UIButton *screenshotBtn;
+@property (weak, nonatomic) IBOutlet UIView *screenshotInfoBox;
 @property (weak, nonatomic) IBOutlet UIButton *freezeFrameBtn;
 // Tracking Mode (indoor/outdoor)
 @property (weak, nonatomic) IBOutlet UIButton *changeTrackingBtn;
@@ -77,8 +79,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *sliderValLabel;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *scenarioToggle;
 
-
 - (IBAction)homeBtnPressed:(id)sender;
+- (IBAction)screenshotBtnPressed:(id)sender;
 - (IBAction)freezePressed:(id)sender;
 - (IBAction)swapVisToggled:(id)sender;
 

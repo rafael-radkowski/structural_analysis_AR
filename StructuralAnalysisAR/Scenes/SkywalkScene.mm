@@ -167,6 +167,15 @@
     self.homeBtn.layer.borderColor = textColor;
     self.homeBtn.layer.cornerRadius = 5;
     
+    // Setup screenshot button style
+    self.screenshotBtn.layer.borderWidth = 1.5;
+    self.screenshotBtn.imageEdgeInsets = UIEdgeInsetsMake(3, 3, 3, 3);
+    self.screenshotBtn.layer.borderColor = textColor;
+    self.screenshotBtn.layer.cornerRadius = 5;
+    
+    // Setup screenshot info box
+    self.screenshotInfoBox.layer.cornerRadius = self.screenshotInfoBox.bounds.size.height / 2;
+    
     // Setup instruction box style
     self.instructionBox.layer.borderWidth = 1.5;
     self.instructionBox.textContainerInset = UIEdgeInsetsMake(5, 5, 5, 5);
@@ -330,6 +339,10 @@
 
 - (IBAction)freezePressed:(id)sender {
     [managingParent freezePressed:sender freezeBtn:self.freezeFrameBtn curtain:self.processingCurtainView];
+}
+
+- (IBAction)screenshotBtnPressed:(id)sender {
+    return [managingParent screenshotBtnPressed:sender infoBox:self.screenshotInfoBox];
 }
 
 - (IBAction)homeBtnPressed:(id)sender {

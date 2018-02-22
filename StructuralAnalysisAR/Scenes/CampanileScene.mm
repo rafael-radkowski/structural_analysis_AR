@@ -221,6 +221,15 @@ static const double MOM_OF_INERTIA = 2334;
     self.homeBtn.layer.borderColor = textColor;
     self.homeBtn.layer.cornerRadius = 5;
     
+    // Setup screenshot button style
+    self.screenshotBtn.layer.borderWidth = 1.5;
+    self.screenshotBtn.imageEdgeInsets = UIEdgeInsetsMake(3, 3, 3, 3);
+    self.screenshotBtn.layer.borderColor = textColor;
+    self.screenshotBtn.layer.cornerRadius = 5;
+    
+    // Setup screenshot info box
+    self.screenshotInfoBox.layer.cornerRadius = self.screenshotInfoBox.bounds.size.height / 2;
+    
     // Setup freeze frame button
     self.freezeFrameBtn.layer.borderWidth = 1.5;
     self.freezeFrameBtn.layer.borderColor = textColor;
@@ -379,6 +388,10 @@ static const double MOM_OF_INERTIA = 2334;
         towerL.updatePath(fullDeflVals);
         towerR.updatePath(fullDeflVals);
     }
+}
+
+- (IBAction)screenshotBtnPressed:(id)sender {
+    return [managingParent screenshotBtnPressed:sender infoBox:self.screenshotInfoBox];
 }
 
 - (IBAction)homeBtnPressed:(id)sender {

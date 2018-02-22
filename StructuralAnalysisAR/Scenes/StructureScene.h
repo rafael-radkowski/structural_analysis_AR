@@ -20,6 +20,7 @@
 - (void) changeTrackingMode:(CGRect)anchorRect;
 - (void)freezePressed:(id)sender freezeBtn:(UIButton*)freezeBtn curtain:(UIView*)curtain;
 - (IBAction)homeBtnPressed:(id)sender;
+- (IBAction)screenshotBtnPressed:(id)sender infoBox:(UIView*)infoBox;
 @end
 
 @protocol StructureScene

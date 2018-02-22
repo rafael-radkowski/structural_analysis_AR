@@ -18,6 +18,7 @@
 #import <GLKit/GLKit.h>
 #import <MetalKit/MetalKit.h>
 #import <AVFoundation/AVFoundation.h>
+#import <Photos/Photos.h>
 
 #import "SampleApplicationUtils.h"
 #import <Vuforia/Vuforia.h>
@@ -312,6 +313,68 @@
     // Release any cached data, images, etc that aren't in use.
 }
 
+- (IBAction)screenshotBtnPressed:(id)sender infoBox:(UIView*)infoBox {
+    // I'm so sorry for this callback hell
+    
+    // Request permission to access Photos
+    [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+        if (status == PHAuthorizationStatusAuthorized) {
+            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                UIView* screen = self.view;
+    
+                UIGraphicsBeginImageContextWithOptions(screen.bounds.size, screen.opaque, 0.0);
+                [screen drawViewHierarchyInRect:screen.bounds afterScreenUpdates:YES];
+                UIImage* screengrab = UIGraphicsGetImageFromCurrentImageContext();
+                UIGraphicsEndImageContext();
+    
+                UIImageWriteToSavedPhotosAlbum(screengrab, nil, nil, nil);
+    
+                // Animate the info box fading in and out
+                infoBox.hidden = NO;
+                [UIView animateWithDuration:0.75
+                                      delay: 0.0
+                                    options:UIViewAnimationOptionCurveEaseOut
+                                 animations:^{
+                                     infoBox.alpha = 1.0;
+                                 }
+                                 completion:^(BOOL finished) {
+                                     [UIView animateWithDuration:1.25
+                                                           delay: 0.75
+                                                         options:UIViewAnimationOptionCurveEaseOut
+                                                      animations:^{
+                                                          infoBox.alpha = 0.0;
+                                                      }
+                                                      completion:^(BOOL finished) {
+                                                          infoBox.hidden = YES;
+                                                      }
+                                      ];
+                                 }
+                 ];
+                
+            }]; // end mainQueue handler
+        }
+        else { // request authorization denied
+            UIAlertController* alert = [UIAlertController
+                                        alertControllerWithTitle:@"Failed to save" message:@"Cannot save screenshot without Photos access" preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction* gotoSettingsBtn = [UIAlertAction
+                                              actionWithTitle:@"Go to Settings"
+                                              style:UIAlertActionStyleDefault
+                                              handler:^(UIAlertAction* action) {
+                                                  [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]
+                                                                                     options:nil
+                                                                           completionHandler:nil];
+                                              }];
+            UIAlertAction* okayBtn = [UIAlertAction
+                                      actionWithTitle:@"Okay"
+                                      style:UIAlertActionStyleCancel
+                                      handler:nil];
+            [alert addAction:gotoSettingsBtn];
+            [alert addAction:okayBtn];
+            [self presentViewController:alert animated:YES completion:nil];
+        }
+
+    }]; // close requestAuthorization handler
+}
 
 - (IBAction)homeBtnPressed:(id)sender {
 //    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];

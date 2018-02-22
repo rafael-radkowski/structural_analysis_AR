@@ -78,6 +78,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *rcnForceLabel;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *loadPresetBtn;
 @property (weak, nonatomic) IBOutlet UIButton *homeBtn;
+@property (weak, nonatomic) IBOutlet UIButton *screenshotBtn;
+@property (weak, nonatomic) IBOutlet UIView *screenshotInfoBox;
 @property (weak, nonatomic) IBOutlet UITextView *instructionBox;
 @property (weak, nonatomic) IBOutlet UIButton *prevBtn;
 @property (weak, nonatomic) IBOutlet UIButton *nextBtn;
@@ -100,6 +102,7 @@
 - (IBAction)visSwitchToggled:(id)sender;
 - (IBAction)loadPresetSet:(id)sender;
 - (IBAction)homeBtnPressed:(id)sender;
+- (IBAction)screenshotBtnPressed:(id)sender;
 - (IBAction)prevStepPressed:(id)sender;
 - (IBAction)nextStepPressed:(id)sender;
 - (IBAction)freezePressed:(id)sender;
