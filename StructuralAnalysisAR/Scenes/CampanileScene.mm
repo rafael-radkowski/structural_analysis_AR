@@ -255,11 +255,13 @@ static const double MOM_OF_INERTIA = 2334;
 //        std::uniform_real_distribution<float> dist(0, 1);
 //        std::mt19937 generator(rnd_dev());
 //        while(1) {
-//            float val = dist(generator);
-//            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-//                [self.slider setValue:val];
-//                [self.slider sendActionsForControlEvents:UIControlEventValueChanged];
-//            }];
+//            @autoreleasepool {
+//                float val = dist(generator);
+//                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+//                    [self.slider setValue:val];
+//                    [self.slider sendActionsForControlEvents:UIControlEventValueChanged];
+//                }];
+//            }
 //            std::this_thread::sleep_for(20ms);
 //        }
 //    });
