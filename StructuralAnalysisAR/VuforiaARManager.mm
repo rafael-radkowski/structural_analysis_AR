@@ -24,9 +24,11 @@
 #include "SampleApplicationUtils.h"
 
 
-VuforiaARManager::VuforiaARManager(ARView* view, SCNScene* scene, int VuforiaInitFlags, UIInterfaceOrientation ARViewOrientation)
+VuforiaARManager::VuforiaARManager(ARView* view, SCNScene* scene, UIInterfaceOrientation ARViewOrientation, NSString* dataset_path, GLKMatrix4 pose_transform)
  : view(view)
- , scene(scene) {
+ , scene(scene)
+ , pose_transform(pose_transform) {
+     datasetPath = dataset_path;
      // Get this property here to be used in onInitARDone, since we can only access this from the main thread
      viewSize = view.frame.size;
      vapp = [[SampleApplicationSession alloc] initWithDelegate:this];
@@ -89,17 +91,18 @@ void VuforiaARManager::onVuforiaUpdate(Vuforia::State* state) {
         const Vuforia::TrackableResult* track_result = state->getTrackableResult(0);
         
         Vuforia::Matrix44F modelViewMatrix = Vuforia::Tool::convertPose2GLMatrix(track_result->getPose());
-        SampleApplicationUtils::translatePoseMatrix(10.0f, -21.0f, 0, &modelViewMatrix.data[0]);
+//        SampleApplicationUtils::translatePoseMatrix(10.0f, -21.0f, 0, &modelViewMatrix.data[0]);
         //        SampleApplicationUtils::scalePoseMatrix(kObjectScaleNormal, kObjectScaleNormal, kObjectScaleNormal, &modelViewMatrix.data[0]);
         
         
-        SampleApplicationUtils::rotatePoseMatrix(180, 0, 1, 0, &modelViewMatrix.data[0]);
+//        SampleApplicationUtils::rotatePoseMatrix(180, 0, 1, 0, &modelViewMatrix.data[0]);
 //        [SampleApplicationUtils::translatePoseMatrix(self.x_stepper_thing.value, self.y_stepper_thing.value, self.z_stepper_thing.value, &modelViewMatrix.data[0]);]
         
         // Calculate inverse matrix and assign it to cameraNode
         GLKMatrix4 extrinsic = GLKMatrix4FromQCARMatrix44(modelViewMatrix);
         bool invertible;
         GLKMatrix4 inverted = GLKMatrix4Invert(extrinsic, &invertible); // inverse matrix!
+        inverted = GLKMatrix4Multiply(pose_transform, inverted);
         assert(invertible);
         cameraMatrix = GLKMatrix4Make(inverted.m00,  inverted.m01,   inverted.m02, 0,
                                                -inverted.m10,  -inverted.m11,  -inverted.m12, 0,
@@ -139,8 +142,7 @@ void VuforiaARManager::onInitARDone(NSError* initError) {
         videoTexture = [gpu newTextureWithDescriptor:texDescription];
         staticBgTex = [gpu newTextureWithDescriptor:texDescription];
         [view setVideoTexture:videoTexture];
-        printf("onInitARDone\n");
-        
+
         
         // Calculate texture coordinate scaling to make video fit
         // Vuforia expects this scaling for augmentations to match
@@ -195,7 +197,7 @@ bool VuforiaARManager::doInitTrackers() {
 }
 
 bool VuforiaARManager::doLoadTrackersData() {
-    dataSetStonesAndChips = loadObjectTrackerDataSet(@"skywalk_south1.xml");
+    dataSetStonesAndChips = loadObjectTrackerDataSet(datasetPath);
     if (dataSetStonesAndChips == NULL) {
         NSLog(@"Failed to load datasets");
         return NO;

@@ -10,8 +10,11 @@
 #define cvARManager_hpp
 
 // Apparently include openCV things before any other iOS-specific headers
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Weverything"
 #import <opencv2/opencv.hpp>
 #import <opencv2/videoio/cap_ios.h>
+#pragma clang diagnostic pop
 // these reference openCV includes
 #include "ImageMatcher.hpp"
 #include "MaskedImage.hpp"
@@ -39,9 +42,15 @@
 - (void)processImage:(cv::Mat&)image;
 @end
 
+
+typedef enum cvStructure {
+    skywalk,
+    campanile
+} cvStructure_t;
+
 class cvARManager : public ARManager {
 public:
-    cvARManager(UIView* view, SCNScene* scene);
+    cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure, GLKMatrix4 pose_transform);
     ~cvARManager() override;
     void doFrame(int n_avg, std::function<void(CB_STATE)> cb_func) override;
     bool startAR() override;
@@ -56,20 +65,23 @@ public:
     
     void saveImg();
     bool saveNext = false;
+
 private:
     SCNScene* scene;
     
     void setBgImage(cv::Mat img);
     CvVideoCamera* camera;
     CvCameraDelegateObj* camDelegate;
-    bool cam_running = false;
     int video_width, video_height;
     // Metal textures for double-buffering the background video
     id<MTLTexture> videoTextures[2];
     std::atomic<size_t> currentTexture; // = 0
     std::atomic<bool> texUpdated; // = false
     
+    // The structure being tracked
+    cvStructure_t structure;
     cv::Mat intrinsic_mat;
+    std::vector<double> distortion_coeffs;
     bool is_tracked = false;
     
     void processImage(cv::Mat& image);
@@ -77,6 +89,12 @@ private:
     
     // Holds 3D points of the model image
     std::vector<cv::Point3f> model_pts_3d;
+    struct MaskProperties {
+        float edge_threshold;
+        float min_length;
+        cv::Vec2f line_angle;
+        cv::Vec2f line_origin;
+    } mask_properties;
     
     // holds the frame that is being
     cv::Mat latest_frame;
@@ -87,6 +105,9 @@ private:
     std::mutex worker_mutex;
     std::thread worker_thread;
     void performTracking();
+    
+    // Transform matrix to apply to the calculated pose
+    GLKMatrix4 pose_transform;
     
     // for single-frame tracking
     int frames_to_capture = 0;

@@ -18,8 +18,8 @@
 
 class PeopleVis {
 public:
-    PeopleVis() : PeopleVis(0, nullptr) {};
-    PeopleVis(int n, SCNNode* camera);
+    PeopleVis() : PeopleVis(0) {};
+    PeopleVis(int n);
     void setWeight(float pounds);
     void setNumPeople(int n);
     void setPosition(GLKVector3 pos);

@@ -7,13 +7,14 @@
 //
 
 #include <assert.h>
-#include "loadMarker.h"
+#include "LoadMarker.h"
 #include <algorithm>
 
-LoadMarker::LoadMarker() : LoadMarker(2) { }
+LoadMarker::LoadMarker() : LoadMarker(2, false) { }
 
 
-LoadMarker::LoadMarker(size_t nLoads) {
+LoadMarker::LoadMarker(size_t nLoads, bool reversed, int n_labels)
+: reversed(reversed) {
     assert(nLoads >= 2);
     loadValues.resize(nLoads);
     loadArrows.resize(nLoads);
@@ -32,17 +33,25 @@ LoadMarker::LoadMarker(size_t nLoads) {
     }
     
     // Make an empty that the label will follow
-    labelEmpty = [SCNNode node];
-    textLabel.setObject(labelEmpty);
-    textLabel.setCenter(0.5, 0);
-    [rootNode addChildNode:labelEmpty];
+    textLabels.resize(n_labels);
+    labelEmpties.resize(n_labels);
+    for (int i = 0; i < n_labels; ++i) {
+        labelEmpties[i] = [SCNNode node];
+        textLabels[i].setObject(labelEmpties[i]);
+        textLabels[i].setCenter(0.5, 0);
+        [rootNode addChildNode:labelEmpties[i]];
+    }
+    
+    setFormatString(@"%.1f k/ft");
 }
 
 void LoadMarker::setScenes(SKScene* scene2d, SCNView* view3d) {
     for (int i = 0; i < loadArrows.size(); ++i) {
         loadArrows[i].setScenes(scene2d, view3d);
     }
-    textLabel.setScenes(scene2d, view3d);
+    for (OverlayLabel& textLabel : textLabels) {
+        textLabel.setScenes(scene2d, view3d);
+    }
 }
 
 void LoadMarker::addAsChild(SCNNode *node) {
@@ -53,7 +62,13 @@ void LoadMarker::doUpdate() {
     for (GrabbableArrow& arrow : loadArrows) {
         arrow.doUpdate();
     }
-    textLabel.doUpdate();
+    for (OverlayLabel& textLabel : textLabels) {
+        textLabel.doUpdate();
+    }
+}
+
+void LoadMarker::setFormatString(NSString* str) {
+    formatString = str;
 }
 
 void LoadMarker::setLoad(size_t loadIndex, double value) {
@@ -68,7 +83,29 @@ void LoadMarker::setLoad(double value) {
     for (int i = 0; i < loadValues.size(); ++i) {
         loadValues[i] = value;
     }
-    textLabel.setText([NSString stringWithFormat:@"%.1f k/ft", value]);
+    for (OverlayLabel& textLabel : textLabels) {
+        textLabel.setText([NSString stringWithFormat:formatString, value]);
+    }
+    refreshPositions();
+}
+
+void LoadMarker::setLoadInterpolate(double val_l, double val_r) {
+    for (int i = 0; i < loadValues.size(); ++i) {
+        double interp_fac = (double)i / (loadValues.size() - 1);
+        double interp_load = val_l + (val_r - val_l) * interp_fac;
+        loadValues[i] = interp_load;
+    }
+    size_t n_labels = textLabels.size();
+    // One label should be in the middle, averaged
+    if (n_labels == 1) {
+        textLabels[0].setText([NSString stringWithFormat:formatString, (val_l + val_r) / 2]);
+    }
+    // Multiple labels should include the endpoints
+    for (int i = 0; i < n_labels; ++i) {
+        double interp_fac = static_cast<float>(i) / (n_labels - 1);
+        double interp_load = val_l + (val_r - val_l) * interp_fac;
+        textLabels[i].setText([NSString stringWithFormat:formatString, interp_load]);
+    }
     refreshPositions();
 }
 
@@ -131,32 +168,59 @@ void LoadMarker::refreshPositions() {
     
     float lengthRange = maxHeight - minHeight;
     GLKVector3 lastPos;
-    float maxY = 0;
+    float maxY = 0; float minY = 0;
     for (int i = 0; i < loadArrows.size(); ++i) {
         float proportion = (float)i / (loadArrows.size() - 1);
         GLKVector3 interpolatedPos = GLKVector3Add(GLKVector3MultiplyScalar(lineDirection, proportion), startPos);
-        loadArrows[i].setPosition(interpolatedPos);
+
+        float thisNormalizedValue = (loadValues[i] - minInput) / (maxInput - minInput);
+        // actual height of load marker
+        float this_load_height = minHeight + lengthRange * thisNormalizedValue;
+
+        // For regular mode, arrow tips have y-position of 0. In "reversed" mode, arrow tips are height of marker
+        GLKVector3 arrowPos = interpolatedPos;
+        if (reversed) {
+            arrowPos = GLKVector3Add(interpolatedPos, GLKVector3Make(0, -(this_load_height), 0));
+        }
+        
+        loadArrows[i].setPosition(arrowPos);
         loadArrows[i].setIntensity(loadValues[i]);
         
-        float prevNormalizedValue = (loadValues[i-1] - minInput) / (maxInput - minInput);
-        float thisNormalizedValue = (loadValues[i] - minInput) / (maxInput - minInput);
         // Move load line
         if (i != 0) {
-            GLKVector3 adjusted_start = GLKVector3Make(lastPos.x, lastPos.y + minHeight + lengthRange*prevNormalizedValue, lastPos.z);
-            GLKVector3 adjusted_end = GLKVector3Make(interpolatedPos.x, interpolatedPos.y + minHeight + lengthRange*thisNormalizedValue, interpolatedPos.z);
+            float prevNormalizedValue = (loadValues[i-1] - minInput) / (maxInput - minInput);
+            float prev_load_height = minHeight + lengthRange * prevNormalizedValue;
+            
+            GLKVector3 adjusted_start = GLKVector3Make(lastPos.x, lastPos.y + prev_load_height, lastPos.z);
+            GLKVector3 adjusted_end = GLKVector3Make(interpolatedPos.x, interpolatedPos.y + this_load_height, interpolatedPos.z);
+            if (reversed) {
+                adjusted_start.y = -adjusted_start.y;
+                adjusted_end.y = -adjusted_end.y;
+            }
             loadLines[i - 1].move(adjusted_start, adjusted_end);
             // TODO: This only looks at load line start. Assuming flat load line
-            if (adjusted_start.y > maxY) {
-                maxY = adjusted_start.y;
-            }
+            maxY = std::max(maxY, adjusted_start.y);
+            minY = std::min(minY, adjusted_start.y);
         }
         
         lastPos = interpolatedPos;
     }
-    // Set position of text empty
-    float middleX = (endPos.x + startPos.x) / 2;
-    labelEmpty.position = SCNVector3Make(middleX, maxY + thickness, lastPos.z);
-    textLabel.markPosDirty();
+    // Set position of text empties
+    
+    size_t n_labels = textLabels.size();
+    // Weird stuff, since when there's one label, it should be in the middle, but multiple should have one at each endpoint
+    float separation = n_labels == 1 ? 0 : (endPos.x - startPos.x) / (n_labels - 1);
+    float start_x = n_labels == 1 ? (endPos.x + startPos.x) / 2 : 0;
+    for (int i = 0; i < n_labels; ++i) {
+        float posX = start_x + static_cast<float>(i) * separation;
+        if (reversed) {
+            labelEmpties[i].position = SCNVector3Make(posX, minY - thickness, lastPos.z);
+        }
+        else {
+            labelEmpties[i].position = SCNVector3Make(posX, maxY + thickness, lastPos.z);
+        }
+        textLabels[i].markPosDirty();
+    }
 }
 
 void LoadMarker::setHidden(bool hidden) {
@@ -166,7 +230,9 @@ void LoadMarker::setHidden(bool hidden) {
     for (int i = 0; i < loadLines.size(); ++i) {
         loadLines[i].setHidden(hidden);
     }
-    textLabel.setHidden(hidden);
+    for (OverlayLabel& textLabel : textLabels) {
+        textLabel.setHidden(hidden);
+    }
 }
 
 void LoadMarker::setInputRange(float minValue, float maxValue) {
@@ -232,7 +298,7 @@ void LoadMarker::touchBegan(GLKVector3 origin, GLKVector3 farHit) {
 }
 
 GLKVector3 LoadMarker::projectRay(const GLKVector3 origin, const GLKVector3 touchRay) {
-        GLKVector3 planeNormal = GLKVector3Make(rootNode.transform.m13, rootNode.transform.m23, rootNode.transform.m33);
+        GLKVector3 planeNormal = GLKVector3Make(rootNode.transform.m31, rootNode.transform.m32, rootNode.transform.m33);
         double numerator = GLKVector3DotProduct(planeNormal, GLKVector3Subtract(startPos, origin));
         double denominator = GLKVector3DotProduct(planeNormal, touchRay);
         
@@ -242,15 +308,23 @@ GLKVector3 LoadMarker::projectRay(const GLKVector3 origin, const GLKVector3 touc
         return hitPoint;
 }
 
+float LoadMarker::getDragPoint(GLKVector3 origin, GLKVector3 touchRay) {
+    GLKVector3 hitPoint = projectRay(origin, touchRay);
+    // global direction of x-axis
+    GLKVector3 lineDir = GLKVector3Make(rootNode.transform.m11, rootNode.transform.m12, rootNode.transform.m13);
+    
+    GLKVector3 shiftedHitPoint = GLKVector3Subtract(hitPoint, SCNVector3ToGLKVector3(rootNode.position));
+    double dragDistance = GLKVector3DotProduct(lineDir, shiftedHitPoint);
+    return dragDistance;
+}
+
 float LoadMarker::getDragValue(GLKVector3 origin, GLKVector3 touchRay) {
     double value;
     if (dragState & vertically) {
         GLKVector3 hitPoint = projectRay(origin, touchRay);
         
         GLKVector3 lineDir = GLKVector3Make(1, 0, 0);
-        GLKVector3 loadDir = GLKVector3CrossProduct(GLKVector3Make(rootNode.transform.m13, rootNode.transform.m23, rootNode.transform.m33), lineDir);
-        // Unsure about the negative on the x-axis, but it works?
-//        GLKVector3 loadDir = GLKVector3Make(-rootNode.transform.m12, rootNode.transform.m22, rootNode.transform.m32);
+        GLKVector3 loadDir = GLKVector3Make(rootNode.transform.m21, rootNode.transform.m22, rootNode.transform.m23);
         // Position of startPos + arrow min length along load direction
         GLKVector3 shiftedHitPoint = GLKVector3Subtract(hitPoint, SCNVector3ToGLKVector3(rootNode.position));
         GLKVector3 loadPos = GLKVector3Add(startPos, GLKVector3MultiplyScalar(loadDir, minHeight));

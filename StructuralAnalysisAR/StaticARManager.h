@@ -13,7 +13,7 @@
 
 class StaticARManager : public ARManager {
 public:
-    StaticARManager(UIView* view, SCNScene* scene);
+    StaticARManager(UIView* view, SCNScene* scene, GLKMatrix4 desiredPose, NSString* bgImagePath);
     ~StaticARManager() override {};
     void doFrame(int n_avg, std::function<void(CB_STATE)> cb_func) override {};
     bool startAR() override {return false;};

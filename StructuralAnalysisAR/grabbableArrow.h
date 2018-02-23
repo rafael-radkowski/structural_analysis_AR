@@ -20,7 +20,7 @@
 
 class GrabbableArrow {
 public:
-    GrabbableArrow();
+    GrabbableArrow(bool reversed = false);
     void setFormatString(NSString* str);
     void setScenes(SKScene* scene2d, SCNView* view3d);
     void addAsChild(SCNNode* node);
@@ -32,6 +32,7 @@ public:
     void setHidden(bool hidden);
     void setPosition(GLKVector3 pos);
     void setRotationAxisAngle(GLKVector4 axisAngle);
+    void setLabelFollow(bool follow);
     
     void setMaxLength(float newLength);
     float getMaxLength();
@@ -65,10 +66,13 @@ public:
     bool dragging = false;
     
 private:
+    bool reversed;
+    
     NSString* formatString;
     OverlayLabel valueLabel;
     SCNNode* labelEmpty;
     bool labelHidden = false;
+    bool labelFollows = true;
     
     SCNNode* arrowHead;
     SCNNode* arrowBase;

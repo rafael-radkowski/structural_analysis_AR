@@ -9,6 +9,9 @@
 #import "MainPageViewController.h"
 #import "GameViewController.h"
 
+#import "SkywalkScene.h"
+#import "CampanileScene.h"
+
 @interface MainPageViewController ()
 
 @end
@@ -52,6 +55,13 @@
     }
     self.btnSkywalk.hidden = [skywalk_hidden boolValue];
     self.btnWaterTower.hidden = [skywalk_guided_hidden boolValue];
+    
+    // Test
+//    [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(doSegue:) userInfo:nil repeats:NO];
+}
+
+- (void) doSegue:(NSTimer*) timer {
+    [self.btnCampanile sendActionsForControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -66,11 +76,17 @@
     // Get the new view controller using [segue destinationViewController].
     if ([segue.identifier isEqualToString:@"skywalkGuidedSegue"]) {
         GameViewController* viewController = (GameViewController*) [segue destinationViewController];
+        viewController.sceneClass = SkywalkScene.class;
         viewController.guided = true;
     }
-    if ([segue.identifier isEqualToString:@"skywalkSegue"]) {
+    else if ([segue.identifier isEqualToString:@"skywalkSegue"]) {
         GameViewController* viewController = (GameViewController*) [segue destinationViewController];
+        viewController.sceneClass = SkywalkScene.class;
         viewController.guided = false;
+    }
+    else if ([segue.identifier isEqualToString:@"campanileSegue"]) {
+        GameViewController* viewController = (GameViewController*) [segue destinationViewController];
+        viewController.sceneClass = CampanileScene.class;
     }
     // Pass the selected object to the new view controller.
 }

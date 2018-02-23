@@ -11,7 +11,7 @@
 #include <ctime>
 #include <algorithm>
 
-PeopleVis::PeopleVis(int n, SCNNode* camera) {
+PeopleVis::PeopleVis(int n) {
     srand(static_cast<uint>(time(NULL)));
     
     root = [SCNNode node];

@@ -12,7 +12,9 @@
 #import <assert.h>
 #include <algorithm>
 
-GrabbableArrow::GrabbableArrow() {
+GrabbableArrow::GrabbableArrow(bool reversed)
+: lastArrowValue(0)
+, reversed(reversed) {
     // Import the arrow object
     NSString* arrowHeadPath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"arrow_tip"] ofType:@"obj"];
     NSString* arrowBasePath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"arrow_base"] ofType:@"obj"];
@@ -36,9 +38,7 @@ GrabbableArrow::GrabbableArrow() {
     arrowMat.diffuse.contents = [UIColor colorWithRed:1.0 green:0 blue:0 alpha:1.0];
     arrowHead.geometry.firstMaterial = arrowMat;
     arrowBase.geometry.firstMaterial = arrowMat;
-    
-    setThickness(defaultWidth);
-    
+
     // Create a parent object for the arrow
     root = [SCNNode node];
     [root addChildNode:arrowHead];
@@ -50,6 +50,8 @@ GrabbableArrow::GrabbableArrow() {
     valueLabel.setObject(labelEmpty);
     valueLabel.setCenter(0.5, 1);
     setFormatString(@"%.1f k/ft");
+    
+    setThickness(defaultWidth);
 }
 
 void GrabbableArrow::setFormatString(NSString* str) {
@@ -73,6 +75,12 @@ void GrabbableArrow::doUpdate() {
 void GrabbableArrow::setTextHidden(bool hide) {
     labelHidden = hide;
     valueLabel.setHidden(hide);
+}
+
+void GrabbableArrow::setLabelFollow(bool follow) {
+    labelFollows = follow;
+    labelEmpty.position = SCNVector3Make(0, 0, 0);
+    setIntensity(lastArrowValue);
 }
 
 void GrabbableArrow::setHidden(bool hidden) {
@@ -100,11 +108,14 @@ void GrabbableArrow::setThickness(float thickness) {
     arrowHead.scale = SCNVector3Make(tipScale, tipScale, tipScale);
     arrowBase.position = SCNVector3Make(0, newTipSize, 0);
     tipSize = newTipSize;
-    
+
     // Update arrow base length, since tip size is different
     float widthScale = thickness / defaultWidth;
     float baseLength = minLength - tipSize;
     arrowBase.scale = SCNVector3Make(widthScale, baseLength, widthScale);
+    
+    // Call setIntensity to set positions
+    setIntensity(lastArrowValue);
 }
 
 void GrabbableArrow::setMaxLength(float newLength) {
@@ -154,6 +165,7 @@ void GrabbableArrow::touchBegan(SCNHitTestResult* hitTestResult) {
 }
 
 float GrabbableArrow::getDragValue(GLKVector3 origin, GLKVector3 touchRay, GLKVector3 cameraDir) {
+    // TODO: This probably doesn't work when reversed
     double value = lastArrowValue;
     if (dragging) {
         GLKMatrix4 arrowBaseGlobal = GLKMatrix4Multiply(
@@ -201,9 +213,19 @@ void GrabbableArrow::setIntensity(float value) {
     float lengthRange = maxLength - minLength; // The length range for the arrow base
     float desiredLength = (minLength - tipSize) + lengthRange * normalizedValue;
     arrowBase.scale = SCNVector3Make(arrowBase.scale.x, desiredLength, arrowBase.scale.z);
-    labelEmpty.position = SCNVector3Make(0, desiredLength + tipSize, 0);
-    valueLabel.markPosDirty();
     
+    if (labelFollows) {
+        if (reversed) {
+            arrowBase.position = SCNVector3Make(0, -desiredLength, 0);
+            arrowHead.position = SCNVector3Make(0, -desiredLength - tipSize, 0);
+            labelEmpty.position = SCNVector3Make(0, -desiredLength - tipSize, 0);
+        }
+        else {
+            labelEmpty.position = SCNVector3Make(0, desiredLength + tipSize, 0);
+        }
+        valueLabel.markPosDirty();
+    }
+
     // adjust color
 //    double reverse_value = 1 - normalizedValue ;
 //    double hue = 0.667 * reverse_value;

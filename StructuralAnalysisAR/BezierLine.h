@@ -36,10 +36,13 @@ public:
     void addAsChild(SCNNode *scene);
     void setHidden(bool hidden);
     void setTextHidden(bool hidden);
+    // The fraction of the line along the x-axis (long) where the x should appear
+    void setTextLocX(float fac_along_x);
 private:
     bool hidden = false;
     float magnification = 1;
     float thickness = 2;
+    float x_pos_frac = 0.5;
     SCNNode* lineNode;
     SCNNode* rootNode;
     UIBezierPath* interpolatePoints(const std::vector<std::vector<float>>& points, float height);

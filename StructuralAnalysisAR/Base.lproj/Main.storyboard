@@ -37,11 +37,14 @@
                                     <segue destination="BV1-FR-VrT" kind="presentation" identifier="skywalkGuidedSegue" id="iyJ-9J-GsJ"/>
                                 </connections>
                             </button>
-                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nVW-Dc-2xU">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nVW-Dc-2xU">
                                 <rect key="frame" x="387" y="441" width="250" height="58"/>
                                 <color key="backgroundColor" red="0.90794807374091779" green="0.91693765862944165" blue="0.91693765862944165" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="26"/>
                                 <state key="normal" title="Campanile"/>
+                                <connections>
+                                    <segue destination="BV1-FR-VrT" kind="presentation" identifier="campanileSegue" modalTransitionStyle="crossDissolve" id="1d1-YI-vJj"/>
+                                </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="AR Structural Analysis" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7Ts-Uw-9To">
                                 <rect key="frame" x="283" y="28" width="458" height="55"/>
@@ -141,6 +144,6 @@
         <image name="isuofficallogo_light.png" width="784" height="65"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="ERb-dM-F7t"/>
+        <segue reference="1d1-YI-vJj"/>
     </inferredMetricsTieBreakers>
 </document>

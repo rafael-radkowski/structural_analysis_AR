@@ -17,6 +17,8 @@
 
 #import <UIKit/UIKit.h>
 
+#include <algorithm>
+
 #define DEBUG_SAMPLE_APP 1
 
 namespace {
@@ -308,8 +310,8 @@ namespace {
     Vuforia::onSurfaceCreated();
     
     CGSize viewBoundsSize = [self getCurrentARViewBoundsSize];
-    int smallerSize = MIN(viewBoundsSize.width, viewBoundsSize.height);
-    int largerSize = MAX(viewBoundsSize.width, viewBoundsSize.height);
+    int smallerSize = std::min(viewBoundsSize.width, viewBoundsSize.height);
+    int largerSize = std::max(viewBoundsSize.width, viewBoundsSize.height);
     
     // Frames from the camera are always landscape, no matter what the
     // orientation of the device.  Tell Vuforia to rotate the video background (and

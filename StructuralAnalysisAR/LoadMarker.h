@@ -28,7 +28,8 @@
 class LoadMarker {
 public:
     LoadMarker();
-    LoadMarker(size_t nLoads);
+    LoadMarker(size_t nLoads, bool reversed=false, int n_labels=1);
+    void setFormatString(NSString* str);
     enum Dragging : uint32_t {
         none = 0,
         vertically = 1,
@@ -41,6 +42,7 @@ public:
     void doUpdate();
     void setLoad(size_t loadIndex, double value);
     void setLoad(double value);
+    void setLoadInterpolate(double val_l, double val_r);
     void setPosition(GLKVector3 pos);
     void setOrientation(GLKQuaternion);
     void setEnds(float start, float end);
@@ -60,6 +62,8 @@ public:
     void touchBegan(GLKVector3 origin, GLKVector3 touchRay);
     // The value, and whether it is a new value
     float getDragValue(GLKVector3 origin, GLKVector3 touchRay);
+    // The distance from the left-hand end of the load marker to the point that's being dragged
+    float getDragPoint(GLKVector3 origin, GLKVector3 touchRay);
     // Returns the dragged start and end x position
     std::pair<float, float> getDragPosition(GLKVector3 origin, GLKVector3 farHit);
     void touchEnded();
@@ -70,6 +74,7 @@ public:
     
     
 private:
+    NSString* formatString;
     void refreshPositions();
 
     // Returns the 3D point where a touch ray intersects the "plane" created by the load marker
@@ -94,13 +99,15 @@ private:
     // startPos and endPos whend touchBegan
     GLKVector3 startAtDragBegin;
     GLKVector3 endAtDragBegin;
+    
+    bool reversed;
 
     float lastIntensity = 0.5;
     float thickness;
     
     // Label
-    OverlayLabel textLabel;
-    SCNNode* labelEmpty;
+    std::vector<OverlayLabel> textLabels;
+    std::vector<SCNNode*> labelEmpties;
 };
 
 #endif /* loadMarker_hpp */

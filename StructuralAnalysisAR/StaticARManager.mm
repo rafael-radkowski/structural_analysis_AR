@@ -11,8 +11,8 @@
 #import <GLKit/GLKMatrix4.h>
 #import <MetalKit/MetalKit.h>
 
-StaticARManager::StaticARManager(UIView* view, SCNScene* scene) {
-    UIImage* bgImage = [UIImage imageNamed:@"skywalk_south_far.jpg"];
+StaticARManager::StaticARManager(UIView* view, SCNScene* scene, GLKMatrix4 desiredPose, NSString* bgImagePath) {
+    UIImage* bgImage = [UIImage imageNamed:bgImagePath];
     int img_width = bgImage.size.width;
     int img_height = bgImage.size.height;
     
@@ -28,7 +28,8 @@ StaticARManager::StaticARManager(UIView* view, SCNScene* scene) {
     }
     // Set texture as background
     scene.background.contents = staticBgTex;
-    
+//    scene.background.contents = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:1.0];;
+
     // Calculate scaling so image is not stretched
     float aspectImage = (float)img_width / img_height;
     CGSize viewSize = view.frame.size;
@@ -47,17 +48,16 @@ StaticARManager::StaticARManager(UIView* view, SCNScene* scene) {
     
     projectionMatrix = GLKMatrix4MakePerspective(36.909 * (M_PI / 180.0), aspectScreen, 0.1, 500);
     
-    GLKMatrix4 trans_mat = GLKMatrix4MakeTranslation(-15, 7, 280);
-    GLKMatrix4 rot_y_mat = GLKMatrix4MakeYRotation(M_PI);
-    GLKMatrix4 rot_x_mat = GLKMatrix4MakeXRotation(0.1);
-    GLKMatrix4 rot_z_mat = GLKMatrix4MakeZRotation(0.02);
-    // Rotate by Y, then X
-    GLKMatrix4 rot_mat = GLKMatrix4Multiply(rot_z_mat, GLKMatrix4Multiply(rot_y_mat, rot_x_mat));
-    cameraMatrix = GLKMatrix4Multiply(rot_mat, trans_mat);
+    cameraMatrix = desiredPose;
 }
 
 
 GLKMatrix4 StaticARManager::getCameraMatrix() {
+//    static float phase = 0;
+//    phase += 0.01;
+//    float angle = 0.2 * std::sin(phase);
+//    GLKMatrix4 rotMat = GLKMatrix4MakeYRotation(angle);
+//    return GLKMatrix4Multiply(rotMat, cameraMatrix);
     return cameraMatrix;
 }
 

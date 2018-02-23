@@ -94,6 +94,23 @@ ImageMatcher::Correspondences ImageMatcher::getMatches(const cv::Mat test_img) {
     *log << "After RANSAC, " << final_matches.size() << " matches" << endl;
 #endif
 
+    // vector<vector<DMatch>> final_matches_formatted(final_matches.size());
+    // for (int i = 0; i < final_matches.size(); ++i) {
+    //     final_matches_formatted[i].push_back(final_matches[i]);
+    // }
+    // Mat matches_img;
+    // drawMatches(test_img, keypoints,
+    //             ref_img, ref_keypoints,
+    //             final_matches_formatted,
+    //             matches_img);
+    
+    // // resize(matches_img, matches_img, Size(), 0.6, 0.6);
+    // // imshow("window", matches_img);
+    // // waitKey(0);
+    // static int count = 230;
+    // imwrite("campanile_matches/" + std::to_string(count) + ".JPG", matches_img);
+    // count++;
+
     // if (final_matches.size() < 4) {
     //     log << "error: not enough points, skipping homography" << std::endl;
     //     return Mat::eye(3, 3, CV_32F);
@@ -168,11 +185,12 @@ vector<DMatch> ImageMatcher::ransacTest(const vector<cv::DMatch> &matches,
 
     // Compute F matrix using RANSAC
     vector<uchar> inliers;
-    cv::Mat fundemental = cv::findFundamentalMat(cv::Mat(points1), cv::Mat(points2), // matching points
-                                                 CV_FM_RANSAC,                       // RANSAC method
-                                                 ransac_distance,                          // distance to epipolar line
-                                                 ransac_confidence,                       // confidence probability
-                                                 inliers);                         // match status (inlier or outlier)
+    // cv::Mat fundemental = cv::findFundamentalMat(cv::Mat(points1), cv::Mat(points2), // matching points
+    //                                              CV_FM_RANSAC,                       // RANSAC method
+    //                                              ransac_distance,                          // distance to epipolar line
+    //                                              ransac_confidence,                       // confidence probability
+    //                                              inliers);                         // match status (inlier or outlier)
+    cv::Mat homography = cv::findHomography(points1, points2, CV_RANSAC, ransac_distance, inliers);
 
     // extract the surviving (inliers) matches
     vector<DMatch> outMatches;

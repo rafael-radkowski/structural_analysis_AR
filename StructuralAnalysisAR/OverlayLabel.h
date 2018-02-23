@@ -9,10 +9,34 @@
 #ifndef OverlayLabel_hpp
 #define OverlayLabel_hpp
 
+#include <mutex>
 #include <stdio.h>
 #import <SpriteKit/SpriteKit.h>
 #import <Scenekit/Scenekit.h>
 #import <GLKit/GLKit.h>
+
+class ExclusiveNSString {
+public:
+    ExclusiveNSString() : str([NSString alloc]) {}
+    ExclusiveNSString(NSString* other) : str(other) {}
+    // move constructor
+    ExclusiveNSString(ExclusiveNSString&& other);
+    // copy constructor
+    ExclusiveNSString(const ExclusiveNSString& other);
+    // copy assignment
+    ExclusiveNSString& operator=(const ExclusiveNSString& other);
+    // move assignment
+    ExclusiveNSString& operator=(ExclusiveNSString&& other);
+    
+    ExclusiveNSString& operator=(const NSString* other);
+    operator NSString*() {
+        std::lock_guard<std::mutex> lock(mut);
+        return str;
+    }
+private:
+    NSString* str;
+    mutable std::mutex mut;
+};
 
 class OverlayLabel {
 public:
@@ -40,7 +64,8 @@ private:
     SKSpriteNode* backgroundBox;
     bool hidden = false;
     
-    NSString* textToDisplay;
+//    NSString* textToDisplay;
+    ExclusiveNSString textToDisplay;
     bool textChanged = false;
     SCNNode* attachedNode;
     bool posChanged = false;

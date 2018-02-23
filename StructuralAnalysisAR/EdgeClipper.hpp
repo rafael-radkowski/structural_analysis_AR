@@ -11,6 +11,10 @@ class EdgeClipper {
 public:
     template <typename T>
     static cv::Vec<T, 4> clipLine(const cv::Vec<T, 4>& line, const cv::Size_<T>& bounds);
+
+    // clipLine with same call format as openCV. Takes two endpoints references and modifies them
+    template <typename T>
+    static void clipLineCV(const cv::Size_<T>& bounds, cv::Vec<T, 2>& endpoint1, cv::Vec<T, 2>& endpoint2);
 private:
     // disallow constructor
     EdgeClipper() {}
@@ -118,4 +122,12 @@ cv::Vec<T, 4> EdgeClipper::clipLine(const cv::Vec<T, 4>& line, const cv::Size_<T
         }
     }
     return cv::Vec<T, 4>(x0, y0, x1, y1);
+}
+
+template <typename T>
+void EdgeClipper::clipLineCV(const cv::Size_<T>& bounds, cv::Vec<T, 2>& endpoint1, cv::Vec<T, 2>& endpoint2) {
+    cv::Vec<T, 4> converted(endpoint1[0], endpoint1[1], endpoint2[0], endpoint2[1]);
+    auto clipped = clipLine(converted, bounds);
+    endpoint1[0] = clipped[0]; endpoint1[1] = clipped[1];
+    endpoint2[0] = clipped[2]; endpoint2[1] = clipped[3];
 }
