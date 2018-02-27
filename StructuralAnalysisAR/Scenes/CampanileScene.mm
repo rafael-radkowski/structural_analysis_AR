@@ -22,6 +22,12 @@ static const float base_height = 89 + 2.f / 12;
 static const float roof_height = 20 + 4.5 / 12;
 static const float roof_angle = (M_PI / 180.0) * 68.56;
 
+static const float f1_h = 17.75;
+static const float f2_h = 57.5;
+static const float f3_h = 71.5;
+static const float f4_h = 89.14;
+static const float f5_h = 109.5;
+
 static const float max_vel = 150;
 
 static const double MOD_ELASTICITY = 2.016e8;
@@ -107,7 +113,6 @@ static const double MOM_OF_INERTIA = 2334;
     windwardSideLoad.addAsChild(rootNode);
     windwardSideLoad.setLoad(0.5);
 
-    shearArrow.setRotationAxisAngle(GLKVector4Make(0, 0, 1, -M_PI/2));
     shearArrow.setPosition(GLKVector3Make(0, -5, 0));
     
     shearArrow.setMinLength(20);
@@ -129,8 +134,6 @@ static const double MOM_OF_INERTIA = 2334;
     axialArrow.addAsChild(rootNode);
 
     momentIndicator.addAsChild(rootNode);
-    momentIndicator.setInputRange(-100, 4000);
-    momentIndicator.setRotationAxisAngle(GLKVector4Make(0, 0, 1, M_PI));
     momentIndicator.setThickness(thickness);
     momentIndicator.setRadius(18);
     momentIndicator.setScenes(skScene, scnView);
@@ -170,11 +173,11 @@ static const double MOM_OF_INERTIA = 2334;
         seismicArrows[i].setFormatString(@"%.2f k");
         seismicArrows[i].setRotationAxisAngle(GLKVector4Make(0, 0, 1, -M_PI/2));
     }
-    seismicArrows[0].setPosition(GLKVector3Make(base_width/2, 17.75, 0));
-    seismicArrows[1].setPosition(GLKVector3Make(base_width/2, 57.5, 0));
-    seismicArrows[2].setPosition(GLKVector3Make(base_width/2, 71.5, 0));
-    seismicArrows[3].setPosition(GLKVector3Make(base_width/2, 89.16667, 0));
-    seismicArrows[4].setPosition(GLKVector3Make(base_width/2, 109.5, 0));
+    seismicArrows[0].setPosition(GLKVector3Make(base_width/2, f1_h, 0));
+    seismicArrows[1].setPosition(GLKVector3Make(base_width/2, f2_h, 0));
+    seismicArrows[2].setPosition(GLKVector3Make(base_width/2, f2_h, 0));
+    seismicArrows[3].setPosition(GLKVector3Make(base_width/2, f4_h, 0));
+    seismicArrows[4].setPosition(GLKVector3Make(base_width/2, f5_h, 0));
 
     return rootNode;
 }
@@ -522,6 +525,9 @@ static const double MOM_OF_INERTIA = 2334;
     seismicArrows[3].setIntensity(F4);
     seismicArrows[4].setIntensity(F5);
     
+    float moment = f1_h*F1 + f2_h*F2 + f3_h*F3 + f4_h*F4 + f5_h*F5;
+    momentIndicator.setIntensity(moment);
+    
     [self.sliderValLabel setText:[NSString stringWithFormat:@"Ss=%.2f S1=%.2f", Ss, S1]];
     
     size_t resolution = fullDeflVals[0].size();
@@ -569,28 +575,34 @@ static const double MOM_OF_INERTIA = 2334;
         case 0:
             activeScenario = wind;
             shearArrow.setInputRange(0, 66);
+            shearArrow.setRotationAxisAngle(GLKVector4Make(0, 0, 1, -M_PI/2));
             towerL.setMagnification(500);
             towerR.setMagnification(500);
             axialArrow.setHidden(false);
-            momentIndicator.setHidden(false);
+            momentIndicator.setRotationAxisAngle(GLKVector4Make(0, 0, 1, M_PI));
+            momentIndicator.setInputRange(-100, 4000);
             windwardSideLoad.setHidden(false);
             for (GrabbableArrow& arrow : seismicArrows) {
                 arrow.setHidden(true);
             }
             [self.sliderLabel setText:@"Wind Speed"];
+            [self.swayVisSwitch setEnabled:NO];
             break;
         case 1:
             activeScenario  = seismic;
             shearArrow.setInputRange(0, 2000);
+            shearArrow.setRotationAxisAngle(GLKVector4Make(0, 0, 1, M_PI/2));
             towerL.setMagnification(8000);
             towerR.setMagnification(8000);
             axialArrow.setHidden(true);
-            momentIndicator.setHidden(true);
+            momentIndicator.setRotationAxisAngle(GLKVector4Make(1, 0, 0, M_PI));
+            momentIndicator.setInputRange(-100, 230000);
             windwardSideLoad.setHidden(true);
             for (GrabbableArrow& arrow : seismicArrows) {
                 arrow.setHidden(false);
             }
             [self.sliderLabel setText:@"Intensity"];
+            [self.swayVisSwitch setEnabled:YES];
             break;
         default:
             assert(false);

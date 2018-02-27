@@ -143,6 +143,13 @@
     peopleLoad.setScenes(skScene, scnView);
     deadLoad.setScenes(skScene, scnView);
     
+    ruler.addAsChild(rootNode);
+    ruler.setOrientation(GLKQuaternionMakeWithAngleAndAxis(M_PI, 0, 1, 0));
+    ruler.setPosition(GLKVector3Make(COL4_POS, 0, -5));
+    
+    ruler.setEnds(0, COL4_POS - COL1_POS + 2); // add 2 just to round out the ruler
+    ruler.setMarkSpacing(20);
+
     return rootNode;
 }
 
@@ -444,6 +451,9 @@
         for (int i = 0; i < reactionArrows.size(); ++i) {
             reactionArrows[i].setHidden(!self.rcnForceSwitch.on);
         }
+    }
+    if (!self.rulerSwitch.hidden) {
+        ruler.setHidden(!self.rulerSwitch.on);
     }
 }
 

@@ -76,6 +76,7 @@
 		0BD710F92034B2820095D753 /* campanile_1920_model_cutout.png in Resources */ = {isa = PBXBuildFile; fileRef = 0BD710F82034B2800095D753 /* campanile_1920_model_cutout.png */; };
 		0BD71111203F48F70095D753 /* screenshot_blue.png in Resources */ = {isa = PBXBuildFile; fileRef = 0BD71110203F48F70095D753 /* screenshot_blue.png */; };
 		0BD71113203F6A090095D753 /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BD71112203F6A090095D753 /* Photos.framework */; };
+		0BD7111620408B5A0095D753 /* Ruler.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0BD7111420408B5A0095D753 /* Ruler.mm */; };
 		0BD8F1A320090E3B00DBF55D /* CampanileSeismicScene.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0BD8F1A220090E3B00DBF55D /* CampanileSeismicScene.mm */; };
 		0BD8F1A62009109800DBF55D /* campanileSeismicView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0BD8F1A52009109800DBF55D /* campanileSeismicView.xib */; };
 		0BDE98DF1FBE4D43003673F4 /* ImageMatcher.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0BDE98DB1FBE4D42003673F4 /* ImageMatcher.cpp */; };
@@ -182,6 +183,8 @@
 		0BD710F82034B2800095D753 /* campanile_1920_model_cutout.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = campanile_1920_model_cutout.png; path = image_assets/campanile_1920_model_cutout.png; sourceTree = "<group>"; };
 		0BD71110203F48F70095D753 /* screenshot_blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = screenshot_blue.png; path = image_assets/screenshot_blue.png; sourceTree = "<group>"; };
 		0BD71112203F6A090095D753 /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
+		0BD7111420408B5A0095D753 /* Ruler.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Ruler.mm; sourceTree = "<group>"; };
+		0BD7111520408B5A0095D753 /* Ruler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Ruler.h; sourceTree = "<group>"; };
 		0BD8F1A220090E3B00DBF55D /* CampanileSeismicScene.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = CampanileSeismicScene.mm; sourceTree = "<group>"; };
 		0BD8F1A420090E5100DBF55D /* CampanileSeismicScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CampanileSeismicScene.h; sourceTree = "<group>"; };
 		0BD8F1A52009109800DBF55D /* campanileSeismicView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = campanileSeismicView.xib; path = StructuralAnalysisAR/campanileSeismicView.xib; sourceTree = SOURCE_ROOT; };
@@ -386,6 +389,8 @@
 				0BDE98E11FBE4D7E003673F4 /* EdgeClipper.hpp */,
 				0B0CBD111FDF4B5800A9B223 /* StaticARManager.h */,
 				0B0CBD101FDF4B5800A9B223 /* StaticARManager.mm */,
+				0BD7111420408B5A0095D753 /* Ruler.mm */,
+				0BD7111520408B5A0095D753 /* Ruler.h */,
 			);
 			path = StructuralAnalysisAR;
 			sourceTree = "<group>";
@@ -535,6 +540,7 @@
 				0BB1643F1F4732DC0053CA3B /* AppDelegate.m in Sources */,
 				0BD8F1A320090E3B00DBF55D /* CampanileSeismicScene.mm in Sources */,
 				0B03582E2000128B00F75CD2 /* StructureScene.mm in Sources */,
+				0BD7111620408B5A0095D753 /* Ruler.mm in Sources */,
 				0B1FCD461FBCA2F2002DBE98 /* VuforiaARManager.mm in Sources */,
 				0BAD78751F66C622003CAE93 /* PeopleVis.mm in Sources */,
 				0B03583520054BAA00F75CD2 /* CampanileScene.mm in Sources */,

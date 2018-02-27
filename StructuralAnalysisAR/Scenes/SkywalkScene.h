@@ -20,6 +20,7 @@
 #include "loadMarker.h"
 #include "PeopleVis.h"
 #include "BezierLine.h"
+#include "Ruler.h"
 #include "ARManager.h"
 
 #include <vector>
@@ -52,6 +53,7 @@
     
     PeopleVis people;
     BezierLine beam1, beam2, beam3;
+    Ruler ruler;
     
     std::vector<std::vector<float>> beamVals1, beamVals2, beamVals3;
     
@@ -76,6 +78,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *deadLoadLabel;
 @property (weak, nonatomic) IBOutlet UISwitch *rcnForceSwitch;
 @property (weak, nonatomic) IBOutlet UILabel *rcnForceLabel;
+@property (weak, nonatomic) IBOutlet UISwitch *rulerSwitch;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *loadPresetBtn;
 @property (weak, nonatomic) IBOutlet UIButton *homeBtn;
 @property (weak, nonatomic) IBOutlet UIButton *screenshotBtn;
