@@ -28,7 +28,7 @@
 class LoadMarker {
 public:
     LoadMarker();
-    LoadMarker(size_t nLoads, bool reversed=false, int n_labels=1);
+    LoadMarker(size_t nLoads, bool reversed=false, int n_labels=1, float hit_overlap=1.0);
     void setFormatString(NSString* str);
     enum Dragging : uint32_t {
         none = 0,

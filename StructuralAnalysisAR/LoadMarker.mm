@@ -13,7 +13,7 @@
 LoadMarker::LoadMarker() : LoadMarker(2, false) { }
 
 
-LoadMarker::LoadMarker(size_t nLoads, bool reversed, int n_labels)
+LoadMarker::LoadMarker(size_t nLoads, bool reversed, int n_labels, float hit_overlap)
 : reversed(reversed) {
     assert(nLoads >= 2);
     loadValues.resize(nLoads);
@@ -21,7 +21,7 @@ LoadMarker::LoadMarker(size_t nLoads, bool reversed, int n_labels)
     // Make lines with 1.5x hit area
     // A resize(n-1) call should work, but Line3d doesn't have a working copy constructor, since it holds Objective-C objects
     for (int i = 0; i < nLoads - 1; ++i) {
-        loadLines.emplace_back(3.5);
+        loadLines.emplace_back(hit_overlap);
     }
 
     // Create root node and set child links
@@ -263,7 +263,8 @@ void LoadMarker::touchBegan(GLKVector3 origin, GLKVector3 farHit) {
 //    GLKVector4 endPos4 = GLKMatrix4GetColumn(endTransform, 3);
     NSDictionary* hitOptions = @{
                                  SCNHitTestBoundingBoxOnlyKey: @YES,
-                                 SCNHitTestIgnoreHiddenNodesKey: @NO // need to test for hidden nodes for hidden extra hitBox on lines and arrows
+                                 SCNHitTestIgnoreHiddenNodesKey: @NO, // need to test for hidden nodes for hidden extra hitBox on lines and arrows
+                                 SCNHitTestFirstFoundOnlyKey: @NO
                                  };
     SCNVector3 origin_local = [rootNode convertPosition:SCNVector3FromGLKVector3(origin) fromNode:nil];
     SCNVector3 destination_local = [rootNode convertPosition:SCNVector3FromGLKVector3(farHit) fromNode:nil];

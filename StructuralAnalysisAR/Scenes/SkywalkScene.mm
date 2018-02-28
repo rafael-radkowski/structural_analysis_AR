@@ -64,7 +64,7 @@
     
     GLKQuaternion beamOri = GLKQuaternionMakeWithAngleAndAxis(0, 0, 0, 1);
     // Create live load bar
-    peopleLoad = LoadMarker(3);
+    peopleLoad = LoadMarker(3, false, 1, 2.0);
     peopleLoad.setPosition(GLKVector3Make(0, 33 + heightOffset, 0));
     peopleLoad.setOrientation(beamOri);
     peopleLoad.setInputRange(0, 1.5);

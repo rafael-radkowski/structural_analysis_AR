@@ -98,7 +98,7 @@ static const double MOM_OF_INERTIA = 2334;
     float load_min_h = 10; float load_max_h = 35;
     float thickness = 3;
 
-    windwardSideLoad = LoadMarker(7, false, 2);
+    windwardSideLoad = LoadMarker(7, false, 2, 3);
     windwardSideLoad.setPosition(GLKVector3Make(-base_width/2, 0, 0));
     windwardSideLoad.setOrientation(GLKQuaternionMakeWithAngleAndAxis(M_PI/2.f, 0, 0, 1));
     windwardSideLoad.setEnds(0, 89 + 2.f/12);
