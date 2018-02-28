@@ -33,6 +33,7 @@
     
     GrabbableArrow shearArrow;
     GrabbableArrow axialArrow;
+    GrabbableArrow deadLoad;
     CircleArrow momentIndicator;
     
     struct WindPressures {
@@ -51,6 +52,9 @@
     
     BezierLine towerL;
     BezierLine towerR;
+    
+    SCNNode* campanileInterior;
+    SCNNode* campanileExterior;
 
     bool do_animations;
     
@@ -62,6 +66,7 @@
 @property (nonatomic, retain) IBOutlet UIView *viewFromNib;
 @property (weak, nonatomic) IBOutlet UIView *visOptionsBox;
 @property (weak, nonatomic) IBOutlet UISwitch *swayVisSwitch;
+@property (weak, nonatomic) IBOutlet UISwitch *modelVisSwitch;
 
 @property (weak, nonatomic) IBOutlet UIButton *homeBtn;
 @property (weak, nonatomic) IBOutlet UIButton *screenshotBtn;
@@ -82,7 +87,8 @@
 - (IBAction)homeBtnPressed:(id)sender;
 - (IBAction)screenshotBtnPressed:(id)sender;
 - (IBAction)freezePressed:(id)sender;
-- (IBAction)swapVisToggled:(id)sender;
+// some visualization switch was toggled
+- (IBAction)visToggled:(id)sender;
 
 - (IBAction)sliderChanged:(id)sender;
 - (IBAction)scenarioChanged:(id)sender;

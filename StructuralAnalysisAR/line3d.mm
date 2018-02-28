@@ -8,15 +8,18 @@
 
 #include "line3d.h"
 
-Line3d::Line3d() {
-//    boxNode = [SCNNode nodeWithGeometry:[SCNBox boxWithWidth:1 height:1 length:1 chamferRadius:0]];
-//    boxNode.pivot = SCNMatrix4MakeTranslation(0, 0, 0.5);
+Line3d::Line3d(float hitBoxScale) {
     boxNode = [SCNNode nodeWithGeometry:[SCNCylinder cylinderWithRadius:0.5 height:1]];
     boxNode.pivot = SCNMatrix4Mult(SCNMatrix4MakeTranslation(0, 0, 0.5), SCNMatrix4MakeRotation(GLKMathDegreesToRadians(90), 1, 0, 0));
     
+    hitBox = [SCNNode nodeWithGeometry:[SCNBox boxWithWidth:hitBoxScale height:hitBoxScale length:1 chamferRadius:0]];
+    hitBox.pivot = SCNMatrix4MakeTranslation(0, 0, 0.5);
+    hitBox.hidden = YES;
+
     // Containing node that the constraint will be applied to. If we didn't use this, the lookAt constraint would interfere with setting the scale
     boxContainer = [SCNNode node];
     [boxContainer addChildNode:boxNode];
+    [boxContainer addChildNode:hitBox];
     
     // Node for setting the endpoint of the line
     boxLookAt = [SCNNode node];
@@ -47,6 +50,7 @@ void Line3d::move(GLKVector3 start, GLKVector3 end) {
     double distance = GLKVector3Length(GLKVector3Subtract(end, start));
     // Scale to the correct length
     boxNode.scale = SCNVector3Make(boxNode.scale.x, boxNode.scale.y, distance);
+    hitBox.scale = SCNVector3Make(hitBox.scale.x, hitBox.scale.y, distance);
 }
 
 void Line3d::setColor(float r, float g, float b) {
@@ -55,8 +59,9 @@ void Line3d::setColor(float r, float g, float b) {
 
 void Line3d::setThickness(float thickness) {
     boxNode.scale = SCNVector3Make(thickness, thickness, boxNode.scale.z);
+    hitBox.scale = SCNVector3Make(thickness, thickness, hitBox.scale.z);
 }
 
 bool Line3d::hasNode(SCNNode* node) {
-    return node == boxNode;
+    return node == hitBox || node == boxNode;
 }

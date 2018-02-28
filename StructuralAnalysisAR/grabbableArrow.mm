@@ -34,8 +34,8 @@ GrabbableArrow::GrabbableArrow(bool reversed)
 //    arrowNode = [SCNNode nodeWithMDLObject:[arrowAsset objectAtIndex:0]];
     
     // Make material for arrow
-    SCNMaterial* arrowMat = [SCNMaterial material];
-    arrowMat.diffuse.contents = [UIColor colorWithRed:1.0 green:0 blue:0 alpha:1.0];
+    arrowMat = [SCNMaterial material];
+    setColor(1, 0, 0);
     arrowHead.geometry.firstMaterial = arrowMat;
     arrowBase.geometry.firstMaterial = arrowMat;
 
@@ -56,6 +56,8 @@ GrabbableArrow::GrabbableArrow(bool reversed)
 
 void GrabbableArrow::setFormatString(NSString* str) {
     formatString = str;
+    // update text
+    setIntensity(lastArrowValue);
 }
 
 void GrabbableArrow::setScenes(SKScene* scene2d, SCNView* view3d) {
@@ -243,5 +245,9 @@ void GrabbableArrow::setWide(bool wide) {
     SCNTransaction.animationDuration = 0.5;
     arrowHead.scale = SCNVector3Make(widthScale, arrowHead.scale.y, widthScale);
     [SCNTransaction commit];
+}
+
+void GrabbableArrow::setColor(float r, float g, float b) {
+    arrowMat.diffuse.contents = [UIColor colorWithRed:r green:g blue:b alpha:1.0];
 }
 

@@ -57,6 +57,7 @@ public:
     void setIntensity(float value);
     void setWide(bool wide);
     float widthScale = 1.0;
+    void setColor(float r, float g, float b);
     
     float lastArrowValue = 0.5;
     
@@ -76,6 +77,7 @@ private:
     
     SCNNode* arrowHead;
     SCNNode* arrowBase;
+    SCNMaterial* arrowMat;
     
     // Default tip size from .obj file is 0.3 units tall
     float defaultTipSize = 0.3;

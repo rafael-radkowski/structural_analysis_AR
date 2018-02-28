@@ -17,7 +17,8 @@
 
 class Line3d {
 public:
-    Line3d();
+    Line3d() : Line3d(1.0) {}
+    Line3d(float hitBoxScale);
     void setThickness(float thickness);
     void setColor(float r, float g, float b);
     void move(GLKVector3 start, GLKVector3 end);
@@ -30,5 +31,6 @@ private:
     SCNNode *boxNode;
     SCNNode *boxContainer;
     SCNNode *boxLookAt;
+    SCNNode *hitBox;
 };
 #endif /* line3d_hpp */

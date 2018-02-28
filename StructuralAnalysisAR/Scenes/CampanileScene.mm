@@ -26,7 +26,6 @@ static const float f1_h = 17.75;
 static const float f2_h = 57.5;
 static const float f3_h = 71.5;
 static const float f4_h = 89.14;
-static const float f5_h = 109.5;
 
 static const float max_vel = 150;
 
@@ -73,8 +72,8 @@ static const double MOM_OF_INERTIA = 2334;
         SCNNode* model_node = [SCNNode nodeWithMDLObject:[modelAsset objectAtIndex:0]];
         return model_node;
     };
-    SCNNode* campanileInterior = loadModel(@"campanile_interior");
-    SCNNode* campanileExterior = loadModel(@"campanile_exterior");
+    campanileInterior = loadModel(@"campanile_interior");
+    campanileExterior = loadModel(@"campanile_exterior");
 //    SCNNode* campanileExteriorWarped = loadModel(@"warped_campanile");
     [rootNode addChildNode:campanileExterior];
     [rootNode addChildNode:campanileInterior];
@@ -113,30 +112,44 @@ static const double MOM_OF_INERTIA = 2334;
     windwardSideLoad.addAsChild(rootNode);
     windwardSideLoad.setLoad(0.5);
 
+    // shear reaction force
     shearArrow.setPosition(GLKVector3Make(0, -5, 0));
-    
-    shearArrow.setMinLength(20);
+    shearArrow.setColor(0.96078, 0.96078, 0.0588); // yellow
+    shearArrow.setMinLength(15);
     shearArrow.setMaxLength(50);
+    shearArrow.setInputRange(0, 1000);
     shearArrow.setThickness(thickness);
+    // axial reaction force
     axialArrow.setMinLength(5);
     axialArrow.setMaxLength(20);
     axialArrow.setInputRange(0, 1540);
     axialArrow.setThickness(thickness);
     axialArrow.setLabelFollow(false);
     axialArrow.setRotationAxisAngle(GLKVector4Make(0, 0, 1, M_PI));
-    
+    // dead load
+    deadLoad.setPosition(GLKVector3Make(0, base_height, 0));
+    deadLoad.setMinLength(5);
+    deadLoad.setMaxLength(20);
+    deadLoad.setInputRange(0, 1540);
+    deadLoad.setIntensity(1540);
+    deadLoad.setThickness(thickness);
+
     shearArrow.setFormatString(@"%.2f k");
     axialArrow.setFormatString(@"%.1f k");
+    deadLoad.setFormatString(@"%.1f k");
     
     shearArrow.setScenes(skScene, scnView);
     axialArrow.setScenes(skScene, scnView);
+    deadLoad.setScenes(skScene, scnView);
     shearArrow.addAsChild(rootNode);
     axialArrow.addAsChild(rootNode);
+    deadLoad.addAsChild(rootNode);
 
     momentIndicator.addAsChild(rootNode);
     momentIndicator.setThickness(thickness);
     momentIndicator.setRadius(18);
     momentIndicator.setScenes(skScene, scnView);
+
 
     // Tower deflection
     fullDeflVals.resize(2);
@@ -162,7 +175,7 @@ static const double MOM_OF_INERTIA = 2334;
     }
 
     // Seismic force arrows
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 4; i++) {
         seismicArrows.emplace_back();
         seismicArrows[i].addAsChild(rootNode);
         seismicArrows[i].setInputRange(10, 800);
@@ -175,9 +188,8 @@ static const double MOM_OF_INERTIA = 2334;
     }
     seismicArrows[0].setPosition(GLKVector3Make(base_width/2, f1_h, 0));
     seismicArrows[1].setPosition(GLKVector3Make(base_width/2, f2_h, 0));
-    seismicArrows[2].setPosition(GLKVector3Make(base_width/2, f2_h, 0));
+    seismicArrows[2].setPosition(GLKVector3Make(base_width/2, f3_h, 0));
     seismicArrows[3].setPosition(GLKVector3Make(base_width/2, f4_h, 0));
-    seismicArrows[4].setPosition(GLKVector3Make(base_width/2, f5_h, 0));
 
     return rootNode;
 }
@@ -274,6 +286,7 @@ static const double MOM_OF_INERTIA = 2334;
     windwardSideLoad.doUpdate();
     shearArrow.doUpdate();
     axialArrow.doUpdate();
+    deadLoad.doUpdate();
     towerL.doUpdate();
     towerR.doUpdate();
     momentIndicator.doUpdate();
@@ -368,7 +381,17 @@ static const double MOM_OF_INERTIA = 2334;
             const double alpha = 0.7;
             double ss_slider_stretched = (alpha * snappedSliderPos) + ((1 - alpha) * slider_val);
             [self.slider setValue:ss_slider_stretched animated:NO];
+            // do animation since seismic is in discrete steps
+            [SCNTransaction begin];
+            [SCNTransaction setAnimationDuration:0.2];
             [self calculateForcesSeismic:closest_idx];
+            [SCNTransaction commit];
+            
+            // Set deflection if not animating
+            if (!do_animations) {
+                towerL.updatePath(fullDeflVals);
+                towerR.updatePath(fullDeflVals);
+            }
             break;
         }
         default: {
@@ -382,7 +405,7 @@ static const double MOM_OF_INERTIA = 2334;
     [managingParent freezePressed:sender freezeBtn:self.freezeFrameBtn curtain:self.processingCurtainView];
 }
 
-- (IBAction)swapVisToggled:(id)sender {
+- (IBAction)visToggled:(id)sender {
     [self setVisibilities];
 }
 
@@ -393,6 +416,8 @@ static const double MOM_OF_INERTIA = 2334;
         towerL.updatePath(fullDeflVals);
         towerR.updatePath(fullDeflVals);
     }
+    campanileInterior.hidden = !self.modelVisSwitch.on;
+    campanileExterior.hidden = !self.modelVisSwitch.on;
 }
 
 - (IBAction)screenshotBtnPressed:(id)sender {
@@ -507,13 +532,11 @@ static const double MOM_OF_INERTIA = 2334;
     const double F2_vals[8]= {5.47, 27.34, 45.56, 61.51, 72.90, 85.43, 136.68, 205.03};
     const double F3_vals[8]= {8.62, 43.10, 71.83, 96.97, 114.93, 134.68, 215.49, 323.24};
     const double F4_vals[8]= {13.69, 68.46, 114.11, 154.05, 182.57, 213.95, 342.32, 513.49};
-    const double F5_vals[8]= {20.98, 104.91, 174.86, 236.06, 279.77, 327.86, 524.57, 786.85};
-    
+
     double F1 = F1_vals[scale_idx];
     double F2 = F2_vals[scale_idx];
     double F3 = F3_vals[scale_idx];
     double F4 = F4_vals[scale_idx];
-    double F5 = F5_vals[scale_idx];
     double V = V_vals[scale_idx];
     double Ss = Ss_vals[scale_idx];
     double S1 = S1_vals[scale_idx];
@@ -523,9 +546,8 @@ static const double MOM_OF_INERTIA = 2334;
     seismicArrows[1].setIntensity(F2);
     seismicArrows[2].setIntensity(F3);
     seismicArrows[3].setIntensity(F4);
-    seismicArrows[4].setIntensity(F5);
-    
-    float moment = f1_h*F1 + f2_h*F2 + f3_h*F3 + f4_h*F4 + f5_h*F5;
+
+    float moment = f1_h*F1 + f2_h*F2 + f3_h*F3 + f4_h*F4;
     momentIndicator.setIntensity(moment);
     
     [self.sliderValLabel setText:[NSString stringWithFormat:@"Ss=%.2f S1=%.2f", Ss, S1]];
@@ -559,12 +581,12 @@ static const double MOM_OF_INERTIA = 2334;
         else {
             defl_sum += (3*x - 89.2) * 1326.11 * F4;
         }
-        if (x < 109.54) {
-            defl_sum += (328.62 - x) * F5 * x2 / 6;
-        }
-        else {
-            defl_sum += (3*x - 109.54) * 1999.84 * F5;
-        }
+//        if (x < 109.54) {
+//            defl_sum += (328.62 - x) * F5 * x2 / 6;
+//        }
+//        else {
+//            defl_sum += (3*x - 109.54) * 1999.84 * F5;
+//        }
         double defl_ft = defl_sum / (MOD_ELASTICITY * MOM_OF_INERTIA);
         fullDeflVals[1][i] = defl_ft;
     }
@@ -574,13 +596,11 @@ static const double MOM_OF_INERTIA = 2334;
     switch ([self.scenarioToggle selectedSegmentIndex]) {
         case 0:
             activeScenario = wind;
-            shearArrow.setInputRange(0, 66);
             shearArrow.setRotationAxisAngle(GLKVector4Make(0, 0, 1, -M_PI/2));
             towerL.setMagnification(500);
             towerR.setMagnification(500);
-            axialArrow.setHidden(false);
             momentIndicator.setRotationAxisAngle(GLKVector4Make(0, 0, 1, M_PI));
-            momentIndicator.setInputRange(-100, 4000);
+            momentIndicator.setInputRange(-100, 65000);
             windwardSideLoad.setHidden(false);
             for (GrabbableArrow& arrow : seismicArrows) {
                 arrow.setHidden(true);
@@ -590,13 +610,11 @@ static const double MOM_OF_INERTIA = 2334;
             break;
         case 1:
             activeScenario  = seismic;
-            shearArrow.setInputRange(0, 2000);
             shearArrow.setRotationAxisAngle(GLKVector4Make(0, 0, 1, M_PI/2));
             towerL.setMagnification(8000);
             towerR.setMagnification(8000);
-            axialArrow.setHidden(true);
             momentIndicator.setRotationAxisAngle(GLKVector4Make(1, 0, 0, M_PI));
-            momentIndicator.setInputRange(-100, 230000);
+//            momentIndicator.setInputRange(-100, 100000);
             windwardSideLoad.setHidden(true);
             for (GrabbableArrow& arrow : seismicArrows) {
                 arrow.setHidden(false);
