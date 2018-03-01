@@ -14,7 +14,15 @@ Line3d::Line3d(float hitBoxScale) {
     
     hitBox = [SCNNode nodeWithGeometry:[SCNBox boxWithWidth:hitBoxScale height:hitBoxScale length:1 chamferRadius:0]];
     hitBox.pivot = SCNMatrix4MakeTranslation(0, 0, 0.5);
-    hitBox.hidden = YES;
+    // For some reason, in iOS 11, the search for hidden nodes flag is respected (hittest called in LoadMarker),
+    // but in iOS 10, it doesn't work
+    if (@available(iOS 11, *)) {
+        hitBox.hidden = YES;
+    }
+    else {
+        hitBox.opacity = 0;
+
+    }
 
     // Containing node that the constraint will be applied to. If we didn't use this, the lookAt constraint would interfere with setting the scale
     boxContainer = [SCNNode node];
