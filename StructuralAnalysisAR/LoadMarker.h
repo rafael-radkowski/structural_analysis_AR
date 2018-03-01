@@ -49,6 +49,7 @@ public:
     void setMaxHeight(float h);
     void setMinHeight(float h);
     void setThickness(float thickness);
+    void setColor(float r, float g, float b);
     float getLoad(size_t loadIndex);
     uint32_t draggingMode() const;
     

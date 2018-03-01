@@ -27,10 +27,10 @@ public:
     // Returns true if this line contains the given node
     bool hasNode(SCNNode* node);
     
+    SCNNode *boxContainer;
+    SCNNode *hitBox;
 private:
     SCNNode *boxNode;
-    SCNNode *boxContainer;
     SCNNode *boxLookAt;
-    SCNNode *hitBox;
 };
 #endif /* line3d_hpp */

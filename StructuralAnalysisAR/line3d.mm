@@ -21,6 +21,7 @@ Line3d::Line3d(float hitBoxScale) {
     }
     else {
         hitBox.opacity = 0;
+        hitBox.geometry.firstMaterial.writesToDepthBuffer = NO;
     }
 
     // Containing node that the constraint will be applied to. If we didn't use this, the lookAt constraint would interfere with setting the scale

@@ -98,7 +98,7 @@ static const double MOM_OF_INERTIA = 2334;
     float load_min_h = 10; float load_max_h = 35;
     float thickness = 3;
 
-    windwardSideLoad = LoadMarker(7, false, 2, 3);
+    windwardSideLoad = LoadMarker(7, false, 2, 4);
     windwardSideLoad.setPosition(GLKVector3Make(-base_width/2, 0, 0));
     windwardSideLoad.setOrientation(GLKQuaternionMakeWithAngleAndAxis(M_PI/2.f, 0, 0, 1));
     windwardSideLoad.setEnds(0, 89 + 2.f/12);
@@ -114,7 +114,7 @@ static const double MOM_OF_INERTIA = 2334;
 
     // shear reaction force
     shearArrow.setPosition(GLKVector3Make(0, -5, 0));
-    shearArrow.setColor(0.96078, 0.96078, 0.0588); // yellow
+    shearArrow.setColor(0, 1, 0);
     shearArrow.setMinLength(15);
     shearArrow.setMaxLength(50);
     shearArrow.setInputRange(0, 1000);
@@ -124,6 +124,7 @@ static const double MOM_OF_INERTIA = 2334;
     axialArrow.setMaxLength(20);
     axialArrow.setInputRange(0, 1540);
     axialArrow.setThickness(thickness);
+    axialArrow.setColor(0, 1, 0);
     axialArrow.setLabelFollow(false);
     axialArrow.setRotationAxisAngle(GLKVector4Make(0, 0, 1, M_PI));
     // dead load
@@ -134,9 +135,9 @@ static const double MOM_OF_INERTIA = 2334;
     deadLoad.setIntensity(1540);
     deadLoad.setThickness(thickness);
 
-    shearArrow.setFormatString(@"%.2f k");
-    axialArrow.setFormatString(@"%.1f k");
-    deadLoad.setFormatString(@"%.1f k");
+    shearArrow.setFormatString(@"%.0f k");
+    axialArrow.setFormatString(@"%.0f k");
+    deadLoad.setFormatString(@"%.0f k");
     
     shearArrow.setScenes(skScene, scnView);
     axialArrow.setScenes(skScene, scnView);
@@ -148,6 +149,7 @@ static const double MOM_OF_INERTIA = 2334;
     momentIndicator.addAsChild(rootNode);
     momentIndicator.setThickness(thickness);
     momentIndicator.setRadius(18);
+    momentIndicator.setColor(0, 1, 0);
     momentIndicator.setScenes(skScene, scnView);
 
 
@@ -178,8 +180,8 @@ static const double MOM_OF_INERTIA = 2334;
     for (int i = 0; i < 4; i++) {
         seismicArrows.emplace_back();
         seismicArrows[i].addAsChild(rootNode);
-        seismicArrows[i].setInputRange(10, 800);
-        seismicArrows[i].setMinLength(5);
+        seismicArrows[i].setInputRange(10, 500);
+        seismicArrows[i].setMinLength(10);
         seismicArrows[i].setMaxLength(30);
         seismicArrows[i].setThickness(thickness);
         seismicArrows[i].setScenes(skScene, scnView);

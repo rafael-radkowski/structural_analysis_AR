@@ -22,6 +22,7 @@ public:
     void setScenes(SKScene* scene2d, SCNView* view3d);
     void addAsChild(SCNNode* node);
     void setHidden(bool hide);
+    void setColor(float r, float g, float b);
     
     void doUpdate();
     void setPosition(GLKVector3 pos);

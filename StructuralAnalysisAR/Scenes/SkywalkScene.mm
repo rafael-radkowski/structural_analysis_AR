@@ -96,6 +96,7 @@
         reactionArrows[i].setInputRange(0, 150);
         reactionArrows[i].setRotationAxisAngle(GLKVector4Make(0, 0, 1, 3.1416));
         reactionArrows[i].setScenes(skScene, scnView);
+        reactionArrows[i].setColor(0, 1, 0);
     }
     reactionArrows[0].setPosition(GLKVector3Make(COL1_POS, 3 + heightOffset, 0));
     reactionArrows[1].setPosition(GLKVector3Make(COL2_POS, 3 + heightOffset, 0));

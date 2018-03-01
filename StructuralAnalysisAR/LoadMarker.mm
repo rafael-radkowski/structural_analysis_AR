@@ -23,10 +23,10 @@ LoadMarker::LoadMarker(size_t nLoads, bool reversed, int n_labels, float hit_ove
     // A vector::resize(n, instasnce_to_copy) call should work, but Line3d and GrabbableArrow doesn't have a working copy constructor, since it holds Objective-C objects
     for (int i = 0; i < nLoads - 1; ++i) {
         loadLines.emplace_back(hit_overlap);
-        loadArrows.emplace_back(hit_overlap, false);
+        loadArrows.emplace_back(hit_overlap, true, false);
     }
     // Need one extra arrow
-    loadArrows.emplace_back(hit_overlap, false);
+    loadArrows.emplace_back(hit_overlap, true, false);
 
     // Create root node and set child links
     rootNode = [SCNNode node];
@@ -243,6 +243,15 @@ void LoadMarker::setHidden(bool hidden) {
     }
 }
 
+void LoadMarker::setColor(float r, float g, float b) {
+    for (GrabbableArrow& arrow : loadArrows) {
+        arrow.setColor(r, g, b);
+    }
+    for (Line3d& line : loadLines) {
+        line.setColor(r, g, b);
+    }
+}
+
 void LoadMarker::setInputRange(float minValue, float maxValue) {
     minInput = minValue;
     maxInput = maxValue;
@@ -268,40 +277,47 @@ void LoadMarker::touchBegan(GLKVector3 origin, GLKVector3 farHit) {
     NSDictionary* hitOptions = @{
                                  SCNHitTestBoundingBoxOnlyKey: @YES,
                                  SCNHitTestIgnoreHiddenNodesKey: @NO, // need to test for hidden nodes for hidden extra hitBox on lines and arrows
-                                 SCNHitTestFirstFoundOnlyKey: @NO
+                                 SCNHitTestFirstFoundOnlyKey: @NO,
+                                 SCNHitTestIgnoreChildNodesKey: @NO
                                  };
     SCNVector3 origin_local = [rootNode convertPosition:SCNVector3FromGLKVector3(origin) fromNode:nil];
     SCNVector3 destination_local = [rootNode convertPosition:SCNVector3FromGLKVector3(farHit) fromNode:nil];
     NSArray *hitResults = [rootNode hitTestWithSegmentFromPoint:origin_local toPoint:destination_local options:hitOptions];
     if ([hitResults count] == 0) {
-        printf("Error: No hit results\n");
+//        printf("Error: No hit results\n");
         return;
     }
-    SCNHitTestResult* hitTestResult = hitResults.firstObject;
+//    SCNHitTestResult* hitTestResult = hitResults.firstObject;
     
     // Check if the hit node was a load line
-    for (Line3d& loadLine : loadLines) {
-        if (loadLine.hasNode(hitTestResult.node)) {
-            dragState = vertically | horizontally;
+    for (SCNHitTestResult* hitTestResult : hitResults) {
+        SCNNode* hitNode = hitTestResult.node;
+        for (Line3d& loadLine : loadLines) {
+            if (loadLine.hasNode(hitNode)) {
+                dragState = vertically | horizontally;
+            }
         }
-    }
-    // check for left arrow
-    if (loadArrows[0].hasNode(hitTestResult.node)) {
-        dragState = horizontallyL;
-    }
-    // check for right arrow
-    else if (loadArrows[loadArrows.size() - 1].hasNode(hitTestResult.node)) {
-        dragState = horizontallyR;
-    }
-    // Check for one of the middle arrows
-    else {
-        for (int i = 1; i < loadArrows.size() - 1; ++i) {
-            if (loadArrows[i].hasNode(hitTestResult.node)) {
-                dragState = horizontally;
+        
+        // check for left arrow
+        if (loadArrows[0].hasNode(hitNode)) {
+            dragState = horizontallyL;
+        }
+        
+        // check for right arrow
+        else if (loadArrows[loadArrows.size() - 1].hasNode(hitNode)) {
+            dragState = horizontallyR;
+        }
+        
+        // Check for one of the middle arrows
+        else {
+            for (int i = 1; i < loadArrows.size() - 1; ++i) {
+                if (loadArrows[i].hasNode(hitNode)) {
+                    dragState = horizontally;
+                }
             }
         }
     }
-    GLKVector3 hitPoint = SCNVector3ToGLKVector3(hitTestResult.worldCoordinates);
+    GLKVector3 hitPoint = SCNVector3ToGLKVector3(((SCNHitTestResult*)(hitResults.firstObject)).worldCoordinates);
     dragStartPos = projectRay(origin, GLKVector3Subtract(hitPoint, origin));
     startAtDragBegin = startPos;
     endAtDragBegin = endPos;

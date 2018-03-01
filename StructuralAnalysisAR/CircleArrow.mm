@@ -26,7 +26,7 @@ CircleArrow::CircleArrow() {
     [root addChildNode:arrowBody];
     
     SCNMaterial* arrowMat = [SCNMaterial material];
-    arrowMat.diffuse.contents = [UIColor colorWithRed:0 green:1.0 blue:0 alpha:1.0];
+    arrowMat.diffuse.contents = [UIColor colorWithRed:1.0 green:0 blue:0 alpha:1.0];
     arrowHead.geometry.firstMaterial = arrowMat;
     arrowBody.geometry.firstMaterial = arrowMat;
     
@@ -49,6 +49,11 @@ void CircleArrow::doUpdate() {
 void CircleArrow::setHidden(bool hide) {
     root.hidden = hide;
     valueLabel.setHidden(hide);
+}
+
+void CircleArrow::setColor(float r, float g, float b) {
+    bodyShape.firstMaterial.diffuse.contents = [UIColor colorWithRed:r green:g blue:b alpha:1];
+    arrowHead.geometry.firstMaterial.diffuse.contents = [UIColor colorWithRed:r green:g blue:b alpha:1];
 }
 
 void CircleArrow::addAsChild(SCNNode* node) {

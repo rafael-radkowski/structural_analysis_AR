@@ -12,9 +12,11 @@
 #import <assert.h>
 #include <algorithm>
 
-GrabbableArrow::GrabbableArrow(float hitBoxScale, bool reversed)
+GrabbableArrow::GrabbableArrow(float hit_scale, bool as_loadmarker, bool reversed)
 : lastArrowValue(0)
-, reversed(reversed) {
+, reversed(reversed)
+, hitBoxScale(hit_scale)
+, partOfLoadMarker(as_loadmarker) {
     // Import the arrow object
     NSString* arrowHeadPath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"arrow_tip"] ofType:@"obj"];
     NSString* arrowBasePath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"arrow_base"] ofType:@"obj"];
@@ -27,7 +29,7 @@ GrabbableArrow::GrabbableArrow(float hitBoxScale, bool reversed)
     arrowBase = [SCNNode nodeWithMDLObject:[arrowBaseAsset objectAtIndex:0]];
     
     // make hit bounding box
-    hitBox = [SCNNode nodeWithGeometry:[SCNBox boxWithWidth:hitBoxScale height:1 length:hitBoxScale chamferRadius:0]];
+    hitBox = [SCNNode nodeWithGeometry:[SCNBox boxWithWidth:hit_scale height:1 length:hit_scale chamferRadius:0]];
     hitBox.pivot = SCNMatrix4MakeTranslation(0, -0.5, 0);
     // For some reason, in iOS 11, the search for hidden nodes flag is respected (hittest called in LoadMarker),
     // but in iOS 10, it doesn't work
@@ -36,15 +38,9 @@ GrabbableArrow::GrabbableArrow(float hitBoxScale, bool reversed)
     }
     else {
         hitBox.opacity = 0;
+        hitBox.geometry.firstMaterial.writesToDepthBuffer = NO;
     }
-    
-////    MDLObject* arrowTip = [arrowAsset objectAtPath:@"tip"];
-////    MDLObject* root = [arrowAsset objectAtPath:@"tip"];
-//    MDLMesh* loadedObj = (MDLMesh*) [arrowAsset objectAtIndex:0];
-//    printf("asset had %lu objects\n", [loadedObj.submeshes count]);
-//    printf("object called %s\n", [[loadedObj path] UTF8String]);
-//    arrowNode = [SCNNode nodeWithMDLObject:[arrowAsset objectAtIndex:0]];
-    
+
     // Make material for arrow
     arrowMat = [SCNMaterial material];
     setColor(1, 0, 0);
@@ -229,7 +225,13 @@ void GrabbableArrow::setIntensity(float value) {
 //    arrow.root.scale = SCNVector3Make(arrowScale * arrowWidthFactor, arrowScale, arrowScale * arrowWidthFactor);
     float lengthRange = maxLength - minLength; // The length range for the arrow base
     float desiredLength = (minLength - tipSize) + lengthRange * normalizedValue;
-    float hitBoxLength = desiredLength + tipSize; // hitbox should start at tip and go to end of arrow
+    // hitbox should start at tip and to go tend of arrow
+    float hitBoxLength = desiredLength + tipSize;
+    // If is part of a LoadMarker, need to subtract half the width from the length so it doesn't overlap the LoadMarker it's attached to
+    // This is only necessary because the SceneKit hitTest is broken and sometimes doesn't detect things that are overlapped
+    if (partOfLoadMarker) {
+        hitBoxLength -=  (hitBoxScale * hitBox.scale.x) / 2;
+    }
     arrowBase.scale = SCNVector3Make(arrowBase.scale.x, desiredLength, arrowBase.scale.z);
     hitBox.scale = SCNVector3Make(hitBox.scale.x, hitBoxLength, hitBox.scale.z);
     
