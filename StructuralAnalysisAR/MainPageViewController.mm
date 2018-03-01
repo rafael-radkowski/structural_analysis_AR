@@ -61,8 +61,8 @@
 }
 
 - (void) doSegue:(NSTimer*) timer {
-    [self.btnCampanile sendActionsForControlEvents:UIControlEventTouchUpInside];
-//    [self.btnSkywalk sendActionsForControlEvents:UIControlEventTouchUpInside];
+//    [self.btnCampanile sendActionsForControlEvents:UIControlEventTouchUpInside];
+    [self.btnSkywalk sendActionsForControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)didReceiveMemoryWarning {

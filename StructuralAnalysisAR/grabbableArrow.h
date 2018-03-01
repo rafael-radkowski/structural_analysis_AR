@@ -20,7 +20,7 @@
 
 class GrabbableArrow {
 public:
-    GrabbableArrow(bool reversed = false);
+    GrabbableArrow(float hitBoxScale = 1.0, bool reversed = false);
     void setFormatString(NSString* str);
     void setScenes(SKScene* scene2d, SCNView* view3d);
     void addAsChild(SCNNode* node);
@@ -78,6 +78,8 @@ private:
     SCNNode* arrowHead;
     SCNNode* arrowBase;
     SCNMaterial* arrowMat;
+    // box for detecting touches near the arrow
+    SCNNode* hitBox;
     
     // Default tip size from .obj file is 0.3 units tall
     float defaultTipSize = 0.3;

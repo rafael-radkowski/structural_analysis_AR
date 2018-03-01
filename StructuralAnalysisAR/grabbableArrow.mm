@@ -12,7 +12,7 @@
 #import <assert.h>
 #include <algorithm>
 
-GrabbableArrow::GrabbableArrow(bool reversed)
+GrabbableArrow::GrabbableArrow(float hitBoxScale, bool reversed)
 : lastArrowValue(0)
 , reversed(reversed) {
     // Import the arrow object
@@ -25,6 +25,18 @@ GrabbableArrow::GrabbableArrow(bool reversed)
     
     arrowHead = [SCNNode nodeWithMDLObject:[arrowHeadAsset objectAtIndex:0]];
     arrowBase = [SCNNode nodeWithMDLObject:[arrowBaseAsset objectAtIndex:0]];
+    
+    // make hit bounding box
+    hitBox = [SCNNode nodeWithGeometry:[SCNBox boxWithWidth:hitBoxScale height:1 length:hitBoxScale chamferRadius:0]];
+    hitBox.pivot = SCNMatrix4MakeTranslation(0, -0.5, 0);
+    // For some reason, in iOS 11, the search for hidden nodes flag is respected (hittest called in LoadMarker),
+    // but in iOS 10, it doesn't work
+    if (@available(iOS 11, *)) {
+        hitBox.hidden = YES;
+    }
+    else {
+        hitBox.opacity = 0;
+    }
     
 ////    MDLObject* arrowTip = [arrowAsset objectAtPath:@"tip"];
 ////    MDLObject* root = [arrowAsset objectAtPath:@"tip"];
@@ -43,6 +55,7 @@ GrabbableArrow::GrabbableArrow(bool reversed)
     root = [SCNNode node];
     [root addChildNode:arrowHead];
     [root addChildNode:arrowBase];
+    [root addChildNode:hitBox];
     
     // Text stuff
     labelEmpty = [SCNNode node];
@@ -91,7 +104,7 @@ void GrabbableArrow::setHidden(bool hidden) {
 }
 
 bool GrabbableArrow::hasNode(SCNNode* node) {
-    return node == arrowBase || node == arrowHead;
+    return node == hitBox || node == arrowBase || node == arrowHead;
 }
 
 void GrabbableArrow::setPosition(GLKVector3 pos) {
@@ -115,6 +128,8 @@ void GrabbableArrow::setThickness(float thickness) {
     float widthScale = thickness / defaultWidth;
     float baseLength = minLength - tipSize;
     arrowBase.scale = SCNVector3Make(widthScale, baseLength, widthScale);
+    
+    hitBox.scale = SCNVector3Make(thickness, hitBox.scale.y, thickness);
     
     // Call setIntensity to set positions
     setIntensity(lastArrowValue);
@@ -214,12 +229,15 @@ void GrabbableArrow::setIntensity(float value) {
 //    arrow.root.scale = SCNVector3Make(arrowScale * arrowWidthFactor, arrowScale, arrowScale * arrowWidthFactor);
     float lengthRange = maxLength - minLength; // The length range for the arrow base
     float desiredLength = (minLength - tipSize) + lengthRange * normalizedValue;
+    float hitBoxLength = desiredLength + tipSize; // hitbox should start at tip and go to end of arrow
     arrowBase.scale = SCNVector3Make(arrowBase.scale.x, desiredLength, arrowBase.scale.z);
+    hitBox.scale = SCNVector3Make(hitBox.scale.x, hitBoxLength, hitBox.scale.z);
     
     if (labelFollows) {
         if (reversed) {
             arrowBase.position = SCNVector3Make(0, -desiredLength, 0);
             arrowHead.position = SCNVector3Make(0, -desiredLength - tipSize, 0);
+            hitBox.position = SCNVector3Make(0, -hitBoxLength, 0);
             labelEmpty.position = SCNVector3Make(0, -desiredLength - tipSize, 0);
         }
         else {

@@ -17,12 +17,16 @@ LoadMarker::LoadMarker(size_t nLoads, bool reversed, int n_labels, float hit_ove
 : reversed(reversed) {
     assert(nLoads >= 2);
     loadValues.resize(nLoads);
-    loadArrows.resize(nLoads);
+//    loadArrows.resize(nLoads);
+    
     // Make lines with 1.5x hit area
-    // A resize(n-1) call should work, but Line3d doesn't have a working copy constructor, since it holds Objective-C objects
+    // A vector::resize(n, instasnce_to_copy) call should work, but Line3d and GrabbableArrow doesn't have a working copy constructor, since it holds Objective-C objects
     for (int i = 0; i < nLoads - 1; ++i) {
         loadLines.emplace_back(hit_overlap);
+        loadArrows.emplace_back(hit_overlap, false);
     }
+    // Need one extra arrow
+    loadArrows.emplace_back(hit_overlap, false);
 
     // Create root node and set child links
     rootNode = [SCNNode node];
