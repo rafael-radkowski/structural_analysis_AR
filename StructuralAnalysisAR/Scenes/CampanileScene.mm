@@ -386,7 +386,7 @@ static const double MOM_OF_INERTIA = 2334;
             [self.slider setValue:ss_slider_stretched animated:NO];
             // do animation since seismic is in discrete steps
             [SCNTransaction begin];
-            [SCNTransaction setAnimationDuration:0.2];
+            [SCNTransaction setAnimationDuration:0.3];
             [self calculateForcesSeismic:closest_idx];
             [SCNTransaction commit];
             
@@ -574,7 +574,7 @@ static const double MOM_OF_INERTIA = 2334;
             defl_sum += (214.5 - x) * F3 * x2 / 6;
         }
         else {
-            defl_sum += (3*x - f3_h) * 852.04 * F2;
+            defl_sum += (3*x - f3_h) * 852.04 * F3;
         }
         if (x < f4_h) {
             defl_sum += (267.6 - x) * F4 * x2 / 6;
@@ -588,7 +588,7 @@ static const double MOM_OF_INERTIA = 2334;
 //        else {
 //            defl_sum += (3*x - 109.54) * 1999.84 * F5;
 //        }
-        double defl_ft = defl_sum / (MOD_ELASTICITY * MOM_OF_INERTIA);
+        double defl_ft = 1000 * defl_sum / (MOD_ELASTICITY * MOM_OF_INERTIA);
         fullDeflVals[1][i] = defl_ft;
     }
 }
@@ -598,10 +598,10 @@ static const double MOM_OF_INERTIA = 2334;
         case 0:
             activeScenario = wind;
             shearArrow.setRotationAxisAngle(GLKVector4Make(0, 0, 1, -M_PI/2));
-            towerL.setMagnification(500);
-            towerR.setMagnification(500);
+            towerL.setMagnification(200);
+            towerR.setMagnification(200);
             momentIndicator.setRotationAxisAngle(GLKVector4Make(0, 0, 1, M_PI));
-            momentIndicator.setInputRange(-100, 80000);
+            momentIndicator.setInputRange(-100, 100000);
             windwardSideLoad.setHidden(false);
             for (GrabbableArrow& arrow : seismicArrows) {
                 arrow.setHidden(true);
@@ -612,8 +612,8 @@ static const double MOM_OF_INERTIA = 2334;
         case 1:
             activeScenario  = seismic;
             shearArrow.setRotationAxisAngle(GLKVector4Make(0, 0, 1, M_PI/2));
-            towerL.setMagnification(8000);
-            towerR.setMagnification(8000);
+            towerL.setMagnification(30);
+            towerR.setMagnification(30);
             momentIndicator.setRotationAxisAngle(GLKVector4Make(1, 0, 0, M_PI));
 //            momentIndicator.setInputRange(-100, 100000);
             windwardSideLoad.setHidden(true);
