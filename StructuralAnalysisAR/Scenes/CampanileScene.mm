@@ -25,7 +25,7 @@ static const float roof_angle = (M_PI / 180.0) * 68.56;
 static const float f1_h = 17.75;
 static const float f2_h = 57.5;
 static const float f3_h = 71.5;
-static const float f4_h = 89.14;
+static const float f4_h = base_height;
 
 static const float max_vel = 150;
 
@@ -101,7 +101,7 @@ static const double MOM_OF_INERTIA = 2334;
     windwardSideLoad = LoadMarker(7, false, 2, 4);
     windwardSideLoad.setPosition(GLKVector3Make(-base_width/2, 0, 0));
     windwardSideLoad.setOrientation(GLKQuaternionMakeWithAngleAndAxis(M_PI/2.f, 0, 0, 1));
-    windwardSideLoad.setEnds(0, 89 + 2.f/12);
+    windwardSideLoad.setEnds(0, base_height);
 
     windwardSideLoad.setScenes(skScene, scnView);
     windwardSideLoad.setFormatString(@"%.1f psf");
@@ -122,7 +122,8 @@ static const double MOM_OF_INERTIA = 2334;
     // axial reaction force
     axialArrow.setMinLength(5);
     axialArrow.setMaxLength(20);
-    axialArrow.setInputRange(0, 1540);
+    axialArrow.setInputRange(0, 1400);
+    axialArrow.setIntensity(1400);
     axialArrow.setThickness(thickness);
     axialArrow.setColor(0, 1, 0);
     axialArrow.setLabelFollow(false);
@@ -131,8 +132,8 @@ static const double MOM_OF_INERTIA = 2334;
     deadLoad.setPosition(GLKVector3Make(0, base_height, 0));
     deadLoad.setMinLength(5);
     deadLoad.setMaxLength(20);
-    deadLoad.setInputRange(0, 1540);
-    deadLoad.setIntensity(1540);
+    deadLoad.setInputRange(0, 1400);
+    deadLoad.setIntensity(1400);
     deadLoad.setThickness(thickness);
 
     shearArrow.setFormatString(@"%.0f k");
@@ -467,14 +468,12 @@ static const double MOM_OF_INERTIA = 2334;
     const double h1_3 = h1_2 * h1;
     // Calculate shear, axial, and moment
     double shear = (16./1000) * (h1*(ww1/2 + ww2/2 + wl));
-    double axial = 1540;
     double moment = (16./1000) *
         (h1_2/2 * (ww1 + wl) +
          h1_2/2 * (ww2 - ww1));
 
     // Update indicators
     shearArrow.setIntensity(shear);
-    axialArrow.setIntensity(axial);
     momentIndicator.setIntensity(moment);
     
     // Calculate deflection
@@ -559,29 +558,29 @@ static const double MOM_OF_INERTIA = 2334;
         double x = fullDeflVals[0][i] - fullDeflVals[0][0];
         double x2 = x * x;
         double defl_sum = 0;
-        if (x < 17.75) {
+        if (x < f1_h) {
             defl_sum += (53.25 - x) * F1 * x2 / 6;
         }
         else {
-            defl_sum += (3*x - 17.75) * 52.5 * F1;
+            defl_sum += (3*x - f1_h) * 52.5 * F1;
         }
-        if (x < 57.5) {
+        if (x < f2_h) {
             defl_sum += (172.5 - x) * F2 * x2 / 6;
         }
         else {
-            defl_sum += (3*x - 57.5) * 551.04 * F2;
+            defl_sum += (3*x - f2_h) * 551.04 * F2;
         }
-        if (x < 71.5) {
+        if (x < f3_h) {
             defl_sum += (214.5 - x) * F3 * x2 / 6;
         }
         else {
-            defl_sum += (3*x - 71.5) * 852.04 * F2;
+            defl_sum += (3*x - f3_h) * 852.04 * F2;
         }
-        if (x < 89.2) {
+        if (x < f4_h) {
             defl_sum += (267.6 - x) * F4 * x2 / 6;
         }
         else {
-            defl_sum += (3*x - 89.2) * 1326.11 * F4;
+            defl_sum += (3*x - f4_h) * 1326.11 * F4;
         }
 //        if (x < 109.54) {
 //            defl_sum += (328.62 - x) * F5 * x2 / 6;
@@ -602,7 +601,7 @@ static const double MOM_OF_INERTIA = 2334;
             towerL.setMagnification(500);
             towerR.setMagnification(500);
             momentIndicator.setRotationAxisAngle(GLKVector4Make(0, 0, 1, M_PI));
-            momentIndicator.setInputRange(-100, 65000);
+            momentIndicator.setInputRange(-100, 80000);
             windwardSideLoad.setHidden(false);
             for (GrabbableArrow& arrow : seismicArrows) {
                 arrow.setHidden(true);
