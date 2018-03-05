@@ -29,6 +29,13 @@ static const float f4_h = base_height;
 
 static const float max_vel = 150;
 
+static const float shear_max = 150;
+static const float sideload_max = 150;
+static const float moment_max = 10000;
+static const float defl_magnification = 200;
+static const float axial_max = 4000;
+static const float seismic_scale_fac = 10;
+
 static const double MOD_ELASTICITY = 2.016e8;
 static const double MOM_OF_INERTIA = 2334;
 
@@ -79,7 +86,7 @@ static const double MOM_OF_INERTIA = 2334;
     [rootNode addChildNode:campanileInterior];
     SCNMaterial* campanileMatClear = [SCNMaterial material];
     SCNMaterial* campanileMatOpaque = [SCNMaterial material];
-    campanileMatClear.diffuse.contents = [UIColor colorWithRed:1.0 green:0.68 blue:0.478 alpha:0.5];
+    campanileMatClear.diffuse.contents = [UIColor colorWithRed:1.0 green:0.68 blue:0.478 alpha:0.3];
     campanileMatOpaque.diffuse.contents = [UIColor colorWithRed:1.0 green:0.68 blue:0.478 alpha:1.0];
     campanileExterior.geometry.firstMaterial = campanileMatClear;
     // Needed for semi-transparent objects to render correctly
@@ -95,7 +102,7 @@ static const double MOM_OF_INERTIA = 2334;
 //    campanileExterior.morpher = [[SCNMorpher alloc] init];
 //    campanileExterior.morpher.targets = [NSArray arrayWithObject:campanileExteriorWarped.geometry];
 
-    float load_min_h = 10; float load_max_h = 35;
+    float load_min_h = 10; float load_max_h = 55;
     float thickness = 3;
 
     windwardSideLoad = LoadMarker(7, false, 2, 4);
@@ -105,7 +112,7 @@ static const double MOM_OF_INERTIA = 2334;
 
     windwardSideLoad.setScenes(skScene, scnView);
     windwardSideLoad.setFormatString(@"%.1f psf");
-    windwardSideLoad.setInputRange(0, 55);
+    windwardSideLoad.setInputRange(0, sideload_max);
     windwardSideLoad.setMinHeight(load_min_h);
     windwardSideLoad.setMaxHeight(load_max_h);
     windwardSideLoad.setThickness(thickness);
@@ -115,14 +122,12 @@ static const double MOM_OF_INERTIA = 2334;
     // shear reaction force
     shearArrow.setPosition(GLKVector3Make(0, -5, 0));
     shearArrow.setColor(0, 1, 0);
-    shearArrow.setMinLength(15);
-    shearArrow.setMaxLength(50);
-    shearArrow.setInputRange(0, 1000);
+    shearArrow.setMinLength(load_min_h);
+    shearArrow.setMaxLength(load_max_h);
     shearArrow.setThickness(thickness);
     // axial reaction force
-    axialArrow.setMinLength(5);
-    axialArrow.setMaxLength(20);
-    axialArrow.setInputRange(0, 1400);
+    axialArrow.setMinLength(load_min_h);
+    axialArrow.setMaxLength(load_max_h);
     axialArrow.setIntensity(1400);
     axialArrow.setThickness(thickness);
     axialArrow.setColor(0, 1, 0);
@@ -130,9 +135,8 @@ static const double MOM_OF_INERTIA = 2334;
     axialArrow.setRotationAxisAngle(GLKVector4Make(0, 0, 1, M_PI));
     // dead load
     deadLoad.setPosition(GLKVector3Make(0, base_height, 0));
-    deadLoad.setMinLength(5);
-    deadLoad.setMaxLength(20);
-    deadLoad.setInputRange(0, 1400);
+    deadLoad.setMinLength(load_min_h);
+    deadLoad.setMaxLength(load_max_h);
     deadLoad.setIntensity(1400);
     deadLoad.setThickness(thickness);
 
@@ -181,9 +185,9 @@ static const double MOM_OF_INERTIA = 2334;
     for (int i = 0; i < 4; i++) {
         seismicArrows.emplace_back();
         seismicArrows[i].addAsChild(rootNode);
-        seismicArrows[i].setInputRange(10, 500);
-        seismicArrows[i].setMinLength(10);
-        seismicArrows[i].setMaxLength(30);
+        seismicArrows[i].setInputRange(10, sideload_max * seismic_scale_fac);
+        seismicArrows[i].setMinLength(load_min_h);
+        seismicArrows[i].setMaxLength(load_max_h);
         seismicArrows[i].setThickness(thickness);
         seismicArrows[i].setScenes(skScene, scnView);
         seismicArrows[i].setFormatString(@"%.2f k");
@@ -262,6 +266,20 @@ static const double MOM_OF_INERTIA = 2334;
     self.processingCurtainView.hidden = YES;
     self.processingSpinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
     
+    // seismic spectral plot image
+//    self.plotImgView.layer.borderWidth = 2;
+//    self.plotImgView.layer.borderColor = [UIColor colorWithWhite:0.2 alpha:1].CGColor;
+    plotVisible = false;
+    
+    self.seismicPlotBtn.layer.borderWidth = 1.5;
+    self.seismicPlotBtn.layer.borderColor = UIColor.grayColor.CGColor;
+    self.plotViewBox.layer.borderWidth = 1.5;
+    self.plotViewBox.layer.borderColor = UIColor.grayColor.CGColor;
+    self.plotHeight.constant = 50;
+    self.fundFreqLabel.layer.borderWidth = 1.5;
+    self.fundFreqLabel.layer.borderColor = UIColor.grayColor.CGColor;
+    
+    
     // Set initial wind speed and notify so callback gets called
     [self.slider setValue:0.5];
     [self.scenarioToggle sendActionsForControlEvents:UIControlEventValueChanged];
@@ -301,7 +319,7 @@ static const double MOM_OF_INERTIA = 2334;
 
 // Make various AR Managers
 - (ARManager*)makeStaticTracker {
-    GLKMatrix4 trans_mat = GLKMatrix4MakeTranslation(0, 37, 230);
+    GLKMatrix4 trans_mat = GLKMatrix4MakeTranslation(0, 40, 230);
     GLKMatrix4 rot_x_mat = GLKMatrix4MakeXRotation(0.3);
     GLKMatrix4 cameraMatrix = GLKMatrix4Multiply(rot_x_mat, trans_mat);
     return new StaticARManager(scnView, scnView.scene, cameraMatrix, @"campanile_static.JPG");
@@ -395,6 +413,10 @@ static const double MOM_OF_INERTIA = 2334;
                 towerL.updatePath(fullDeflVals);
                 towerR.updatePath(fullDeflVals);
             }
+            
+            // set spectral plot image
+            NSArray* img_names = @[@"0.05.png", @"0.25.png", @"0.5.png", @"0.75.png", @"1.0.png", @"1.25.png", @"2.0.png", @"3.0.png"];
+            self.plotImgView.image = [UIImage imageNamed:img_names[closest_idx]];
             break;
         }
         default: {
@@ -425,6 +447,21 @@ static const double MOM_OF_INERTIA = 2334;
 
 - (IBAction)screenshotBtnPressed:(id)sender {
     return [managingParent screenshotBtnPressed:sender infoBox:self.screenshotInfoBox];
+}
+
+- (IBAction)plotBtnPressed:(id)sender {
+    plotVisible = !plotVisible;
+    if (plotVisible) {
+        self.plotHeight.constant = 330;
+        self.seismicPlotArrow.transform = CGAffineTransformMakeRotation(M_PI);
+    }
+    else {
+        self.plotHeight.constant = 50;
+        self.seismicPlotArrow.transform = CGAffineTransformMakeRotation(0);
+    }
+    [UIView animateWithDuration:0.3 animations:^{
+        [scnView layoutIfNeeded];
+    }];
 }
 
 - (IBAction)homeBtnPressed:(id)sender {
@@ -598,30 +635,40 @@ static const double MOM_OF_INERTIA = 2334;
         case 0:
             activeScenario = wind;
             shearArrow.setRotationAxisAngle(GLKVector4Make(0, 0, 1, -M_PI/2));
-            towerL.setMagnification(200);
-            towerR.setMagnification(200);
+            shearArrow.setInputRange(0, shear_max);
+            axialArrow.setInputRange(0, axial_max);
+            deadLoad.setInputRange(0, axial_max);
+            towerL.setMagnification(defl_magnification);
+            towerR.setMagnification(defl_magnification);
             momentIndicator.setRotationAxisAngle(GLKVector4Make(0, 0, 1, M_PI));
-            momentIndicator.setInputRange(-100, 100000);
+            momentIndicator.setInputRange(-100, moment_max);
             windwardSideLoad.setHidden(false);
             for (GrabbableArrow& arrow : seismicArrows) {
                 arrow.setHidden(true);
             }
             [self.sliderLabel setText:@"Wind Speed"];
             [self.swayVisSwitch setEnabled:NO];
+            self.plotViewBox.hidden = YES;
+            self.scaleLabel.text = @"100%";
             break;
         case 1:
             activeScenario  = seismic;
             shearArrow.setRotationAxisAngle(GLKVector4Make(0, 0, 1, M_PI/2));
-            towerL.setMagnification(30);
-            towerR.setMagnification(30);
+            shearArrow.setInputRange(0, shear_max * seismic_scale_fac);
+            axialArrow.setInputRange(0, axial_max * seismic_scale_fac);
+            deadLoad.setInputRange(0, axial_max * seismic_scale_fac);
+            towerL.setMagnification(defl_magnification / seismic_scale_fac);
+            towerR.setMagnification(defl_magnification / seismic_scale_fac);
             momentIndicator.setRotationAxisAngle(GLKVector4Make(1, 0, 0, M_PI));
-//            momentIndicator.setInputRange(-100, 100000);
+            momentIndicator.setInputRange(-100, moment_max * seismic_scale_fac);
             windwardSideLoad.setHidden(true);
             for (GrabbableArrow& arrow : seismicArrows) {
                 arrow.setHidden(false);
             }
             [self.sliderLabel setText:@"Intensity"];
             [self.swayVisSwitch setEnabled:YES];
+            self.plotViewBox.hidden = NO;
+            self.scaleLabel.text = @"10%";
             break;
         default:
             assert(false);

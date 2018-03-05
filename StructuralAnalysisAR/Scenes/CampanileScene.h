@@ -57,6 +57,7 @@
     SCNNode* campanileExterior;
 
     bool do_animations;
+    bool plotVisible;
     
     // TODO: Delete, for testing
     std::thread breakerThread;
@@ -67,6 +68,7 @@
 @property (weak, nonatomic) IBOutlet UIView *visOptionsBox;
 @property (weak, nonatomic) IBOutlet UISwitch *swayVisSwitch;
 @property (weak, nonatomic) IBOutlet UISwitch *modelVisSwitch;
+@property (weak, nonatomic) IBOutlet UILabel *scaleLabel;
 
 @property (weak, nonatomic) IBOutlet UIButton *homeBtn;
 @property (weak, nonatomic) IBOutlet UIButton *screenshotBtn;
@@ -83,6 +85,15 @@
 - (IBAction)sliderReleased:(id)sender;
 @property (weak, nonatomic) IBOutlet UILabel *sliderValLabel;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *scenarioToggle;
+
+// seismic spectral plot items
+@property (weak, nonatomic) IBOutlet UIImageView *plotImgView;
+@property (weak, nonatomic) IBOutlet UIView *plotViewBox;
+@property (weak, nonatomic) IBOutlet UIButton *seismicPlotBtn;
+@property (weak, nonatomic) IBOutlet UILabel *seismicPlotArrow;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *plotHeight;
+@property (weak, nonatomic) IBOutlet UILabel *fundFreqLabel;
+- (IBAction)plotBtnPressed:(id)sender;
 
 - (IBAction)homeBtnPressed:(id)sender;
 - (IBAction)screenshotBtnPressed:(id)sender;

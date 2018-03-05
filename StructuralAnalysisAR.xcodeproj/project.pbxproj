@@ -77,6 +77,14 @@
 		0BD71111203F48F70095D753 /* screenshot_blue.png in Resources */ = {isa = PBXBuildFile; fileRef = 0BD71110203F48F70095D753 /* screenshot_blue.png */; };
 		0BD71113203F6A090095D753 /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BD71112203F6A090095D753 /* Photos.framework */; };
 		0BD7111620408B5A0095D753 /* Ruler.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0BD7111420408B5A0095D753 /* Ruler.mm */; };
+		0BD711202049E08F0095D753 /* 0.25.png in Resources */ = {isa = PBXBuildFile; fileRef = 0BD711182049E08B0095D753 /* 0.25.png */; };
+		0BD711212049E08F0095D753 /* 0.75.png in Resources */ = {isa = PBXBuildFile; fileRef = 0BD711192049E08B0095D753 /* 0.75.png */; };
+		0BD711222049E08F0095D753 /* 0.05.png in Resources */ = {isa = PBXBuildFile; fileRef = 0BD7111A2049E08B0095D753 /* 0.05.png */; };
+		0BD711232049E08F0095D753 /* 1.0.png in Resources */ = {isa = PBXBuildFile; fileRef = 0BD7111B2049E08B0095D753 /* 1.0.png */; };
+		0BD711242049E08F0095D753 /* 2.0.png in Resources */ = {isa = PBXBuildFile; fileRef = 0BD7111C2049E08B0095D753 /* 2.0.png */; };
+		0BD711252049E08F0095D753 /* 1.25.png in Resources */ = {isa = PBXBuildFile; fileRef = 0BD7111D2049E08B0095D753 /* 1.25.png */; };
+		0BD711262049E08F0095D753 /* 3.0.png in Resources */ = {isa = PBXBuildFile; fileRef = 0BD7111E2049E08B0095D753 /* 3.0.png */; };
+		0BD711272049E08F0095D753 /* 0.5.png in Resources */ = {isa = PBXBuildFile; fileRef = 0BD7111F2049E08B0095D753 /* 0.5.png */; };
 		0BD8F1A320090E3B00DBF55D /* CampanileSeismicScene.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0BD8F1A220090E3B00DBF55D /* CampanileSeismicScene.mm */; };
 		0BD8F1A62009109800DBF55D /* campanileSeismicView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0BD8F1A52009109800DBF55D /* campanileSeismicView.xib */; };
 		0BDE98DF1FBE4D43003673F4 /* ImageMatcher.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0BDE98DB1FBE4D42003673F4 /* ImageMatcher.cpp */; };
@@ -185,6 +193,14 @@
 		0BD71112203F6A090095D753 /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
 		0BD7111420408B5A0095D753 /* Ruler.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Ruler.mm; sourceTree = "<group>"; };
 		0BD7111520408B5A0095D753 /* Ruler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Ruler.h; sourceTree = "<group>"; };
+		0BD711182049E08B0095D753 /* 0.25.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = 0.25.png; path = StructuralAnalysisAR/image_assets/seismic_plots/0.25.png; sourceTree = SOURCE_ROOT; };
+		0BD711192049E08B0095D753 /* 0.75.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = 0.75.png; path = StructuralAnalysisAR/image_assets/seismic_plots/0.75.png; sourceTree = SOURCE_ROOT; };
+		0BD7111A2049E08B0095D753 /* 0.05.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = 0.05.png; path = StructuralAnalysisAR/image_assets/seismic_plots/0.05.png; sourceTree = SOURCE_ROOT; };
+		0BD7111B2049E08B0095D753 /* 1.0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = 1.0.png; path = StructuralAnalysisAR/image_assets/seismic_plots/1.0.png; sourceTree = SOURCE_ROOT; };
+		0BD7111C2049E08B0095D753 /* 2.0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = 2.0.png; path = StructuralAnalysisAR/image_assets/seismic_plots/2.0.png; sourceTree = SOURCE_ROOT; };
+		0BD7111D2049E08B0095D753 /* 1.25.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = 1.25.png; path = StructuralAnalysisAR/image_assets/seismic_plots/1.25.png; sourceTree = SOURCE_ROOT; };
+		0BD7111E2049E08B0095D753 /* 3.0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = 3.0.png; path = StructuralAnalysisAR/image_assets/seismic_plots/3.0.png; sourceTree = SOURCE_ROOT; };
+		0BD7111F2049E08B0095D753 /* 0.5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = 0.5.png; path = StructuralAnalysisAR/image_assets/seismic_plots/0.5.png; sourceTree = SOURCE_ROOT; };
 		0BD8F1A220090E3B00DBF55D /* CampanileSeismicScene.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = CampanileSeismicScene.mm; sourceTree = "<group>"; };
 		0BD8F1A420090E5100DBF55D /* CampanileSeismicScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CampanileSeismicScene.h; sourceTree = "<group>"; };
 		0BD8F1A52009109800DBF55D /* campanileSeismicView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = campanileSeismicView.xib; path = StructuralAnalysisAR/campanileSeismicView.xib; sourceTree = SOURCE_ROOT; };
@@ -245,6 +261,7 @@
 		0B483BFC1F4DDB89007A1D29 /* image_assets */ = {
 			isa = PBXGroup;
 			children = (
+				0BD711172049DD8C0095D753 /* seismic_plots */,
 				0BD710F32029169B0095D753 /* campanile_1920_model.png */,
 				0BD710F82034B2800095D753 /* campanile_1920_model_cutout.png */,
 				0BD710F22029169A0095D753 /* campanile.dat */,
@@ -403,6 +420,21 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		0BD711172049DD8C0095D753 /* seismic_plots */ = {
+			isa = PBXGroup;
+			children = (
+				0BD7111F2049E08B0095D753 /* 0.5.png */,
+				0BD7111A2049E08B0095D753 /* 0.05.png */,
+				0BD711182049E08B0095D753 /* 0.25.png */,
+				0BD711192049E08B0095D753 /* 0.75.png */,
+				0BD7111B2049E08B0095D753 /* 1.0.png */,
+				0BD7111D2049E08B0095D753 /* 1.25.png */,
+				0BD7111C2049E08B0095D753 /* 2.0.png */,
+				0BD7111E2049E08B0095D753 /* 3.0.png */,
+			);
+			path = seismic_plots;
+			sourceTree = "<group>";
+		};
 		0BDF88E21F4B22750014BFB7 /* 3d_assets */ = {
 			isa = PBXGroup;
 			children = (
@@ -480,10 +512,14 @@
 				0BB5AD101FD1B3C8001C78CD /* cutout_skywalk_1920x1080.png in Resources */,
 				0B2ACE1D2018F8F000230D67 /* campanile_stock_cropped.jpg in Resources */,
 				0BD8F1A62009109800DBF55D /* campanileSeismicView.xib in Resources */,
+				0BD711242049E08F0095D753 /* 2.0.png in Resources */,
 				0B99FF611F47A79D00431996 /* skywalkView.xib in Resources */,
 				0BB1644C1F4732DC0053CA3B /* LaunchScreen.storyboard in Resources */,
+				0BD711272049E08F0095D753 /* 0.5.png in Resources */,
 				0BD710F52029169B0095D753 /* campanile.dat in Resources */,
 				0BB164491F4732DC0053CA3B /* Assets.xcassets in Resources */,
+				0BD711262049E08F0095D753 /* 3.0.png in Resources */,
+				0BD711202049E08F0095D753 /* 0.25.png in Resources */,
 				0BB164471F4732DC0053CA3B /* Main.storyboard in Resources */,
 				0BE4C5E11FAFB0E500A501C9 /* user_prefs.plist in Resources */,
 				0B2ACE1F2018F95900230D67 /* isuofficallogo_light.png in Resources */,
@@ -491,9 +527,11 @@
 				0BD710F72029169B0095D753 /* campanile.xml in Resources */,
 				0B5F39E51F844CEF004870DE /* skywalk_far.dat in Resources */,
 				0BD71111203F48F70095D753 /* screenshot_blue.png in Resources */,
+				0BD711212049E08F0095D753 /* 0.75.png in Resources */,
 				0B36C09B201BD28600D7B346 /* campanile_exterior.obj in Resources */,
 				0BDE98E31FBE521C003673F4 /* cutout_skywalk_1280x720.png in Resources */,
 				0BDF88E61F4B3BAE0014BFB7 /* testScene.scn in Resources */,
+				0BD711222049E08F0095D753 /* 0.05.png in Resources */,
 				0BD038A71F97B38F004B65F6 /* low_clearance_sign.xml in Resources */,
 				0B483BFB1F4DDB6F007A1D29 /* skywalk.jpg in Resources */,
 				0B483C001F4F8AF9007A1D29 /* arrow_base.obj in Resources */,
@@ -505,9 +543,11 @@
 				0B6E6A9D1FCF7EB500EE7950 /* cutout_skywalk_3840x2160.png in Resources */,
 				0BAD78781F66CDDE003CAE93 /* stick_man.png in Resources */,
 				0B03583720055ABB00F75CD2 /* campanileView.xib in Resources */,
+				0BD711252049E08F0095D753 /* 1.25.png in Resources */,
 				0BAD78791F66CDDE003CAE93 /* stick_woman.png in Resources */,
 				0B4F29B11FE0846C0067C439 /* skywalk_south_far.jpg in Resources */,
 				0B5F39E61F844CEF004870DE /* skywalk_far.xml in Resources */,
+				0BD711232049E08F0095D753 /* 1.0.png in Resources */,
 				0B0CBD0F1FDB40C800A9B223 /* skywalk_1920_back.png in Resources */,
 				0BD710F92034B2820095D753 /* campanile_1920_model_cutout.png in Resources */,
 				0B41E99A1F72BC04001DB823 /* home_blue.png in Resources */,

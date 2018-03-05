@@ -208,7 +208,7 @@
     self.visOptionsBox.layer.borderWidth = 1.5;
     self.visOptionsBox.layer.borderColor = UIColor.grayColor.CGColor;
     
-    // Definitiosn box border
+    // Definitions box border
     self.defnsExpandBtn.layer.borderWidth = 1.5;
     self.defnsExpandBtn.layer.borderColor = UIColor.grayColor.CGColor;
     self.defnsView.layer.borderWidth = 1.5;
