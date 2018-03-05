@@ -41,27 +41,6 @@
             <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZwC-V0-6g2">
-                    <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
-                    <subviews>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Processing..." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QKe-PJ-ISS">
-                            <rect key="frame" x="423.5" y="365.5" width="177" height="38.5"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="32"/>
-                            <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                            <nil key="highlightedColor"/>
-                        </label>
-                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="AEC-tf-yQT">
-                            <rect key="frame" x="395.5" y="374" width="20" height="20"/>
-                        </activityIndicatorView>
-                    </subviews>
-                    <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.66307255990000002" colorSpace="custom" customColorSpace="sRGB"/>
-                    <constraints>
-                        <constraint firstItem="AEC-tf-yQT" firstAttribute="centerY" secondItem="QKe-PJ-ISS" secondAttribute="centerY" id="N6P-Ft-viW"/>
-                        <constraint firstItem="QKe-PJ-ISS" firstAttribute="centerX" secondItem="ZwC-V0-6g2" secondAttribute="centerX" id="QQ8-Do-uje"/>
-                        <constraint firstItem="QKe-PJ-ISS" firstAttribute="centerY" secondItem="ZwC-V0-6g2" secondAttribute="centerY" id="i4w-gx-zCK"/>
-                        <constraint firstItem="QKe-PJ-ISS" firstAttribute="leading" secondItem="AEC-tf-yQT" secondAttribute="trailing" constant="8" id="sEc-Gz-8WW"/>
-                    </constraints>
-                </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cBa-oP-Qjz">
                     <rect key="frame" x="674" y="388" width="350" height="330"/>
                     <subviews>
@@ -264,14 +243,14 @@
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Scale:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jLU-5U-HYg">
-                            <rect key="frame" x="15" y="119" width="46.5" height="21"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Force Scale:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jLU-5U-HYg">
+                            <rect key="frame" x="15" y="119" width="94.5" height="21"/>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="100%" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qex-En-fMM">
-                            <rect key="frame" x="69.5" y="119" width="45" height="21"/>
+                            <rect key="frame" x="117.5" y="119" width="45" height="21"/>
                             <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
@@ -317,6 +296,27 @@
                         <constraint firstItem="gNJ-dB-EQl" firstAttribute="centerX" secondItem="xYf-9J-Uum" secondAttribute="centerX" id="AEt-el-ykF"/>
                         <constraint firstAttribute="height" constant="30" id="Bbh-F2-4IY"/>
                         <constraint firstAttribute="width" constant="240" id="nWB-Ev-ye5"/>
+                    </constraints>
+                </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZwC-V0-6g2">
+                    <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Processing..." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QKe-PJ-ISS">
+                            <rect key="frame" x="423.5" y="365.5" width="177" height="38.5"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="32"/>
+                            <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="AEC-tf-yQT">
+                            <rect key="frame" x="395.5" y="374" width="20" height="20"/>
+                        </activityIndicatorView>
+                    </subviews>
+                    <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.66307255990000002" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <constraint firstItem="AEC-tf-yQT" firstAttribute="centerY" secondItem="QKe-PJ-ISS" secondAttribute="centerY" id="N6P-Ft-viW"/>
+                        <constraint firstItem="QKe-PJ-ISS" firstAttribute="centerX" secondItem="ZwC-V0-6g2" secondAttribute="centerX" id="QQ8-Do-uje"/>
+                        <constraint firstItem="QKe-PJ-ISS" firstAttribute="centerY" secondItem="ZwC-V0-6g2" secondAttribute="centerY" id="i4w-gx-zCK"/>
+                        <constraint firstItem="QKe-PJ-ISS" firstAttribute="leading" secondItem="AEC-tf-yQT" secondAttribute="trailing" constant="8" id="sEc-Gz-8WW"/>
                     </constraints>
                 </view>
             </subviews>
