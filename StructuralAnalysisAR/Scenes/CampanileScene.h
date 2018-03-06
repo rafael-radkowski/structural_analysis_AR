@@ -58,9 +58,6 @@
 
     bool do_animations;
     bool plotVisible;
-    
-    // TODO: Delete, for testing
-    std::thread breakerThread;
 }
 - (void)updateForces;
 

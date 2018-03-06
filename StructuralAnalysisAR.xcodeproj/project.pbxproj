@@ -39,6 +39,8 @@
 		0B483C081F4F9063007A1D29 /* ModelIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B483C071F4F9063007A1D29 /* ModelIO.framework */; };
 		0B4F29B11FE0846C0067C439 /* skywalk_south_far.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0B4F29B01FE0846C0067C439 /* skywalk_south_far.jpg */; };
 		0B5A92BB2006BA6D00D58422 /* moment_arrow.obj in Resources */ = {isa = PBXBuildFile; fileRef = 0B5A92BA2006BA6D00D58422 /* moment_arrow.obj */; };
+		0B5D638F204F31AD003384C4 /* TownBldgScene.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B5D638E204F31AD003384C4 /* TownBldgScene.mm */; };
+		0B5D6391204F36D4003384C4 /* townBldgView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B5D6390204F36D4003384C4 /* townBldgView.xib */; };
 		0B5F39DE1F843975004870DE /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0B5F39DD1F843975004870DE /* Shaders.metal */; };
 		0B5F39E51F844CEF004870DE /* skywalk_far.dat in Resources */ = {isa = PBXBuildFile; fileRef = 0B5F39E31F844CEF004870DE /* skywalk_far.dat */; };
 		0B5F39E61F844CEF004870DE /* skywalk_far.xml in Resources */ = {isa = PBXBuildFile; fileRef = 0B5F39E41F844CEF004870DE /* skywalk_far.xml */; };
@@ -85,8 +87,6 @@
 		0BD711252049E08F0095D753 /* 1.25.png in Resources */ = {isa = PBXBuildFile; fileRef = 0BD7111D2049E08B0095D753 /* 1.25.png */; };
 		0BD711262049E08F0095D753 /* 3.0.png in Resources */ = {isa = PBXBuildFile; fileRef = 0BD7111E2049E08B0095D753 /* 3.0.png */; };
 		0BD711272049E08F0095D753 /* 0.5.png in Resources */ = {isa = PBXBuildFile; fileRef = 0BD7111F2049E08B0095D753 /* 0.5.png */; };
-		0BD8F1A320090E3B00DBF55D /* CampanileSeismicScene.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0BD8F1A220090E3B00DBF55D /* CampanileSeismicScene.mm */; };
-		0BD8F1A62009109800DBF55D /* campanileSeismicView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0BD8F1A52009109800DBF55D /* campanileSeismicView.xib */; };
 		0BDE98DF1FBE4D43003673F4 /* ImageMatcher.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0BDE98DB1FBE4D42003673F4 /* ImageMatcher.cpp */; };
 		0BDE98E01FBE4D43003673F4 /* MaskedImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0BDE98DE1FBE4D42003673F4 /* MaskedImage.cpp */; };
 		0BDE98E31FBE521C003673F4 /* cutout_skywalk_1280x720.png in Resources */ = {isa = PBXBuildFile; fileRef = 0BDE98E21FBE521C003673F4 /* cutout_skywalk_1280x720.png */; };
@@ -141,6 +141,9 @@
 		0B483C071F4F9063007A1D29 /* ModelIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ModelIO.framework; path = System/Library/Frameworks/ModelIO.framework; sourceTree = SDKROOT; };
 		0B4F29B01FE0846C0067C439 /* skywalk_south_far.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = skywalk_south_far.jpg; path = image_assets/skywalk_south_far.jpg; sourceTree = "<group>"; };
 		0B5A92BA2006BA6D00D58422 /* moment_arrow.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = moment_arrow.obj; sourceTree = "<group>"; };
+		0B5D638D204F31AC003384C4 /* TownBldgScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TownBldgScene.h; sourceTree = "<group>"; };
+		0B5D638E204F31AD003384C4 /* TownBldgScene.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TownBldgScene.mm; sourceTree = "<group>"; };
+		0B5D6390204F36D4003384C4 /* townBldgView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = townBldgView.xib; sourceTree = "<group>"; };
 		0B5F39DD1F843975004870DE /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
 		0B5F39E31F844CEF004870DE /* skywalk_far.dat */ = {isa = PBXFileReference; lastKnownFileType = file; name = skywalk_far.dat; path = image_assets/skywalk_far.dat; sourceTree = "<group>"; };
 		0B5F39E41F844CEF004870DE /* skywalk_far.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = skywalk_far.xml; path = image_assets/skywalk_far.xml; sourceTree = "<group>"; };
@@ -201,9 +204,6 @@
 		0BD7111D2049E08B0095D753 /* 1.25.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = 1.25.png; path = StructuralAnalysisAR/image_assets/seismic_plots/1.25.png; sourceTree = SOURCE_ROOT; };
 		0BD7111E2049E08B0095D753 /* 3.0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = 3.0.png; path = StructuralAnalysisAR/image_assets/seismic_plots/3.0.png; sourceTree = SOURCE_ROOT; };
 		0BD7111F2049E08B0095D753 /* 0.5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = 0.5.png; path = StructuralAnalysisAR/image_assets/seismic_plots/0.5.png; sourceTree = SOURCE_ROOT; };
-		0BD8F1A220090E3B00DBF55D /* CampanileSeismicScene.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = CampanileSeismicScene.mm; sourceTree = "<group>"; };
-		0BD8F1A420090E5100DBF55D /* CampanileSeismicScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CampanileSeismicScene.h; sourceTree = "<group>"; };
-		0BD8F1A52009109800DBF55D /* campanileSeismicView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = campanileSeismicView.xib; path = StructuralAnalysisAR/campanileSeismicView.xib; sourceTree = SOURCE_ROOT; };
 		0BDE98DB1FBE4D42003673F4 /* ImageMatcher.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ImageMatcher.cpp; sourceTree = "<group>"; };
 		0BDE98DC1FBE4D42003673F4 /* ImageMatcher.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ImageMatcher.hpp; sourceTree = "<group>"; };
 		0BDE98DD1FBE4D42003673F4 /* MaskedImage.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MaskedImage.hpp; sourceTree = "<group>"; };
@@ -252,8 +252,8 @@
 				0B0358312000167100F75CD2 /* SkywalkScene.h */,
 				0B03583320054BAA00F75CD2 /* CampanileScene.mm */,
 				0B03583420054BAA00F75CD2 /* CampanileScene.h */,
-				0BD8F1A220090E3B00DBF55D /* CampanileSeismicScene.mm */,
-				0BD8F1A420090E5100DBF55D /* CampanileSeismicScene.h */,
+				0B5D638D204F31AC003384C4 /* TownBldgScene.h */,
+				0B5D638E204F31AD003384C4 /* TownBldgScene.mm */,
 			);
 			path = Scenes;
 			sourceTree = "<group>";
@@ -378,7 +378,7 @@
 				0BB1643A1F4732DC0053CA3B /* Supporting Files */,
 				0B99FF601F47A79D00431996 /* skywalkView.xib */,
 				0B03583620055ABB00F75CD2 /* campanileView.xib */,
-				0BD8F1A52009109800DBF55D /* campanileSeismicView.xib */,
+				0B5D6390204F36D4003384C4 /* townBldgView.xib */,
 				0BDF88E51F4B3BAE0014BFB7 /* testScene.scn */,
 				0B483BFD1F4F1016007A1D29 /* grabbableArrow.h */,
 				0B483C021F4F8BF5007A1D29 /* grabbableArrow.mm */,
@@ -511,10 +511,10 @@
 				0B0CBD151FE0547700A9B223 /* skywalk_south1.dat in Resources */,
 				0BB5AD101FD1B3C8001C78CD /* cutout_skywalk_1920x1080.png in Resources */,
 				0B2ACE1D2018F8F000230D67 /* campanile_stock_cropped.jpg in Resources */,
-				0BD8F1A62009109800DBF55D /* campanileSeismicView.xib in Resources */,
 				0BD711242049E08F0095D753 /* 2.0.png in Resources */,
 				0B99FF611F47A79D00431996 /* skywalkView.xib in Resources */,
 				0BB1644C1F4732DC0053CA3B /* LaunchScreen.storyboard in Resources */,
+				0B5D6391204F36D4003384C4 /* townBldgView.xib in Resources */,
 				0BD711272049E08F0095D753 /* 0.5.png in Resources */,
 				0BD710F52029169B0095D753 /* campanile.dat in Resources */,
 				0BB164491F4732DC0053CA3B /* Assets.xcassets in Resources */,
@@ -578,7 +578,6 @@
 				0BE42D261F688DDA00937359 /* BezierLine.mm in Sources */,
 				0B79A12E1F7ABA5300632CE4 /* OverlayLabel.mm in Sources */,
 				0BB1643F1F4732DC0053CA3B /* AppDelegate.m in Sources */,
-				0BD8F1A320090E3B00DBF55D /* CampanileSeismicScene.mm in Sources */,
 				0B03582E2000128B00F75CD2 /* StructureScene.mm in Sources */,
 				0BD7111620408B5A0095D753 /* Ruler.mm in Sources */,
 				0B1FCD461FBCA2F2002DBE98 /* VuforiaARManager.mm in Sources */,
@@ -588,6 +587,7 @@
 				0B0358322000167100F75CD2 /* SkywalkScene.mm in Sources */,
 				0BAFBB641F7EBAFE007B1FC6 /* SampleApplication3DModel.m in Sources */,
 				0BB1643C1F4732DC0053CA3B /* main.m in Sources */,
+				0B5D638F204F31AD003384C4 /* TownBldgScene.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
