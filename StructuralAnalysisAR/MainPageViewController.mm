@@ -56,12 +56,13 @@
     self.btnSkywalkGuided.hidden = [skywalk_guided_hidden boolValue];
     
     // Test
-//    [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(doSegue:) userInfo:nil repeats:NO];
+    [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(doSegue:) userInfo:nil repeats:NO];
 }
 
 - (void) doSegue:(NSTimer*) timer {
-    [self.btnCampanile sendActionsForControlEvents:UIControlEventTouchUpInside];
+//    [self.btnCampanile sendActionsForControlEvents:UIControlEventTouchUpInside];
 //    [self.btnSkywalk sendActionsForControlEvents:UIControlEventTouchUpInside];
+    [self.btnTown sendActionsForControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)didReceiveMemoryWarning {

@@ -41,6 +41,8 @@
 		0B5A92BB2006BA6D00D58422 /* moment_arrow.obj in Resources */ = {isa = PBXBuildFile; fileRef = 0B5A92BA2006BA6D00D58422 /* moment_arrow.obj */; };
 		0B5D638F204F31AD003384C4 /* TownBldgScene.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B5D638E204F31AD003384C4 /* TownBldgScene.mm */; };
 		0B5D6391204F36D4003384C4 /* townBldgView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B5D6390204F36D4003384C4 /* townBldgView.xib */; };
+		0B5D6393204F4432003384C4 /* SKCornerNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 0B5D6392204F4432003384C4 /* SKCornerNode.m */; };
+		0B5D639620506AD0003384C4 /* arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B5D639520506AD0003384C4 /* arrow.png */; };
 		0B5F39DE1F843975004870DE /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0B5F39DD1F843975004870DE /* Shaders.metal */; };
 		0B5F39E51F844CEF004870DE /* skywalk_far.dat in Resources */ = {isa = PBXBuildFile; fileRef = 0B5F39E31F844CEF004870DE /* skywalk_far.dat */; };
 		0B5F39E61F844CEF004870DE /* skywalk_far.xml in Resources */ = {isa = PBXBuildFile; fileRef = 0B5F39E41F844CEF004870DE /* skywalk_far.xml */; };
@@ -144,6 +146,9 @@
 		0B5D638D204F31AC003384C4 /* TownBldgScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TownBldgScene.h; sourceTree = "<group>"; };
 		0B5D638E204F31AD003384C4 /* TownBldgScene.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TownBldgScene.mm; sourceTree = "<group>"; };
 		0B5D6390204F36D4003384C4 /* townBldgView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = townBldgView.xib; sourceTree = "<group>"; };
+		0B5D6392204F4432003384C4 /* SKCornerNode.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKCornerNode.m; sourceTree = "<group>"; };
+		0B5D6394204F4444003384C4 /* SKCornerNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKCornerNode.h; sourceTree = "<group>"; };
+		0B5D639520506AD0003384C4 /* arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = arrow.png; path = image_assets/arrow.png; sourceTree = "<group>"; };
 		0B5F39DD1F843975004870DE /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
 		0B5F39E31F844CEF004870DE /* skywalk_far.dat */ = {isa = PBXFileReference; lastKnownFileType = file; name = skywalk_far.dat; path = image_assets/skywalk_far.dat; sourceTree = "<group>"; };
 		0B5F39E41F844CEF004870DE /* skywalk_far.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = skywalk_far.xml; path = image_assets/skywalk_far.xml; sourceTree = "<group>"; };
@@ -271,6 +276,7 @@
 				0B6E6A9C1FCF7EB500EE7950 /* cutout_skywalk_3840x2160.png */,
 				0B2AAB841FD87D4100DD477B /* skywalk_sunny_1920.png */,
 				0B0CBD0E1FDB40C800A9B223 /* skywalk_1920_back.png */,
+				0B5D639520506AD0003384C4 /* arrow.png */,
 				0B0CBD131FE0547600A9B223 /* skywalk_south1.dat */,
 				0B0CBD141FE0547600A9B223 /* skywalk_south1.xml */,
 				0B4F29B01FE0846C0067C439 /* skywalk_south_far.jpg */,
@@ -398,6 +404,8 @@
 				0BAD78731F66C622003CAE93 /* PeopleVis.mm */,
 				0B79A12D1F7ABA5300632CE4 /* OverlayLabel.h */,
 				0B79A12C1F7ABA5300632CE4 /* OverlayLabel.mm */,
+				0B5D6394204F4444003384C4 /* SKCornerNode.h */,
+				0B5D6392204F4432003384C4 /* SKCornerNode.m */,
 				0B1FCD421FBB6CCF002DBE98 /* ARManager.h */,
 				0B1FCD441FBCA2F2002DBE98 /* VuforiaARManager.mm */,
 				0B1FCD451FBCA2F2002DBE98 /* VuforiaARManager.h */,
@@ -507,6 +515,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0BD710F62029169B0095D753 /* campanile_1920_model.png in Resources */,
+				0B5D639620506AD0003384C4 /* arrow.png in Resources */,
 				0B0CBD161FE0547700A9B223 /* skywalk_south1.xml in Resources */,
 				0B0CBD151FE0547700A9B223 /* skywalk_south1.dat in Resources */,
 				0BB5AD101FD1B3C8001C78CD /* cutout_skywalk_1920x1080.png in Resources */,
@@ -587,6 +596,7 @@
 				0B0358322000167100F75CD2 /* SkywalkScene.mm in Sources */,
 				0BAFBB641F7EBAFE007B1FC6 /* SampleApplication3DModel.m in Sources */,
 				0BB1643C1F4732DC0053CA3B /* main.m in Sources */,
+				0B5D6393204F4432003384C4 /* SKCornerNode.m in Sources */,
 				0B5D638F204F31AD003384C4 /* TownBldgScene.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

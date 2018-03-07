@@ -95,7 +95,6 @@ private:
     
     SKScene* textScene = nullptr;
     SCNView* objectView = nullptr;
-    SKSpriteNode* backgroundBox;
 };
 
 #endif /* grabbableArrow_h */

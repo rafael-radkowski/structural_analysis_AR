@@ -147,7 +147,7 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure,
     
     // Load reference image
     UIImage* bgImage;
-    float model_width;
+    float model_width = 0;
     if (structure == skywalk) {
 #ifdef HIGH_RES
         UIImage* bgImage = [UIImage imageNamed:@"cutout_skywalk_3840x2160.png"];
