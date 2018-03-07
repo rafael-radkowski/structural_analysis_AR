@@ -22,8 +22,9 @@
     return [self init];
 }
 
-- (SCNNode *)createScene:(SCNView *)the_scnView skScene:(SKScene *)skScene withCamera:(SCNNode *)camera {
+- (SCNNode *)createScene:(SCNView *)the_scnView skScene:(SKScene *)the_skScene withCamera:(SCNNode *)camera {
     scnView = the_scnView;
+    skScene = the_skScene;
     cameraNode = camera;
     SCNNode* rootNode = [SCNNode node];
     
@@ -47,10 +48,36 @@
     ambientLightNode.light.intensity = 0.8;
     [rootNode addChildNode:ambientLightNode];
     
+    jointBox = [SKShapeNode shapeNodeWithRect:CGRectMake(0, 0, 300, 500)];
+    jointBox.strokeColor = [UIColor colorWithWhite:0.2 alpha:1.0];
+    jointBox.fillColor = [UIColor colorWithWhite:0.8 alpha:0.5];
+    jointBox.position = CGPointMake(750, 100);
+    jointBox.zPosition = -1; // Don't cover other nodes
+    SKLabelNode* jointBoxTitle = [SKLabelNode labelNodeWithFontNamed:@"Helvetica"];
+    jointBoxTitle.text = @"Fixed Joint Forces";
+    jointBoxTitle.position = CGPointMake(150, 500 - jointBoxTitle.fontSize - 3);
+    jointBoxTitle.fontColor = [UIColor blackColor];
+    [jointBox addChild:jointBoxTitle];
+    
+    corner1 = [[SKCornerNode alloc] init];
+    [corner1 setPosition:CGPointMake(50, 50)];
+    corner2 = [[SKCornerNode alloc] init];
+    [corner2 setPosition:CGPointMake(50, 300)];
+    corner2.zRotation = -1;
+    
+    [jointBox addChild:corner1];
+    [jointBox addChild:corner2];
+    [skScene addChild:jointBox];
+    
     return rootNode;
 }
 
 - (void)scnRendererUpdateAt:(NSTimeInterval)time {
+    static float phase = 0;
+    phase += 0.01;
+    float force1 = (std::sin(phase) + 1) / 2;
+    float force2 = (std::cos(phase) + 1) / 2;
+    [corner1 setForces:force1 force2:force2];
 }
 
 - (void)setCameraLabelPaused:(bool)isPaused isEnabled:(bool)enabled {

@@ -16,11 +16,16 @@
 #include "loadMarker.h"
 #include "BezierLine.h"
 #include "CircleArrow.h"
+#include "SKCornerNode.h"
 
 @interface TownBldgScene: NSObject <StructureScene> {
     id<ARViewController> managingParent;
     SCNView* scnView;
+    SKScene* skScene;
     SCNNode* cameraNode;
+    
+    SKCornerNode* corner1, *corner2;
+    SKShapeNode* jointBox;
 }
 
 @property (nonatomic, retain) IBOutlet UIView *viewFromNib;

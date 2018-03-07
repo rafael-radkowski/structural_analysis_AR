@@ -45,7 +45,7 @@ ImageMatcher::Correspondences ImageMatcher::getMatches(const cv::Mat test_img) {
     // Find keypoints and descriptors
     vector<KeyPoint> keypoints;
     Mat descriptors;
-    auto start_time = std::chrono::high_resolution_clock::now();
+//    auto start_time = std::chrono::high_resolution_clock::now();
     feat_detector->detect(test_img, keypoints);
     feat_extractor->compute(test_img, keypoints, descriptors);
 
@@ -123,9 +123,9 @@ ImageMatcher::Correspondences ImageMatcher::getMatches(const cv::Mat test_img) {
         corr.model_pts.push_back(match.trainIdx);
         corr.img_pts.push_back(keypoints[match.queryIdx].pt);
     }
+#ifdef IMAGE_MATCHER_LOG
     auto end_time = std::chrono::high_resolution_clock::now();
     auto duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
-#ifdef IMAGE_MATCHER_LOG
     *log << "Took " << duration_ms.count() << " ms to perform matching" << std::endl;
 #endif
     return corr;
