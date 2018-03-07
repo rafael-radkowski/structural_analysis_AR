@@ -48,22 +48,34 @@
     ambientLightNode.light.intensity = 0.8;
     [rootNode addChildNode:ambientLightNode];
     
-    jointBox = [SKShapeNode shapeNodeWithRect:CGRectMake(0, 0, 300, 500)];
+    float jointBoxWidth = 300;
+    float jointBoxHeight = 500;
+    jointBox = [SKShapeNode shapeNodeWithRect:CGRectMake(0, 0, jointBoxWidth, jointBoxHeight)];
     jointBox.strokeColor = [UIColor colorWithWhite:0.2 alpha:1.0];
     jointBox.fillColor = [UIColor colorWithWhite:0.8 alpha:0.5];
     jointBox.position = CGPointMake(750, 100);
     jointBox.zPosition = -1; // Don't cover other nodes
+    // make title for joint box
     SKLabelNode* jointBoxTitle = [SKLabelNode labelNodeWithFontNamed:@"Helvetica"];
     jointBoxTitle.text = @"Fixed Joint Forces";
-    jointBoxTitle.position = CGPointMake(150, 500 - jointBoxTitle.fontSize - 3);
+    jointBoxTitle.position = CGPointMake(150, jointBoxHeight - jointBoxTitle.fontSize - 3);
     jointBoxTitle.fontColor = [UIColor blackColor];
     [jointBox addChild:jointBoxTitle];
+    // make underline for title
+    CGPoint titlePoints[2] = {CGPointMake(0, 0), CGPointMake(jointBoxWidth, 0)};
+    SKShapeNode* titleUnderline = [SKShapeNode shapeNodeWithPoints:titlePoints count:2];
+    titleUnderline.strokeColor = [UIColor blackColor];
+    titleUnderline.position = CGPointMake(0, jointBoxHeight - jointBoxTitle.fontSize - 6);
+    [jointBox addChild:titleUnderline];
     
-    corner1 = [[SKCornerNode alloc] init];
-    [corner1 setPosition:CGPointMake(50, 50)];
+    corner1 = [[SKCornerNode alloc] initWithTextUp:NO];
+    [corner1 setPosition:CGPointMake(200, 200)];
+    corner1.zRotation = M_PI;
     corner2 = [[SKCornerNode alloc] init];
-    [corner2 setPosition:CGPointMake(50, 300)];
-    corner2.zRotation = -1;
+    [corner2 setPosition:CGPointMake(100, 275)];
+    corner2.zRotation = -0.3;
+    [corner1 setInputRange:-1 max:1];
+    [corner1 setLengthRange:5 max:40];
     
     [jointBox addChild:corner1];
     [jointBox addChild:corner2];
@@ -75,9 +87,10 @@
 - (void)scnRendererUpdateAt:(NSTimeInterval)time {
     static float phase = 0;
     phase += 0.01;
-    float force1 = (std::sin(phase) + 1) / 2;
-    float force2 = (std::cos(phase) + 1) / 2;
+    float force1 = std::sin(phase);
+    float force2 = std::cos(phase);
     [corner1 setForces:force1 force2:force2];
+    corner2.zRotation = force1 / 4;
 }
 
 - (void)setCameraLabelPaused:(bool)isPaused isEnabled:(bool)enabled {
