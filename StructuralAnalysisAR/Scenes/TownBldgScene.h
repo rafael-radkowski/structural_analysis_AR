@@ -30,7 +30,10 @@
 
 @property (nonatomic, retain) IBOutlet UIView *viewFromNib;
 @property (weak, nonatomic) IBOutlet UIView *visOptionsBox;
-@property (weak, nonatomic) IBOutlet UISwitch *modelVisSwitch;
+@property (weak, nonatomic) IBOutlet UISwitch *liveLoadSwitch;
+@property (weak, nonatomic) IBOutlet UISwitch *deadLoadSwitch;
+@property (weak, nonatomic) IBOutlet UISwitch *rcnForceSwitch;
+@property (weak, nonatomic) IBOutlet UISwitch *modelSwitch;
 
 @property (weak, nonatomic) IBOutlet UIButton *homeBtn;
 @property (weak, nonatomic) IBOutlet UIButton *screenshotBtn;

@@ -28,6 +28,8 @@
     cameraNode = camera;
     SCNNode* rootNode = [SCNNode node];
     
+    // ---------------- Lighting ---------------- //
+    
     auto addLight = [rootNode] (float x, float y, float z, float intensity) {
         SCNNode *lightNode = [SCNNode node];
         lightNode.light = [SCNLight light];
@@ -48,12 +50,15 @@
     ambientLightNode.light.intensity = 0.8;
     [rootNode addChildNode:ambientLightNode];
     
+    
+    // ---------------- 2D joints ---------------- //
+    
     float jointBoxWidth = 300;
     float jointBoxHeight = 500;
     jointBox = [SKShapeNode shapeNodeWithRect:CGRectMake(0, 0, jointBoxWidth, jointBoxHeight)];
     jointBox.strokeColor = [UIColor colorWithWhite:0.2 alpha:1.0];
     jointBox.fillColor = [UIColor colorWithWhite:0.8 alpha:0.5];
-    jointBox.position = CGPointMake(750, 100);
+    jointBox.position = CGPointMake(750, 200);
     jointBox.zPosition = -1; // Don't cover other nodes
     // make title for joint box
     SKLabelNode* jointBoxTitle = [SKLabelNode labelNodeWithFontNamed:@"Helvetica"];
@@ -72,8 +77,7 @@
     [corner1 setPosition:CGPointMake(200, 200)];
     corner1.zRotation = M_PI;
     corner2 = [[SKCornerNode alloc] init];
-    [corner2 setPosition:CGPointMake(100, 275)];
-    corner2.zRotation = -0.3;
+    [corner2 setPosition:CGPointMake(100, 420)];
     [corner1 setInputRange:-1 max:1];
     [corner1 setLengthRange:5 max:40];
     
@@ -90,7 +94,7 @@
     float force1 = std::sin(phase);
     float force2 = std::cos(phase);
     [corner1 setForces:force1 force2:force2];
-    corner2.zRotation = force1 / 4;
+    corner2.zRotation = -M_PI / 2 + force1 / 4;
 }
 
 - (void)setCameraLabelPaused:(bool)isPaused isEnabled:(bool)enabled {
