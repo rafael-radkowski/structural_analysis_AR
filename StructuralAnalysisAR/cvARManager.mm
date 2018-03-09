@@ -160,6 +160,7 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure,
         mask_properties.min_length = 0.6;
         mask_properties.line_angle = cv::Vec2f(1, 0);
         mask_properties.line_origin = cv::Vec2f(0, 0);
+        mask_properties.mask_width = 0.164;
     }
     else if (structure == campanile) {
         bgImage = [UIImage imageNamed:@"campanile_1920_model_cutout.png"];
@@ -168,8 +169,9 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure,
         mask_properties.min_length = 0.15;
         mask_properties.line_angle = cv::Vec2f(0, 1);
         mask_properties.line_origin = cv::Vec2f(10000, 0);
+        mask_properties.mask_width = 0.08;
     }
-    MaskedImage masked(cvMatFromUIImage(bgImage), mask_properties.edge_threshold, mask_properties.min_length, mask_properties.line_angle, mask_properties.line_origin, 15);
+    MaskedImage masked(cvMatFromUIImage(bgImage), mask_properties.edge_threshold, mask_properties.min_length, mask_properties.line_angle, mask_properties.line_origin, 15, mask_properties.mask_width);
     cv::Mat cropped = masked.getCropped();
 
     matcher = ImageMatcher(cropped, 6000, 0.8, 0.98, 4.0, std::cout);
@@ -380,7 +382,7 @@ void cvARManager::performTracking() {
         }
     }
     
-    MaskedImage masked(frame, mask_properties.edge_threshold, mask_properties.min_length, mask_properties.line_angle, mask_properties.line_origin, 15);
+    MaskedImage masked(frame, mask_properties.edge_threshold, mask_properties.min_length, mask_properties.line_angle, mask_properties.line_origin, 15, mask_properties.mask_width);
     cv::Mat cropped = masked.getCropped();
     auto correspondences = matcher.getMatches(cropped);
     masked.uncropPoints(correspondences.img_pts);
