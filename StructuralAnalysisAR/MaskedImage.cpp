@@ -36,13 +36,14 @@ Vec<T,3> pointAngleToLine(Vec<T,2> origin, Vec<T,2> angle) {
     
 }
 
-MaskedImage::MaskedImage(const Mat img, int edge_threshold, float min_length, Vec2f line_angle, Vec2f line_origin, float angle_deviation, std::ostream& log)
+MaskedImage::MaskedImage(const Mat img, int edge_threshold, float min_length, Vec2f line_angle, Vec2f line_origin, float angle_deviation, float mask_size, std::ostream& log)
     : log(log)
     , orig_img(img)
     , line_angle(line_angle)
     , min_length(min_length)
     , angle_deviation(angle_deviation * (M_PI / 180.))
-    , edge_threshold(edge_threshold) {
+    , edge_threshold(edge_threshold)
+    , mask_size(mask_size) {
         ref_line_eqn = pointAngleToLine(line_origin, line_angle);
 }
 
@@ -52,7 +53,8 @@ Mat MaskedImage::getCropped() {
         findObject();
         int mask_margin = orig_img.size[0] * 0.01225;
         // int mask_width = orig_img.size[0] * 0.164;
-        int mask_width = orig_img.size[0] * 0.08;
+        // int mask_width = orig_img.size[0] * 0.08;
+        int mask_width = orig_img.size[0] * mask_size;
 
         if (found_object) {
             Vec2f raw_line_vec(object_topline[2] - object_topline[0], object_topline[3] - object_topline[1]);
@@ -120,8 +122,8 @@ Mat MaskedImage::getCropped() {
             };
             poly1_pts[2] = furthest_pt(corners, line1_eqn);
             poly2_pts[2] = furthest_pt(corners, line2_eqn);
-           cropPoints(poly1_pts);
-           cropPoints(poly2_pts);
+            cropPoints(poly1_pts);
+            cropPoints(poly2_pts);
 
             // Draw the mask
             const Point* all_polys[2] = {poly1_pts.data(), poly2_pts.data()};
@@ -218,19 +220,19 @@ std::vector<Vec4i> MaskedImage::findLines(bool probabilistic) {
         }
     }
 
-//    cv::Mat color_img(gray_img.size(), orig_img.type());
-//    cv::cvtColor(gray_img, color_img, cv::COLOR_GRAY2BGR);
-//    for (const Vec4i& found_line : lines) {
-//        line(color_img,
-//            Point(found_line[0], found_line[1]),
-//            Point(found_line[2], found_line[3]),
-//            cv::Scalar(0, 0, 255), 2, CV_AA);
-//    }
-//    // imwrite("edges_0038.png", gray_img);
-//    namedWindow("window");
-//    resize(color_img, color_img, Size(0, 0), 0.5, 0.5);
-//    imshow("window", color_img);
-//    waitKey(0);
+    // cv::Mat color_img(gray_img.size(), orig_img.type());
+    // cv::cvtColor(gray_img, color_img, cv::COLOR_GRAY2BGR);
+    // for (const Vec4i& found_line : lines) {
+    //     line(color_img,
+    //         Point(found_line[0], found_line[1]),
+    //         Point(found_line[2], found_line[3]),
+    //         cv::Scalar(0, 0, 255), 2, CV_AA);
+    // }
+    // imwrite("edges_0038.png", gray_img);
+    // namedWindow("window");
+    // resize(color_img, color_img, Size(0, 0), 0.5, 0.5);
+    // imshow("window", color_img);
+    // waitKey(0);
 
     return lines;
 }

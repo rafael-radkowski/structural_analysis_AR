@@ -94,6 +94,7 @@ private:
         float min_length;
         cv::Vec2f line_angle;
         cv::Vec2f line_origin;
+        float mask_width;
     } mask_properties;
     
     // holds the frame that is being
