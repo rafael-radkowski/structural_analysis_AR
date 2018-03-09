@@ -59,7 +59,7 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure,
     auto this_processImage = [this](cv::Mat& img) {processImage(img);};
     camDelegate = [[CvCameraDelegateObj alloc] initWithCallback:this_processImage];
     camera.delegate = camDelegate;
-    
+
 
 //    std::cout << "sessio nloaded: " << camera.captureSessionLoaded << std::endl;
 //    if ([camera.captureSession canSetSessionPreset:AVCaptureSessionPreset3840x2160]) {
@@ -262,12 +262,12 @@ void cvARManager::saveImg() {
 }
 
 void cvARManager::doFrame(int n_avg, std::function<void(CB_STATE)> cb_func) {
-    // saveImg();
+    saveImg();
     captured_frames.clear();
     most_inliers = 0;
     frames_to_capture = n_avg;
     frame_callback = cb_func;
-    
+
     
 //    UIImage* bgImage = [UIImage imageNamed:@"skywalk_1920_back.png"];
 //    std::unique_lock<std::mutex> lk(worker_mutex);
@@ -280,7 +280,7 @@ void cvARManager::doFrame(int n_avg, std::function<void(CB_STATE)> cb_func) {
 
 bool cvARManager::startAR() {
     do_tracking = true;
-    [camera start];
+    startCamera();
     return true;
 }
 
@@ -296,6 +296,24 @@ void cvARManager::startCamera() {
     [camera start];
     // Camera was paused, so new images will not match returned pose. Invalidate tracking
     is_tracked = false;
+    
+    AVCaptureSession* session = camera.captureSession;
+    NSArray<AVCaptureInput*>* inputs = session.inputs;
+    AVCaptureDeviceInput* input = (AVCaptureDeviceInput*)(inputs.firstObject);
+    AVCaptureDevice* device = input.device;
+    if (!device.exposurePointOfInterestSupported) {
+        printf("Exposure point of interest not supported\n");
+    }
+//    CGPoint poi = device.exposurePointOfInterest;
+//    printf("PoI: %f, %f\n", poi.x, poi.y);
+    NSError* error;
+    [device lockForConfiguration:&error];
+    if (error) {
+        printf("Failed to set exposure POI\n");
+    }
+    device.exposurePointOfInterest = CGPointMake(0.5, 0.5);
+    device.exposureMode = AVCaptureExposureModeContinuousAutoExposure;
+    [device unlockForConfiguration];
 }
 
 void cvARManager::stopCamera() {
