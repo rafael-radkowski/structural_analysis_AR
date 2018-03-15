@@ -19,6 +19,11 @@ namespace TownCalcs {
     } typedef Input_t;
     
     struct {
+        double theta_B;
+        double theta_C;
+        double theta_E;
+        double delta;
+        
         double M_AB;
         double M_BA;
         double M_DC;

@@ -25,7 +25,7 @@
     SKScene* skScene;
     SCNNode* cameraNode;
     
-    SKCornerNode* corner1, *corner2;
+    SKCornerNode* cornerB, *cornerE;
     SKShapeNode* jointBox;
     
     LoadMarker liveLoad;
