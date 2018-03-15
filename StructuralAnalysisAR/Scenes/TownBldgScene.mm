@@ -14,6 +14,9 @@
 #include "StaticARManager.h"
 
 #include <random>
+#include <vector>
+
+using namespace TownCalcs;
 
 @implementation TownBldgScene
 
@@ -85,6 +88,89 @@
     [jointBox addChild:corner2];
     [skScene addChild:jointBox];
     
+    
+    // ---------------- Load Markers ---------------- //
+    float thickness = 1.7;
+    liveLoad = LoadMarker(3, false, 1, 2.0);
+    liveLoad.setPosition(GLKVector3Make(0, Calculator::height, 0));
+    liveLoad.setInputRange(0, 2.5);
+    liveLoad.setMinHeight(7);
+    liveLoad.setMaxHeight(15);
+    liveLoad.setEnds(0, Calculator::width * 2);
+    liveLoad.setThickness(thickness);
+    liveLoad.addAsChild(rootNode);
+    liveLoad.setScenes(skScene, scnView);
+    
+    sideLoad = GrabbableArrow(2.0);
+    sideLoad.setPosition(GLKVector3Make(0, Calculator::height, 0));
+    sideLoad.setRotationAxisAngle(GLKVector4Make(0, 0, 1, M_PI/2));
+    sideLoad.setThickness(thickness);
+    sideLoad.setInputRange(0, 8.65);
+    sideLoad.setMinLength(5);
+    sideLoad.setMaxLength(15);
+    sideLoad.addAsChild(rootNode);
+    sideLoad.setScenes(skScene, scnView);
+    sideLoad.setFormatString(@"%.1f k");
+    
+    // beams
+    constexpr int res = 3;
+    std::vector<std::vector<float>> horiz_vals(2), vert_vals(2);
+    constexpr double horiz_step = Calculator::width / (res - 1);
+    constexpr double vert_step = Calculator::height / (res - 1);
+    for (int i = 0; i < res; ++i) {
+        horiz_vals[0].push_back(horiz_step * i);
+        vert_vals[0].push_back(vert_step * i);
+        horiz_vals[1].push_back(0);
+        vert_vals[1].push_back(0);
+    }
+    GLKQuaternion vert_ori = GLKQuaternionMakeWithAngleAndAxis(M_PI/2, 0, 0, 1);
+    line_AB = BezierLine(vert_vals);
+    line_AB.setOrientation(vert_ori);
+    line_DC = BezierLine(vert_vals);
+    line_DC.setPosition(GLKVector3Make(Calculator::width, 0, 0));
+    line_DC.setOrientation(vert_ori);
+    line_FE = BezierLine(vert_vals);
+    line_FE.setPosition(GLKVector3Make(2 * Calculator::width, 0, 0));
+    line_FE.setOrientation(vert_ori);
+    line_BC = BezierLine(horiz_vals);
+    line_BC.setPosition(GLKVector3Make(0, Calculator::height, 0));
+    line_CE = BezierLine(horiz_vals);
+    line_CE.setPosition(GLKVector3Make(Calculator::width, Calculator::height, 0));
+
+    std::vector<BezierLine*> beams = {&line_AB, &line_DC, &line_FE, &line_BC, &line_CE};
+    for (BezierLine* beam : beams) {
+        beam->addAsChild(rootNode);
+        beam->setThickness(0.5);
+    }
+    
+    line_AB.addAsChild(rootNode);
+    line_DC.addAsChild(rootNode);
+    
+    
+    F_FE.setPosition(GLKVector3Make(Calculator::width * 2, 0, 0));
+    V_FE.setPosition(GLKVector3Make(Calculator::width * 2, 0, 0));
+    V_AB.setRotationAxisAngle(GLKVector4Make(0, 0, 1, -M_PI/2));
+    V_FE.setRotationAxisAngle(GLKVector4Make(0, 0, 1, M_PI/2));
+    F_AB.setRotationAxisAngle(GLKVector4Make(0, 0, 1, M_PI));
+    F_FE.setRotationAxisAngle(GLKVector4Make(0, 0, 1, M_PI));
+
+    std::vector<GrabbableArrow*> rcn_arrows = {&F_AB, &F_FE, &V_AB, &V_FE};
+    for (GrabbableArrow* arrow : rcn_arrows) {
+        arrow->setThickness(thickness);
+        arrow->setScenes(skScene, scnView);
+        arrow->addAsChild(rootNode);
+        arrow->setInputRange(0, 100);
+        arrow->setFormatString(@"%.1f k");
+        arrow->setMinLength(5);
+        arrow->setMaxLength(15);
+    }
+    
+    calc_inputs.D = 3;
+    
+    // default loads
+    liveLoad.setLoad(0);
+    deadLoad.setLoad(3);
+    sideLoad.setIntensity(3);
     return rootNode;
 }
 
@@ -145,15 +231,23 @@
 }
 
 - (void)skUpdate {
+    liveLoad.doUpdate();
+    sideLoad.doUpdate();
+//    std::vector<BezierLine*> beams = {&line_AB, &line_DC, &line_FE, &line_BC, &line_CE};
+//    for (BezierLine* beam : beams) {
+    std::vector<GrabbableArrow*> rcn_arrows = {&F_AB, &F_FE, &V_AB, &V_FE};
+    for (GrabbableArrow* arrow : rcn_arrows) {
+        arrow->doUpdate();
+    }
 }
 
 
 // Make various AR Managers
 - (ARManager*)makeStaticTracker {
-    GLKMatrix4 trans_mat = GLKMatrix4MakeTranslation(0, 40, 230);
-    GLKMatrix4 rot_x_mat = GLKMatrix4MakeXRotation(0.3);
+    GLKMatrix4 trans_mat = GLKMatrix4MakeTranslation(37, 7, 110);
+    GLKMatrix4 rot_x_mat = GLKMatrix4MakeXRotation(0.33);
     GLKMatrix4 cameraMatrix = GLKMatrix4Multiply(rot_x_mat, trans_mat);
-    return new StaticARManager(scnView, scnView.scene, cameraMatrix, @"campanile_static.JPG");
+    return new StaticARManager(scnView, scnView.scene, cameraMatrix, @"town_static.png");
 }
 
 - (ARManager*)makeIndoorTracker {
@@ -171,6 +265,9 @@
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     CGPoint p = [[touches anyObject] locationInView:scnView];
     GLKVector3 farClipHit = SCNVector3ToGLKVector3([scnView unprojectPoint:SCNVector3Make(p.x, p.y, 1.0)]);
+    
+    liveLoad.touchBegan(SCNVector3ToGLKVector3(cameraNode.position), farClipHit);
+    sideLoad.touchBegan(SCNVector3ToGLKVector3(cameraNode.position), farClipHit);
 }
 
 - (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
@@ -179,12 +276,43 @@
     GLKVector3 farClipHit = SCNVector3ToGLKVector3([scnView unprojectPoint:SCNVector3Make(p.x, p.y, 1.0)]);
     GLKVector3 cameraPos = SCNVector3ToGLKVector3(cameraNode.position);
     GLKVector3  touchRay = GLKVector3Normalize(GLKVector3Subtract(farClipHit, cameraPos));
+    
+    if (liveLoad.draggingMode() != LoadMarker::none) {
+        float dragValue = liveLoad.getDragValue(cameraPos, touchRay);
+        liveLoad.setLoad(dragValue);
+        std::pair<float, float> sideDragPosition = liveLoad.getDragPosition(cameraPos, touchRay);
+        // Limit left to the range of [0, width*2 - 2]
+        sideDragPosition.first = std::min<float>(std::max<float>(0, sideDragPosition.first), Calculator::width*2 - 2);
+        // Limit right to the range of [2, width*2 - 2]
+        sideDragPosition.second = std::max<float>(std::min<float>(Calculator::width*2, sideDragPosition.second), 2);
+        // Dont let bar collapse
+        if (sideDragPosition.second - sideDragPosition.first >= 5) {
+            liveLoad.setEnds(sideDragPosition.first, sideDragPosition.second);
+    //        [self updateBeamForces];
+        }
+        calc_inputs.x1 = sideDragPosition.first;
+        calc_inputs.x2 = sideDragPosition.second;
+        calc_inputs.L = dragValue;
+    }
+    
+    if (sideLoad.dragging) {
+        GLKVector3 cameraDir = GLKVector3Make(cameraNode.transform.m13, cameraNode.transform.m23, cameraNode.transform.m33);
+        float dragValue = sideLoad.getDragValue(cameraPos, touchRay, cameraDir);
+        sideLoad.setIntensity(dragValue);
+        calc_inputs.F = dragValue;
+    }
+    
+    [self updateForces];
 }
 
 - (void)touchesCancelled:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    liveLoad.touchCancelled();
+    sideLoad.touchCancelled();
 }
 
 - (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    liveLoad.touchEnded();
+    sideLoad.touchEnded();
 }
 
 - (IBAction)freezePressed:(id)sender {
@@ -210,4 +338,11 @@
     CGRect frame = [self.changeTrackingBtn.superview convertRect:self.changeTrackingBtn.frame toView:scnView];
     [managingParent changeTrackingMode:frame];
 }
+
+- (void)updateForces {
+    Output_t results = Calculator::calculate(calc_inputs);
+    F_AB.setIntensity(results.F_AB);
+    V_AB.setIntensity(results.V_AB);
+}
+
 @end

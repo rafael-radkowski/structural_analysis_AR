@@ -285,6 +285,7 @@ void LoadMarker::touchBegan(GLKVector3 origin, GLKVector3 farHit) {
     NSArray *hitResults = [rootNode hitTestWithSegmentFromPoint:origin_local toPoint:destination_local options:hitOptions];
     if ([hitResults count] == 0) {
 //        printf("Error: No hit results\n");
+        dragState = none;
         return;
     }
 //    SCNHitTestResult* hitTestResult = hitResults.firstObject;

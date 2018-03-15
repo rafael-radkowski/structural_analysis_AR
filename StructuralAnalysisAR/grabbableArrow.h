@@ -49,7 +49,7 @@ public:
     void setInputRange(float minValue, float maxValue);
     std::pair<float,float> getInputRange();
     
-    void touchBegan(SCNHitTestResult* hitTestResult);
+    void touchBegan(GLKVector3 origin, GLKVector3 farHit);
     float getDragValue(GLKVector3 origin, GLKVector3 touchRay, GLKVector3 cameraDir);
     void touchEnded();
     void touchCancelled();

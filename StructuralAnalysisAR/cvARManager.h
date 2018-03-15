@@ -45,7 +45,8 @@
 
 typedef enum cvStructure {
     skywalk,
-    campanile
+    campanile,
+    town
 } cvStructure_t;
 
 class cvARManager : public ARManager {
