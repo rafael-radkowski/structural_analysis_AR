@@ -61,7 +61,7 @@ using namespace TownCalcs;
     jointBox = [SKShapeNode shapeNodeWithRect:CGRectMake(0, 0, jointBoxWidth, jointBoxHeight)];
     jointBox.strokeColor = [UIColor colorWithWhite:0.2 alpha:1.0];
     jointBox.fillColor = [UIColor colorWithWhite:0.8 alpha:0.5];
-    jointBox.position = CGPointMake(750, 200);
+    jointBox.position = CGPointMake(scnView.frame.size.width - jointBoxWidth - 50, 200);
     jointBox.zPosition = -1; // Don't cover other nodes
     // make title for joint box
     SKLabelNode* jointBoxTitle = [SKLabelNode labelNodeWithFontNamed:@"Helvetica"];
@@ -76,16 +76,15 @@ using namespace TownCalcs;
     titleUnderline.position = CGPointMake(0, jointBoxHeight - jointBoxTitle.fontSize - 6);
     [jointBox addChild:titleUnderline];
     
-    corner1 = [[SKCornerNode alloc] initWithTextUp:NO];
-    [corner1 setPosition:CGPointMake(200, 200)];
-    corner1.zRotation = M_PI;
-    corner2 = [[SKCornerNode alloc] init];
-    [corner2 setPosition:CGPointMake(100, 420)];
-    [corner1 setInputRange:-1 max:1];
-    [corner1 setLengthRange:5 max:40];
+    cornerE = [[SKCornerNode alloc] initWithTextUp:NO];
+    [cornerE setPosition:CGPointMake(200, 200)];
+    cornerB = [[SKCornerNode alloc] init];
+    [cornerB setPosition:CGPointMake(100, 420)];
+    [cornerE setInputRange:-1 max:1];
+    [cornerE setLengthRange:5 max:40];
     
-    [jointBox addChild:corner1];
-    [jointBox addChild:corner2];
+    [jointBox addChild:cornerE];
+    [jointBox addChild:cornerB];
     [skScene addChild:jointBox];
     
     
@@ -175,12 +174,6 @@ using namespace TownCalcs;
 }
 
 - (void)scnRendererUpdateAt:(NSTimeInterval)time {
-    static float phase = 0;
-    phase += 0.01;
-    float force1 = std::sin(phase);
-    float force2 = std::cos(phase);
-    [corner1 setForces:force1 force2:force2];
-    corner2.zRotation = -M_PI / 2 + force1 / 4;
 }
 
 - (void)setCameraLabelPaused:(bool)isPaused isEnabled:(bool)enabled {
@@ -343,6 +336,10 @@ using namespace TownCalcs;
     Output_t results = Calculator::calculate(calc_inputs);
     F_AB.setIntensity(results.F_AB);
     V_AB.setIntensity(results.V_AB);
+    
+    double rot_scale = 400;
+    cornerB.zRotation = -M_PI/2 + results.theta_B * rot_scale;
+    cornerE.zRotation = M_PI + results.theta_E * rot_scale;
 }
 
 @end

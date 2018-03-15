@@ -116,6 +116,10 @@ Output_t Calculator::calculate(const Input_t& inputs) {
     
     // calculate final values
     Output_t computed;
+    computed.theta_B = theta_B;
+    computed.theta_C = theta_C;
+    computed.theta_E = theta_E;
+    computed.delta = delta;
     
     // moments
     computed.M_AB = 2*k_1 * (theta_B + delta/4);
