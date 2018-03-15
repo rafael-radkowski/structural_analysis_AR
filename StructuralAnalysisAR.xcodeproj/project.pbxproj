@@ -43,6 +43,8 @@
 		0B5D6391204F36D4003384C4 /* townBldgView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B5D6390204F36D4003384C4 /* townBldgView.xib */; };
 		0B5D6393204F4432003384C4 /* SKCornerNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 0B5D6392204F4432003384C4 /* SKCornerNode.m */; };
 		0B5D639620506AD0003384C4 /* arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B5D639520506AD0003384C4 /* arrow.png */; };
+		0B5D6399205719B4003384C4 /* TownCalcs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B5D6398205719B4003384C4 /* TownCalcs.cpp */; };
+		0B5D639B20586584003384C4 /* town_static.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B5D639A20586584003384C4 /* town_static.png */; };
 		0B5F39DE1F843975004870DE /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0B5F39DD1F843975004870DE /* Shaders.metal */; };
 		0B5F39E51F844CEF004870DE /* skywalk_far.dat in Resources */ = {isa = PBXBuildFile; fileRef = 0B5F39E31F844CEF004870DE /* skywalk_far.dat */; };
 		0B5F39E61F844CEF004870DE /* skywalk_far.xml in Resources */ = {isa = PBXBuildFile; fileRef = 0B5F39E41F844CEF004870DE /* skywalk_far.xml */; };
@@ -149,6 +151,9 @@
 		0B5D6392204F4432003384C4 /* SKCornerNode.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKCornerNode.m; sourceTree = "<group>"; };
 		0B5D6394204F4444003384C4 /* SKCornerNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKCornerNode.h; sourceTree = "<group>"; };
 		0B5D639520506AD0003384C4 /* arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = arrow.png; path = image_assets/arrow.png; sourceTree = "<group>"; };
+		0B5D63972057104E003384C4 /* TownCalcs.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = TownCalcs.hpp; sourceTree = "<group>"; };
+		0B5D6398205719B4003384C4 /* TownCalcs.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TownCalcs.cpp; sourceTree = "<group>"; };
+		0B5D639A20586584003384C4 /* town_static.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = town_static.png; path = image_assets/town_static.png; sourceTree = "<group>"; };
 		0B5F39DD1F843975004870DE /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
 		0B5F39E31F844CEF004870DE /* skywalk_far.dat */ = {isa = PBXFileReference; lastKnownFileType = file; name = skywalk_far.dat; path = image_assets/skywalk_far.dat; sourceTree = "<group>"; };
 		0B5F39E41F844CEF004870DE /* skywalk_far.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = skywalk_far.xml; path = image_assets/skywalk_far.xml; sourceTree = "<group>"; };
@@ -259,6 +264,8 @@
 				0B03583420054BAA00F75CD2 /* CampanileScene.h */,
 				0B5D638D204F31AC003384C4 /* TownBldgScene.h */,
 				0B5D638E204F31AD003384C4 /* TownBldgScene.mm */,
+				0B5D63972057104E003384C4 /* TownCalcs.hpp */,
+				0B5D6398205719B4003384C4 /* TownCalcs.cpp */,
 			);
 			path = Scenes;
 			sourceTree = "<group>";
@@ -266,6 +273,7 @@
 		0B483BFC1F4DDB89007A1D29 /* image_assets */ = {
 			isa = PBXGroup;
 			children = (
+				0B5D639A20586584003384C4 /* town_static.png */,
 				0BD711172049DD8C0095D753 /* seismic_plots */,
 				0BD710F32029169B0095D753 /* campanile_1920_model.png */,
 				0BD710F82034B2800095D753 /* campanile_1920_model_cutout.png */,
@@ -542,6 +550,7 @@
 				0BDF88E61F4B3BAE0014BFB7 /* testScene.scn in Resources */,
 				0BD711222049E08F0095D753 /* 0.05.png in Resources */,
 				0BD038A71F97B38F004B65F6 /* low_clearance_sign.xml in Resources */,
+				0B5D639B20586584003384C4 /* town_static.png in Resources */,
 				0B483BFB1F4DDB6F007A1D29 /* skywalk.jpg in Resources */,
 				0B483C001F4F8AF9007A1D29 /* arrow_base.obj in Resources */,
 				0B2ACE212019259900230D67 /* campanile_static.JPG in Resources */,
@@ -587,6 +596,7 @@
 				0BE42D261F688DDA00937359 /* BezierLine.mm in Sources */,
 				0B79A12E1F7ABA5300632CE4 /* OverlayLabel.mm in Sources */,
 				0BB1643F1F4732DC0053CA3B /* AppDelegate.m in Sources */,
+				0B5D6399205719B4003384C4 /* TownCalcs.cpp in Sources */,
 				0B03582E2000128B00F75CD2 /* StructureScene.mm in Sources */,
 				0BD7111620408B5A0095D753 /* Ruler.mm in Sources */,
 				0B1FCD461FBCA2F2002DBE98 /* VuforiaARManager.mm in Sources */,

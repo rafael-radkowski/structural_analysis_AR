@@ -12,6 +12,7 @@
 #include <vector>
 #include <thread>
 
+#include "TownCalcs.hpp"
 #import "StructureScene.h"
 #include "loadMarker.h"
 #include "BezierLine.h"
@@ -26,6 +27,14 @@
     
     SKCornerNode* corner1, *corner2;
     SKShapeNode* jointBox;
+    
+    LoadMarker liveLoad;
+    LoadMarker deadLoad;
+    GrabbableArrow sideLoad;
+
+    TownCalcs::Input_t calc_inputs;
+    BezierLine line_AB, line_DC, line_FE, line_BC, line_CE;
+    GrabbableArrow F_AB, F_FE, V_AB, V_FE;
 }
 
 @property (nonatomic, retain) IBOutlet UIView *viewFromNib;
@@ -53,6 +62,8 @@
 - (IBAction)visToggled:(id)sender;
 
 - (void)setVisibilities;
+
+- (void)updateForces;
 
 @end
 
