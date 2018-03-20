@@ -12,12 +12,12 @@
 #include <vector>
 #include <thread>
 
-#include "TownCalcs.hpp"
 #import "StructureScene.h"
 #include "loadMarker.h"
 #include "BezierLine.h"
 #include "CircleArrow.h"
 #include "SKCornerNode.h"
+#include "TownCalcs.hpp"
 
 @interface TownBldgScene: NSObject <StructureScene> {
     id<ARViewController> managingParent;
