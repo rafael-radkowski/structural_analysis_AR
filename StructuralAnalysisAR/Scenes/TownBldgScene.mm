@@ -333,10 +333,10 @@ using namespace TownCalcs;
 }
 
 - (void)updateForces {
-    calc_inputs.L = 2.5;
-    calc_inputs.x1 = 16.8;
-    calc_inputs.x2 = 30;
-    calc_inputs.F = 5.62 * 0.985;
+//    calc_inputs.L = 2.5;
+//    calc_inputs.x1 = 16.8;
+//    calc_inputs.x2 = 30;
+//    calc_inputs.F = 5.62 * 0.985;
     Output_t results = Calculator::calculate(calc_inputs);
     F_AB.setIntensity(results.F_AB);
     V_AB.setIntensity(results.V_AB);
