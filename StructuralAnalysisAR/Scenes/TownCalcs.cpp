@@ -63,8 +63,8 @@ Output_t Calculator::calculate(const Input_t& inputs) {
     if (inputs.x1 <= width && inputs.x2 >= width) {
         VF_BC = (inputs.L * (power<2>(width - inputs.x1) / 2) + MF_CB + MF_BC) / width;
         VF_CB = (inputs.L * (width - inputs.x1) * (inputs.x1 + ((width - inputs.x1) / 2)) - MF_BC - MF_CB) / width;
-        VF_CE = ((inputs.L * power<2>(inputs.x2 - width) / 2) - MF_CE - MF_EC) / width;
-        VF_EC = (inputs.L * (inputs.x2 - width) * (33.34 - inputs.x2 + ((inputs.x2 - width) / 2)) + MF_EC + MF_CE) / width;
+        VF_CE = (inputs.L * (inputs.x2 - width) * (33.34 - inputs.x2 + ((inputs.x2 - width) / 2)) + MF_EC + MF_CE) / width;
+        VF_EC = ((inputs.L * power<2>(inputs.x2 - width) / 2) - MF_CE - MF_EC) / width;
     }
     else if (inputs.x1 <= width && inputs.x2 <= width) {
         VF_BC = (inputs.L * (inputs.x2 - inputs.x1) * (width - inputs.x1 - ((inputs.x2 - inputs.x1) / 2)) + MF_BC + MF_CB) / width;
