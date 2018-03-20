@@ -16,6 +16,7 @@ GrabbableArrow::GrabbableArrow(float hit_scale, bool as_loadmarker, bool reverse
 : lastArrowValue(0)
 , reversed(reversed)
 , hitBoxScale(hit_scale)
+, extraRotation(GLKQuaternionIdentity)
 , partOfLoadMarker(as_loadmarker) {
     // Import the arrow object
     NSString* arrowHeadPath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"arrow_tip"] ofType:@"obj"];
@@ -109,7 +110,13 @@ void GrabbableArrow::setPosition(GLKVector3 pos) {
 }
 
 void GrabbableArrow::setRotationAxisAngle(GLKVector4 axisAngle) {
-    root.rotation = SCNVector4FromGLKVector4(axisAngle);
+    setOrientation(GLKQuaternionMakeWithAngleAndAxis(axisAngle.w, axisAngle.x, axisAngle.y, axisAngle.z));
+}
+
+void GrabbableArrow::setOrientation(GLKQuaternion quat) {
+    setRotation = quat;
+    GLKQuaternion final_rot = GLKQuaternionMultiply(extraRotation, setRotation);
+    root.orientation = SCNVector4Make(final_rot.q[0], final_rot.q[1], final_rot.q[2], final_rot.q[3]);
 }
 
 void GrabbableArrow::setThickness(float thickness) {
@@ -230,6 +237,17 @@ void GrabbableArrow::touchCancelled() {
 
 void GrabbableArrow::setIntensity(float value) {
     lastArrowValue = value;
+    if (!negated && value < 0) {
+        value = std::abs(value);
+        extraRotation = GLKQuaternionMakeWithAngleAndAxis(M_PI, 0, 1, 0);
+        setOrientation(setRotation);
+        negated = true;
+    }
+    else if (negated && value > 0) {
+        extraRotation = GLKQuaternionIdentity;
+        setOrientation(setRotation);
+        negated = false;
+    }
     float normalizedValue = (value - minInput) / (maxInput - minInput);
     
     // adjust scale

@@ -32,6 +32,7 @@ public:
     void setHidden(bool hidden);
     void setPosition(GLKVector3 pos);
     void setRotationAxisAngle(GLKVector4 axisAngle);
+    void setOrientation(GLKQuaternion quat);
     void setLabelFollow(bool follow);
     
     void setMaxLength(float newLength);
@@ -60,6 +61,9 @@ public:
     void setColor(float r, float g, float b);
     
     float lastArrowValue = 0.5;
+    
+    GLKQuaternion extraRotation, setRotation;
+    bool negated = false;
     
     // Root node for entire arrow
     SCNNode* root;
