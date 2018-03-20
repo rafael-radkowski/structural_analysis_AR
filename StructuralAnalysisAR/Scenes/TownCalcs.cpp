@@ -14,23 +14,23 @@ using namespace TownCalcs;
 Output_t Calculator::calculate(const Input_t& inputs) {
     // fixed end moments
     double MF_BC = 0, MF_CB = 0, MF_CE = 0, MF_EC = 0;
-    if (inputs.x1 < width && inputs.x2 > width) {
+    if (inputs.x1 <= width && inputs.x2 >= width) {
         MF_BC = inputs.L * power<3>(width - inputs.x1) * (width + 3*inputs.x1) / 3334.67;
-        MF_CB = -inputs.L * power<2>(width - inputs.x1) * (1667.33 - (133.36*(width - inputs.x1)) + (3*power<2>(width - inputs.x1))) / 3334.67;
+        MF_CB = -inputs.L * power<2>(width - inputs.x1) * (1667.33 - (133.36*(width - inputs.x1)) + 3*power<2>(width - inputs.x1)) / 3334.67;
         MF_CE = inputs.L * power<2>(inputs.x2 - width) * (3*power<2>(inputs.x2 - width) + 3890.44 - 133.36*inputs.x2) / 3334.67;
         MF_EC = -inputs.L * power<3>(inputs.x2 - width) * (116.69 - 3*inputs.x2) / 3334.67;
     }
-    else if (inputs.x1 < width && inputs.x2 < width) {
-        MF_BC = inputs.L * power<2>(inputs.x2) * (3*inputs.x2 - 133.36*inputs.x2 + 1667.33) / 3334.67
+    else if (inputs.x1 <= width && inputs.x2 <= width) {
+        MF_BC = inputs.L * power<2>(inputs.x2) * (3*power<2>(inputs.x2) - 133.36*inputs.x2 + 1667.33) / 3334.67
                 + inputs.L * power<3>(width - inputs.x1) * (66.68 - (50.01 - 3*inputs.x1)) / 3334.67
-                + 23.157 * inputs.L;
+                - 23.157 * inputs.L;
         MF_CB = -inputs.L * power<3>(inputs.x2) * (66.68 - 3*inputs.x2) / 3334.67
                 - inputs.L * power<2>(width - inputs.x1) * (1667.33 - 133.36*(width - inputs.x1) + 3*power<2>(width - inputs.x1)) / 3334.67
                 + 23.157 * inputs.L;
         MF_CE = 0;
         MF_EC = 0;
     }
-    else if (inputs.x1 > width && inputs.x2 > width) {
+    else if (inputs.x1 >= width && inputs.x2 >= width) {
         MF_BC = 0;
         MF_CB = 0;
         MF_CE = inputs.L * power<2>(inputs.x2 - width) * (3*power<2>(inputs.x2 - width) - 133.36*(inputs.x2 - width) + 1667.33) / 3334.67
@@ -40,18 +40,18 @@ Output_t Calculator::calculate(const Input_t& inputs) {
                 - inputs.L * power<2>(33.34 - inputs.x1) * (1667.33 - 133.36*(33.34 - inputs.x1) + 3*power<2>(33.34 - inputs.x1)) / 3334.67
                 + 23.157 * inputs.L;
     }
-    else if (inputs.x1 == 0 && inputs.x2 == width) {
-        MF_BC = 23.157 * inputs.L;
-        MF_CB = -23.157 * inputs.L;
-        MF_CE = 0;
-        MF_EC = 0;
-    }
-    else if (inputs.x1 == width && inputs.x2 == 2*width) {
-        MF_BC = 0;
-        MF_CB = 0;
-        MF_CE = 23.157 * inputs.L;
-        MF_EC = -23.157 * inputs.L;
-    }
+//    else if (inputs.x1 == 0 && inputs.x2 == width) {
+//        MF_BC = 23.157 * inputs.L;
+//        MF_CB = -23.157 * inputs.L;
+//        MF_CE = 0;
+//        MF_EC = 0;
+//    }
+//    else if (inputs.x1 == width && inputs.x2 == 2*width) {
+//        MF_BC = 0;
+//        MF_CB = 0;
+//        MF_CE = 23.157 * inputs.L;
+//        MF_EC = -23.157 * inputs.L;
+//    }
     // add dead load contribution
     MF_BC += 23.157 * inputs.D;
     MF_CB -= 23.157 * inputs.D;
@@ -60,41 +60,41 @@ Output_t Calculator::calculate(const Input_t& inputs) {
     
     // fixed end shears
     double VF_BC = 0, VF_CB = 0, VF_CE = 0, VF_EC = 0;
-    if (inputs.x1 < width && inputs.x2 > width) {
-        VF_BC = (inputs.L * (width - inputs.x1) * (inputs.x1 + ((width - inputs.x1) / 2)) - MF_BC - MF_CB) / width;
-        VF_CB = (inputs.L * (power<2>(inputs.x1) / 2) + MF_CB + MF_BC) / width;
+    if (inputs.x1 <= width && inputs.x2 >= width) {
+        VF_BC = (inputs.L * (power<2>(width - inputs.x1) / 2) + MF_CB + MF_BC) / width;
+        VF_CB = (inputs.L * (width - inputs.x1) * (inputs.x1 + ((width - inputs.x1) / 2)) - MF_BC - MF_CB) / width;
         VF_CE = ((inputs.L * power<2>(inputs.x2 - width) / 2) - MF_CE - MF_EC) / width;
-        VF_EC = (inputs.L * (inputs.x2 - width) * (33.34 - inputs.x2 + ((inputs.x2 - width) / 2)) + MF_EC + MF_CB) / width;
+        VF_EC = (inputs.L * (inputs.x2 - width) * (33.34 - inputs.x2 + ((inputs.x2 - width) / 2)) + MF_EC + MF_CE) / width;
     }
-    else if (inputs.x1 < width && inputs.x2 < width) {
+    else if (inputs.x1 <= width && inputs.x2 <= width) {
         VF_BC = (inputs.L * (inputs.x2 - inputs.x1) * (width - inputs.x1 - ((inputs.x2 - inputs.x1) / 2)) + MF_BC + MF_CB) / width;
-        VF_CB = (inputs.L * (inputs.x2 - inputs.x1) * (inputs.x2 - ((inputs.x2 - inputs.x1) / 2)) - MF_BC + MF_CB) / width;
+        VF_CB = (inputs.L * (inputs.x2 - inputs.x1) * (inputs.x2 - ((inputs.x2 - inputs.x1) / 2)) - MF_BC - MF_CB) / width;
         VF_CE = 0;
         VF_EC = 0;
     }
-    else if (inputs.x1 > width && inputs.x2 > width) {
+    else if (inputs.x1 >= width && inputs.x2 >= width) {
         VF_BC = 0;
         VF_CB = 0;
         VF_CE = (inputs.L * (inputs.x2 - inputs.x1) * (33.34 - inputs.x1 - ((inputs.x2 - inputs.x1) / 2)) + MF_CE + MF_EC) / width;
-        MF_EC = (inputs.L * (inputs.x2 - inputs.x1) * (inputs.x1 + ((inputs.x2 - inputs.x1) / 2)) - MF_CE - MF_EC) / width;
+        VF_EC = (inputs.L * (inputs.x2 - inputs.x1) * ((inputs.x1 - width) + ((inputs.x2 - inputs.x1) / 2)) - MF_CE - MF_EC) / width;
     }
-    else if (inputs.x1 == 0 && inputs.x2 == width) {
-        VF_BC = 8.335 * inputs.L;
-        VF_CB = 8.335 * inputs.L;
-        VF_CE = 0;
-        VF_EC = 0;
-    }
-    else if (inputs.x1 == width && inputs.x2 == 33.34) {
-        VF_BC = 0;
-        VF_CB = 0;
-        VF_CE = 8.335 * inputs.L;
-        VF_EC = 8.335 * inputs.L;
-    }
+//    else if (inputs.x1 == 0 && inputs.x2 == width) {
+//        VF_BC = 8.335 * inputs.L;
+//        VF_CB = 8.335 * inputs.L;
+//        VF_CE = 0;
+//        VF_EC = 0;
+//    }
+//    else if (inputs.x1 == width && inputs.x2 == 33.34) {
+//        VF_BC = 0;
+//        VF_CB = 0;
+//        VF_CE = 8.335 * inputs.L;
+//        VF_EC = 8.335 * inputs.L;
+//    }
     // add dead load contribution
     VF_BC += 8.335 * inputs.D;
     VF_CB += 8.335 * inputs.D;
     VF_CE += 8.335 * inputs.D;
-    VF_BC += 8.335 * inputs.D;
+    VF_EC += 8.335 * inputs.D;
     
     // solve for thetas and delta
     double A_data[16] = {
@@ -151,11 +151,11 @@ Output_t Calculator::calculate(const Input_t& inputs) {
     computed.F_BC = -computed.V_BA;
     computed.F_CB = computed.V_BA;
     computed.F_CD = -computed.V_CB - computed.V_CE;
-    computed.F_DC = computed.V_CB = computed.V_CE;
+    computed.F_DC = computed.V_CB + computed.V_CE;
     computed.F_CE = computed.V_EF;
     computed.F_EC = -computed.V_EF;
     computed.F_EF = -computed.V_EC;
-    computed.F_EF = computed.V_EC;
+    computed.F_FE = computed.V_EC;
     
     return computed;
 }

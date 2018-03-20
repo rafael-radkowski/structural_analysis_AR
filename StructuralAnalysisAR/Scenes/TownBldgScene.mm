@@ -333,9 +333,15 @@ using namespace TownCalcs;
 }
 
 - (void)updateForces {
+    calc_inputs.L = 2.5;
+    calc_inputs.x1 = 16.8;
+    calc_inputs.x2 = 30;
+    calc_inputs.F = 5.62 * 0.985;
     Output_t results = Calculator::calculate(calc_inputs);
     F_AB.setIntensity(results.F_AB);
     V_AB.setIntensity(results.V_AB);
+    F_FE.setIntensity(results.F_FE);
+    V_FE.setIntensity(results.V_FE);
     
     double rot_scale = 400;
     cornerB.zRotation = -M_PI/2 + results.theta_B * rot_scale;
