@@ -12,6 +12,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="TownBldgScene">
             <connections>
+                <outlet property="bottomBarView" destination="0oP-G4-DiJ" id="ckC-Ub-IMs"/>
                 <outlet property="changeTrackingBtn" destination="DoX-Jh-VXk" id="Y1X-Iv-0d7"/>
                 <outlet property="deadLoadSwitch" destination="zYk-i1-3CS" id="j63-F1-K3B"/>
                 <outlet property="freezeFrameBtn" destination="f0Z-nd-D4D" id="K9p-zM-a3j"/>

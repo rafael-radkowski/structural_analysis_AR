@@ -255,16 +255,32 @@ using namespace TownCalcs;
     return new cvARManager(scnView, scnView.scene, cvStructure_t::campanile, rotMat);
 }
 
+- (CGPoint)convertTouchToSKScene:(CGPoint)scnViewPt {
+    // touch point in SkScene.view coordinate system
+    CGPoint pointSkView = [scnView convertPoint:scnViewPt toView:skScene.view];
+    // touch point in skScene coordinate system
+    CGPoint pointSkScene = [skScene convertPointFromView:pointSkView];
+    return pointSkScene;
+}
+
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     CGPoint p = [[touches anyObject] locationInView:scnView];
     GLKVector3 farClipHit = SCNVector3ToGLKVector3([scnView unprojectPoint:SCNVector3Make(p.x, p.y, 1.0)]);
     
+    // ------ 3D Touch Handling ------ //
     liveLoad.touchBegan(SCNVector3ToGLKVector3(cameraNode.position), farClipHit);
     sideLoad.touchBegan(SCNVector3ToGLKVector3(cameraNode.position), farClipHit);
+    
+    // ------ 2D Touch Handling ------ //
+    CGPoint pointSkScene = [self convertTouchToSKScene:p];
+    if ([jointBox containsPoint:pointSkScene]) {
+        draggingJointBox = true;
+        lastDragPt = pointSkScene;
+    }
 }
 
 - (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    
+    // ------ 3D Touch Handling ------ //
     CGPoint p = [[touches anyObject] locationInView:scnView];
     GLKVector3 farClipHit = SCNVector3ToGLKVector3([scnView unprojectPoint:SCNVector3Make(p.x, p.y, 1.0)]);
     GLKVector3 cameraPos = SCNVector3ToGLKVector3(cameraNode.position);
@@ -296,16 +312,33 @@ using namespace TownCalcs;
     }
     
     [self updateForces];
+    
+    // ------ 2D Touch Handling ------ //
+    CGPoint pointSkScene = [self convertTouchToSKScene:p];
+    if (draggingJointBox) {
+        CGPoint moved = CGPointMake(pointSkScene.x - lastDragPt.x, pointSkScene.y - lastDragPt.y);
+        CGPoint newPos = CGPointMake(jointBox.position.x + moved.x, jointBox.position.y + moved.y);
+        // keep box within scene
+        newPos.x = std::min(std::max(0., newPos.x), skScene.size.width - jointBox.frame.size.width);
+        newPos.y = std::min(std::max(self.bottomBarView.frame.size.height, newPos.y), skScene.size.height - jointBox.frame.size.height);
+        // blah testing stuff
+        jointBox.position = newPos;
+        lastDragPt = pointSkScene;
+    }
 }
 
 - (void)touchesCancelled:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     liveLoad.touchCancelled();
     sideLoad.touchCancelled();
+    
+    draggingJointBox = false;
 }
 
 - (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     liveLoad.touchEnded();
     sideLoad.touchEnded();
+    
+    draggingJointBox = false;
 }
 
 - (IBAction)freezePressed:(id)sender {

@@ -35,8 +35,12 @@
     TownCalcs::Input_t calc_inputs;
     BezierLine line_AB, line_DC, line_FE, line_BC, line_CE;
     GrabbableArrow F_AB, F_FE, V_AB, V_FE;
+    
+    bool draggingJointBox;
+    CGPoint lastDragPt;
 }
 
+@property (weak, nonatomic) IBOutlet UIView *bottomBarView;
 @property (nonatomic, retain) IBOutlet UIView *viewFromNib;
 @property (weak, nonatomic) IBOutlet UIView *visOptionsBox;
 @property (weak, nonatomic) IBOutlet UISwitch *liveLoadSwitch;
@@ -64,6 +68,9 @@
 - (void)setVisibilities;
 
 - (void)updateForces;
+
+// convert a point in scnView coordinate system to skScene coordinate system
+- (CGPoint)convertTouchToSKScene:(CGPoint)scnViewPt;
 
 @end
 
