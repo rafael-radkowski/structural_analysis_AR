@@ -23,6 +23,8 @@
 		0B1FCD461FBCA2F2002DBE98 /* VuforiaARManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B1FCD441FBCA2F2002DBE98 /* VuforiaARManager.mm */; };
 		0B1FCD471FBDDFB6002DBE98 /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B1FCD3F1FBB429F002DBE98 /* opencv2.framework */; };
 		0B1FCD4A1FBDE1C4002DBE98 /* cvARManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B1FCD481FBDE1C4002DBE98 /* cvARManager.mm */; };
+		0B254671206997DF00E4A076 /* skywalk_ref_cropped.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B254670206997DE00E4A076 /* skywalk_ref_cropped.png */; };
+		0B254675206ABF7B00E4A076 /* town_ref_flat_eq.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B254674206ABF7B00E4A076 /* town_ref_flat_eq.png */; };
 		0B2AAB851FD87D4100DD477B /* skywalk_sunny_1920.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B2AAB841FD87D4100DD477B /* skywalk_sunny_1920.png */; };
 		0B2ACE1A200E814900230D67 /* CircleArrow.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B2ACE19200E814900230D67 /* CircleArrow.mm */; };
 		0B2ACE1D2018F8F000230D67 /* campanile_stock_cropped.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0B2ACE1C2018F8F000230D67 /* campanile_stock_cropped.jpg */; };
@@ -127,6 +129,8 @@
 		0B1FCD451FBCA2F2002DBE98 /* VuforiaARManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VuforiaARManager.h; sourceTree = "<group>"; };
 		0B1FCD481FBDE1C4002DBE98 /* cvARManager.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = cvARManager.mm; sourceTree = "<group>"; };
 		0B1FCD491FBDE1C4002DBE98 /* cvARManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = cvARManager.h; sourceTree = "<group>"; };
+		0B254670206997DE00E4A076 /* skywalk_ref_cropped.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = skywalk_ref_cropped.png; path = image_assets/skywalk_ref_cropped.png; sourceTree = "<group>"; };
+		0B254674206ABF7B00E4A076 /* town_ref_flat_eq.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = town_ref_flat_eq.png; path = image_assets/town_ref_flat_eq.png; sourceTree = "<group>"; };
 		0B2AAB841FD87D4100DD477B /* skywalk_sunny_1920.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = skywalk_sunny_1920.png; path = image_assets/skywalk_sunny_1920.png; sourceTree = "<group>"; };
 		0B2ACE19200E814900230D67 /* CircleArrow.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = CircleArrow.mm; sourceTree = "<group>"; };
 		0B2ACE1B200E815D00230D67 /* CircleArrow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CircleArrow.h; sourceTree = "<group>"; };
@@ -273,6 +277,7 @@
 		0B483BFC1F4DDB89007A1D29 /* image_assets */ = {
 			isa = PBXGroup;
 			children = (
+				0B254670206997DE00E4A076 /* skywalk_ref_cropped.png */,
 				0B5D639A20586584003384C4 /* town_static.png */,
 				0BD711172049DD8C0095D753 /* seismic_plots */,
 				0BD710F32029169B0095D753 /* campanile_1920_model.png */,
@@ -297,6 +302,7 @@
 				0B483BFA1F4DDB6F007A1D29 /* skywalk.jpg */,
 				0BAD78761F66CDDE003CAE93 /* stick_man.png */,
 				0BAD78771F66CDDE003CAE93 /* stick_woman.png */,
+				0B254674206ABF7B00E4A076 /* town_ref_flat_eq.png */,
 				0B2ACE1E2018F95800230D67 /* isuofficallogo_light.png */,
 				0B2ACE1C2018F8F000230D67 /* campanile_stock_cropped.jpg */,
 				0B2ACE202019259900230D67 /* campanile_static.JPG */,
@@ -562,8 +568,10 @@
 				0BAD78781F66CDDE003CAE93 /* stick_man.png in Resources */,
 				0B03583720055ABB00F75CD2 /* campanileView.xib in Resources */,
 				0BD711252049E08F0095D753 /* 1.25.png in Resources */,
+				0B254671206997DF00E4A076 /* skywalk_ref_cropped.png in Resources */,
 				0BAD78791F66CDDE003CAE93 /* stick_woman.png in Resources */,
 				0B4F29B11FE0846C0067C439 /* skywalk_south_far.jpg in Resources */,
+				0B254675206ABF7B00E4A076 /* town_ref_flat_eq.png in Resources */,
 				0B5F39E61F844CEF004870DE /* skywalk_far.xml in Resources */,
 				0BD711232049E08F0095D753 /* 1.0.png in Resources */,
 				0B0CBD0F1FDB40C800A9B223 /* skywalk_1920_back.png in Resources */,

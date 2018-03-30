@@ -20,7 +20,7 @@
 static const float base_width = 16;
 static const float base_height = 89 + 2.f / 12;
 static const float roof_height = 20 + 4.5 / 12;
-static const float roof_angle = (M_PI / 180.0) * 68.56;
+//static const float roof_angle = (M_PI / 180.0) * 68.56;
 
 static const float f1_h = 17.75;
 static const float f2_h = 57.5;

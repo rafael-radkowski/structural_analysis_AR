@@ -350,7 +350,6 @@ float LoadMarker::getDragValue(GLKVector3 origin, GLKVector3 touchRay) {
     if (dragState & vertically) {
         GLKVector3 hitPoint = projectRay(origin, touchRay);
         
-        GLKVector3 lineDir = GLKVector3Make(1, 0, 0);
         GLKVector3 loadDir = GLKVector3Make(rootNode.transform.m21, rootNode.transform.m22, rootNode.transform.m23);
         // Position of startPos + arrow min length along load direction
         GLKVector3 shiftedHitPoint = GLKVector3Subtract(hitPoint, SCNVector3ToGLKVector3(rootNode.position));

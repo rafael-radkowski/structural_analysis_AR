@@ -112,8 +112,10 @@ using namespace TownCalcs;
     sideLoad.setFormatString(@"%.1f k");
     
     // beams
-    constexpr int res = 3;
-    std::vector<std::vector<float>> horiz_vals(2), vert_vals(2);
+    constexpr int res = 4;
+    std::vector<std::vector<float>> horiz_vals, vert_vals;
+    horiz_vals.resize(2);
+    vert_vals.resize(2);
     constexpr double horiz_step = Calculator::width / (res - 1);
     constexpr double vert_step = Calculator::height / (res - 1);
     for (int i = 0; i < res; ++i) {
@@ -252,7 +254,7 @@ using namespace TownCalcs;
 
 - (ARManager*)makeOutdoorTracker {
     GLKMatrix4 rotMat = GLKMatrix4MakeYRotation(0.0);
-    return new cvARManager(scnView, scnView.scene, cvStructure_t::campanile, rotMat);
+    return new cvARManager(scnView, scnView.scene, cvStructure_t::town, rotMat);
 }
 
 - (CGPoint)convertTouchToSKScene:(CGPoint)scnViewPt {

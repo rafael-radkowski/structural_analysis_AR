@@ -63,7 +63,7 @@ public:
     GLKMatrix4 getProjectionMatrix() override;
     bool isTracked() override;
     void drawBackground() override;
-    
+
     void saveImg();
     bool saveNext = false;
 
@@ -96,6 +96,7 @@ private:
         cv::Vec2f line_angle;
         cv::Vec2f line_origin;
         float mask_width;
+        bool equalize_hist;
     } mask_properties;
     
     // holds the frame that is being

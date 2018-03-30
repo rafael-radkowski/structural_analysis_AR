@@ -15,8 +15,8 @@
 GrabbableArrow::GrabbableArrow(float hit_scale, bool as_loadmarker, bool reversed)
 : lastArrowValue(0)
 , reversed(reversed)
-, hitBoxScale(hit_scale)
 , extraRotation(GLKQuaternionIdentity)
+, hitBoxScale(hit_scale)
 , partOfLoadMarker(as_loadmarker) {
     // Import the arrow object
     NSString* arrowHeadPath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"arrow_tip"] ofType:@"obj"];

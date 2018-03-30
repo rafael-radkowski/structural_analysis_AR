@@ -1,5 +1,5 @@
 //
-//  CampanileScene.hpp
+//  TownBldgScene.hpp
 //  StructuralAnalysisAR
 //
 //  Created by David Wehr on 1/9/18.

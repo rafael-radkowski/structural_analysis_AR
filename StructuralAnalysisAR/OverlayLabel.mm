@@ -122,7 +122,7 @@ void OverlayLabel::doUpdate() {
 }
 
 void OverlayLabel::placeLabel() {
-    if (objectView) {
+    if (objectView && scene2d && !scene2d.hidden) {
         SCNVector3 worldPos = [attachedNode convertPosition:SCNVector3Make(0, 0, 0) toNode:nil];
         SCNVector3 screenCoords = [objectView projectPoint:worldPos];
         // Spritekit uses bottom-left as (0,0), while screen coordinates use top-right
