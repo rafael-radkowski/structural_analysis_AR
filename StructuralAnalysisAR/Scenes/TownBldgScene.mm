@@ -328,8 +328,8 @@ using namespace TownCalcs;
         CGPoint moved = CGPointMake(pointSkScene.x - lastDragPt.x, pointSkScene.y - lastDragPt.y);
         CGPoint newPos = CGPointMake(jointBox.position.x + moved.x, jointBox.position.y + moved.y);
         // keep box within scene
-        newPos.x = std::min(std::max(0., newPos.x), skScene.size.width - jointBox.frame.size.width);
-        newPos.y = std::min(std::max(self.bottomBarView.frame.size.height, newPos.y), skScene.size.height - jointBox.frame.size.height);
+        newPos.x = std::min<double>(std::max<double>(0., newPos.x), skScene.size.width - jointBox.frame.size.width);
+        newPos.y = std::min<double>(std::max<double>(self.bottomBarView.frame.size.height, newPos.y), skScene.size.height - jointBox.frame.size.height);
         // blah testing stuff
         jointBox.position = newPos;
         lastDragPt = pointSkScene;
