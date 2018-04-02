@@ -24,6 +24,7 @@
                 <outlet property="rcnForceSwitch" destination="DDo-7e-n30" id="gMY-Uy-zLK"/>
                 <outlet property="screenshotBtn" destination="BdN-Vk-bxy" id="zpD-h1-iOp"/>
                 <outlet property="screenshotInfoBox" destination="xYf-9J-Uum" id="fAw-aY-LgC"/>
+                <outlet property="setLabel" destination="3H5-d9-7et" id="Dkc-5D-oEJ"/>
                 <outlet property="viewFromNib" destination="iN0-l3-epB" id="Aqt-hj-vvb"/>
                 <outlet property="visOptionsBox" destination="8rm-1z-HvQ" id="gR2-MC-xHF"/>
             </connections>
@@ -221,6 +222,12 @@
                         <constraint firstItem="pxI-mW-dUq" firstAttribute="top" secondItem="8rm-1z-HvQ" secondAttribute="top" constant="8" id="yvZ-G1-diY"/>
                     </constraints>
                 </view>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Set = -1" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3H5-d9-7et">
+                    <rect key="frame" x="0.0" y="210" width="60.5" height="21"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
@@ -229,9 +236,11 @@
                 <constraint firstAttribute="bottom" secondItem="0oP-G4-DiJ" secondAttribute="bottom" id="9hi-yA-L5O"/>
                 <constraint firstAttribute="trailing" secondItem="0oP-G4-DiJ" secondAttribute="trailing" id="AC2-Hf-g3h"/>
                 <constraint firstItem="ZwC-V0-6g2" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="BFx-Tk-Ooe"/>
+                <constraint firstItem="3H5-d9-7et" firstAttribute="leading" secondItem="8rm-1z-HvQ" secondAttribute="leading" id="VlN-c8-k0l"/>
                 <constraint firstItem="0oP-G4-DiJ" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="Vxy-kp-y0q"/>
                 <constraint firstItem="ZwC-V0-6g2" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="c8R-F5-BRR"/>
                 <constraint firstItem="8rm-1z-HvQ" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="dPA-PX-Vmt"/>
+                <constraint firstItem="3H5-d9-7et" firstAttribute="top" secondItem="8rm-1z-HvQ" secondAttribute="bottom" constant="10" id="vX2-rM-3fD"/>
                 <constraint firstAttribute="bottom" secondItem="ZwC-V0-6g2" secondAttribute="bottom" id="wqv-40-Gbs"/>
                 <constraint firstItem="xYf-9J-Uum" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="z56-n1-Xxr"/>
                 <constraint firstItem="8rm-1z-HvQ" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="zLA-oa-V4u"/>

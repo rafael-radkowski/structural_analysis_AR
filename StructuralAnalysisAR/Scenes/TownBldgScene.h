@@ -35,10 +35,12 @@
     TownCalcs::Input_t calc_inputs;
     BezierLine line_AB, line_DC, line_FE, line_BC, line_CE;
     GrabbableArrow F_AB, F_FE, V_AB, V_FE;
+    TownCalcs::Deflections_t deflections;
     
     bool draggingJointBox;
     CGPoint lastDragPt;
 }
+@property (weak, nonatomic) IBOutlet UILabel *setLabel;
 
 @property (weak, nonatomic) IBOutlet UIView *bottomBarView;
 @property (nonatomic, retain) IBOutlet UIView *viewFromNib;

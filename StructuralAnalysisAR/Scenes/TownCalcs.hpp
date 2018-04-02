@@ -19,6 +19,10 @@ namespace TownCalcs {
     } typedef Input_t;
     
     struct {
+        std::vector<std::vector<float>> col_AB, col_DC, col_FE, beam_BC, beam_CE;
+    } typedef Deflections_t;
+    
+    struct {
         double theta_B;
         double theta_C;
         double theta_E;
@@ -70,7 +74,8 @@ namespace TownCalcs {
         static constexpr double width = 16.67;
         static constexpr double height = 12;
         
-        static Output_t calculate(const Input_t& inputs);
+        static Output_t calculateForces(const Input_t& inputs);
+        static int calculateDeflections(const Input_t& inputs, const double delta, Deflections_t& deflections, const double defl_scale);
     };
     
     template <unsigned int P>

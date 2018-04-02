@@ -99,7 +99,7 @@ using namespace TownCalcs;
     liveLoad.setThickness(thickness);
     liveLoad.addAsChild(rootNode);
     liveLoad.setScenes(skScene, scnView);
-    
+
     sideLoad = GrabbableArrow(2.0);
     sideLoad.setPosition(GLKVector3Make(0, Calculator::height, 0));
     sideLoad.setRotationAxisAngle(GLKVector4Make(0, 0, 1, M_PI/2));
@@ -110,38 +110,43 @@ using namespace TownCalcs;
     sideLoad.addAsChild(rootNode);
     sideLoad.setScenes(skScene, scnView);
     sideLoad.setFormatString(@"%.1f k");
-    
+
     // beams
-    constexpr int res = 4;
-    std::vector<std::vector<float>> horiz_vals, vert_vals;
+    int res = 4;
+    std::vector<std::vector<float>> vert_vals, horiz_vals;
     horiz_vals.resize(2);
     vert_vals.resize(2);
-    constexpr double horiz_step = Calculator::width / (res - 1);
-    constexpr double vert_step = Calculator::height / (res - 1);
+    double horiz_step = Calculator::width / (res - 1);
+    double vert_step = Calculator::height / (res - 1);
     for (int i = 0; i < res; ++i) {
         horiz_vals[0].push_back(horiz_step * i);
         vert_vals[0].push_back(vert_step * i);
         horiz_vals[1].push_back(0);
         vert_vals[1].push_back(0);
     }
+    deflections.col_AB = vert_vals;
+    deflections.col_DC = vert_vals;
+    deflections.col_FE = vert_vals;
+    deflections.beam_BC = horiz_vals;
+    deflections.beam_CE = horiz_vals;
     GLKQuaternion vert_ori = GLKQuaternionMakeWithAngleAndAxis(M_PI/2, 0, 0, 1);
-    line_AB = BezierLine(vert_vals);
+    line_AB = BezierLine(deflections.col_AB);
     line_AB.setOrientation(vert_ori);
-    line_DC = BezierLine(vert_vals);
+    line_DC = BezierLine(deflections.col_DC);
     line_DC.setPosition(GLKVector3Make(Calculator::width, 0, 0));
     line_DC.setOrientation(vert_ori);
-    line_FE = BezierLine(vert_vals);
+    line_FE = BezierLine(deflections.col_FE);
     line_FE.setPosition(GLKVector3Make(2 * Calculator::width, 0, 0));
     line_FE.setOrientation(vert_ori);
-    line_BC = BezierLine(horiz_vals);
+    line_BC = BezierLine(deflections.beam_BC);
     line_BC.setPosition(GLKVector3Make(0, Calculator::height, 0));
-    line_CE = BezierLine(horiz_vals);
+    line_CE = BezierLine(deflections.beam_CE);
     line_CE.setPosition(GLKVector3Make(Calculator::width, Calculator::height, 0));
 
     std::vector<BezierLine*> beams = {&line_AB, &line_DC, &line_FE, &line_BC, &line_CE};
     for (BezierLine* beam : beams) {
         beam->addAsChild(rootNode);
-        beam->setThickness(0.5);
+        beam->setThickness(1.2);
     }
     
     line_AB.addAsChild(rootNode);
@@ -166,12 +171,14 @@ using namespace TownCalcs;
         arrow->setMaxLength(15);
     }
     
-    calc_inputs.D = 3;
-    
+
     // default loads
     liveLoad.setLoad(0);
     deadLoad.setLoad(3);
-    sideLoad.setIntensity(3);
+    sideLoad.setIntensity(0);
+    calc_inputs.D = 3;
+    calc_inputs.F = 0;
+    calc_inputs.L = 0;
     return rootNode;
 }
 
@@ -372,11 +379,20 @@ using namespace TownCalcs;
 //    calc_inputs.x1 = 16.8;
 //    calc_inputs.x2 = 30;
 //    calc_inputs.F = 5.62 * 0.985;
-    Output_t results = Calculator::calculate(calc_inputs);
+    Output_t results = Calculator::calculateForces(calc_inputs);
     F_AB.setIntensity(results.F_AB);
     V_AB.setIntensity(results.V_AB);
     F_FE.setIntensity(results.F_FE);
     V_FE.setIntensity(results.V_FE);
+    
+    double defl_scale = 200;
+    int set = Calculator::calculateDeflections(calc_inputs, results.delta, deflections, defl_scale);
+    self.setLabel.text = [NSString stringWithFormat:@"Set = %d", set];
+    line_AB.updatePath(deflections.col_AB);
+    line_DC.updatePath(deflections.col_DC);
+    line_FE.updatePath(deflections.col_FE);
+    line_BC.updatePath(deflections.beam_BC);
+    line_CE.updatePath(deflections.beam_CE);
     
     double rot_scale = 400;
     cornerB.zRotation = -M_PI/2 + results.theta_B * rot_scale;
