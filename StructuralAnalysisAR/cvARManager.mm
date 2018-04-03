@@ -35,7 +35,7 @@ GLKMatrix4 CVMat4ToGLKMat4(const cv::Mat& cvMat);
     callbackFunc(image);
 }
 @end
-
+//static cv::Mat test_img;
 cvARManager::cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure, GLKMatrix4 pose_transform)
 : scene(scene)
 , currentTexture(0)
@@ -188,6 +188,7 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure,
 //    MaskedImage masked(cvMatFromUIImage(bgImage), mask_properties.edge_threshold, mask_properties.min_length, mask_properties.line_angle, mask_properties.line_origin, 15, mask_properties.mask_width);
 //    cv::Mat cropped = masked.getCropped();
     cv::Mat ref_img = cvMatFromUIImage(bgImage);
+//    test_img = cvMatFromUIImage([UIImage imageNamed:@"0.png"]);
     
 //    NSData* imageData = UIImagePNGRepresentation(UIImageFromCVMat(cropped));
 //    NSFileManager *fileManager = [NSFileManager defaultManager];//create instance of NSFileManager
@@ -215,7 +216,7 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure,
     }
     else if (structure == town) {
         model_x_offset = 45;
-        model_y_offset = -10;
+        model_y_offset = -9.5;
     }
     float cos_angle = std::cos(model_rotation_offset);
     float sin_angle = std::sin(model_rotation_offset);
@@ -365,6 +366,7 @@ bool cvARManager::isTracked() {
 
 void cvARManager::processImage(cv::Mat& image) {
 //    cv::Mat overdrawn(image.size(), image.type());
+//    image = test_img.clone();
 
     if (saveNext) {
         static int img_idx = 0;
@@ -659,8 +661,8 @@ GLKMatrix4 CVMat4ToGLKMat4(const cv::Mat& cvMat) {
         if (cvMat.at<double>(i,j) > std::numeric_limits<float>::max()) {
             return std::numeric_limits<float>::max();
         }
-        else if (cvMat.at<double>(i,j) < std::numeric_limits<float>::min()) {
-            return std::numeric_limits<float>::min();
+        else if (cvMat.at<double>(i,j) < std::numeric_limits<float>::lowest()) {
+            return std::numeric_limits<float>::lowest();
         }
         else {
             return static_cast<float>(cvMat.at<double>(i,j));
