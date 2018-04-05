@@ -286,7 +286,7 @@ void GrabbableArrow::setIntensity(float value) {
 //    arrowBase.geometry.firstMaterial.diffuse.contents = color;
     
 //    valueLabel.text = [NSString stringWithFormat:@"%.1f k", value];
-    valueLabel.setText([NSString stringWithFormat:formatString, value]);
+    valueLabel.setText([NSString stringWithFormat:formatString, std::abs(value)]);
 }
 
 void GrabbableArrow::setWide(bool wide) {

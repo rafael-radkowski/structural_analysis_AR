@@ -111,7 +111,7 @@ void CircleArrow::setIntensity(float intensity) {
     }
 
     labelEmpty.position = SCNVector3Make(tip_x, tip_y, 0);
-    valueLabel.setText([NSString stringWithFormat:formatString, intensity]);
+    valueLabel.setText([NSString stringWithFormat:formatString, std::abs(intensity)]);
     valueLabel.markPosDirty();
 }
 

@@ -216,6 +216,7 @@ using namespace TownCalcs;
     calc_inputs.D = 3;
     calc_inputs.F = 0;
     calc_inputs.L = 0;
+    [self updateForces];
     return rootNode;
 }
 
