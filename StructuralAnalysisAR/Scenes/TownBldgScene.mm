@@ -76,34 +76,53 @@ using namespace TownCalcs;
     titleUnderline.position = CGPointMake(0, jointBoxHeight - jointBoxTitle.fontSize - 6);
     [jointBox addChild:titleUnderline];
     
-    cornerE = [[SKCornerNode alloc] initWithTextUp:NO];
-    [cornerE setPosition:CGPointMake(200, 200)];
+    // Fixed joint corners
     cornerB = [[SKCornerNode alloc] init];
+    cornerE = [[SKCornerNode alloc] initWithTextUp:NO];
     [cornerB setPosition:CGPointMake(100, 420)];
-    [cornerE setInputRange:-1 max:1];
+    [cornerE setPosition:CGPointMake(200, 200)];
+    [cornerB setInputRange:0 max:30];
+    [cornerE setInputRange:0 max:30];
+    [cornerB setLengthRange:5 max:40];
     [cornerE setLengthRange:5 max:40];
     
     [jointBox addChild:cornerE];
     [jointBox addChild:cornerB];
     [skScene addChild:jointBox];
     
+    // people
+    people.addAsChild(rootNode);
+    
     
     // ---------------- Load Markers ---------------- //
-    float thickness = 1.7;
+    float load_thickness = 1.7;
+    float rcn_thickness = 1;
+    float beam_thickness = 1.2;
     liveLoad = LoadMarker(3, false, 1, 2.0);
-    liveLoad.setPosition(GLKVector3Make(0, Calculator::height, 0));
+    liveLoad.setPosition(GLKVector3Make(0, 10 + Calculator::height, 0));
     liveLoad.setInputRange(0, 2.5);
     liveLoad.setMinHeight(7);
     liveLoad.setMaxHeight(15);
     liveLoad.setEnds(0, Calculator::width * 2);
-    liveLoad.setThickness(thickness);
+    liveLoad.setThickness(load_thickness);
     liveLoad.addAsChild(rootNode);
     liveLoad.setScenes(skScene, scnView);
+    
+    deadLoad = LoadMarker(4);
+    deadLoad.setPosition(GLKVector3Make(0, Calculator::height, 0));
+    deadLoad.setInputRange(0, 3);
+    deadLoad.setMinHeight(10);
+    deadLoad.setMaxHeight(10);
+    deadLoad.setLoad(3);
+    deadLoad.setEnds(0, Calculator::width * 2);
+    deadLoad.setThickness(load_thickness);
+    deadLoad.addAsChild(rootNode);
+    deadLoad.setScenes(skScene, scnView);
 
     sideLoad = GrabbableArrow(2.0);
     sideLoad.setPosition(GLKVector3Make(0, Calculator::height, 0));
     sideLoad.setRotationAxisAngle(GLKVector4Make(0, 0, 1, M_PI/2));
-    sideLoad.setThickness(thickness);
+    sideLoad.setThickness(load_thickness);
     sideLoad.setInputRange(0, 8.65);
     sideLoad.setMinLength(5);
     sideLoad.setMaxLength(15);
@@ -146,31 +165,49 @@ using namespace TownCalcs;
     std::vector<BezierLine*> beams = {&line_AB, &line_DC, &line_FE, &line_BC, &line_CE};
     for (BezierLine* beam : beams) {
         beam->addAsChild(rootNode);
-        beam->setThickness(1.2);
+        beam->setThickness(beam_thickness);
     }
-    
-    line_AB.addAsChild(rootNode);
-    line_DC.addAsChild(rootNode);
-    
-    
+
+    // Force arrows
+    // F_AB and V_AB stay at position (0, 0)
+    F_DC.setPosition(GLKVector3Make(Calculator::width, 0, 0));
+    V_DC.setPosition(GLKVector3Make(Calculator::width, 0, 0));
+
     F_FE.setPosition(GLKVector3Make(Calculator::width * 2, 0, 0));
     V_FE.setPosition(GLKVector3Make(Calculator::width * 2, 0, 0));
+    
     V_AB.setRotationAxisAngle(GLKVector4Make(0, 0, 1, -M_PI/2));
+    V_DC.setRotationAxisAngle(GLKVector4Make(0, 0, 1, M_PI/2));
     V_FE.setRotationAxisAngle(GLKVector4Make(0, 0, 1, M_PI/2));
     F_AB.setRotationAxisAngle(GLKVector4Make(0, 0, 1, M_PI));
+    F_DC.setRotationAxisAngle(GLKVector4Make(0, 0, 1, M_PI));
     F_FE.setRotationAxisAngle(GLKVector4Make(0, 0, 1, M_PI));
 
-    std::vector<GrabbableArrow*> rcn_arrows = {&F_AB, &F_FE, &V_AB, &V_FE};
+    std::vector<GrabbableArrow*> rcn_arrows = {&F_AB, &F_DC, &F_FE, &V_AB, &V_DC, &V_FE};
     for (GrabbableArrow* arrow : rcn_arrows) {
-        arrow->setThickness(thickness);
+        arrow->setThickness(rcn_thickness);
         arrow->setScenes(skScene, scnView);
         arrow->addAsChild(rootNode);
         arrow->setInputRange(0, 100);
         arrow->setFormatString(@"%.1f k");
         arrow->setMinLength(5);
         arrow->setMaxLength(15);
+        arrow->setColor(0, 1, 0);
     }
     
+    // Moments
+    M_DC.setPosition(GLKVector3Make(Calculator::width, 0, 0));
+    M_FE.setPosition(GLKVector3Make(Calculator::width * 2, 0, 0));
+    for (CircleArrow* moment : {&M_AB, &M_DC, &M_FE}) {
+        moment->setThickness(rcn_thickness);
+        moment->setRadius(5);
+        moment->setInputRange(0, 10);
+        moment->setScenes(skScene, scnView);
+        moment->addAsChild(rootNode);
+        moment->setColor(0, 1, 0);
+        moment->setRotationAxisAngle(GLKVector4Make(0, 0, 1, M_PI));
+        moment->setIntensity(2);
+    }
 
     // default loads
     liveLoad.setLoad(0);
@@ -237,9 +274,12 @@ using namespace TownCalcs;
     sideLoad.doUpdate();
 //    std::vector<BezierLine*> beams = {&line_AB, &line_DC, &line_FE, &line_BC, &line_CE};
 //    for (BezierLine* beam : beams) {
-    std::vector<GrabbableArrow*> rcn_arrows = {&F_AB, &F_FE, &V_AB, &V_FE};
-    for (GrabbableArrow* arrow : rcn_arrows) {
+//    std::vector<GrabbableArrow*> rcn_arrows = {&F_AB, &F_DC, &F_FE, &V_AB, &V_DC, &V_FE};
+    for (GrabbableArrow* arrow : {&F_AB, &F_DC, &F_FE, &V_AB, &V_DC, &V_FE}) {
         arrow->doUpdate();
+    }
+    for (CircleArrow* moment : {&M_AB, &M_DC, &M_FE}) {
+        moment->doUpdate();
     }
 }
 
@@ -306,11 +346,13 @@ using namespace TownCalcs;
         // Dont let bar collapse
         if (sideDragPosition.second - sideDragPosition.first >= 5) {
             liveLoad.setEnds(sideDragPosition.first, sideDragPosition.second);
-    //        [self updateBeamForces];
         }
         calc_inputs.x1 = sideDragPosition.first;
         calc_inputs.x2 = sideDragPosition.second;
         calc_inputs.L = dragValue;
+        double length = sideDragPosition.second - sideDragPosition.first;
+        people.setPosition(GLKVector3Make(sideDragPosition.first, 4 + Calculator::height, 0));
+        people.setLength(length);
     }
     
     if (sideLoad.dragging) {
@@ -344,6 +386,15 @@ using namespace TownCalcs;
 }
 
 - (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    if (liveLoad.draggingMode() != LoadMarker::none) {
+        [SCNTransaction begin];
+        [SCNTransaction setAnimationDuration:0.5];
+        // set people weight and shuffle after touch release
+        auto ends = liveLoad.getDragPosition();
+        people.setWeight(1000 * (ends.second - ends.first) * liveLoad.getDragValue());
+        people.shuffle();
+        [SCNTransaction commit];
+    }
     liveLoad.touchEnded();
     sideLoad.touchEnded();
     
@@ -379,11 +430,16 @@ using namespace TownCalcs;
 //    calc_inputs.x1 = 16.8;
 //    calc_inputs.x2 = 30;
 //    calc_inputs.F = 5.62 * 0.985;
-    Output_t results = Calculator::calculateForces(calc_inputs);
+    const Output_t results = Calculator::calculateForces(calc_inputs);
     F_AB.setIntensity(results.F_AB);
-    V_AB.setIntensity(results.V_AB);
+    F_DC.setIntensity(results.F_DC);
     F_FE.setIntensity(results.F_FE);
+    V_AB.setIntensity(results.V_AB);
+    V_DC.setIntensity(results.V_DC);
     V_FE.setIntensity(results.V_FE);
+    M_AB.setIntensity(results.M_AB);
+    M_DC.setIntensity(results.M_DC);
+    M_FE.setIntensity(results.M_FE);
     
     double defl_scale = 200;
     int set = Calculator::calculateDeflections(calc_inputs, results.delta, deflections, defl_scale);
@@ -393,6 +449,9 @@ using namespace TownCalcs;
     line_FE.updatePath(deflections.col_FE);
     line_BC.updatePath(deflections.beam_BC);
     line_CE.updatePath(deflections.beam_CE);
+    
+    [cornerB setForce1:results.F_BA force2:results.F_BC];
+    [cornerE setForce1:results.V_EC force2:results.F_EF];
     
     double rot_scale = 400;
     cornerB.zRotation = -M_PI/2 + results.theta_B * rot_scale;

@@ -16,6 +16,8 @@
 #include "loadMarker.h"
 #include "BezierLine.h"
 #include "CircleArrow.h"
+#include "CircleArrow.h"
+#include "PeopleVis.h"
 #include "SKCornerNode.h"
 #include "TownCalcs.hpp"
 
@@ -31,10 +33,12 @@
     LoadMarker liveLoad;
     LoadMarker deadLoad;
     GrabbableArrow sideLoad;
+    PeopleVis people;
 
     TownCalcs::Input_t calc_inputs;
     BezierLine line_AB, line_DC, line_FE, line_BC, line_CE;
-    GrabbableArrow F_AB, F_FE, V_AB, V_FE;
+    GrabbableArrow F_AB, F_DC, F_FE, V_AB, V_DC, V_FE;
+    CircleArrow M_AB, M_DC, M_FE;
     TownCalcs::Deflections_t deflections;
     
     bool draggingJointBox;

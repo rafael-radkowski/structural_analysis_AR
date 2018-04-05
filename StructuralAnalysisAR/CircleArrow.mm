@@ -80,6 +80,8 @@ void CircleArrow::setThickness(float new_thickness) {
     arrowHead.scale = SCNVector3Make(tipScale, tipScale, tipScale);
     
     arrowHead.position = SCNVector3Make(0, -newTipSize, 0);
+    bodyShape.extrusionDepth = thickness;
+    bodyShape.chamferRadius = thickness / 2;
 }
 
 void CircleArrow::setRadius(float new_radius) {
@@ -101,8 +103,13 @@ void CircleArrow::setIntensity(float intensity) {
     float tip_y = (radius) * std::sin(angle);
     arrowHeadEmpty.position = SCNVector3Make(tip_x, tip_y, 0);
     // Keep it pointing parallel to the base
-    arrowHeadEmpty.rotation = SCNVector4Make(0, 0, 1, -M_PI + angle);
-    
+    if (normalized_val >= 0) {
+        arrowHeadEmpty.rotation = SCNVector4Make(0, 0, 1, -M_PI + angle);
+    }
+    else {
+        arrowHeadEmpty.rotation = SCNVector4Make(0, 0, 1, angle);
+    }
+
     labelEmpty.position = SCNVector3Make(tip_x, tip_y, 0);
     valueLabel.setText([NSString stringWithFormat:formatString, intensity]);
     valueLabel.markPosDirty();
@@ -111,9 +118,11 @@ void CircleArrow::setIntensity(float intensity) {
 
 UIBezierPath* CircleArrow::makePath(float angle) {
     UIBezierPath* path = [UIBezierPath bezierPath];
-    [path addArcWithCenter:CGPointMake(0, 0) radius:radius - (thickness / 2) startAngle:0 endAngle:angle clockwise:YES];
+    bool positive = angle >= 0;
+    [path moveToPoint:CGPointMake(radius - thickness/2, 0)];
+    [path addArcWithCenter:CGPointMake(0, 0) radius:radius - (thickness / 2) startAngle:0 endAngle:angle clockwise:positive];
     //    [path addLineToPoint:CGPointMake(-(radius - thickness), 0)];
-    [path addArcWithCenter:CGPointMake(0, 0) radius:radius + (thickness / 2) startAngle:angle endAngle:0 clockwise:NO];
+    [path addArcWithCenter:CGPointMake(0, 0) radius:radius + (thickness / 2) startAngle:angle endAngle:0 clockwise:!positive];
     [path closePath];
     path.flatness = 0.1;
     return path;

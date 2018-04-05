@@ -14,7 +14,7 @@
 
 -(id)initWithTextUp:(bool)textUp;
 
--(void)setForces:(float)force1 force2:(float)force2;
+-(void)setForce1:(float)force1 force2:(float)force2;
 
 -(void)setInputRange:(float)min max:(float)max;
 

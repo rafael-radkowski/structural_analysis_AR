@@ -368,6 +368,10 @@ float LoadMarker::getDragValue(GLKVector3 origin, GLKVector3 touchRay) {
     return value;
 }
 
+float LoadMarker::getDragValue() const {
+    return lastIntensity;
+}
+
 std::pair<float, float> LoadMarker::getDragPosition(GLKVector3 origin, GLKVector3 touchRay) {
     std::pair<float, float> movedPos = std::make_pair(startPos.x, endPos.x);
     
@@ -392,6 +396,10 @@ std::pair<float, float> LoadMarker::getDragPosition(GLKVector3 origin, GLKVector
         }
     }
     return movedPos;
+}
+
+std::pair<float, float> LoadMarker::getDragPosition() const {
+    return std::make_pair(startPos.x, endPos.x);
 }
 
 void LoadMarker::touchEnded() {
