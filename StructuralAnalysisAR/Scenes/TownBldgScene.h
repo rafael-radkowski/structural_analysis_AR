@@ -44,7 +44,6 @@
     bool draggingJointBox;
     CGPoint lastDragPt;
 }
-@property (weak, nonatomic) IBOutlet UILabel *setLabel;
 
 @property (weak, nonatomic) IBOutlet UIView *bottomBarView;
 @property (nonatomic, retain) IBOutlet UIView *viewFromNib;
