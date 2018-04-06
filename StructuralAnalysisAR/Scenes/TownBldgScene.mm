@@ -444,8 +444,8 @@ using namespace TownCalcs;
     M_FE.setIntensity(results.M_FE);
     
     double defl_scale = 200;
-    int set = Calculator::calculateDeflections(calc_inputs, results.delta, deflections, defl_scale);
-    self.setLabel.text = [NSString stringWithFormat:@"Set = %d", set];
+    Calculator::calculateDeflections(calc_inputs, results.delta, deflections, defl_scale);
+//    self.setLabel.text = [NSString stringWithFormat:@"Set = %d", set];
     line_AB.updatePath(deflections.col_AB);
     line_DC.updatePath(deflections.col_DC);
     line_FE.updatePath(deflections.col_FE);

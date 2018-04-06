@@ -75,7 +75,7 @@ namespace TownCalcs {
         static constexpr double height = 12;
         
         static Output_t calculateForces(const Input_t& inputs);
-        static int calculateDeflections(const Input_t& inputs, const double delta, Deflections_t& deflections, const double defl_scale);
+        static void calculateDeflections(const Input_t& inputs, const double delta, Deflections_t& deflections, const double defl_scale);
     };
     
     template <unsigned int P>
