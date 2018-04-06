@@ -238,8 +238,8 @@ void Calculator::calculateDeflections(const Input_t& inputs, const double delta,
     
     // Beam 2
     double beam2_factor = 1
-                + 0.05  *inputs.L * (C - D) / 3
-                - 0.15 * inputs.L / 5;
+                + 0.05 * inputs.L * (C - D) / 3
+                - 0.18 * inputs.F / 5;
     beam2_factor *= defl_scale;
     evalDeflection({make_pair(beam2_factor, equation7)},
                    deflections.beam_CE);
