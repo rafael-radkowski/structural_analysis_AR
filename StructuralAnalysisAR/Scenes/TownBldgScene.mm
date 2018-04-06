@@ -272,6 +272,7 @@ using namespace TownCalcs;
 
 - (void)skUpdate {
     liveLoad.doUpdate();
+    deadLoad.doUpdate();
     sideLoad.doUpdate();
 //    std::vector<BezierLine*> beams = {&line_AB, &line_DC, &line_FE, &line_BC, &line_CE};
 //    for (BezierLine* beam : beams) {
