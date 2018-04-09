@@ -61,19 +61,39 @@ using namespace TownCalcs;
     jointBox = [SKShapeNode shapeNodeWithRect:CGRectMake(0, 0, jointBoxWidth, jointBoxHeight)];
     jointBox.strokeColor = [UIColor colorWithWhite:0.2 alpha:1.0];
     jointBox.fillColor = [UIColor colorWithWhite:0.8 alpha:0.5];
-    jointBox.position = CGPointMake(scnView.frame.size.width - jointBoxWidth - 50, 200);
+    jointBox.position = CGPointMake(scnView.frame.size.width - jointBoxWidth - 50, scnView.frame.size.height - jointBoxHeight - 50);
     jointBox.zPosition = -1; // Don't cover other nodes
+    // Dark background behind title
+    float titleBoxHeight = 40;
+    SKShapeNode* jointBoxTitleBg = [SKShapeNode shapeNodeWithRect:CGRectMake(0, 0, jointBoxWidth, titleBoxHeight)];
+    jointBoxTitleBg.fillColor = [UIColor colorWithWhite:0.45 alpha:1.0];
+    jointBoxTitleBg.strokeColor = [UIColor colorWithWhite:0.0 alpha:0.0]; // no stroke
+    jointBoxTitleBg.position = CGPointMake(0, jointBoxHeight - titleBoxHeight);
+    jointBoxTitleBg.zPosition = 1;
+    [jointBox addChild:jointBoxTitleBg];
     // make title for joint box
     SKLabelNode* jointBoxTitle = [SKLabelNode labelNodeWithFontNamed:@"Helvetica"];
-    jointBoxTitle.text = @"Fixed Joint Forces";
-    jointBoxTitle.position = CGPointMake(150, jointBoxHeight - jointBoxTitle.fontSize - 3);
+    jointBoxTitle.text = @"Fixed Joints";
     jointBoxTitle.fontColor = [UIColor blackColor];
-    [jointBox addChild:jointBoxTitle];
+    jointBoxTitle.fontSize = titleBoxHeight - 5;
+    jointBoxTitle.verticalAlignmentMode = SKLabelVerticalAlignmentModeCenter;
+    jointBoxTitle.position = CGPointMake(150, titleBoxHeight / 2);
+    jointBoxTitle.zPosition = 1;
+    [jointBoxTitleBg addChild:jointBoxTitle];
+    // Grip indicator
+    SKSpriteNode* gripper = [SKSpriteNode spriteNodeWithImageNamed:@"grip.png"];
+    gripper.anchorPoint = CGPointMake(0, 0.5);
+    float gripHeight = titleBoxHeight - 6;
+    [gripper scaleToSize:CGSizeMake(gripHeight * 2. / 5, gripHeight)];
+    gripper.position = CGPointMake(5, titleBoxHeight / 2);
+    [jointBoxTitleBg addChild:gripper];
+    gripper.zPosition = 2;
     // make underline for title
     CGPoint titlePoints[2] = {CGPointMake(0, 0), CGPointMake(jointBoxWidth, 0)};
     SKShapeNode* titleUnderline = [SKShapeNode shapeNodeWithPoints:titlePoints count:2];
     titleUnderline.strokeColor = [UIColor blackColor];
-    titleUnderline.position = CGPointMake(0, jointBoxHeight - jointBoxTitle.fontSize - 6);
+    titleUnderline.lineWidth = 2;
+    titleUnderline.position = CGPointMake(0, jointBoxHeight - titleBoxHeight);
     [jointBox addChild:titleUnderline];
     
     // Fixed joint corners

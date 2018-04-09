@@ -32,6 +32,7 @@
 		0B2ACE212019259900230D67 /* campanile_static.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 0B2ACE202019259900230D67 /* campanile_static.JPG */; };
 		0B2FEEEF207BD3E700712595 /* town.dat in Resources */ = {isa = PBXBuildFile; fileRef = 0B2FEEED207BD3E600712595 /* town.dat */; };
 		0B2FEEF0207BD3E700712595 /* town.xml in Resources */ = {isa = PBXBuildFile; fileRef = 0B2FEEEE207BD3E700712595 /* town.xml */; };
+		0B2FEEF4207BD80A00712595 /* grip.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B2FEEF3207BD80A00712595 /* grip.png */; };
 		0B36C09B201BD28600D7B346 /* campanile_exterior.obj in Resources */ = {isa = PBXBuildFile; fileRef = 0B36C099201BD28600D7B346 /* campanile_exterior.obj */; };
 		0B36C09C201BD28600D7B346 /* campanile_interior.obj in Resources */ = {isa = PBXBuildFile; fileRef = 0B36C09A201BD28600D7B346 /* campanile_interior.obj */; };
 		0B41E99A1F72BC04001DB823 /* home_blue.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B41E9991F72BC04001DB823 /* home_blue.png */; };
@@ -141,6 +142,7 @@
 		0B2ACE202019259900230D67 /* campanile_static.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = campanile_static.JPG; path = image_assets/campanile_static.JPG; sourceTree = "<group>"; };
 		0B2FEEED207BD3E600712595 /* town.dat */ = {isa = PBXFileReference; lastKnownFileType = file; name = town.dat; path = image_assets/town.dat; sourceTree = "<group>"; };
 		0B2FEEEE207BD3E700712595 /* town.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = town.xml; path = image_assets/town.xml; sourceTree = "<group>"; };
+		0B2FEEF3207BD80A00712595 /* grip.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = grip.png; path = image_assets/grip.png; sourceTree = "<group>"; };
 		0B36C099201BD28600D7B346 /* campanile_exterior.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = campanile_exterior.obj; sourceTree = "<group>"; };
 		0B36C09A201BD28600D7B346 /* campanile_interior.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = campanile_interior.obj; sourceTree = "<group>"; };
 		0B41E9991F72BC04001DB823 /* home_blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = home_blue.png; path = image_assets/home_blue.png; sourceTree = "<group>"; };
@@ -294,6 +296,7 @@
 				0B2AAB841FD87D4100DD477B /* skywalk_sunny_1920.png */,
 				0B0CBD0E1FDB40C800A9B223 /* skywalk_1920_back.png */,
 				0B5D639520506AD0003384C4 /* arrow.png */,
+				0B2FEEF3207BD80A00712595 /* grip.png */,
 				0B0CBD131FE0547600A9B223 /* skywalk_south1.dat */,
 				0B0CBD141FE0547600A9B223 /* skywalk_south1.xml */,
 				0B4F29B01FE0846C0067C439 /* skywalk_south_far.jpg */,
@@ -539,6 +542,7 @@
 				0B0CBD161FE0547700A9B223 /* skywalk_south1.xml in Resources */,
 				0B0CBD151FE0547700A9B223 /* skywalk_south1.dat in Resources */,
 				0BB5AD101FD1B3C8001C78CD /* cutout_skywalk_1920x1080.png in Resources */,
+				0B2FEEF4207BD80A00712595 /* grip.png in Resources */,
 				0B2ACE1D2018F8F000230D67 /* campanile_stock_cropped.jpg in Resources */,
 				0BD711242049E08F0095D753 /* 2.0.png in Resources */,
 				0B99FF611F47A79D00431996 /* skywalkView.xib in Resources */,
