@@ -180,7 +180,7 @@
             camPaused = true;
             [freezeBtn setEnabled:NO];
             curtain.hidden = NO;
-            arManager->doFrame(3, [self, freezeBtn, curtain](ARManager::CB_STATE update_type) {
+            arManager->doFrame(4, [self, freezeBtn, curtain](ARManager::CB_STATE update_type) {
                 if (update_type == ARManager::DONE_CAPTURING) {
                     // Set the calculated camera matrix
                     GLKMatrix4 camera_matrix = arManager->getCameraMatrix();

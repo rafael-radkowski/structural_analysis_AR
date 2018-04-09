@@ -295,10 +295,10 @@ using namespace TownCalcs;
 }
 
 - (ARManager*)makeIndoorTracker {
-    GLKMatrix4 translation_mat = GLKMatrix4MakeTranslation(0, 50, 0);
-    GLKMatrix4 rot_x_mat = GLKMatrix4MakeXRotation(0.2);
+    GLKMatrix4 translation_mat = GLKMatrix4MakeTranslation(19, 11, 0);
+    GLKMatrix4 rot_x_mat = GLKMatrix4MakeXRotation(0.0);
     GLKMatrix4 transform_mat = GLKMatrix4Multiply(rot_x_mat, translation_mat);
-    return new VuforiaARManager((ARView*)scnView, scnView.scene, UIInterfaceOrientationLandscapeRight, @"campanile.xml", transform_mat);
+    return new VuforiaARManager((ARView*)scnView, scnView.scene, UIInterfaceOrientationLandscapeRight, @"town.xml", transform_mat);
 }
 
 - (ARManager*)makeOutdoorTracker {

@@ -60,7 +60,7 @@ void PeopleVis::addAsChild(SCNNode *node) {
 }
 
 void PeopleVis::setWeight(float pounds) {
-    float avgWeight = 1000;
+    float avgWeight = 1500;
     int n_people = static_cast<int>(pounds / avgWeight);
     setNumPeople(n_people);
 }

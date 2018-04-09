@@ -30,6 +30,8 @@
 		0B2ACE1D2018F8F000230D67 /* campanile_stock_cropped.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0B2ACE1C2018F8F000230D67 /* campanile_stock_cropped.jpg */; };
 		0B2ACE1F2018F95900230D67 /* isuofficallogo_light.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B2ACE1E2018F95800230D67 /* isuofficallogo_light.png */; };
 		0B2ACE212019259900230D67 /* campanile_static.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 0B2ACE202019259900230D67 /* campanile_static.JPG */; };
+		0B2FEEEF207BD3E700712595 /* town.dat in Resources */ = {isa = PBXBuildFile; fileRef = 0B2FEEED207BD3E600712595 /* town.dat */; };
+		0B2FEEF0207BD3E700712595 /* town.xml in Resources */ = {isa = PBXBuildFile; fileRef = 0B2FEEEE207BD3E700712595 /* town.xml */; };
 		0B36C09B201BD28600D7B346 /* campanile_exterior.obj in Resources */ = {isa = PBXBuildFile; fileRef = 0B36C099201BD28600D7B346 /* campanile_exterior.obj */; };
 		0B36C09C201BD28600D7B346 /* campanile_interior.obj in Resources */ = {isa = PBXBuildFile; fileRef = 0B36C09A201BD28600D7B346 /* campanile_interior.obj */; };
 		0B41E99A1F72BC04001DB823 /* home_blue.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B41E9991F72BC04001DB823 /* home_blue.png */; };
@@ -137,6 +139,8 @@
 		0B2ACE1C2018F8F000230D67 /* campanile_stock_cropped.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = campanile_stock_cropped.jpg; path = image_assets/campanile_stock_cropped.jpg; sourceTree = "<group>"; };
 		0B2ACE1E2018F95800230D67 /* isuofficallogo_light.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = isuofficallogo_light.png; path = image_assets/isuofficallogo_light.png; sourceTree = "<group>"; };
 		0B2ACE202019259900230D67 /* campanile_static.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = campanile_static.JPG; path = image_assets/campanile_static.JPG; sourceTree = "<group>"; };
+		0B2FEEED207BD3E600712595 /* town.dat */ = {isa = PBXFileReference; lastKnownFileType = file; name = town.dat; path = image_assets/town.dat; sourceTree = "<group>"; };
+		0B2FEEEE207BD3E700712595 /* town.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = town.xml; path = image_assets/town.xml; sourceTree = "<group>"; };
 		0B36C099201BD28600D7B346 /* campanile_exterior.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = campanile_exterior.obj; sourceTree = "<group>"; };
 		0B36C09A201BD28600D7B346 /* campanile_interior.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = campanile_interior.obj; sourceTree = "<group>"; };
 		0B41E9991F72BC04001DB823 /* home_blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = home_blue.png; path = image_assets/home_blue.png; sourceTree = "<group>"; };
@@ -297,6 +301,8 @@
 				0BD038A51F97B38F004B65F6 /* low_clearance_sign.xml */,
 				0B5F39E31F844CEF004870DE /* skywalk_far.dat */,
 				0B5F39E41F844CEF004870DE /* skywalk_far.xml */,
+				0B2FEEED207BD3E600712595 /* town.dat */,
+				0B2FEEEE207BD3E700712595 /* town.xml */,
 				0B41E9991F72BC04001DB823 /* home_blue.png */,
 				0BD71110203F48F70095D753 /* screenshot_blue.png */,
 				0B483BFA1F4DDB6F007A1D29 /* skywalk.jpg */,
@@ -546,6 +552,7 @@
 				0BB164471F4732DC0053CA3B /* Main.storyboard in Resources */,
 				0BE4C5E11FAFB0E500A501C9 /* user_prefs.plist in Resources */,
 				0B2ACE1F2018F95900230D67 /* isuofficallogo_light.png in Resources */,
+				0B2FEEF0207BD3E700712595 /* town.xml in Resources */,
 				0BD038A61F97B38F004B65F6 /* low_clearance_sign.dat in Resources */,
 				0BD710F72029169B0095D753 /* campanile.xml in Resources */,
 				0B5F39E51F844CEF004870DE /* skywalk_far.dat in Resources */,
@@ -557,6 +564,7 @@
 				0BD711222049E08F0095D753 /* 0.05.png in Resources */,
 				0BD038A71F97B38F004B65F6 /* low_clearance_sign.xml in Resources */,
 				0B5D639B20586584003384C4 /* town_static.png in Resources */,
+				0B2FEEEF207BD3E700712595 /* town.dat in Resources */,
 				0B483BFB1F4DDB6F007A1D29 /* skywalk.jpg in Resources */,
 				0B483C001F4F8AF9007A1D29 /* arrow_base.obj in Resources */,
 				0B2ACE212019259900230D67 /* campanile_static.JPG in Resources */,
