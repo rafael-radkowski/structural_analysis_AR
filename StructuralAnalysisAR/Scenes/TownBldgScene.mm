@@ -121,7 +121,7 @@ using namespace TownCalcs;
     liveLoad = LoadMarker(3, false, 1, 2.0);
     liveLoad.setPosition(GLKVector3Make(0, 10 + Calculator::height, 0));
     liveLoad.setInputRange(0, 2.5);
-    liveLoad.setMinHeight(7);
+    liveLoad.setMinHeight(5);
     liveLoad.setMaxHeight(15);
     liveLoad.setEnds(0, Calculator::width * 2);
     liveLoad.setThickness(load_thickness);
@@ -288,6 +288,8 @@ using namespace TownCalcs;
     // Processing curtain view
     self.processingCurtainView.hidden = YES;
     self.processingSpinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
+    
+    [self setVisibilities];
 }
 
 - (void)skUpdate {
@@ -432,6 +434,15 @@ using namespace TownCalcs;
 }
 
 - (void)setVisibilities {
+    liveLoad.setHidden(!self.liveLoadSwitch.on);
+    sideLoad.setHidden(!self.liveLoadSwitch.on);
+    deadLoad.setHidden(!self.deadLoadSwitch.on);
+    for (GrabbableArrow* arrow : {&F_AB, &F_DC, &F_FE, &V_AB, &V_DC, &V_FE}) {
+        arrow->setHidden(!self.rcnForceSwitch.on);
+    }
+    for (CircleArrow* moment : {&M_AB, &M_DC, &M_FE}) {
+        moment->setHidden(!self.rcnForceSwitch.on);
+    }
 }
 
 - (IBAction)screenshotBtnPressed:(id)sender {
