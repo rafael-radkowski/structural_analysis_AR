@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "SKCornerNode.h"
+#import "SKArrow.h"
 #import <math.h>
 
 @implementation SKCornerNode {
@@ -18,7 +19,7 @@
     // arrow bodies, will change length
     SKSpriteNode *arrowBody1, *arrowBody2;
     // arrow entities
-    SKSpriteNode *arrow1, *arrow2;
+    SKArrow *arrow1, *arrow2;
     float length;
     float width;
     SKLabelNode *label1, *label2;
@@ -49,35 +50,44 @@
         [self addChild:bar1];
         [self addChild:bar2];
         
-        arrow1 = [SKSpriteNode node];
-        arrow2 = [SKSpriteNode node];
+        arrow1 = [[SKArrow alloc] initWithWidth:width];
+        arrow2 = [[SKArrow alloc] initWithWidth:width];
         arrow1.position = CGPointMake(length, width/2);
         arrow2.position = CGPointMake(width/2, length);
+        arrow2.zRotation = M_PI / 2;
         [self addChild:arrow1];
         [self addChild:arrow2];
         
-        arrowTip1 = [SKSpriteNode spriteNodeWithImageNamed:@"arrow.png"];
-        arrowTip2 = [SKSpriteNode spriteNodeWithImageNamed:@"arrow.png"];
-        float arrowSize = arrowTip1.frame.size.width;
-        float arrowScale = width / arrowSize;
-        arrowTip1.xScale = arrowTip1.yScale = arrowTip2.xScale = arrowTip2.yScale = arrowScale;
+//        arrow1 = [SKSpriteNode node];
+//        arrow2 = [SKSpriteNode node];
+//        arrow1.position = CGPointMake(length, width/2);
+//        arrow2.position = CGPointMake(width/2, length);
+//        [self addChild:arrow1];
+//        [self addChild:arrow2];
         
-        arrowTip1.position = CGPointMake(width/2. + arrowGap, 0);
-        arrowTip2.position = CGPointMake(0, width/2. + arrowGap);
-        arrowTip2.zRotation = M_PI / 2;
-        [arrow1 addChild:arrowTip1];
-        [arrow2 addChild:arrowTip2];
+//        arrowTip1 = [SKSpriteNode spriteNodeWithImageNamed:@"arrow.png"];
+//        arrowTip2 = [SKSpriteNode spriteNodeWithImageNamed:@"arrow.png"];
+//        float arrowSize = arrowTip1.frame.size.width;
+//        float arrowScale = width / arrowSize;
+//        arrowTip1.xScale = arrowTip1.yScale = arrowTip2.xScale = arrowTip2.yScale = arrowScale;
+//
+//        arrowTip1.position = CGPointMake(width/2. + arrowGap, 0);
+//        arrowTip2.position = CGPointMake(0, width/2. + arrowGap);
+//        arrowTip2.zRotation = M_PI / 2;
+//        [arrow1 addChild:arrowTip1];
+//        [arrow2 addChild:arrowTip2];
+//
+//        arrowBody1 = [SKSpriteNode spriteNodeWithColor:[UIColor redColor] size:CGSizeMake(1, width / 2)];
+//        arrowBody2 = [SKSpriteNode spriteNodeWithColor:[UIColor redColor] size:CGSizeMake(1, width / 2)];
+//        arrowBody1.anchorPoint = CGPointMake(0, 0.5);
+//        arrowBody1.position = CGPointMake(arrowGap + width, 0);
+//        arrowBody2.anchorPoint = CGPointMake(0, 0.5);
+//        arrowBody2.position = CGPointMake(0, arrowGap + width);
+//        arrowBody2.zRotation = M_PI / 2;
+//        [arrow1 addChild:arrowBody1];
+//        [arrow2 addChild:arrowBody2];
+        
 
-        arrowBody1 = [SKSpriteNode spriteNodeWithColor:[UIColor redColor] size:CGSizeMake(1, width / 2)];
-        arrowBody2 = [SKSpriteNode spriteNodeWithColor:[UIColor redColor] size:CGSizeMake(1, width / 2)];
-        arrowBody1.anchorPoint = CGPointMake(0, 0.5);
-        arrowBody1.position = CGPointMake(arrowGap + width, 0);
-        arrowBody2.anchorPoint = CGPointMake(0, 0.5);
-        arrowBody2.position = CGPointMake(0, arrowGap + width);
-        arrowBody2.zRotation = M_PI / 2;
-        [arrow1 addChild:arrowBody1];
-        [arrow2 addChild:arrowBody2];
-        
         // Labels
         label1 = [SKLabelNode labelNodeWithFontNamed:@"Helvetica"];
         label2 = [SKLabelNode labelNodeWithFontNamed:@"Helvetica"];
@@ -101,36 +111,42 @@
         [self addChild:label1];
         [self addChild:label2];
         
+        
     }
 
     return self;
 }
 
 -(void)setForce1:(float)force1 force2:(float)force2 {
-    float input_range = max_input - min_input;
-    float normalized1 = (force1 - min_input) / input_range;
-    float normalized2 = (force2 - min_input) / input_range;
+//    float input_range = max_input - min_input;
+//    float normalized1 = (force1 - min_input) / input_range;
+//    float normalized2 = (force2 - min_input) / input_range;
     
-    arrow1.zRotation = (normalized1 < 0) ? M_PI : 0;
-    arrow2.zRotation = (normalized2 < 0) ? M_PI : 0;
-
-    float length_range = max_length - min_length;
-    float dist1 = fabs(normalized1) * length_range + min_length;
-    float dist2 = fabs(normalized2) * length_range + min_length;
+    [arrow1 setIntensity:force1];
+    [arrow2 setIntensity:force2];
     
-    arrow1.position = CGPointMake(normalized1 < 0 ? length + dist1 + 2*width : length,
-                                  width/2);
-    arrow2.position = CGPointMake(width/2,
-                                  normalized2 < 0 ? length + dist2 + 2*width : length);
-
-    arrowBody1.xScale = dist1;
-    arrowBody2.xScale = dist2;
+//    arrow1.zRotation = (normalized1 < 0) ? M_PI : 0;
+//    arrow2.zRotation = (normalized2 < 0) ? M_PI : 0;
+//
+//    float length_range = max_length - min_length;
+//    float dist1 = fabs(normalized1) * length_range + min_length;
+//    float dist2 = fabs(normalized2) * length_range + min_length;
+//
+//    arrow1.position = CGPointMake(normalized1 < 0 ? length + dist1 + 2*width : length,
+//                                  width/2);
+//    arrow2.position = CGPointMake(width/2,
+//                                  normalized2 < 0 ? length + dist2 + 2*width : length);
+//
+//    arrowBody1.xScale = dist1;
+//    arrowBody2.xScale = dist2;
     
     label1.text = [NSString stringWithFormat:@"%.1f k", fabs(force1)];
     label2.text = [NSString stringWithFormat:@"%.1f k", fabs(force2)];
 }
 
 -(void)setInputRange:(float)_min max:(float)_max {
+    [arrow1 setInputRange:_min max:_max];
+    [arrow2 setInputRange:_min max:_max];
     min_input = _min;
     max_input = _max;
 }
@@ -138,5 +154,7 @@
 -(void)setLengthRange:(float)_min max:(float)_max {
     min_length = _min;
     max_length = _max;
+    [arrow1 setLengthRange:_min max:_max];
+    [arrow2 setLengthRange:_min max:_max];
 }
 @end

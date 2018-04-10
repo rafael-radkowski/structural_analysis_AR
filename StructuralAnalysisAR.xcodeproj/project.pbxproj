@@ -33,6 +33,7 @@
 		0B2FEEEF207BD3E700712595 /* town.dat in Resources */ = {isa = PBXBuildFile; fileRef = 0B2FEEED207BD3E600712595 /* town.dat */; };
 		0B2FEEF0207BD3E700712595 /* town.xml in Resources */ = {isa = PBXBuildFile; fileRef = 0B2FEEEE207BD3E700712595 /* town.xml */; };
 		0B2FEEF4207BD80A00712595 /* grip.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B2FEEF3207BD80A00712595 /* grip.png */; };
+		0B2FEEF6207D5AFD00712595 /* SKArrow.m in Sources */ = {isa = PBXBuildFile; fileRef = 0B2FEEF5207D5AFD00712595 /* SKArrow.m */; };
 		0B36C09B201BD28600D7B346 /* campanile_exterior.obj in Resources */ = {isa = PBXBuildFile; fileRef = 0B36C099201BD28600D7B346 /* campanile_exterior.obj */; };
 		0B36C09C201BD28600D7B346 /* campanile_interior.obj in Resources */ = {isa = PBXBuildFile; fileRef = 0B36C09A201BD28600D7B346 /* campanile_interior.obj */; };
 		0B41E99A1F72BC04001DB823 /* home_blue.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B41E9991F72BC04001DB823 /* home_blue.png */; };
@@ -143,6 +144,8 @@
 		0B2FEEED207BD3E600712595 /* town.dat */ = {isa = PBXFileReference; lastKnownFileType = file; name = town.dat; path = image_assets/town.dat; sourceTree = "<group>"; };
 		0B2FEEEE207BD3E700712595 /* town.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = town.xml; path = image_assets/town.xml; sourceTree = "<group>"; };
 		0B2FEEF3207BD80A00712595 /* grip.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = grip.png; path = image_assets/grip.png; sourceTree = "<group>"; };
+		0B2FEEF5207D5AFD00712595 /* SKArrow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKArrow.m; sourceTree = "<group>"; };
+		0B2FEEF7207D5B0D00712595 /* SKArrow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKArrow.h; sourceTree = "<group>"; };
 		0B36C099201BD28600D7B346 /* campanile_exterior.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = campanile_exterior.obj; sourceTree = "<group>"; };
 		0B36C09A201BD28600D7B346 /* campanile_interior.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = campanile_interior.obj; sourceTree = "<group>"; };
 		0B41E9991F72BC04001DB823 /* home_blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = home_blue.png; path = image_assets/home_blue.png; sourceTree = "<group>"; };
@@ -429,6 +432,8 @@
 				0B79A12C1F7ABA5300632CE4 /* OverlayLabel.mm */,
 				0B5D6394204F4444003384C4 /* SKCornerNode.h */,
 				0B5D6392204F4432003384C4 /* SKCornerNode.m */,
+				0B2FEEF5207D5AFD00712595 /* SKArrow.m */,
+				0B2FEEF7207D5B0D00712595 /* SKArrow.h */,
 				0B1FCD421FBB6CCF002DBE98 /* ARManager.h */,
 				0B1FCD441FBCA2F2002DBE98 /* VuforiaARManager.mm */,
 				0B1FCD451FBCA2F2002DBE98 /* VuforiaARManager.h */,
@@ -626,6 +631,7 @@
 				0B0358322000167100F75CD2 /* SkywalkScene.mm in Sources */,
 				0BAFBB641F7EBAFE007B1FC6 /* SampleApplication3DModel.m in Sources */,
 				0BB1643C1F4732DC0053CA3B /* main.m in Sources */,
+				0B2FEEF6207D5AFD00712595 /* SKArrow.m in Sources */,
 				0B5D6393204F4432003384C4 /* SKCornerNode.m in Sources */,
 				0B5D638F204F31AD003384C4 /* TownBldgScene.mm in Sources */,
 			);

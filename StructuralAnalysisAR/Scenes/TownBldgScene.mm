@@ -151,7 +151,7 @@ using namespace TownCalcs;
     sideLoad.setFormatString(@"%.1f k");
 
     // beams
-    int res = 4;
+    int res = 8;
     std::vector<std::vector<float>> vert_vals, horiz_vals;
     horiz_vals.resize(2);
     vert_vals.resize(2);
@@ -483,8 +483,8 @@ using namespace TownCalcs;
     line_BC.updatePath(deflections.beam_BC);
     line_CE.updatePath(deflections.beam_CE);
     
-    [cornerB setForce1:results.F_BA force2:results.F_BC];
-    [cornerE setForce1:results.V_EC force2:results.F_EF];
+    [cornerB setForce1:-results.F_BA force2:-results.F_BC];
+    [cornerE setForce1:-results.F_EC force2:-results.F_EF];
     
     double rot_scale = 400;
     cornerB.zRotation = -M_PI/2 + results.theta_B * rot_scale;

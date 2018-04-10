@@ -117,11 +117,13 @@ void CircleArrow::setIntensity(float intensity) {
 
 
 UIBezierPath* CircleArrow::makePath(float angle) {
+//    printf("angle: %f\n", angle);
+//    angle = 1.603726; // problem angle
     UIBezierPath* path = [UIBezierPath bezierPath];
     bool positive = angle >= 0;
     [path moveToPoint:CGPointMake(radius - thickness/2, 0)];
     [path addArcWithCenter:CGPointMake(0, 0) radius:radius - (thickness / 2) startAngle:0 endAngle:angle clockwise:positive];
-    //    [path addLineToPoint:CGPointMake(-(radius - thickness), 0)];
+    // [path addLineToPoint:CGPointMake((radius + (thickness / 2)) * std::cos(angle), (radius + (thickness / 2)) * std::sin(angle))];
     [path addArcWithCenter:CGPointMake(0, 0) radius:radius + (thickness / 2) startAngle:angle endAngle:0 clockwise:!positive];
     [path closePath];
     path.flatness = 0.1;
