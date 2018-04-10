@@ -13,7 +13,7 @@ using std::make_pair;
 
 using namespace TownCalcs;
 
-constexpr static std::array<double, 5> equation1 = {             0,  +2.25175E-05,  -2.54990E-04,  -3.64800E-05, -1.94686E-05};
+constexpr static std::array<double, 5> equation1 = {             0,  +1.15550E-05, - 1.37282E-04,  -1.59049E-04, +5.37344E-05};
 constexpr static std::array<double, 5> equation2 = {             0,  +2.13136E-05,  -2.45540E-04,  -1.20251E-04, +1.94406E-05};
 constexpr static std::array<double, 5> equation3 = {             0,  -6.30189E-06,  +7.84770E-05,  +1.09172E-04, -4.33148E-05};
 constexpr static std::array<double, 5> equation4 = {             0,  -1.15516E-05,  +1.37205E-04,  +1.59369E-04, -5.70211E-05};
@@ -193,15 +193,15 @@ void evalDeflection(const std::vector<std::pair<double, std::array<double, 5>>>&
 
 void Calculator::calculateDeflections(const Input_t& inputs, const double delta, Deflections_t& deflections, const double defl_scale) {
     // Column 1
-    evalDeflection({   make_pair(defl_scale * delta / 0.0017344514, equation1),
-                       make_pair(defl_scale * (inputs.L + 3) / 5., equation2)},
+    evalDeflection({   make_pair(-defl_scale * delta / -0.001785335, equation1),
+                       make_pair(-defl_scale * (inputs.L + 3) / 5., equation2)},
                    deflections.col_AB);
     // Column 2
-    evalDeflection({make_pair(defl_scale * delta / 0.001677771, equation3)},
+    evalDeflection({make_pair(-defl_scale * delta / 0.001677771, equation3)},
                    deflections.col_DC);
     // Column 3
-    evalDeflection({   make_pair(defl_scale * delta / 0.001651762, equation4),
-                       make_pair(defl_scale * (inputs.L + 3) / 5, equation5)},
+    evalDeflection({   make_pair(-defl_scale * delta / 0.001651762, equation4),
+                       make_pair(-defl_scale * (inputs.L + 3) / 5, equation5)},
                    deflections.col_FE);
     
     double A, B, C, D;
@@ -230,7 +230,7 @@ void Calculator::calculateDeflections(const Input_t& inputs, const double delta,
     
     // Beam 1
     double beam1_factor = 1
-                          + 0.05 * inputs.L * (A - B) / 3
+                          + 0.5 * inputs.L * (A - B) / 3
                           + 0.2 * inputs.F / 5;
     beam1_factor *= defl_scale;
     evalDeflection({make_pair(beam1_factor, equation6)},
@@ -238,8 +238,8 @@ void Calculator::calculateDeflections(const Input_t& inputs, const double delta,
     
     // Beam 2
     double beam2_factor = 1
-                + 0.05 * inputs.L * (C - D) / 3
-                - 0.18 * inputs.F / 5;
+                + 0.5 * inputs.L * (C - D) / 3
+                + 0.18 * inputs.F / 5;
     beam2_factor *= defl_scale;
     evalDeflection({make_pair(beam2_factor, equation7)},
                    deflections.beam_CE);
