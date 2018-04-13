@@ -57,7 +57,7 @@ using namespace TownCalcs;
     // ---------------- 2D joints ---------------- //
     
     float jointBoxWidth = 300;
-    float jointBoxHeight = 500;
+    float jointBoxHeight = 585;
     jointBox = [SKShapeNode shapeNodeWithRect:CGRectMake(0, 0, jointBoxWidth, jointBoxHeight)];
     jointBox.strokeColor = [UIColor colorWithWhite:0.2 alpha:1.0];
     jointBox.fillColor = [UIColor colorWithWhite:0.8 alpha:0.5];
@@ -99,12 +99,16 @@ using namespace TownCalcs;
     // Fixed joint corners
     cornerB = [[SKCornerNode alloc] init];
     cornerE = [[SKCornerNode alloc] initWithTextUp:NO];
-    [cornerB setPosition:CGPointMake(100, 420)];
+    [cornerB setPosition:CGPointMake(100, 455)];
     [cornerE setPosition:CGPointMake(200, 200)];
-    [cornerB setInputRange:0 max:30];
-    [cornerE setInputRange:0 max:30];
-    [cornerB setLengthRange:5 max:40];
-    [cornerE setLengthRange:5 max:40];
+    for (SKCornerNode* corner : {cornerB, cornerE}) {
+        [corner setInputRangeF:0 max:30];
+        [corner setLengthRangeF:5 max:40];
+        [corner setInputRangeV:0 max:30];
+        [corner setLengthRangeV:5 max:40];
+        [corner setInputRangeM:0 max:20];
+        [corner setAngleRangeM:0 max:M_PI];
+    }
     
     [jointBox addChild:cornerE];
     [jointBox addChild:cornerB];
@@ -293,6 +297,12 @@ using namespace TownCalcs;
 }
 
 - (void)skUpdate {
+    // We update forces if necessary here, because SpriteKit objects are modified in the updateForces function
+    if (forcesDirty) {
+//    if (true) {
+        [self updateForces];
+        forcesDirty = false;
+    }
     liveLoad.doUpdate();
     deadLoad.doUpdate();
     sideLoad.doUpdate();
@@ -386,7 +396,8 @@ using namespace TownCalcs;
         calc_inputs.F = dragValue;
     }
     
-    [self updateForces];
+    forcesDirty = true;
+//    [self updateForces];
     
     // ------ 2D Touch Handling ------ //
     CGPoint pointSkScene = [self convertTouchToSKScene:p];
@@ -483,8 +494,13 @@ using namespace TownCalcs;
     line_BC.updatePath(deflections.beam_BC);
     line_CE.updatePath(deflections.beam_CE);
     
+    printf("\n");
     [cornerB setForce1:-results.F_BA force2:-results.F_BC];
     [cornerE setForce1:-results.F_EC force2:-results.F_EF];
+    [cornerB setShear1:-results.V_BA shear2:-results.V_BC];
+    [cornerE setShear1:-results.V_EC shear2:-results.V_EF];
+    [cornerB setMoment1:-results.M_BA moment2:-results.M_BC];
+    [cornerE setMoment1:-results.M_EC moment2:-results.M_EF];
     
     double rot_scale = 400;
     cornerB.zRotation = -M_PI/2 + results.theta_B * rot_scale;

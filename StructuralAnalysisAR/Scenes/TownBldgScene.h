@@ -34,6 +34,7 @@
     LoadMarker deadLoad;
     GrabbableArrow sideLoad;
     PeopleVis people;
+    bool forcesDirty;
 
     TownCalcs::Input_t calc_inputs;
     BezierLine line_AB, line_DC, line_FE, line_BC, line_CE;

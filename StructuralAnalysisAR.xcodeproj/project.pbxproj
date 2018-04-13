@@ -34,6 +34,7 @@
 		0B2FEEF0207BD3E700712595 /* town.xml in Resources */ = {isa = PBXBuildFile; fileRef = 0B2FEEEE207BD3E700712595 /* town.xml */; };
 		0B2FEEF4207BD80A00712595 /* grip.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B2FEEF3207BD80A00712595 /* grip.png */; };
 		0B2FEEF6207D5AFD00712595 /* SKArrow.m in Sources */ = {isa = PBXBuildFile; fileRef = 0B2FEEF5207D5AFD00712595 /* SKArrow.m */; };
+		0B2FEEF9207D611700712595 /* SKCircleArrow.m in Sources */ = {isa = PBXBuildFile; fileRef = 0B2FEEF8207D611700712595 /* SKCircleArrow.m */; };
 		0B36C09B201BD28600D7B346 /* campanile_exterior.obj in Resources */ = {isa = PBXBuildFile; fileRef = 0B36C099201BD28600D7B346 /* campanile_exterior.obj */; };
 		0B36C09C201BD28600D7B346 /* campanile_interior.obj in Resources */ = {isa = PBXBuildFile; fileRef = 0B36C09A201BD28600D7B346 /* campanile_interior.obj */; };
 		0B41E99A1F72BC04001DB823 /* home_blue.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B41E9991F72BC04001DB823 /* home_blue.png */; };
@@ -146,6 +147,8 @@
 		0B2FEEF3207BD80A00712595 /* grip.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = grip.png; path = image_assets/grip.png; sourceTree = "<group>"; };
 		0B2FEEF5207D5AFD00712595 /* SKArrow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKArrow.m; sourceTree = "<group>"; };
 		0B2FEEF7207D5B0D00712595 /* SKArrow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKArrow.h; sourceTree = "<group>"; };
+		0B2FEEF8207D611700712595 /* SKCircleArrow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKCircleArrow.m; sourceTree = "<group>"; };
+		0B2FEEFA207D613000712595 /* SKCircleArrow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKCircleArrow.h; sourceTree = "<group>"; };
 		0B36C099201BD28600D7B346 /* campanile_exterior.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = campanile_exterior.obj; sourceTree = "<group>"; };
 		0B36C09A201BD28600D7B346 /* campanile_interior.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = campanile_interior.obj; sourceTree = "<group>"; };
 		0B41E9991F72BC04001DB823 /* home_blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = home_blue.png; path = image_assets/home_blue.png; sourceTree = "<group>"; };
@@ -420,6 +423,8 @@
 				0BE42D241F688DDA00937359 /* BezierLine.mm */,
 				0B2ACE19200E814900230D67 /* CircleArrow.mm */,
 				0B2ACE1B200E815D00230D67 /* CircleArrow.h */,
+				0B2FEEF8207D611700712595 /* SKCircleArrow.m */,
+				0B2FEEFA207D613000712595 /* SKCircleArrow.h */,
 				0BDE98DC1FBE4D42003673F4 /* ImageMatcher.hpp */,
 				0BDE98DB1FBE4D42003673F4 /* ImageMatcher.cpp */,
 				0BDE98DD1FBE4D42003673F4 /* MaskedImage.hpp */,
@@ -604,6 +609,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0B2FEEF9207D611700712595 /* SKCircleArrow.m in Sources */,
 				0BDE98E01FBE4D43003673F4 /* MaskedImage.cpp in Sources */,
 				0B15735B1F5621C9004CE1BE /* LoadMarker.mm in Sources */,
 				0B1FCD4A1FBDE1C4002DBE98 /* cvARManager.mm in Sources */,

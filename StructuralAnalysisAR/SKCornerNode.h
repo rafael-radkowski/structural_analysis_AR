@@ -16,9 +16,21 @@
 
 -(void)setForce1:(float)force1 force2:(float)force2;
 
--(void)setInputRange:(float)min max:(float)max;
+-(void)setShear1:(float)shear1 shear2:(float)shear2;
 
--(void)setLengthRange:(float)min max:(float)max;
+-(void)setMoment1:(float)moment_force1 moment2:(float)moment_force2;
+
+-(void)setInputRangeF:(float)min max:(float)max;
+
+-(void)setInputRangeV:(float)min max:(float)max;
+
+-(void)setInputRangeM:(float)min max:(float)max;
+
+-(void)setLengthRangeF:(float)min max:(float)max;
+
+-(void)setLengthRangeV:(float)min max:(float)max;
+
+-(void)setAngleRangeM:(float)min max:(float)max;
 
 @end
 

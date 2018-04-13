@@ -40,7 +40,7 @@
         arrowTip.position = CGPointMake(width/2. + arrowGap, 0);
         [root addChild:arrowTip];
         
-        arrowBody = [SKSpriteNode spriteNodeWithColor:[UIColor redColor] size:CGSizeMake(1, width / 2)];
+        arrowBody = [SKSpriteNode spriteNodeWithColor:[UIColor greenColor] size:CGSizeMake(1, width / 2)];
         arrowBody.anchorPoint = CGPointMake(0, 0.5);
         arrowBody.position = CGPointMake(arrowGap + width, 0);
         
