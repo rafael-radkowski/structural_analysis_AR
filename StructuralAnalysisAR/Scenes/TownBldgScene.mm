@@ -106,7 +106,7 @@ using namespace TownCalcs;
         [corner setLengthRangeF:5 max:40];
         [corner setInputRangeV:0 max:30];
         [corner setLengthRangeV:5 max:40];
-        [corner setInputRangeM:0 max:20];
+        [corner setInputRangeM:0 max:25];
         [corner setAngleRangeM:0 max:M_PI];
     }
     
@@ -494,7 +494,7 @@ using namespace TownCalcs;
     line_BC.updatePath(deflections.beam_BC);
     line_CE.updatePath(deflections.beam_CE);
     
-    printf("\n");
+//    printf("\n");
     [cornerB setForce1:-results.F_BA force2:-results.F_BC];
     [cornerE setForce1:-results.F_EC force2:-results.F_EF];
     [cornerB setShear1:-results.V_BA shear2:-results.V_BC];

@@ -19,6 +19,10 @@
     float min_input, max_input;
     float min_angle, max_angle;
     
+    // A semicircle for the arrow arc
+    SKShapeNode *semicircle;
+    // A crop mask, determining which part of the semicircle to show
+    SKCropNode* circleMask;
 }
 
 -(id)initWithWidth:(float)_width radius:(float)_radius {
@@ -32,10 +36,10 @@
 
 
 //        arcStroke = [SKShapeNode shapeNodeWithPath:CFAutorelease(CGPathCreateMutable())];
-        arcStroke = [SKShapeNode shapeNodeWithPath:CGPathCreateMutable()];
-        arcStroke.fillColor = [UIColor greenColor];
-        arcStroke.lineWidth = 0;
-        [self addChild:arcStroke];
+//        arcStroke = [SKShapeNode shapeNodeWithPath:CGPathCreateMutable()];
+//        arcStroke.fillColor = [UIColor greenColor];
+//        arcStroke.lineWidth = 0;
+//        [self addChild:arcStroke];
         
         arrowTip = [SKSpriteNode spriteNodeWithImageNamed:@"arrow.png"];
         arrowTip.anchorPoint = CGPointMake(1, 0.5);
@@ -44,6 +48,30 @@
         arrowTip.xScale = arrowTip.yScale = arrowScale;
 //        arrowTip.position = CGPointMake(width/2. + arrowGap, 0);
         [self addChild:arrowTip];
+        
+        // draw the semicircle
+        semicircle = [[SKShapeNode alloc] init];
+        semicircle.fillColor = [UIColor greenColor];
+        semicircle.lineWidth = 0;
+        CGMutablePathRef path = CGPathCreateMutable();
+        CGPathMoveToPoint(path, NULL, radius - width/4, 0);
+        CGPathAddArc(path, NULL, 0, 0, radius - (width / 4), 0, M_PI, NO);
+        CGPathAddArc(path, NULL, 0, 0, radius + (width / 4), M_PI, 0, YES);
+        CGPathCloseSubpath(path);
+//     Assignment to SKShapeNode.path creates a copy of CGMutablePathRef
+        semicircle.path = path;
+//     CoreFoundation objects are not automatically memory-managed by ARC, so free path now that it has been copied
+        CGPathRelease(path);
+
+        // set up the semicircle mask
+        circleMask = [[SKCropNode alloc] init];
+        // A rectangle mask can be spun around to show the arc at different angles
+        SKShapeNode* rectMask = [SKShapeNode shapeNodeWithRect:CGRectMake(-(radius + width/2), 0, 2*(radius + width/2), 2*(radius + width/2))];
+        rectMask.fillColor = [UIColor whiteColor];
+        rectMask.lineWidth = 0;
+        circleMask.maskNode = rectMask;
+        [circleMask addChild:semicircle];
+        [self addChild:circleMask];
         
         [self setIntensity:0];
 
@@ -60,19 +88,28 @@
     float normalized = (value - min_input) / input_range;
     
     float angle = normalized * angle_range + min_angle;
-//    float angle = to_angle;
-//    printf("angle: %f\n", angle);
+    if (fabsf(angle) > M_PI) {
+        printf("Warning: Angle > PI in SKCircleArrow. Will not be drawn correctly\n");
+    }
+
+    // move the mask to show the right amount of arc
+    bool positive = angle >= 0;
+    circleMask.zRotation = positive ? 0 : M_PI;
+    circleMask.maskNode.zRotation = angle - M_PI;
+    
+    // The reason not to redraw an arc like below (commented out), is because iOS 10 has a bug in SKSpriteNode
+    //     where updating the path causes a memory error. Fine in iOS 11. Turning on "Malloc Scribble" in the debug settings
+    //     makes the crash more repeatable
     
     // make new path
-    bool positive = angle >= 0;
 //    CGMutablePathRef path = CGPathCreateMutable();
 //    CGPathMoveToPoint(path, NULL, radius - width/4, 0);
 //    CGPathAddArc(path, NULL, 0, 0, radius - (width / 4), 0, angle, !positive);
 //    CGPathAddArc(path, NULL, 0, 0, radius + (width / 4), angle, 0, positive);
 //    CGPathCloseSubpath(path);
-//    // Assignment to SKShapeNode.path creates a copy of CGMutablePathRef
+    // Assignment to SKShapeNode.path creates a copy of CGMutablePathRef
 //    arcStroke.path = path;
-//    // CoreFoundation objects are not automatically memory-managed by ARC, so free path now that it has been copied
+    // CoreFoundation objects are not automatically memory-managed by ARC, so free path now that it has been copied
 //    CGPathRelease(path);
 
     // move tip
