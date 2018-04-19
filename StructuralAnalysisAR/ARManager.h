@@ -27,7 +27,7 @@ public:
     virtual void doFrame(int n_avg, std::function<void(CB_STATE)> cb_func) = 0;
     virtual size_t stopAR() = 0;
     virtual void pauseAR() = 0;
-    virtual void startCamera() = 0;
+    virtual int startCamera() = 0; // returns 0 if successful
     virtual void stopCamera() = 0;
     virtual GLKMatrix4 getCameraMatrix() = 0;
     virtual GLKMatrix4 getProjectionMatrix() = 0;

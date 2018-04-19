@@ -26,6 +26,8 @@
 		0B254671206997DF00E4A076 /* skywalk_ref_cropped.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B254670206997DE00E4A076 /* skywalk_ref_cropped.png */; };
 		0B254675206ABF7B00E4A076 /* town_ref_flat_eq.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B254674206ABF7B00E4A076 /* town_ref_flat_eq.png */; };
 		0B2AAB851FD87D4100DD477B /* skywalk_sunny_1920.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B2AAB841FD87D4100DD477B /* skywalk_sunny_1920.png */; };
+		0B2AB2A820877F9000A2BCF6 /* town_model.obj in Resources */ = {isa = PBXBuildFile; fileRef = 0B2AB2A720877F9000A2BCF6 /* town_model.obj */; };
+		0B2AB2AE208932CC00A2BCF6 /* semicircle.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B2AB2AD208932CC00A2BCF6 /* semicircle.png */; };
 		0B2ACE1A200E814900230D67 /* CircleArrow.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B2ACE19200E814900230D67 /* CircleArrow.mm */; };
 		0B2ACE1D2018F8F000230D67 /* campanile_stock_cropped.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0B2ACE1C2018F8F000230D67 /* campanile_stock_cropped.jpg */; };
 		0B2ACE1F2018F95900230D67 /* isuofficallogo_light.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B2ACE1E2018F95800230D67 /* isuofficallogo_light.png */; };
@@ -137,6 +139,8 @@
 		0B254670206997DE00E4A076 /* skywalk_ref_cropped.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = skywalk_ref_cropped.png; path = image_assets/skywalk_ref_cropped.png; sourceTree = "<group>"; };
 		0B254674206ABF7B00E4A076 /* town_ref_flat_eq.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = town_ref_flat_eq.png; path = image_assets/town_ref_flat_eq.png; sourceTree = "<group>"; };
 		0B2AAB841FD87D4100DD477B /* skywalk_sunny_1920.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = skywalk_sunny_1920.png; path = image_assets/skywalk_sunny_1920.png; sourceTree = "<group>"; };
+		0B2AB2A720877F9000A2BCF6 /* town_model.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = town_model.obj; sourceTree = "<group>"; };
+		0B2AB2AD208932CC00A2BCF6 /* semicircle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = semicircle.png; path = image_assets/semicircle.png; sourceTree = "<group>"; };
 		0B2ACE19200E814900230D67 /* CircleArrow.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = CircleArrow.mm; sourceTree = "<group>"; };
 		0B2ACE1B200E815D00230D67 /* CircleArrow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CircleArrow.h; sourceTree = "<group>"; };
 		0B2ACE1C2018F8F000230D67 /* campanile_stock_cropped.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = campanile_stock_cropped.jpg; path = image_assets/campanile_stock_cropped.jpg; sourceTree = "<group>"; };
@@ -301,6 +305,7 @@
 				0B6E6A9C1FCF7EB500EE7950 /* cutout_skywalk_3840x2160.png */,
 				0B2AAB841FD87D4100DD477B /* skywalk_sunny_1920.png */,
 				0B0CBD0E1FDB40C800A9B223 /* skywalk_1920_back.png */,
+				0B2AB2AD208932CC00A2BCF6 /* semicircle.png */,
 				0B5D639520506AD0003384C4 /* arrow.png */,
 				0B2FEEF3207BD80A00712595 /* grip.png */,
 				0B0CBD131FE0547600A9B223 /* skywalk_south1.dat */,
@@ -484,6 +489,7 @@
 				0B483BFE1F4F8AF9007A1D29 /* arrow_base.obj */,
 				0B483BFF1F4F8AF9007A1D29 /* arrow_tip.obj */,
 				0B5A92BA2006BA6D00D58422 /* moment_arrow.obj */,
+				0B2AB2A720877F9000A2BCF6 /* town_model.obj */,
 			);
 			path = 3d_assets;
 			sourceTree = "<group>";
@@ -554,6 +560,7 @@
 				0BB5AD101FD1B3C8001C78CD /* cutout_skywalk_1920x1080.png in Resources */,
 				0B2FEEF4207BD80A00712595 /* grip.png in Resources */,
 				0B2ACE1D2018F8F000230D67 /* campanile_stock_cropped.jpg in Resources */,
+				0B2AB2AE208932CC00A2BCF6 /* semicircle.png in Resources */,
 				0BD711242049E08F0095D753 /* 2.0.png in Resources */,
 				0B99FF611F47A79D00431996 /* skywalkView.xib in Resources */,
 				0BB1644C1F4732DC0053CA3B /* LaunchScreen.storyboard in Resources */,
@@ -583,6 +590,7 @@
 				0B483C001F4F8AF9007A1D29 /* arrow_base.obj in Resources */,
 				0B2ACE212019259900230D67 /* campanile_static.JPG in Resources */,
 				0B36C09C201BD28600D7B346 /* campanile_interior.obj in Resources */,
+				0B2AB2A820877F9000A2BCF6 /* town_model.obj in Resources */,
 				0B2AAB851FD87D4100DD477B /* skywalk_sunny_1920.png in Resources */,
 				0B483C011F4F8AF9007A1D29 /* arrow_tip.obj in Resources */,
 				0B5A92BB2006BA6D00D58422 /* moment_arrow.obj in Resources */,

@@ -107,9 +107,9 @@
         //    tracking_mode = TrackingMode::opencv;
         //        arManager = new StaticARManager(self.view, scene);
         arManager = [structureScene makeStaticTracker];
+        int failed = arManager->startCamera();
         tracking_mode = TrackingMode::untracked;
-        [structureScene setCameraLabelPaused:YES isEnabled:NO];
-        arManager->startCamera();
+        [structureScene setCameraLabelPaused:!failed isEnabled:failed];
     }
 }
 
@@ -198,9 +198,9 @@
         }
     }
     else { // camPaused == true
-        camPaused = false;
-        [structureScene setCameraLabelPaused:NO isEnabled:YES];
-        arManager->startCamera();
+        int failed = arManager->startCamera();
+        camPaused = failed;
+        [structureScene setCameraLabelPaused:failed isEnabled:!failed];
     }
     
     //    [self setAREnabled:!arEnabled];
@@ -235,10 +235,15 @@
         arManager = [structureScene makeStaticTracker];
     }
     tracking_mode = new_mode;
-    camPaused = false;
-    bool is_tracking = new_mode != TrackingMode::untracked;
-    [structureScene setCameraLabelPaused:!is_tracking isEnabled:is_tracking];
-    arManager->startCamera();
+    int failed = arManager->startCamera();
+    if (failed) {
+        printf("not handling failure of ARManager camera start\n");
+    }
+    else {
+        camPaused = NO;
+        bool is_tracking = new_mode != TrackingMode::untracked;
+        [structureScene setCameraLabelPaused:!is_tracking isEnabled:is_tracking];
+    }
 }
 
 - (void) changeTrackingMode:(CGRect)anchorRect {

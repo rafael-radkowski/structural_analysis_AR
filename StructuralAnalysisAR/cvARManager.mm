@@ -341,10 +341,11 @@ void cvARManager::pauseAR() {
 //    [device unlockForConfiguration];
 //}
 
-void cvARManager::startCamera() {
+int cvARManager::startCamera() {
     [camera start];
     // Camera was paused, so new images will not match returned pose. Invalidate tracking
     is_tracked = false;
+    return 0;
 }
 
 void cvARManager::stopCamera() {

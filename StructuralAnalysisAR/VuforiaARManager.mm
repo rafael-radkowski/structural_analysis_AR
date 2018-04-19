@@ -45,11 +45,18 @@ void VuforiaARManager::doFrame(int n_avg, std::function<void(CB_STATE)> cb_func)
     
 }
 
-void VuforiaARManager::startCamera() {
-    NSError* error = [NSError alloc];
+int VuforiaARManager::startCamera() {
+    NSError* error;
     [vapp resumeAR:&error];
-    if (error) {printf("Failed to call resumeAR\n");}
-    view.renderVideo = true;
+    if (error) {
+        printf("Failed to call resumeAR: \n");
+        NSLog([error localizedDescription]);
+        return 1;
+    }
+    else {
+        view.renderVideo = true;
+        return 0;
+    }
 }
 
 void VuforiaARManager::stopCamera() {

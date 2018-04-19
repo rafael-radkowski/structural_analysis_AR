@@ -41,17 +41,59 @@ using namespace TownCalcs;
         lightNode.position = SCNVector3Make(x, y, z);
         [rootNode addChildNode:lightNode];
     };
-    addLight(100, 50, 50, 700);
-    addLight(0, 30, 100, 500);
-    addLight(0, -30, 0, 300);
+    addLight(100, 50, 80, 400);
+    addLight(0, 50, 50, 300);
+    addLight(00, 0, 55, 400);
     
     // create and add an ambient light to the scene
-    SCNNode *ambientLightNode = [SCNNode node];
-    ambientLightNode.light = [SCNLight light];
-    ambientLightNode.light.type = SCNLightTypeAmbient;
-    ambientLightNode.light.color = [UIColor darkGrayColor];
-    ambientLightNode.light.intensity = 0.8;
-    [rootNode addChildNode:ambientLightNode];
+//    SCNNode *ambientLightNode = [SCNNode node];
+//    ambientLightNode.light = [SCNLight light];
+//    ambientLightNode.light.type = SCNLightTypeAmbient;
+//    ambientLightNode.light.color = [UIColor darkGrayColor];
+//    ambientLightNode.light.intensity = 0.8;
+//    [rootNode addChildNode:ambientLightNode];
+    
+    
+    // ---------------- 3D model ---------------- //
+    NSString* townModelPath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"town_model"] ofType:@"obj"];
+    NSURL* townModelUrl = [NSURL fileURLWithPath:townModelPath];
+    MDLAsset* townModelAsset = [[MDLAsset alloc] initWithURL:townModelUrl];
+    townModel = [SCNNode nodeWithMDLObject:[townModelAsset objectAtIndex:0]];
+    SCNMaterial* modelMat = [SCNMaterial material];
+    modelMat.diffuse.contents = [UIColor colorWithRed:1.0 green:0.68 blue:0.478 alpha:0.6];
+//    modelMat.transparent.contents = [UIColor colorWithWhite:0.5 alpha:1.0];
+//    modelMat.lightingModelName = SCNLightingModelLambert;
+//    printf("%lu materials\n", [townModel.geometry.materials count]);
+//    printf("%lu geom elements\n", [townModel.geometry.geometryElements count]);
+    for (int i = 0; i < [townModel.geometry.materials count]; ++i) {
+//        townModel.geometry.materials[i] = modelMat;
+        [townModel.geometry replaceMaterialAtIndex:i withMaterial:modelMat];
+    }
+    // Needed for semi-transparent objects to render correctly
+//    townModel.geometry.firstMaterial.writesToDepthBuffer = NO;
+//    townModel.rotation = SCNVector4Make(0, 1, 0, M_PI / 2);
+//    townModel.position = SCNVector3Make(66, -15, -55.7);
+    townModel.renderingOrder = -10;
+    [rootNode addChildNode:townModel];
+    
+    // occlusion plane
+    float planeHeight = 50;
+    SCNPlane* occlusionGeom = [SCNPlane planeWithWidth:200 height:50];
+    SCNNode* frontOcclPlane = [SCNNode nodeWithGeometry:occlusionGeom];
+//    occlusionPlane.rotation = SCNVector4Make(1, 0, 0, M_PI/2);
+    frontOcclPlane.position = SCNVector3Make(0, -(planeHeight/2 + 7), 0.1);
+    frontOcclPlane.geometry.firstMaterial = [SCNMaterial material];
+    frontOcclPlane.geometry.firstMaterial.lightingModelName = SCNLightingModelConstant;
+    frontOcclPlane.renderingOrder = -100;
+    frontOcclPlane.geometry.firstMaterial.writesToDepthBuffer = YES;
+
+    if (@available(iOS 11.0, *)) {
+        frontOcclPlane.geometry.firstMaterial.colorBufferWriteMask = SCNColorMaskAlpha;
+    } else {
+//        frontOcclPlane.geometry.firstMaterial.diffuse.contents = [UIColor colorWithWhite:1.0 alpha:1.0];
+        frontOcclPlane.opacity = 0.00001;
+    }
+    [rootNode addChildNode:frontOcclPlane];
     
     
     // ---------------- 2D joints ---------------- //

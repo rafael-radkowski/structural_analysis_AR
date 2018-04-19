@@ -20,7 +20,7 @@
     float min_angle, max_angle;
     
     // A semicircle for the arrow arc
-    SKShapeNode *semicircle;
+    SKSpriteNode *semicircle;
     // A crop mask, determining which part of the semicircle to show
     SKCropNode* circleMask;
 }
@@ -50,29 +50,40 @@
         [self addChild:arrowTip];
         
         // draw the semicircle
-        semicircle = [[SKShapeNode alloc] init];
-        semicircle.fillColor = [UIColor greenColor];
-        semicircle.lineWidth = 0;
-        CGMutablePathRef path = CGPathCreateMutable();
-        CGPathMoveToPoint(path, NULL, radius - width/4, 0);
-        CGPathAddArc(path, NULL, 0, 0, radius - (width / 4), 0, M_PI, NO);
-        CGPathAddArc(path, NULL, 0, 0, radius + (width / 4), M_PI, 0, YES);
-        CGPathCloseSubpath(path);
+//        semicircle = [[SKShapeNode alloc] init];
+//        semicircle.fillColor = [UIColor greenColor];
+//        semicircle.lineWidth = 0;
+//        CGMutablePathRef path = CGPathCreateMutable();
+//        CGPathMoveToPoint(path, NULL, radius - width/4, 0);
+//        CGPathAddArc(path, NULL, 0, 0, radius - (width / 4), 0, M_PI, NO);
+//        CGPathAddArc(path, NULL, 0, 0, radius + (width / 4), M_PI, 0, YES);
+//        CGPathCloseSubpath(path);
 //     Assignment to SKShapeNode.path creates a copy of CGMutablePathRef
-        semicircle.path = path;
+//        semicircle.path = path;
 //     CoreFoundation objects are not automatically memory-managed by ARC, so free path now that it has been copied
-        CGPathRelease(path);
+//        CGPathRelease(path);
+        
+        semicircle = [SKSpriteNode spriteNodeWithImageNamed:@"semicircle.png"];
+        // texture designed for 128x128 resoultion when radius = 100/3
+        float texScale = (128. / semicircle.frame.size.width) * ((100. / 3) / radius);
+        semicircle.xScale = semicircle.yScale = texScale;
 
         // set up the semicircle mask
         circleMask = [[SKCropNode alloc] init];
         // A rectangle mask can be spun around to show the arc at different angles
         SKShapeNode* rectMask = [SKShapeNode shapeNodeWithRect:CGRectMake(-(radius + width/2), 0, 2*(radius + width/2), 2*(radius + width/2))];
-        rectMask.fillColor = [UIColor whiteColor];
+        
+        if (@available(iOS 11.0, *)) {
+            rectMask.fillColor = [UIColor whiteColor];
+        } else {
+            // iOS 10 SKShapeNode is so broken... Unless I set alpha to a very small value, the mask will render
+            rectMask.fillColor = [UIColor colorWithWhite:1.0 alpha:0.00001];
+        }
         rectMask.lineWidth = 0;
         circleMask.maskNode = rectMask;
         [circleMask addChild:semicircle];
         [self addChild:circleMask];
-        
+
         [self setIntensity:0];
 
     }
@@ -89,6 +100,7 @@
     
     float angle = normalized * angle_range + min_angle;
     if (fabsf(angle) > M_PI) {
+        // If more than a semicircle is needed, you could make a second semicircle rotated 180 degrees
         printf("Warning: Angle > PI in SKCircleArrow. Will not be drawn correctly\n");
     }
 
