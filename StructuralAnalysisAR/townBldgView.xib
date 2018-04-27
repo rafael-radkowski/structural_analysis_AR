@@ -114,27 +114,6 @@
                         <constraint firstAttribute="width" constant="240" id="nWB-Ev-ye5"/>
                     </constraints>
                 </view>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZwC-V0-6g2">
-                    <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
-                    <subviews>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Processing..." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QKe-PJ-ISS">
-                            <rect key="frame" x="423.5" y="365.5" width="177" height="38.5"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="32"/>
-                            <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                            <nil key="highlightedColor"/>
-                        </label>
-                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="AEC-tf-yQT">
-                            <rect key="frame" x="395.5" y="374" width="20" height="20"/>
-                        </activityIndicatorView>
-                    </subviews>
-                    <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.66307255990000002" colorSpace="custom" customColorSpace="sRGB"/>
-                    <constraints>
-                        <constraint firstItem="AEC-tf-yQT" firstAttribute="centerY" secondItem="QKe-PJ-ISS" secondAttribute="centerY" id="N6P-Ft-viW"/>
-                        <constraint firstItem="QKe-PJ-ISS" firstAttribute="centerX" secondItem="ZwC-V0-6g2" secondAttribute="centerX" id="QQ8-Do-uje"/>
-                        <constraint firstItem="QKe-PJ-ISS" firstAttribute="centerY" secondItem="ZwC-V0-6g2" secondAttribute="centerY" id="i4w-gx-zCK"/>
-                        <constraint firstItem="QKe-PJ-ISS" firstAttribute="leading" secondItem="AEC-tf-yQT" secondAttribute="trailing" constant="8" id="sEc-Gz-8WW"/>
-                    </constraints>
-                </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8rm-1z-HvQ">
                     <rect key="frame" x="0.0" y="0.0" width="213" height="230"/>
                     <subviews>
@@ -183,7 +162,7 @@
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <switch opaque="NO" tag="2" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="MbY-og-U4O">
+                        <switch opaque="NO" tag="2" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="MbY-og-U4O">
                             <rect key="frame" x="15" y="158" width="51" height="31"/>
                             <connections>
                                 <action selector="visToggled:" destination="-1" eventType="valueChanged" id="SyA-eB-mD9"/>
@@ -236,6 +215,27 @@
                         <constraint firstItem="MbY-og-U4O" firstAttribute="centerX" secondItem="DDo-7e-n30" secondAttribute="centerX" id="oGP-hp-DYx"/>
                         <constraint firstItem="3Zs-eb-wFU" firstAttribute="centerX" secondItem="MbY-og-U4O" secondAttribute="centerX" id="pvH-Wm-HnC"/>
                         <constraint firstItem="pxI-mW-dUq" firstAttribute="top" secondItem="8rm-1z-HvQ" secondAttribute="top" constant="8" id="yvZ-G1-diY"/>
+                    </constraints>
+                </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZwC-V0-6g2">
+                    <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Processing..." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QKe-PJ-ISS">
+                            <rect key="frame" x="423.5" y="365.5" width="177" height="38.5"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="32"/>
+                            <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="AEC-tf-yQT">
+                            <rect key="frame" x="395.5" y="374" width="20" height="20"/>
+                        </activityIndicatorView>
+                    </subviews>
+                    <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.66307255990000002" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <constraint firstItem="AEC-tf-yQT" firstAttribute="centerY" secondItem="QKe-PJ-ISS" secondAttribute="centerY" id="N6P-Ft-viW"/>
+                        <constraint firstItem="QKe-PJ-ISS" firstAttribute="centerX" secondItem="ZwC-V0-6g2" secondAttribute="centerX" id="QQ8-Do-uje"/>
+                        <constraint firstItem="QKe-PJ-ISS" firstAttribute="centerY" secondItem="ZwC-V0-6g2" secondAttribute="centerY" id="i4w-gx-zCK"/>
+                        <constraint firstItem="QKe-PJ-ISS" firstAttribute="leading" secondItem="AEC-tf-yQT" secondAttribute="trailing" constant="8" id="sEc-Gz-8WW"/>
                     </constraints>
                 </view>
             </subviews>

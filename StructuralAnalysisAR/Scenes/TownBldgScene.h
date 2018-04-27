@@ -31,7 +31,7 @@
     // occlusion planes for AR
     SCNNode* frontOcclPlane;
     SCNNode* sideOcclPlane;
-    
+
     SKCornerNode* cornerB, *cornerE;
     SKShapeNode* jointBox;
     

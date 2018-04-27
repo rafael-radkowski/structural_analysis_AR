@@ -18,6 +18,9 @@
 
 using namespace TownCalcs;
 
+// y-position for front occlusion plane
+constexpr static float ocPlnPosY = -7.5;
+
 @implementation TownBldgScene
 
 - (id)initWithController:(id<ARViewController>)controller {
@@ -60,7 +63,7 @@ using namespace TownCalcs;
     MDLAsset* townModelAsset = [[MDLAsset alloc] initWithURL:townModelUrl];
     townModel = [SCNNode nodeWithMDLObject:[townModelAsset objectAtIndex:0]];
     SCNMaterial* modelMat = [SCNMaterial material];
-    modelMat.diffuse.contents = [UIColor colorWithRed:1.0 green:0.68 blue:0.478 alpha:0.6];
+    modelMat.diffuse.contents = [UIColor colorWithRed:0.836 green:0.7744 blue:0.7 alpha:0.4];
 //    modelMat.transparent.contents = [UIColor colorWithWhite:0.5 alpha:1.0];
 //    modelMat.lightingModelName = SCNLightingModelLambert;
 //    printf("%lu materials\n", [townModel.geometry.materials count]);
@@ -77,22 +80,28 @@ using namespace TownCalcs;
     [rootNode addChildNode:townModel];
     
     // occlusion plane
-    float planeHeight = 50;
-    SCNPlane* occlusionGeom = [SCNPlane planeWithWidth:200 height:50];
-    SCNNode* frontOcclPlane = [SCNNode nodeWithGeometry:occlusionGeom];
-//    occlusionPlane.rotation = SCNVector4Make(1, 0, 0, M_PI/2);
-    frontOcclPlane.position = SCNVector3Make(0, -(planeHeight/2 + 7), 0.1);
-    frontOcclPlane.geometry.firstMaterial = [SCNMaterial material];
-    frontOcclPlane.geometry.firstMaterial.lightingModelName = SCNLightingModelConstant;
-    frontOcclPlane.renderingOrder = -100;
-    frontOcclPlane.geometry.firstMaterial.writesToDepthBuffer = YES;
-
-    if (@available(iOS 11.0, *)) {
-        frontOcclPlane.geometry.firstMaterial.colorBufferWriteMask = SCNColorMaskAlpha;
-    } else {
-//        frontOcclPlane.geometry.firstMaterial.diffuse.contents = [UIColor colorWithWhite:1.0 alpha:1.0];
-        frontOcclPlane.opacity = 0.00001;
-    }
+    auto makeOcclPlane = [] () {
+        SCNPlane* occlusionGeom = [SCNPlane planeWithWidth:200 height:50];
+        SCNNode* occlPlane = [SCNNode nodeWithGeometry:occlusionGeom];
+        //    occlusionPlane.rotation = SCNVector4Make(1, 0, 0, M_PI/2);
+        occlPlane.geometry.firstMaterial = [SCNMaterial material];
+        occlPlane.geometry.firstMaterial.lightingModelName = SCNLightingModelConstant;
+        occlPlane.renderingOrder = -100;
+        occlPlane.geometry.firstMaterial.writesToDepthBuffer = YES;
+        
+        if (@available(iOS 11.0, *)) {
+            occlPlane.geometry.firstMaterial.colorBufferWriteMask = SCNColorMaskAlpha;
+        } else {
+            //        frontOcclPlane.geometry.firstMaterial.diffuse.contents = [UIColor colorWithWhite:1.0 alpha:1.0];
+            occlPlane.opacity = 0.00001;
+        }
+        return occlPlane;
+    };
+    
+    frontOcclPlane = makeOcclPlane();
+//    sideOcclPlane = makeOcclPlane();
+//    sideOcclPlane.position = SCNVector3Make(0, -planeHeight/2 + ocPlnPosUntracked, 0.1);
+    
     [rootNode addChildNode:frontOcclPlane];
     
     
@@ -362,21 +371,30 @@ using namespace TownCalcs;
 
 // Make various AR Managers
 - (ARManager*)makeStaticTracker {
-    GLKMatrix4 trans_mat = GLKMatrix4MakeTranslation(37, 7, 110);
+    float planeHeight = ((SCNPlane*)frontOcclPlane.geometry).height;
+    frontOcclPlane.position = SCNVector3Make(0, -planeHeight/2 + ocPlnPosY, 0.1);
+    
+    GLKMatrix4 trans_mat = GLKMatrix4MakeTranslation(29, 6.5, 90);
     GLKMatrix4 rot_x_mat = GLKMatrix4MakeXRotation(0.33);
     GLKMatrix4 cameraMatrix = GLKMatrix4Multiply(rot_x_mat, trans_mat);
     return new StaticARManager(scnView, scnView.scene, cameraMatrix, @"town_static.png");
 }
 
 - (ARManager*)makeIndoorTracker {
-    GLKMatrix4 translation_mat = GLKMatrix4MakeTranslation(19, 11, 0);
+    float planeHeight = ((SCNPlane*)frontOcclPlane.geometry).height;
+    frontOcclPlane.position = SCNVector3Make(0, -planeHeight/2 + ocPlnPosY, 0.1);
+    
+    GLKMatrix4 translation_mat = GLKMatrix4MakeTranslation(15, 9.5, 0);
     GLKMatrix4 rot_x_mat = GLKMatrix4MakeXRotation(0.0);
     GLKMatrix4 transform_mat = GLKMatrix4Multiply(rot_x_mat, translation_mat);
     return new VuforiaARManager((ARView*)scnView, scnView.scene, UIInterfaceOrientationLandscapeRight, @"town.xml", transform_mat);
 }
 
 - (ARManager*)makeOutdoorTracker {
-    GLKMatrix4 rotMat = GLKMatrix4MakeYRotation(0.0);
+    float planeHeight = ((SCNPlane*)frontOcclPlane.geometry).height;
+    frontOcclPlane.position = SCNVector3Make(0, -planeHeight/2 + ocPlnPosY - 5, 15);
+    
+    GLKMatrix4 rotMat = GLKMatrix4MakeXRotation(0.15);
     return new cvARManager(scnView, scnView.scene, cvStructure_t::town, rotMat);
 }
 
@@ -490,6 +508,7 @@ using namespace TownCalcs;
     liveLoad.setHidden(!self.liveLoadSwitch.on);
     sideLoad.setHidden(!self.liveLoadSwitch.on);
     deadLoad.setHidden(!self.deadLoadSwitch.on);
+    townModel.hidden = !self.modelSwitch.on;
     for (GrabbableArrow* arrow : {&F_AB, &F_DC, &F_FE, &V_AB, &V_DC, &V_FE}) {
         arrow->setHidden(!self.rcnForceSwitch.on);
     }
@@ -549,4 +568,6 @@ using namespace TownCalcs;
     cornerE.zRotation = M_PI + results.theta_E * rot_scale;
 }
 
+- (IBAction)planeMoved:(id)sender {
+}
 @end

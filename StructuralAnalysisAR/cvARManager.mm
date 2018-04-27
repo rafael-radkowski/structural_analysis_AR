@@ -176,7 +176,7 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure,
             break;
         case town:
             bgImage = [UIImage imageNamed:@"town_ref_flat_eq.png"];
-            model_width = 135.62; // 3 panels = 472px, 33.34ft
+            model_width = 115.92; // 4 panels = 630, 38.035ft
             mask_properties.edge_threshold = 130;
             mask_properties.min_length = 0.15;
             mask_properties.line_angle = cv::Vec2f(0, -1);
@@ -188,7 +188,7 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure,
 //    MaskedImage masked(cvMatFromUIImage(bgImage), mask_properties.edge_threshold, mask_properties.min_length, mask_properties.line_angle, mask_properties.line_origin, 15, mask_properties.mask_width);
 //    cv::Mat cropped = masked.getCropped();
     cv::Mat ref_img = cvMatFromUIImage(bgImage);
-//    test_img = cvMatFromUIImage([UIImage imageNamed:@"0.png"]);
+//    test_img = cvMatFromUIImage([UIImage imageNamed:@"9.png"]);
     
 //    NSData* imageData = UIImagePNGRepresentation(UIImageFromCVMat(cropped));
 //    NSFileManager *fileManager = [NSFileManager defaultManager];//create instance of NSFileManager
@@ -215,8 +215,8 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure,
         model_y_offset = -48;
     }
     else if (structure == town) {
-        model_x_offset = 45;
-        model_y_offset = -9.5;
+        model_x_offset = 38;
+        model_y_offset = -8.5;
     }
     float cos_angle = std::cos(model_rotation_offset);
     float sin_angle = std::sin(model_rotation_offset);
