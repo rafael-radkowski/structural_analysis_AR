@@ -226,8 +226,10 @@ constexpr static float ocPlnPosY = -7.5;
     GLKQuaternion vert_ori = GLKQuaternionMakeWithAngleAndAxis(M_PI/2, 0, 0, 1);
     line_AB = BezierLine(deflections.col_AB);
     line_AB.setOrientation(vert_ori);
+    // Move the first column over, so 0 is on the left side
+    line_AB.setPosition(GLKVector3Make(beam_thickness, 0, 0));
     line_DC = BezierLine(deflections.col_DC);
-    line_DC.setPosition(GLKVector3Make(Calculator::width, 0, 0));
+    line_DC.setPosition(GLKVector3Make(Calculator::width + beam_thickness / 2, 0, 0));
     line_DC.setOrientation(vert_ori);
     line_FE = BezierLine(deflections.col_FE);
     line_FE.setPosition(GLKVector3Make(2 * Calculator::width, 0, 0));
