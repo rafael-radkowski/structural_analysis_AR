@@ -19,7 +19,7 @@ public:
     bool startAR() override {return false;};
     size_t stopAR() override {return 0;};
     void pauseAR() override {};
-    void startCamera() override {};
+    int startCamera() override {return 0;};
     void stopCamera() override {};
     virtual GLKMatrix4 getCameraMatrix() override;
     virtual GLKMatrix4 getProjectionMatrix() override;

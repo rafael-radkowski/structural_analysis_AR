@@ -107,9 +107,9 @@
         //    tracking_mode = TrackingMode::opencv;
         //        arManager = new StaticARManager(self.view, scene);
         arManager = [structureScene makeStaticTracker];
+        int failed = arManager->startCamera();
         tracking_mode = TrackingMode::untracked;
-        [structureScene setCameraLabelPaused:YES isEnabled:NO];
-        arManager->startCamera();
+        [structureScene setCameraLabelPaused:!failed isEnabled:failed];
     }
 }
 
@@ -121,11 +121,13 @@
 //    }
 //}
 
-- (void)viewDidDisappear:(BOOL)animated {
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
 //    NSError* error;
 //    [self.vapp stopAR:&error];
     std::lock_guard<std::mutex> lock(arManagerLock);
     delete arManager;
+    arManager = nullptr;
 }
 
 //- (void)viewDidDisappear:(BOOL)animated {
@@ -143,19 +145,15 @@
 
 // called every frame by the renderer
 - (void)renderer:(id<SCNSceneRenderer>)renderer updateAtTime:(NSTimeInterval)time {
+    if (!arManager) {
+        // This function might get called after viewWillDisappear was called, so arManager could be deleted
+        return;
+    }
     std::lock_guard<std::mutex> lock(arManagerLock);
     
     // Hide scene if untracked
     sceneNode.hidden = !arManager->isTracked();
-    
-    // For the SpriteKit scene, we have to hide it by changing overlaySKScene, rather than setting the scene2d.hidden attribute
-    //      When the SKScene is hidden, the label widths become infinity, which messes up their placement in OverlayLabel
-    if (arManager->isTracked()) {
-        ((SCNView*) self.view).overlaySKScene = scene2d;
-    }
-    else {
-        ((SCNView*) self.view).overlaySKScene = nil;
-    }
+    scene2d.hidden = !arManager->isTracked();
     
     if (!camPaused) {
         arManager->drawBackground();
@@ -182,12 +180,12 @@
             camPaused = true;
             [freezeBtn setEnabled:NO];
             curtain.hidden = NO;
-            arManager->doFrame(5, [self, freezeBtn, curtain](ARManager::CB_STATE update_type) {
+            arManager->doFrame(3, [self, freezeBtn, curtain](ARManager::CB_STATE update_type) {
                 if (update_type == ARManager::DONE_CAPTURING) {
                     // Set the calculated camera matrix
                     GLKMatrix4 camera_matrix = arManager->getCameraMatrix();
                     cameraNode.transform = SCNMatrix4FromGLKMatrix4(camera_matrix);
-                    
+
                     // this callback function gets called from a different thread, so we must post UI chanages to the main thread
                     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                         [freezeBtn setEnabled:YES];
@@ -200,9 +198,9 @@
         }
     }
     else { // camPaused == true
-        camPaused = false;
-        [structureScene setCameraLabelPaused:NO isEnabled:YES];
-        arManager->startCamera();
+        int failed = arManager->startCamera();
+        camPaused = failed;
+        [structureScene setCameraLabelPaused:failed isEnabled:!failed];
     }
     
     //    [self setAREnabled:!arEnabled];
@@ -237,10 +235,15 @@
         arManager = [structureScene makeStaticTracker];
     }
     tracking_mode = new_mode;
-    camPaused = false;
-    bool is_tracking = new_mode != TrackingMode::untracked;
-    [structureScene setCameraLabelPaused:!is_tracking isEnabled:is_tracking];
-    arManager->startCamera();
+    int failed = arManager->startCamera();
+    if (failed) {
+        printf("not handling failure of ARManager camera start\n");
+    }
+    else {
+        camPaused = NO;
+        bool is_tracking = new_mode != TrackingMode::untracked;
+        [structureScene setCameraLabelPaused:!is_tracking isEnabled:is_tracking];
+    }
 }
 
 - (void) changeTrackingMode:(CGRect)anchorRect {
@@ -361,7 +364,7 @@
                                               style:UIAlertActionStyleDefault
                                               handler:^(UIAlertAction* action) {
                                                   [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]
-                                                                                     options:nil
+                                                                                     options:@{}
                                                                            completionHandler:nil];
                                               }];
             UIAlertAction* okayBtn = [UIAlertAction

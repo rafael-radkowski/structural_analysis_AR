@@ -42,16 +42,12 @@ private:
 
     // Height of the tip
     float defaultTipSize = 0.3;
-    float tipSize = defaultTipSize;
-    
+
     float thickness = 5;
     float radius = 10;
     float minValue = 0;
     float maxValue = 1;
-    
-    SCNView* scnView = nullptr;
-    SKScene* scene2d = nullptr;
-    
+
     SCNNode* arrowHead;
     SCNNode* arrowHeadEmpty;
     SCNShape* bodyShape;

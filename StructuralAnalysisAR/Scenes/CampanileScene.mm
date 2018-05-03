@@ -20,7 +20,7 @@
 static const float base_width = 16;
 static const float base_height = 89 + 2.f / 12;
 static const float roof_height = 20 + 4.5 / 12;
-static const float roof_angle = (M_PI / 180.0) * 68.56;
+//static const float roof_angle = (M_PI / 180.0) * 68.56;
 
 static const float f1_h = 17.75;
 static const float f2_h = 57.5;
@@ -284,23 +284,6 @@ static const double MOM_OF_INERTIA = 2334;
     [self.slider setValue:0.5];
     [self.scenarioToggle sendActionsForControlEvents:UIControlEventValueChanged];
     [self setVisibilities];
-    
-//    breakerThread = std::thread([self] () {
-//        using namespace std::chrono_literals;
-//        std::random_device rnd_dev;
-//        std::uniform_real_distribution<float> dist(0, 1);
-//        std::mt19937 generator(rnd_dev());
-//        while(1) {
-//            @autoreleasepool {
-//                float val = dist(generator);
-//                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-//                    [self.slider setValue:val];
-//                    [self.slider sendActionsForControlEvents:UIControlEventValueChanged];
-//                }];
-//            }
-//            std::this_thread::sleep_for(20ms);
-//        }
-//    });
 }
 
 - (void)skUpdate {

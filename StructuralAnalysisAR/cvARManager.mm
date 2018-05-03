@@ -35,7 +35,7 @@ GLKMatrix4 CVMat4ToGLKMat4(const cv::Mat& cvMat);
     callbackFunc(image);
 }
 @end
-
+//static cv::Mat test_img;
 cvARManager::cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure, GLKMatrix4 pose_transform)
 : scene(scene)
 , currentTexture(0)
@@ -59,7 +59,7 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure,
     auto this_processImage = [this](cv::Mat& img) {processImage(img);};
     camDelegate = [[CvCameraDelegateObj alloc] initWithCallback:this_processImage];
     camera.delegate = camDelegate;
-    
+
 
 //    std::cout << "sessio nloaded: " << camera.captureSessionLoaded << std::endl;
 //    if ([camera.captureSession canSetSessionPreset:AVCaptureSessionPreset3840x2160]) {
@@ -147,34 +147,57 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure,
     
     // Load reference image
     UIImage* bgImage;
-    float model_width;
-    if (structure == skywalk) {
+    float model_width = 0;
+    switch (structure) {
+        case skywalk:
 #ifdef HIGH_RES
-        UIImage* bgImage = [UIImage imageNamed:@"cutout_skywalk_3840x2160.png"];
+            UIImage* bgImage = [UIImage imageNamed:@"cutout_skywalk_3840x2160.png"];
 #else
-    //    UIImage* bgImage = [UIImage imageNamed:@"cutout_skywalk_1920x1080.png"];
-        bgImage = [UIImage imageNamed:@"skywalk_1920_back.png"];
-        model_width = 200;
+            //    UIImage* bgImage = [UIImage imageNamed:@"cutout_skywalk_1920x1080.png"];
+            bgImage = [UIImage imageNamed:@"skywalk_ref_cropped.png"];
+            model_width = 200;
 #endif
-        mask_properties.edge_threshold = 80;
-        mask_properties.min_length = 0.6;
-        mask_properties.line_angle = cv::Vec2f(1, 0);
-        mask_properties.line_origin = cv::Vec2f(0, 0);
-        mask_properties.mask_width = 0.164;
+            mask_properties.edge_threshold = 80;
+            mask_properties.min_length = 0.6;
+            mask_properties.line_angle = cv::Vec2f(1, 0);
+            mask_properties.line_origin = cv::Vec2f(0, 0);
+            mask_properties.mask_width = 0.164;
+            mask_properties.equalize_hist = false;
+            break;
+        case campanile:
+            bgImage = [UIImage imageNamed:@"campanile_1920_model_cutout.png"];
+            model_width = 295; // calculated from campanile being 104px wide in image, and 16ft across
+            mask_properties.edge_threshold = 130;
+            mask_properties.min_length = 0.15;
+            mask_properties.line_angle = cv::Vec2f(0, 1);
+            mask_properties.line_origin = cv::Vec2f(10000, 0);
+            mask_properties.mask_width = 0.08;
+            mask_properties.equalize_hist = false;
+            break;
+        case town:
+            bgImage = [UIImage imageNamed:@"town_ref_flat_eq.png"];
+            model_width = 115.92; // 4 panels = 630, 38.035ft
+            mask_properties.edge_threshold = 130;
+            mask_properties.min_length = 0.15;
+            mask_properties.line_angle = cv::Vec2f(0, -1);
+            mask_properties.line_origin = cv::Vec2f(0, 0);
+            mask_properties.mask_width = 0.5;
+            mask_properties.equalize_hist = true;
+            break;
     }
-    else if (structure == campanile) {
-        bgImage = [UIImage imageNamed:@"campanile_1920_model_cutout.png"];
-        model_width = 295; // calculated from campanile being 104px wide in image, and 16ft across
-        mask_properties.edge_threshold = 130;
-        mask_properties.min_length = 0.15;
-        mask_properties.line_angle = cv::Vec2f(0, 1);
-        mask_properties.line_origin = cv::Vec2f(10000, 0);
-        mask_properties.mask_width = 0.08;
-    }
-    MaskedImage masked(cvMatFromUIImage(bgImage), mask_properties.edge_threshold, mask_properties.min_length, mask_properties.line_angle, mask_properties.line_origin, 15, mask_properties.mask_width);
-    cv::Mat cropped = masked.getCropped();
+//    MaskedImage masked(cvMatFromUIImage(bgImage), mask_properties.edge_threshold, mask_properties.min_length, mask_properties.line_angle, mask_properties.line_origin, 15, mask_properties.mask_width);
+//    cv::Mat cropped = masked.getCropped();
+    cv::Mat ref_img = cvMatFromUIImage(bgImage);
+//    test_img = cvMatFromUIImage([UIImage imageNamed:@"9.png"]);
+    
+//    NSData* imageData = UIImagePNGRepresentation(UIImageFromCVMat(cropped));
+//    NSFileManager *fileManager = [NSFileManager defaultManager];//create instance of NSFileManager
+//    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES); //create an array and store result of our search for the documents directory in it
+//    NSString *documentsDirectory = [paths objectAtIndex:0]; //create NSString object, that holds our exact path to the documents directory
+//    NSString *fullPath = [documentsDirectory stringByAppendingPathComponent:@"omg.png"]; //add our image to the path
+//    [fileManager createFileAtPath:fullPath contents:imageData attributes:nil]; //finally save the path (image)
 
-    matcher = ImageMatcher(cropped, 6000, 0.8, 0.98, 4.0, std::cout);
+    matcher = ImageMatcher(ref_img, 6000, 0.8, 0.98, 4.0, std::cout);
 
 
     const float model_height = (model_width * ((double)video_height / video_width));
@@ -191,11 +214,14 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure,
         model_x_offset = -6;
         model_y_offset = -48;
     }
+    else if (structure == town) {
+        model_x_offset = 38;
+        model_y_offset = -8.5;
+    }
     float cos_angle = std::cos(model_rotation_offset);
     float sin_angle = std::sin(model_rotation_offset);
     for (size_t i = 0; i < model_keypoints.size(); ++i) {
         auto model_pt = model_keypoints[i].pt;
-        masked.uncropPoint(model_pt);
         float unrotated_x = model_pt.x * (model_width / video_width) - (model_width / 2);
         float unrotated_y = model_pt.y * (model_height / video_height) - (model_height / 2);
         // rotate
@@ -239,7 +265,7 @@ cvARManager::~cvARManager() {
     }
     worker_thread.join();
     
-    scene.background.contents = nil;
+//    scene.background.contents = nil;
     std::cout << "cvARManager destructor done" << std::endl;
 }
 
@@ -264,12 +290,12 @@ void cvARManager::saveImg() {
 }
 
 void cvARManager::doFrame(int n_avg, std::function<void(CB_STATE)> cb_func) {
-    // saveImg();
+    saveImg();
     captured_frames.clear();
     most_inliers = 0;
     frames_to_capture = n_avg;
     frame_callback = cb_func;
-    
+
     
 //    UIImage* bgImage = [UIImage imageNamed:@"skywalk_1920_back.png"];
 //    std::unique_lock<std::mutex> lk(worker_mutex);
@@ -282,7 +308,7 @@ void cvARManager::doFrame(int n_avg, std::function<void(CB_STATE)> cb_func) {
 
 bool cvARManager::startAR() {
     do_tracking = true;
-    [camera start];
+    startCamera();
     return true;
 }
 
@@ -294,10 +320,32 @@ void cvARManager::pauseAR() {
     do_tracking = false;
 }
 
-void cvARManager::startCamera() {
+//void cvARManager::expose() {
+//    AVCaptureSession* session = camera.captureSession;
+//    NSArray<AVCaptureInput*>* inputs = session.inputs;
+//    AVCaptureDeviceInput* input = (AVCaptureDeviceInput*)(inputs.firstObject);
+//    AVCaptureDevice* device = input.device;
+//    if (!device.exposurePointOfInterestSupported) {
+//        printf("Exposure point of interest not supported\n");
+//    }
+//    //    CGPoint poi = device.exposurePointOfInterest;
+//    //    printf("PoI: %f, %f\n", poi.x, poi.y);
+//    NSError* error;
+//    [device lockForConfiguration:&error];
+//    if (error) {
+//        printf("Failed to set exposure POI\n");
+//    }
+//    device.exposurePointOfInterest = CGPointMake(0.5, 0.5);
+////    device.exposureMode = AVCaptureExposureModeContinuousAutoExposure;
+//    device.exposureMode = AVCaptureExposureModeAutoExpose;
+//    [device unlockForConfiguration];
+//}
+
+int cvARManager::startCamera() {
     [camera start];
     // Camera was paused, so new images will not match returned pose. Invalidate tracking
     is_tracked = false;
+    return 0;
 }
 
 void cvARManager::stopCamera() {
@@ -319,6 +367,7 @@ bool cvARManager::isTracked() {
 
 void cvARManager::processImage(cv::Mat& image) {
 //    cv::Mat overdrawn(image.size(), image.type());
+//    image = test_img.clone();
 
     if (saveNext) {
         static int img_idx = 0;
@@ -384,6 +433,10 @@ void cvARManager::performTracking() {
     
     MaskedImage masked(frame, mask_properties.edge_threshold, mask_properties.min_length, mask_properties.line_angle, mask_properties.line_origin, 15, mask_properties.mask_width);
     cv::Mat cropped = masked.getCropped();
+    cv::cvtColor(cropped, cropped, CV_BGR2GRAY);
+    if (mask_properties.equalize_hist) {
+        cv::equalizeHist(cropped, cropped);
+    }
     auto correspondences = matcher.getMatches(cropped);
     masked.uncropPoints(correspondences.img_pts);
     
@@ -448,9 +501,13 @@ void cvARManager::performTracking() {
             else if (structure == campanile) {
                 range = {{{-100, 100}, {-30, 60}, {200, 300}}};
             }
-            bool within_range = (translation.at<double>(0) > range[0][0] && translation.at<double>(0) < range[0][1] &&
-                                 translation.at<double>(1) > range[1][0] && translation.at<double>(1) < range[1][1] &&
-                                 translation.at<double>(2) > range[2][0] && translation.at<double>(2) < range[2][1] );
+            else if (structure == town) {
+                range = {{{-100, 100}, {-30, 60}, {200, 300}}};
+            }
+//            bool within_range = (translation.at<double>(0) > range[0][0] && translation.at<double>(0) < range[0][1] &&
+//                                 translation.at<double>(1) > range[1][0] && translation.at<double>(1) < range[1][1] &&
+//                                 translation.at<double>(2) > range[2][0] && translation.at<double>(2) < range[2][1] );
+            bool within_range = false;
             std::cout << "within range: " << within_range << std::endl;
             if (within_range) {
                 // If within range, just accept it
@@ -490,10 +547,16 @@ void cvARManager::performTracking() {
         // If we're done processing frames
         // Could be due to finding an acceptable solution or running out of attempts. Regardless, we want to return the best guess
         if (frames_to_capture == 0 && !captured_frames.size()) {
-            is_tracked = true;
-            cameraMatrix = best_captured_pose;
+            if (best_captured_frame.data) {
+                is_tracked = true;
+                // If we actually found something
+                cameraMatrix = best_captured_pose;
+                setBgImage(best_captured_frame);
+            }
+            else {
+                is_tracked = false;
+            }
             frame_callback(DONE_CAPTURING);
-            setBgImage(best_captured_frame);
         }
     }
 }
@@ -528,38 +591,40 @@ cv::Mat cvMatFromUIImage(UIImage* image)
     return cvMat;
 }
 
-// TODO: Do returned UIImage* objects from here need to be manually deleted? Or does ARC work?
-UIImage* UIImageFromCVMat(cv::Mat cvMat)
-{
+UIImage* UIImageFromCVMat(cv::Mat cvMat) {
+//    NSData *data = [NSData dataWithBytes:cvMat.data length:cvMat.elemSize()*cvMat.total()];
+    NSData *data = [NSData dataWithBytes:cvMat.data length:cvMat.step.p[0] * cvMat.rows];
     
-    cv::cvtColor(cvMat, cvMat, CV_BGRA2RGBA);
-    
-    NSData *data = [NSData dataWithBytes:cvMat.data length:cvMat.elemSize()*cvMat.total()];
     CGColorSpaceRef colorSpace;
-    
+    CGBitmapInfo bitmapInfo;
     
     if (cvMat.elemSize() == 1) {
         colorSpace = CGColorSpaceCreateDeviceGray();
+        bitmapInfo = kCGImageAlphaNone | kCGBitmapByteOrderDefault;
     } else {
         colorSpace = CGColorSpaceCreateDeviceRGB();
+        bitmapInfo = kCGBitmapByteOrder32Little | (
+                                                   cvMat.elemSize() == 3? kCGImageAlphaNone : kCGImageAlphaNoneSkipFirst
+                                                   );
     }
     
     CGDataProviderRef provider = CGDataProviderCreateWithCFData((__bridge CFDataRef)data);
-    
+
     // Creating CGImage from cv::Mat
-    CGImageRef imageRef = CGImageCreate(cvMat.cols,                                 //width
-                                        cvMat.rows,                                 //height
-                                        8,                                          //bits per component
-                                        8 * cvMat.elemSize(),                       //bits per pixel
-                                        cvMat.step[0],                            //bytesPerRow
-                                        colorSpace,                                 //colorspace
-                                        kCGImageAlphaNone|kCGBitmapByteOrderDefault,// bitmap info
-                                        provider,                                   //CGDataProviderRef
-                                        NULL,                                       //decode
-                                        false,                                      //should interpolate
-                                        kCGRenderingIntentDefault                   //intent
+    CGImageRef imageRef = CGImageCreate(
+                                        cvMat.cols,                 //width
+                                        cvMat.rows,                 //height
+                                        8,                          //bits per component
+                                        8 * cvMat.elemSize(),       //bits per pixel
+                                        cvMat.step[0],              //bytesPerRow
+//                                        cvMat.step[0] - horiz_offset,
+                                        colorSpace,                 //colorspace
+                                        bitmapInfo,                 // bitmap info
+                                        provider,                   //CGDataProviderRef
+                                        NULL,                       //decode
+                                        false,                      //should interpolate
+                                        kCGRenderingIntentDefault   //intent
                                         );
-    
     
     // Getting UIImage from CGImage
     UIImage *finalImage = [UIImage imageWithCGImage:imageRef];
@@ -592,15 +657,27 @@ GLKMatrix4 CVMat4ToGLKMat4(const cv::Mat& cvMat) {
     // Copy the upper 3x3
     GLKMatrix4 glkMat = CVMat3ToGLKMat4(cvMat);
     
+    // If the matrix value is too large for a float, returns max float; similarly for min
+    auto getElem = [&] (int i, int j) {
+        if (cvMat.at<double>(i,j) > std::numeric_limits<float>::max()) {
+            return std::numeric_limits<float>::max();
+        }
+        else if (cvMat.at<double>(i,j) < std::numeric_limits<float>::lowest()) {
+            return std::numeric_limits<float>::lowest();
+        }
+        else {
+            return static_cast<float>(cvMat.at<double>(i,j));
+        }
+    };
     // then copy the last column and row
-    glkMat.m03 = (float)cvMat.at<double>(3, 0);
-    glkMat.m13 = (float)cvMat.at<double>(3, 1);
-    glkMat.m23 = (float)cvMat.at<double>(3, 2);
-    
-    
-    glkMat.m30 = (float)cvMat.at<double>(0, 3);
-    glkMat.m31 = (float)cvMat.at<double>(1, 3);
-    glkMat.m32 = (float)cvMat.at<double>(2, 3);
-    glkMat.m33 = (float)cvMat.at<double>(3, 3);
+    glkMat.m03 = getElem(3,0);
+    glkMat.m13 = getElem(3, 1);
+    glkMat.m23 = getElem(3, 2);
+
+
+    glkMat.m30 = getElem(0, 3);
+    glkMat.m31 = getElem(1, 3);
+    glkMat.m32 = getElem(2, 3);
+    glkMat.m33 = getElem(3, 3);
     return glkMat;
 }

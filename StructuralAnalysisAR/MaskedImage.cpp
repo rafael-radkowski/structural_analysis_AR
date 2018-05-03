@@ -39,11 +39,11 @@ Vec<T,3> pointAngleToLine(Vec<T,2> origin, Vec<T,2> angle) {
 MaskedImage::MaskedImage(const Mat img, int edge_threshold, float min_length, Vec2f line_angle, Vec2f line_origin, float angle_deviation, float mask_size, std::ostream& log)
     : log(log)
     , orig_img(img)
+    , mask_size(mask_size)
     , line_angle(line_angle)
     , min_length(min_length)
     , angle_deviation(angle_deviation * (M_PI / 180.))
-    , edge_threshold(edge_threshold)
-    , mask_size(mask_size) {
+    , edge_threshold(edge_threshold) {
         ref_line_eqn = pointAngleToLine(line_origin, line_angle);
 }
 

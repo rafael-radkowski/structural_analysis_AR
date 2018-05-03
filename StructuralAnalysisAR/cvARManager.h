@@ -45,7 +45,8 @@
 
 typedef enum cvStructure {
     skywalk,
-    campanile
+    campanile,
+    town
 } cvStructure_t;
 
 class cvARManager : public ARManager {
@@ -56,13 +57,13 @@ public:
     bool startAR() override;
     size_t stopAR() override;
     void pauseAR() override;
-    void startCamera() override;
+    int startCamera() override;
     void stopCamera() override;
     GLKMatrix4 getCameraMatrix() override;
     GLKMatrix4 getProjectionMatrix() override;
     bool isTracked() override;
     void drawBackground() override;
-    
+
     void saveImg();
     bool saveNext = false;
 
@@ -95,6 +96,7 @@ private:
         cv::Vec2f line_angle;
         cv::Vec2f line_origin;
         float mask_width;
+        bool equalize_hist;
     } mask_properties;
     
     // holds the frame that is being

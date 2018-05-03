@@ -98,10 +98,10 @@
         reactionArrows[i].setScenes(skScene, scnView);
         reactionArrows[i].setColor(0, 1, 0);
     }
-    reactionArrows[0].setPosition(GLKVector3Make(COL1_POS, 3 + heightOffset, 0));
-    reactionArrows[1].setPosition(GLKVector3Make(COL2_POS, 3 + heightOffset, 0));
-    reactionArrows[2].setPosition(GLKVector3Make(COL3_POS, 3 + heightOffset, 0));
-    reactionArrows[3].setPosition(GLKVector3Make(COL4_POS, 3 + heightOffset, 0));
+    reactionArrows[0].setPosition(GLKVector3Make(COL1_POS, 0 + heightOffset, 0));
+    reactionArrows[1].setPosition(GLKVector3Make(COL2_POS, 0 + heightOffset, 0));
+    reactionArrows[2].setPosition(GLKVector3Make(COL3_POS, 0 + heightOffset, 0));
+    reactionArrows[3].setPosition(GLKVector3Make(COL4_POS, 0 + heightOffset, 0));
     
     people = PeopleVis(10);
     people.setPosition(GLKVector3Make(0, heightOffset, 0));
@@ -140,6 +140,18 @@
     beam1.setScenes(skScene, scnView);
     beam2.setScenes(skScene, scnView);
     beam3.setScenes(skScene, scnView);
+    
+    // Joint indicators
+    SCNNode* joint1 = [SCNNode nodeWithGeometry:[SCNSphere sphereWithRadius:3]];
+    SCNNode* joint2 = [SCNNode nodeWithGeometry:[SCNSphere sphereWithRadius:3]];
+    joint1.position = SCNVector3Make(COL2_POS, 2 + heightOffset, 0);
+    joint2.position = SCNVector3Make(COL3_POS, 2 + heightOffset, 0);
+    SCNMaterial* jointMat = [SCNMaterial material];
+    jointMat.diffuse.contents = [UIColor colorWithRed:0 green:0.0977 blue:0.656 alpha:1];
+    joint1.geometry.firstMaterial = jointMat;
+    joint2.geometry.firstMaterial = jointMat;
+    [rootNode addChildNode:joint1];
+    [rootNode addChildNode:joint2];
     
     peopleLoad.setScenes(skScene, scnView);
     deadLoad.setScenes(skScene, scnView);

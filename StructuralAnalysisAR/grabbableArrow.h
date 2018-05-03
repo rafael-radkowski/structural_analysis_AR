@@ -32,6 +32,7 @@ public:
     void setHidden(bool hidden);
     void setPosition(GLKVector3 pos);
     void setRotationAxisAngle(GLKVector4 axisAngle);
+    void setOrientation(GLKQuaternion quat);
     void setLabelFollow(bool follow);
     
     void setMaxLength(float newLength);
@@ -49,7 +50,7 @@ public:
     void setInputRange(float minValue, float maxValue);
     std::pair<float,float> getInputRange();
     
-    void touchBegan(SCNHitTestResult* hitTestResult);
+    void touchBegan(GLKVector3 origin, GLKVector3 farHit);
     float getDragValue(GLKVector3 origin, GLKVector3 touchRay, GLKVector3 cameraDir);
     void touchEnded();
     void touchCancelled();
@@ -60,6 +61,9 @@ public:
     void setColor(float r, float g, float b);
     
     float lastArrowValue = 0.5;
+    
+    GLKQuaternion extraRotation, setRotation;
+    bool negated = false;
     
     // Root node for entire arrow
     SCNNode* root;
@@ -95,7 +99,6 @@ private:
     
     SKScene* textScene = nullptr;
     SCNView* objectView = nullptr;
-    SKSpriteNode* backgroundBox;
 };
 
 #endif /* grabbableArrow_h */

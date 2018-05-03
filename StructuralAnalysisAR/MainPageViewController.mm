@@ -11,6 +11,7 @@
 
 #import "SkywalkScene.h"
 #import "CampanileScene.h"
+#import "TownBldgScene.h"
 
 @interface MainPageViewController ()
 
@@ -25,18 +26,16 @@
     CGColorRef textColor = [UIColor colorWithRed:0.08235 green:0.49412 blue:0.9843 alpha:1.0].CGColor;
     float borderWidth = 2;
     float cornerRadius = 8;
-    self.btnSkywalk.layer.borderWidth = borderWidth;
-    self.btnSkywalk.layer.cornerRadius = cornerRadius;
-    self.btnSkywalk.layer.borderColor = textColor;
-    
-    self.btnWaterTower.layer.borderWidth = borderWidth;
-    self.btnWaterTower.layer.cornerRadius = cornerRadius;
-    self.btnWaterTower.layer.borderColor = textColor;
-    
-    self.btnCampanile.layer.borderWidth = borderWidth;
-    self.btnCampanile.layer.cornerRadius = cornerRadius;
-    self.btnCampanile.layer.borderColor = textColor;
-    
+    auto setBorder = [&] (UIButton* btn) {
+        btn.layer.borderWidth = borderWidth;
+        btn.layer.cornerRadius = cornerRadius;
+        btn.layer.borderColor = textColor;
+    };
+    setBorder(self.btnSkywalk);
+    setBorder(self.btnSkywalkGuided);
+    setBorder(self.btnCampanile);
+    setBorder(self.btnTown);
+
     // Load the property list for button visibility
     // Find out the path
     NSString *rootPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
@@ -54,15 +53,16 @@
         skywalk_guided_hidden = [NSNumber numberWithBool:YES];
     }
     self.btnSkywalk.hidden = [skywalk_hidden boolValue];
-    self.btnWaterTower.hidden = [skywalk_guided_hidden boolValue];
+    self.btnSkywalkGuided.hidden = [skywalk_guided_hidden boolValue];
     
     // Test
-//    [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(doSegue:) userInfo:nil repeats:NO];
+    [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(doSegue:) userInfo:nil repeats:NO];
 }
 
 - (void) doSegue:(NSTimer*) timer {
-    [self.btnCampanile sendActionsForControlEvents:UIControlEventTouchUpInside];
+//    [self.btnCampanile sendActionsForControlEvents:UIControlEventTouchUpInside];
 //    [self.btnSkywalk sendActionsForControlEvents:UIControlEventTouchUpInside];
+//    [self.btnTown sendActionsForControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -75,19 +75,21 @@
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     // Get the new view controller using [segue destinationViewController].
+    GameViewController* viewController = (GameViewController*) [segue destinationViewController];
+    
     if ([segue.identifier isEqualToString:@"skywalkGuidedSegue"]) {
-        GameViewController* viewController = (GameViewController*) [segue destinationViewController];
         viewController.sceneClass = SkywalkScene.class;
         viewController.guided = true;
     }
     else if ([segue.identifier isEqualToString:@"skywalkSegue"]) {
-        GameViewController* viewController = (GameViewController*) [segue destinationViewController];
         viewController.sceneClass = SkywalkScene.class;
         viewController.guided = false;
     }
     else if ([segue.identifier isEqualToString:@"campanileSegue"]) {
-        GameViewController* viewController = (GameViewController*) [segue destinationViewController];
         viewController.sceneClass = CampanileScene.class;
+    }
+    else if ([segue.identifier isEqualToString:@"townSegue"]) {
+        viewController.sceneClass = TownBldgScene.class;
     }
     // Pass the selected object to the new view controller.
 }
@@ -108,14 +110,14 @@
 - (void) timeUp:(NSTimer*) timer {
     if (self.superSecretButton.state == UIControlStateHighlighted) {
         self.btnSkywalk.hidden = !self.btnSkywalk.hidden;
-        self.btnWaterTower.hidden = !self.btnWaterTower.hidden;
+        self.btnSkywalkGuided.hidden = !self.btnSkywalkGuided.hidden;
         
         // Save changes to user_prefs.plist
 
         NSError *error;
         NSDictionary *plistDict = @{
                                     @"skywalk_hidden": [NSNumber numberWithBool:self.btnSkywalk.hidden],
-                                    @"skywalk_guided_hidden": [NSNumber numberWithBool:self.btnWaterTower.hidden]
+                                    @"skywalk_guided_hidden": [NSNumber numberWithBool:self.btnSkywalkGuided.hidden]
                                     };
 
         NSData *plistData = [NSPropertyListSerialization dataWithPropertyList:plistDict

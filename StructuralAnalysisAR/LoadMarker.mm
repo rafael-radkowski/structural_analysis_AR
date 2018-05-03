@@ -285,6 +285,7 @@ void LoadMarker::touchBegan(GLKVector3 origin, GLKVector3 farHit) {
     NSArray *hitResults = [rootNode hitTestWithSegmentFromPoint:origin_local toPoint:destination_local options:hitOptions];
     if ([hitResults count] == 0) {
 //        printf("Error: No hit results\n");
+        dragState = none;
         return;
     }
 //    SCNHitTestResult* hitTestResult = hitResults.firstObject;
@@ -349,7 +350,6 @@ float LoadMarker::getDragValue(GLKVector3 origin, GLKVector3 touchRay) {
     if (dragState & vertically) {
         GLKVector3 hitPoint = projectRay(origin, touchRay);
         
-        GLKVector3 lineDir = GLKVector3Make(1, 0, 0);
         GLKVector3 loadDir = GLKVector3Make(rootNode.transform.m21, rootNode.transform.m22, rootNode.transform.m23);
         // Position of startPos + arrow min length along load direction
         GLKVector3 shiftedHitPoint = GLKVector3Subtract(hitPoint, SCNVector3ToGLKVector3(rootNode.position));
@@ -366,6 +366,10 @@ float LoadMarker::getDragValue(GLKVector3 origin, GLKVector3 touchRay) {
     }
    
     return value;
+}
+
+float LoadMarker::getDragValue() const {
+    return lastIntensity;
 }
 
 std::pair<float, float> LoadMarker::getDragPosition(GLKVector3 origin, GLKVector3 touchRay) {
@@ -392,6 +396,10 @@ std::pair<float, float> LoadMarker::getDragPosition(GLKVector3 origin, GLKVector
         }
     }
     return movedPos;
+}
+
+std::pair<float, float> LoadMarker::getDragPosition() const {
+    return std::make_pair(startPos.x, endPos.x);
 }
 
 void LoadMarker::touchEnded() {

@@ -31,7 +31,7 @@ public:
     bool startAR() override;
     size_t stopAR() override;
     void pauseAR() override;
-    void startCamera() override;
+    int startCamera() override;
     void stopCamera() override;
     GLKMatrix4 getCameraMatrix() override;
     GLKMatrix4 getProjectionMatrix() override;

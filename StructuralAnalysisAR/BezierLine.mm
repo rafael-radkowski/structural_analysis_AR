@@ -121,7 +121,7 @@ void BezierLine::updatePath(const std::vector<std::vector<float>>& points) {
 UIBezierPath* BezierLine::interpolatePoints(const std::vector<std::vector<float>>& points, float height) {
     int n_points = static_cast<int>(points[0].size());
     assert(points[0].size() == n_points); // Validate cast to int
-    assert(n_points >= 3); // Need at least two points for a line
+    assert(n_points >= 4); // Need at least two points for a line
     assert(points.size() == 2); // can only make 2-dimensional UIBezierPath
     assert(points[0].size() == points[1].size()); // x and y match
     
