@@ -107,6 +107,7 @@
 		0BE42D261F688DDA00937359 /* BezierLine.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0BE42D241F688DDA00937359 /* BezierLine.mm */; };
 		0BE4C5E11FAFB0E500A501C9 /* user_prefs.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0BE4C5DF1FAFA95B00A501C9 /* user_prefs.plist */; };
 		0BF623AB1F58C11C001B1775 /* SpriteKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BF623AA1F58C11C001B1775 /* SpriteKit.framework */; };
+		AEBB138EEA81CCFFE08D9017 /* libPods-StructuralAnalysisAR.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D732C5E893C1BC148356D81D /* libPods-StructuralAnalysisAR.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -245,6 +246,9 @@
 		0BE42D251F688DDA00937359 /* BezierLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BezierLine.h; sourceTree = "<group>"; };
 		0BE4C5DF1FAFA95B00A501C9 /* user_prefs.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = user_prefs.plist; sourceTree = "<group>"; };
 		0BF623AA1F58C11C001B1775 /* SpriteKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SpriteKit.framework; path = System/Library/Frameworks/SpriteKit.framework; sourceTree = SDKROOT; };
+		5605CEE4AC7BEE352B00C7DE /* Pods-StructuralAnalysisAR.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StructuralAnalysisAR.release.xcconfig"; path = "Pods/Target Support Files/Pods-StructuralAnalysisAR/Pods-StructuralAnalysisAR.release.xcconfig"; sourceTree = "<group>"; };
+		9A333B60AB8F3A825A3CEA03 /* Pods-StructuralAnalysisAR.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StructuralAnalysisAR.debug.xcconfig"; path = "Pods/Target Support Files/Pods-StructuralAnalysisAR/Pods-StructuralAnalysisAR.debug.xcconfig"; sourceTree = "<group>"; };
+		D732C5E893C1BC148356D81D /* libPods-StructuralAnalysisAR.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-StructuralAnalysisAR.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -267,6 +271,7 @@
 				0BF623AB1F58C11C001B1775 /* SpriteKit.framework in Frameworks */,
 				0B483C081F4F9063007A1D29 /* ModelIO.framework in Frameworks */,
 				0B483C061F4F9051007A1D29 /* SceneKit.framework in Frameworks */,
+				AEBB138EEA81CCFFE08D9017 /* libPods-StructuralAnalysisAR.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -348,6 +353,7 @@
 				0BF623AA1F58C11C001B1775 /* SpriteKit.framework */,
 				0B483C071F4F9063007A1D29 /* ModelIO.framework */,
 				0B483C051F4F9051007A1D29 /* SceneKit.framework */,
+				D732C5E893C1BC148356D81D /* libPods-StructuralAnalysisAR.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -384,6 +390,7 @@
 				0BB164391F4732DC0053CA3B /* StructuralAnalysisAR */,
 				0BB164381F4732DC0053CA3B /* Products */,
 				0B483C041F4F9051007A1D29 /* Frameworks */,
+				1DEEE5ED38D14068A7D75DF7 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -494,6 +501,15 @@
 			path = 3d_assets;
 			sourceTree = "<group>";
 		};
+		1DEEE5ED38D14068A7D75DF7 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				9A333B60AB8F3A825A3CEA03 /* Pods-StructuralAnalysisAR.debug.xcconfig */,
+				5605CEE4AC7BEE352B00C7DE /* Pods-StructuralAnalysisAR.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -501,6 +517,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0BB164501F4732DC0053CA3B /* Build configuration list for PBXNativeTarget "StructuralAnalysisAR" */;
 			buildPhases = (
+				142A72538ADE9ECF765EDE04 /* [CP] Check Pods Manifest.lock */,
 				0BB164331F4732DC0053CA3B /* Sources */,
 				0BB164341F4732DC0053CA3B /* Frameworks */,
 				0BB164351F4732DC0053CA3B /* Resources */,
@@ -611,6 +628,27 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		142A72538ADE9ECF765EDE04 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-StructuralAnalysisAR-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		0BB164331F4732DC0053CA3B /* Sources */ = {
@@ -767,6 +805,7 @@
 		};
 		0BB164511F4732DC0053CA3B /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9A333B60AB8F3A825A3CEA03 /* Pods-StructuralAnalysisAR.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -777,7 +816,10 @@
 				FRAMEWORK_SEARCH_PATHS = "~/cv_build/ios";
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
-				HEADER_SEARCH_PATHS = "StructuralAnalysisAR/vuforia-sdk-ios/build/include";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"StructuralAnalysisAR/vuforia-sdk-ios/build/include",
+				);
 				INFOPLIST_FILE = StructuralAnalysisAR/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -800,6 +842,7 @@
 		};
 		0BB164521F4732DC0053CA3B /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5605CEE4AC7BEE352B00C7DE /* Pods-StructuralAnalysisAR.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -809,7 +852,10 @@
 				FRAMEWORK_SEARCH_PATHS = "~/cv_build/ios";
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
-				HEADER_SEARCH_PATHS = "StructuralAnalysisAR/vuforia-sdk-ios/build/include";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"StructuralAnalysisAR/vuforia-sdk-ios/build/include",
+				);
 				INFOPLIST_FILE = StructuralAnalysisAR/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
