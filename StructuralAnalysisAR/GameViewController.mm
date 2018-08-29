@@ -145,11 +145,11 @@
 
 // called every frame by the renderer
 - (void)renderer:(id<SCNSceneRenderer>)renderer updateAtTime:(NSTimeInterval)time {
+    std::lock_guard<std::mutex> lock(arManagerLock);
     if (!arManager) {
         // This function might get called after viewWillDisappear was called, so arManager could be deleted
         return;
     }
-    std::lock_guard<std::mutex> lock(arManagerLock);
     
     // Hide scene if untracked
     sceneNode.hidden = !arManager->isTracked();
