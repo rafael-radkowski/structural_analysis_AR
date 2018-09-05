@@ -106,6 +106,7 @@
 		0BDF88E61F4B3BAE0014BFB7 /* testScene.scn in Resources */ = {isa = PBXBuildFile; fileRef = 0BDF88E51F4B3BAE0014BFB7 /* testScene.scn */; };
 		0BE42D261F688DDA00937359 /* BezierLine.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0BE42D241F688DDA00937359 /* BezierLine.mm */; };
 		0BE4C5E11FAFB0E500A501C9 /* user_prefs.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0BE4C5DF1FAFA95B00A501C9 /* user_prefs.plist */; };
+		0BF4516E2138B92D004C58FC /* TrackingConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 0BF4516D2138B92D004C58FC /* TrackingConstants.m */; };
 		0BF623AB1F58C11C001B1775 /* SpriteKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BF623AA1F58C11C001B1775 /* SpriteKit.framework */; };
 		AEBB138EEA81CCFFE08D9017 /* libPods-StructuralAnalysisAR.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D732C5E893C1BC148356D81D /* libPods-StructuralAnalysisAR.a */; };
 /* End PBXBuildFile section */
@@ -245,6 +246,9 @@
 		0BE42D241F688DDA00937359 /* BezierLine.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BezierLine.mm; sourceTree = "<group>"; };
 		0BE42D251F688DDA00937359 /* BezierLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BezierLine.h; sourceTree = "<group>"; };
 		0BE4C5DF1FAFA95B00A501C9 /* user_prefs.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = user_prefs.plist; sourceTree = "<group>"; };
+		0BF4516B2138B1A6004C58FC /* ApiKeys.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ApiKeys.h; sourceTree = "<group>"; };
+		0BF4516C2138B635004C58FC /* TrackingConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TrackingConstants.h; sourceTree = "<group>"; };
+		0BF4516D2138B92D004C58FC /* TrackingConstants.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TrackingConstants.m; sourceTree = "<group>"; };
 		0BF623AA1F58C11C001B1775 /* SpriteKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SpriteKit.framework; path = System/Library/Frameworks/SpriteKit.framework; sourceTree = SDKROOT; };
 		5605CEE4AC7BEE352B00C7DE /* Pods-StructuralAnalysisAR.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StructuralAnalysisAR.release.xcconfig"; path = "Pods/Target Support Files/Pods-StructuralAnalysisAR/Pods-StructuralAnalysisAR.release.xcconfig"; sourceTree = "<group>"; };
 		9A333B60AB8F3A825A3CEA03 /* Pods-StructuralAnalysisAR.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StructuralAnalysisAR.debug.xcconfig"; path = "Pods/Target Support Files/Pods-StructuralAnalysisAR/Pods-StructuralAnalysisAR.debug.xcconfig"; sourceTree = "<group>"; };
@@ -411,11 +415,13 @@
 				0BDF88E21F4B22750014BFB7 /* 3d_assets */,
 				0BB1643D1F4732DC0053CA3B /* AppDelegate.h */,
 				0BB1643E1F4732DC0053CA3B /* AppDelegate.m */,
+				0BF4516B2138B1A6004C58FC /* ApiKeys.h */,
 				0BB164421F4732DC0053CA3B /* GameViewController.h */,
 				0BB164431F4732DC0053CA3B /* GameViewController.mm */,
 				0BAFBB841F7ED394007B1FC6 /* ARView.mm */,
 				0BAFBB851F7ED394007B1FC6 /* ARView.h */,
 				0BB164451F4732DC0053CA3B /* Main.storyboard */,
+				0BF4516C2138B635004C58FC /* TrackingConstants.h */,
 				0B1573491F5451BF004CE1BE /* MainPageViewController.h */,
 				0B15734A1F5451BF004CE1BE /* MainPageViewController.mm */,
 				0BB164481F4732DC0053CA3B /* Assets.xcassets */,
@@ -429,6 +435,7 @@
 				0BDF88E51F4B3BAE0014BFB7 /* testScene.scn */,
 				0B483BFD1F4F1016007A1D29 /* grabbableArrow.h */,
 				0B483C021F4F8BF5007A1D29 /* grabbableArrow.mm */,
+				0BF4516D2138B92D004C58FC /* TrackingConstants.m */,
 				0B1573571F55BE3C004CE1BE /* line3d.h */,
 				0B1573561F55BE3C004CE1BE /* line3d.mm */,
 				0BE42D251F688DDA00937359 /* BezierLine.h */,
@@ -685,6 +692,7 @@
 				0BB1643C1F4732DC0053CA3B /* main.m in Sources */,
 				0B2FEEF6207D5AFD00712595 /* SKArrow.m in Sources */,
 				0B5D6393204F4432003384C4 /* SKCornerNode.m in Sources */,
+				0BF4516E2138B92D004C58FC /* TrackingConstants.m in Sources */,
 				0B5D638F204F31AD003384C4 /* TownBldgScene.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

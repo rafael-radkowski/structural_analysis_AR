@@ -10,6 +10,7 @@
 #import "GameViewController.h"
 #import "ARView.h"
 #import "SkywalkScene.h"
+#import "TrackingConstants.h"
 
 #import <ModelIO/ModelIO.h>
 #import <SceneKit/ModelIO.h>
@@ -32,6 +33,8 @@
 #import <Vuforia/TrackableResult.h>
 #import <Vuforia/Image.h>
 #import <Vuforia/Renderer.h>
+
+#import <Analytics/SEGAnalytics.h>
 
 #include <cmath>
 #include <algorithm>
@@ -64,6 +67,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    [[SEGAnalytics sharedAnalytics] track:trk_sceneLoaded
+                               properties:@{ @"scene": NSStringFromClass(self.sceneClass) }];
     
     scene = [SCNScene scene];
 
@@ -168,6 +174,7 @@
 
 
 - (void)freezePressed:(id)sender freezeBtn:(UIButton*)freezeBtn curtain:(UIView*)curtain {
+    
     std::lock_guard<std::mutex> lock(arManagerLock);
     if (!camPaused) {
         if (tracking_mode == TrackingMode::vuforia) {
@@ -196,11 +203,13 @@
                 }
             });
         }
+        [[SEGAnalytics sharedAnalytics] track:trk_cameraPaused];
     }
     else { // camPaused == true
         int failed = arManager->startCamera();
         camPaused = failed;
         [structureScene setCameraLabelPaused:failed isEnabled:!failed];
+        [[SEGAnalytics sharedAnalytics] track:trk_cameraResumed];
     }
     
     //    [self setAREnabled:!arEnabled];
@@ -244,6 +253,18 @@
         bool is_tracking = new_mode != TrackingMode::untracked;
         [structureScene setCameraLabelPaused:!is_tracking isEnabled:is_tracking];
     }
+    
+    [[SEGAnalytics sharedAnalytics] track:trk_arModeChanged
+                               properties:@{ @"mode": [new_mode]() {
+                                                        switch (new_mode) {
+                                                            case TrackingMode::untracked:
+                                                                return @"untracked";
+                                                            case TrackingMode::vuforia:
+                                                                return @"vuforia";
+                                                            case TrackingMode::opencv:
+                                                                return @"opencv";
+                                                        }}()
+                                             }];
 }
 
 - (void) changeTrackingMode:(CGRect)anchorRect {
@@ -377,6 +398,8 @@
         }
 
     }]; // close requestAuthorization handler
+    
+    [[SEGAnalytics sharedAnalytics] track:trk_screenshotTaken];
 }
 
 - (IBAction)homeBtnPressed:(id)sender {

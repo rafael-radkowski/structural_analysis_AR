@@ -14,6 +14,9 @@
 #include "VuforiaARManager.h"
 #include "StaticARManager.h"
 
+#import <Analytics/SEGAnalytics.h>
+#import "TrackingConstants.h"
+
 #define COL_OFFSET (-10)
 #define COL1_POS (-80 + COL_OFFSET)
 #define COL2_POS (-25 + COL_OFFSET)
@@ -430,6 +433,26 @@
     people.shuffle();
     [self updateBeamForces];
     [SCNTransaction commit];
+    
+    [[SEGAnalytics sharedAnalytics] track:trk_skywalk_preset
+                               properties:@{ @"scene": NSStringFromClass(self.class),
+                                             @"preset": [self](){
+                                                            switch (self.loadPresetBtn.selectedSegmentIndex) {
+                                                                case 0:
+                                                                    return @"none";
+                                                                case 1:
+                                                                    return @"uniform";
+                                                                case 2:
+                                                                    return @"left";
+                                                                case 3:
+                                                                    return @"right";
+                                                                case SCENARIO_VARIABLE:
+                                                                    return @"variable";
+                                                                default:
+                                                                    return @"default";
+                                                            }
+                                                        }()
+                                   }];
 }
 
 - (void)setCameraLabelPaused:(bool)isPaused isEnabled:(bool)enabled {
@@ -468,6 +491,16 @@
     if (!self.rulerSwitch.hidden) {
         ruler.setHidden(!self.rulerSwitch.on);
     }
+    
+    [[SEGAnalytics sharedAnalytics] track:trk_setVisibilities
+                               properties:@{ @"scene": NSStringFromClass(self.class),
+                                             @"items": @{
+                                                     @"liveLoad": [NSNumber numberWithBool:self.liveLoadSwitch.on],
+                                                     @"deadLoad": [NSNumber numberWithBool:self.deadLoadSwitch.on],
+                                                     @"rcnForce": [NSNumber numberWithBool:self.rcnForceSwitch.on],
+                                                     @"rulerForce": [NSNumber numberWithBool:self.rulerSwitch.on]
+                                                     }
+                                             }];
 }
 
 - (IBAction)defnsPressed:(id)sender {
@@ -483,6 +516,9 @@
     [UIView animateWithDuration:0.3 animations:^{
         [scnView layoutIfNeeded];
     }];
+    
+    [[SEGAnalytics sharedAnalytics] track:trk_skywalk_defns
+                               properties:@{ @"visible": [NSNumber numberWithBool:defnsVisible]}];
 }
 
 
@@ -675,6 +711,13 @@
             [SCNTransaction commit];
         }
         peopleLoad.touchEnded();
+        [[SEGAnalytics sharedAnalytics] track:trk_skywalk_loadSetTouch
+                                   properties:@{ @"values": @{
+                                                         @"leftX": [NSNumber numberWithFloat:peopleLoad.getStartPos().x],
+                                                         @"rightX": [NSNumber numberWithFloat:peopleLoad.getEndPos().x],
+                                                         @"load": [NSNumber numberWithFloat:peopleLoad.getLoad(0)]
+                                                         }
+                                                 }];
     }
 }
 - (void)touchesCancelled:(NSSet<UITouch *> *) touches withEvent:(UIEvent *)event {

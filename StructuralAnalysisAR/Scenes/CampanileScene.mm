@@ -15,6 +15,9 @@
 
 #include <random>
 
+#import <Analytics/SEGAnalytics.h>
+#import "TrackingConstants.h"
+
 @implementation CampanileScene
 
 static const float base_width = 16;
@@ -355,6 +358,14 @@ static const double MOM_OF_INERTIA = 2334;
 }
 
 - (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    // Dragging when touch ended
+    if (windwardSideLoad.draggingMode() & LoadMarker::vertically) {
+        [[SEGAnalytics sharedAnalytics] track:trk_campanile_loadSetTouch
+                                   properties:@{ @"values": @{
+                                                         @"windSpeed": [NSNumber numberWithFloat:self.slider.value * max_vel]
+                                                         }
+                                                 }];
+    }
     windwardSideLoad.touchEnded();
 }
 
@@ -426,6 +437,14 @@ static const double MOM_OF_INERTIA = 2334;
     }
     campanileInterior.hidden = !self.modelVisSwitch.on;
     campanileExterior.hidden = !self.modelVisSwitch.on;
+    
+    [[SEGAnalytics sharedAnalytics] track:trk_setVisibilities
+                               properties:@{ @"scene": NSStringFromClass(self.class),
+                                             @"items": @{
+                                                     @"animations": [NSNumber numberWithBool:self.swayVisSwitch.on],
+                                                     @"modelVisible": [NSNumber numberWithBool:self.modelVisSwitch.on]
+                                                     }
+                                             }];
 }
 
 - (IBAction)screenshotBtnPressed:(id)sender {
@@ -445,6 +464,9 @@ static const double MOM_OF_INERTIA = 2334;
     [UIView animateWithDuration:0.3 animations:^{
         [scnView layoutIfNeeded];
     }];
+    
+    [[SEGAnalytics sharedAnalytics] track:trk_campanile_plot
+                               properties:@{ @"visible": [NSNumber numberWithBool:plotVisible]}];
 }
 
 - (IBAction)homeBtnPressed:(id)sender {
@@ -467,7 +489,22 @@ static const double MOM_OF_INERTIA = 2334;
     if (activeScenario == seismic) {
         // Have slider go to final position when released (Don't want it to remain at rubber-band location)
         [self.slider setValue:snappedSliderPos animated:YES];
+        
+        [[SEGAnalytics sharedAnalytics] track:trk_campanile_loadSetSlider
+                                   properties:@{ @"values": @{
+                                                         @"Ss": [NSNumber numberWithFloat:seismicSs],
+                                                         @"S1": [NSNumber numberWithFloat:seismicS1]
+                                                         }
+                                                 }];
     }
+    else {
+        [[SEGAnalytics sharedAnalytics] track:trk_campanile_loadSetSlider
+                                   properties:@{ @"values": @{
+                                                         @"windSpeed": [NSNumber numberWithFloat:self.slider.value * max_vel]
+                                                         }
+                                                 }];
+    }
+    
 }
 
 - (void)calculateForcesWind:(double)velocity {
@@ -559,8 +596,8 @@ static const double MOM_OF_INERTIA = 2334;
     double F3 = F3_vals[scale_idx];
     double F4 = F4_vals[scale_idx];
     double V = V_vals[scale_idx];
-    double Ss = Ss_vals[scale_idx];
-    double S1 = S1_vals[scale_idx];
+    seismicSs = Ss_vals[scale_idx];
+    seismicS1 = S1_vals[scale_idx];
     
     shearArrow.setIntensity(V);
     seismicArrows[0].setIntensity(F1);
@@ -571,7 +608,7 @@ static const double MOM_OF_INERTIA = 2334;
     float moment = f1_h*F1 + f2_h*F2 + f3_h*F3 + f4_h*F4;
     momentIndicator.setIntensity(moment);
     
-    [self.sliderValLabel setText:[NSString stringWithFormat:@"Ss=%.2f S1=%.2f", Ss, S1]];
+    [self.sliderValLabel setText:[NSString stringWithFormat:@"Ss=%.2f S1=%.2f", seismicSs, seismicS1]];
     
     size_t resolution = fullDeflVals[0].size();
     for (int i = 0; i < resolution; ++i) {
@@ -660,6 +697,17 @@ static const double MOM_OF_INERTIA = 2334;
     
     // Trigger re-calculation of forces
     [self.slider sendActionsForControlEvents:UIControlEventValueChanged];
+    
+    [[SEGAnalytics sharedAnalytics] track:trk_campanile_scenarioSet
+                               properties:@{ @"scenario": [self](){
+        switch (activeScenario) {
+            case wind:
+                return @"wind";
+            case seismic:
+                return @"seismic";
+        }
+    }()
+                                             }];
 }
 
 // velocity in mph

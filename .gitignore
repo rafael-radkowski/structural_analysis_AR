@@ -24,3 +24,4 @@ DerivedData/
 *.DS_Store
 
 StructuralAnalysisAR/vuforia-sdk-ios
+StructuralAnalysisAR/ApiKeys.h

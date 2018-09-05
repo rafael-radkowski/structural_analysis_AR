@@ -7,6 +7,9 @@
 //
 
 #import "AppDelegate.h"
+#import <Analytics/SEGAnalytics.h>
+
+#include "ApiKeys.h"
 
 @interface AppDelegate ()
 
@@ -17,6 +20,19 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    
+    // Code to enable Segment analytics
+    SEGAnalyticsConfiguration *configuration = [SEGAnalyticsConfiguration configurationWithWriteKey:SEGMENT_KEY];
+    
+    // Enable this to record certain application events automatically!
+    configuration.trackApplicationLifecycleEvents = YES;
+    
+    // Enable this to record screen views automatically!
+    //configuration.recordScreenViews = YES;
+    
+    [SEGAnalytics setupWithConfiguration:configuration];
+    
+    
     return YES;
 }
 

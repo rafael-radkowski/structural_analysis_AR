@@ -13,6 +13,9 @@
 #include "VuforiaARManager.h"
 #include "StaticARManager.h"
 
+#import <Analytics/SEGAnalytics.h>
+#import "TrackingConstants.h"
+
 #include <random>
 #include <vector>
 
@@ -491,7 +494,27 @@ constexpr static float ocPlnPosY = -7.5;
         people.setWeight(1000 * (ends.second - ends.first) * liveLoad.getDragValue());
         people.shuffle();
         [SCNTransaction commit];
+        
+        [[SEGAnalytics sharedAnalytics] track:trk_town_loadSetTouch
+                                   properties:@{ @"values": @{
+                                                         @"direction": @"top",
+                                                         @"leftX": [NSNumber numberWithFloat:liveLoad.getStartPos().x],
+                                                         @"rightX": [NSNumber numberWithFloat:liveLoad.getEndPos().x],
+                                                         @"load": [NSNumber numberWithFloat:liveLoad.getLoad(0)]
+                                                         }
+                                                 }];
     }
+    
+    if (sideLoad.dragging) {
+        [[SEGAnalytics sharedAnalytics] track:trk_town_loadSetTouch
+                                   properties:@{ @"values": @{
+                                                         @"direction": @"side",
+                                                         @"load": [NSNumber numberWithFloat:sideLoad.lastArrowValue]
+                                                         }
+                                                 }];
+    }
+    
+    
     liveLoad.touchEnded();
     sideLoad.touchEnded();
     
@@ -517,6 +540,16 @@ constexpr static float ocPlnPosY = -7.5;
     for (CircleArrow* moment : {&M_AB, &M_DC, &M_FE}) {
         moment->setHidden(!self.rcnForceSwitch.on);
     }
+    
+    [[SEGAnalytics sharedAnalytics] track:trk_setVisibilities
+                               properties:@{ @"scene": NSStringFromClass(self.class),
+                                             @"items": @{
+                                                     @"liveLoad": [NSNumber numberWithBool:self.liveLoadSwitch.on],
+                                                     @"deadLoad": [NSNumber numberWithBool:self.deadLoadSwitch.on],
+                                                     @"rcnForce": [NSNumber numberWithBool:self.rcnForceSwitch.on],
+                                                     @"modelVisible": [NSNumber numberWithBool:self.modelSwitch.on]
+                                                     }
+                                             }];
 }
 
 - (IBAction)screenshotBtnPressed:(id)sender {

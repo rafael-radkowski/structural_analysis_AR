@@ -43,7 +43,7 @@
         double leeward_roof;
         double leeward_side;
     } pressures;
-    double seismicScaleSg, seismicScaleS1;
+    double seismicSs, seismicS1;
     double snappedSliderPos;
 
     std::vector<std::vector<float>> fullDeflVals;

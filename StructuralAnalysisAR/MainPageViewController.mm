@@ -13,6 +13,9 @@
 #import "CampanileScene.h"
 #import "TownBldgScene.h"
 
+#import <Analytics/SEGAnalytics.h>
+#import "TrackingConstants.h"
+
 @interface MainPageViewController ()
 
 @end
@@ -57,6 +60,8 @@
     
     // Test
     [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(doSegue:) userInfo:nil repeats:NO];
+    
+    [[SEGAnalytics sharedAnalytics] track:trk_visitHome];
 }
 
 - (void) doSegue:(NSTimer*) timer {

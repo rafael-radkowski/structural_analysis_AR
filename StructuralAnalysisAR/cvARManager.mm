@@ -9,6 +9,9 @@
 
 #include "cvARManager.h"
 
+#import <Analytics/SEGAnalytics.h>
+#import "TrackingConstants.h"
+
 #import <GLKit/GLKMatrix4.h>
 
 // Use 3840x2160 video resolution
@@ -515,6 +518,7 @@ void cvARManager::performTracking() {
                 best_captured_frame = frame_copy;
                 frames_to_capture = 0;
                 captured_frames.clear();
+                
             }
             else if (pnp_inliers.size[0] > most_inliers) {
                     most_inliers = pnp_inliers.size[0];
@@ -552,6 +556,15 @@ void cvARManager::performTracking() {
                 // If we actually found something
                 cameraMatrix = best_captured_pose;
                 setBgImage(best_captured_frame);
+                
+                NSMutableArray* pose_nsarray = [NSMutableArray arrayWithCapacity:16];
+                for (int i = 0; i < 16; ++i) {
+                    [pose_nsarray addObject:[NSNumber numberWithFloat:cameraMatrix.m[i]]];
+                }
+                [[SEGAnalytics sharedAnalytics] track:trk_cvARPoseObtained
+                                           properties:@{ @"n_inliers": [NSNumber numberWithInt:most_inliers],
+                                                         @"poseGLK": pose_nsarray
+                                                         }];
             }
             else {
                 is_tracked = false;
