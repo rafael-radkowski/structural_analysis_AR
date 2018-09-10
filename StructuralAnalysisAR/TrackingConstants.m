@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "TrackingConstants.h"
 
+NSString* const trk_enterBg = @"enterBg";
+NSString* const trk_enterFg = @"enterFg";
 NSString* const trk_sceneLoaded = @"sceneLoaded";
 NSString* const trk_cameraPaused = @"cameraPaused";
 NSString* const trk_cameraResumed = @"cameraResumed";

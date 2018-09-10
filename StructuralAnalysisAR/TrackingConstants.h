@@ -9,6 +9,8 @@
 #ifndef TrackingEvents_h
 #define TrackingEvents_h
 
+extern NSString* const trk_enterBg;
+extern NSString* const trk_enterFg;
 extern NSString* const trk_sceneLoaded;
 extern NSString* const trk_cameraPaused;
 extern NSString* const trk_cameraResumed;
