@@ -319,36 +319,6 @@ constexpr static float ocPlnPosY = -7.5;
     self.viewFromNib.contentMode = UIViewContentModeScaleToFill;
     [scnView addSubview:self.viewFromNib];
     
-    CGColor* textColor = [UIColor colorWithRed:0.08235 green:0.49412 blue:0.9843 alpha:1.0].CGColor;
-    // Setup home button style
-    self.homeBtn.layer.borderWidth = 1.5;
-    self.homeBtn.imageEdgeInsets = UIEdgeInsetsMake(3, 3, 3, 3);
-    self.homeBtn.layer.borderColor = textColor;
-    self.homeBtn.layer.cornerRadius = 5;
-    
-    // Setup screenshot button style
-    self.screenshotBtn.layer.borderWidth = 1.5;
-    self.screenshotBtn.imageEdgeInsets = UIEdgeInsetsMake(3, 3, 3, 3);
-    self.screenshotBtn.layer.borderColor = textColor;
-    self.screenshotBtn.layer.cornerRadius = 5;
-    
-    // Setup screenshot info box
-    self.screenshotInfoBox.layer.cornerRadius = self.screenshotInfoBox.bounds.size.height / 2;
-    
-    // Setup freeze frame button
-    self.freezeFrameBtn.layer.borderWidth = 1.5;
-    self.freezeFrameBtn.layer.borderColor = textColor;
-    self.freezeFrameBtn.layer.cornerRadius = 5;
-    
-    // Setup change tracking button
-    self.changeTrackingBtn.layer.borderWidth = 1.5;
-    self.changeTrackingBtn.layer.borderColor = textColor;
-    self.changeTrackingBtn.layer.cornerRadius = 5;
-    
-    // Processing curtain view
-    self.processingCurtainView.hidden = YES;
-    self.processingSpinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
-    
     [self setVisibilities];
 }
 

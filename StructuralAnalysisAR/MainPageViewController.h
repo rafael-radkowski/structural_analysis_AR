@@ -12,12 +12,10 @@
 
 // MARK: Properties
 @property (weak, nonatomic) IBOutlet UIButton *btnSkywalk;
-
 @property (weak, nonatomic) IBOutlet UIButton *btnSkywalkGuided;
-
 @property (weak, nonatomic) IBOutlet UIButton *btnCampanile;
-
 @property (weak, nonatomic) IBOutlet UIButton *btnTown;
+@property (weak, nonatomic) IBOutlet UIButton *btnCatt;
 
 - (IBAction)backToHomepage:(UIStoryboardSegue*)unwindSegue;
 

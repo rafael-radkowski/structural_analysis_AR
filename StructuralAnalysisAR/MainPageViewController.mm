@@ -38,6 +38,7 @@
     setBorder(self.btnSkywalkGuided);
     setBorder(self.btnCampanile);
     setBorder(self.btnTown);
+    setBorder(self.btnCatt);
 
     // Load the property list for button visibility
     // Find out the path
@@ -96,6 +97,9 @@
     else if ([segue.identifier isEqualToString:@"townSegue"]) {
         viewController.sceneClass = TownBldgScene.class;
     }
+    else if ([segue.identifier isEqualToString:@"cattSegue"]) {
+        viewController.sceneClass = TownBldgScene.class;
+    }
     // Pass the selected object to the new view controller.
 }
 
@@ -116,6 +120,7 @@
     if (self.superSecretButton.state == UIControlStateHighlighted) {
         self.btnSkywalk.hidden = !self.btnSkywalk.hidden;
         self.btnSkywalkGuided.hidden = !self.btnSkywalkGuided.hidden;
+        NSLog(@"timeUP!");
         
         // Save changes to user_prefs.plist
 

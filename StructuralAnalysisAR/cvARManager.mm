@@ -296,7 +296,8 @@ void cvARManager::doFrame(int n_avg, std::function<void(CB_STATE)> cb_func) {
     saveImg();
     captured_frames.clear();
     most_inliers = 0;
-    frames_to_capture = n_avg;
+//    frames_to_capture = n_avg;
+        frames_to_capture = 1;
     frame_callback = cb_func;
 
     
