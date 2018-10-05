@@ -37,11 +37,16 @@ static const double session_reset_age = (2 * 60 * 60);
     
     // Enable this to record screen views automatically!
     //configuration.recordScreenViews = YES;
-    
+
     [SEGAnalytics setupWithConfiguration:configuration];
     
     [self checkSessionOnEnter];
     
+#ifdef LOGIN_VIEW_SKIP
+    [[SEGAnalytics sharedAnalytics] disable];
+#else
+    [[SEGAnalytics sharedAnalytics] enable];
+#endif
     return YES;
 }
 

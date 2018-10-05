@@ -319,6 +319,14 @@ constexpr static float ocPlnPosY = -7.5;
     self.viewFromNib.contentMode = UIViewContentModeScaleToFill;
     [scnView addSubview:self.viewFromNib];
     
+    self.viewFromNib.managingParent = managingParent;
+    
+    [self.viewFromNib.visOptionsBox addArrangedSubview:self.liveLoadView];
+    [self.viewFromNib.visOptionsBox addArrangedSubview:self.deadLoadView];
+    [self.viewFromNib.visOptionsBox addArrangedSubview:self.rcnForceView];
+    [self.viewFromNib.visOptionsBox addArrangedSubview:self.modelToggleView];
+    [self.viewFromNib.visOptionsBox addArrangedSubview:self.legendView];
+    
     [self setVisibilities];
 }
 

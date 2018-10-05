@@ -36,6 +36,14 @@
     [self.loginButton setEnabled:NO];
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+#ifdef LOGIN_VIEW_SKIP
+    [self performSegueWithIdentifier:@"mainPageSegue" sender:self];
+#endif
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

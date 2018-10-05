@@ -20,6 +20,7 @@
 #include "PeopleVis.h"
 #include "SKCornerNode.h"
 #include "TownCalcs.hpp"
+#include "SceneTemplateView.h"
 
 @interface TownBldgScene: NSObject <StructureScene> {
     id<ARViewController> managingParent;
@@ -50,9 +51,14 @@
     bool draggingJointBox;
     CGPoint lastDragPt;
 }
+@property (weak, nonatomic) IBOutlet UIView *liveLoadView;
+@property (weak, nonatomic) IBOutlet UIView *deadLoadView;
+@property (weak, nonatomic) IBOutlet UIView *rcnForceView;
+@property (weak, nonatomic) IBOutlet UIView *modelToggleView;
+@property (weak, nonatomic) IBOutlet UIView *legendView;
 
 @property (weak, nonatomic) IBOutlet UIView *bottomBarView;
-@property (nonatomic, retain) IBOutlet UIView *viewFromNib;
+@property (nonatomic, retain) IBOutlet SceneTemplateView *viewFromNib;
 @property (weak, nonatomic) IBOutlet UIView *visOptionsBox;
 @property (weak, nonatomic) IBOutlet UISwitch *liveLoadSwitch;
 @property (weak, nonatomic) IBOutlet UISwitch *deadLoadSwitch;
