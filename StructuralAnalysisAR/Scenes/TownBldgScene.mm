@@ -303,15 +303,6 @@ constexpr static float ocPlnPosY = -7.5;
 - (void)scnRendererUpdateAt:(NSTimeInterval)time {
 }
 
-- (void)setCameraLabelPaused:(bool)isPaused isEnabled:(bool)enabled {
-    if (isPaused) {
-        [self.freezeFrameBtn setTitle:@"Resume Camera" forState:UIControlStateNormal];
-    }
-    else {
-        [self.freezeFrameBtn setTitle:@"Pause Camera" forState:UIControlStateNormal];
-    }
-    self.freezeFrameBtn.enabled = enabled;
-}
 
 - (void)setupUIWithScene:(SCNView *)scnView screenBounds:(CGRect)screenRect isGuided:(bool)guided {
     [[NSBundle mainBundle] loadNibNamed:@"townBldgView" owner:self options: nil];
@@ -499,10 +490,6 @@ constexpr static float ocPlnPosY = -7.5;
     draggingJointBox = false;
 }
 
-- (IBAction)freezePressed:(id)sender {
-    [managingParent freezePressed:sender freezeBtn:self.freezeFrameBtn curtain:self.processingCurtainView];
-}
-
 - (IBAction)visToggled:(id)sender {
     [self setVisibilities];
 }
@@ -528,19 +515,6 @@ constexpr static float ocPlnPosY = -7.5;
                                                      @"modelVisible": [NSNumber numberWithBool:self.modelSwitch.on]
                                                      }
                                              }];
-}
-
-- (IBAction)screenshotBtnPressed:(id)sender {
-    return [managingParent screenshotBtnPressed:sender infoBox:self.screenshotInfoBox];
-}
-
-- (IBAction)homeBtnPressed:(id)sender {
-    return [managingParent homeBtnPressed:sender];
-}
-
-- (IBAction)changeTrackingBtnPressed:(id)sender {
-    CGRect frame = [self.changeTrackingBtn.superview convertRect:self.changeTrackingBtn.frame toView:scnView];
-    [managingParent changeTrackingMode:frame];
 }
 
 - (void)updateForces {

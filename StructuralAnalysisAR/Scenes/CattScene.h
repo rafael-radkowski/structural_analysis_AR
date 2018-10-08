@@ -13,6 +13,7 @@
 #include <thread>
 
 #import "StructureScene.h"
+#import "SceneTemplateView.h"
 
 @interface CattScene: NSObject <StructureScene> {
     id<ARViewController> managingParent;
@@ -20,7 +21,7 @@
     SCNNode* cameraNode;
 }
 
-@property (nonatomic, retain) IBOutlet UIView *viewFromNib;
+@property (nonatomic, retain) IBOutlet SceneTemplateView *viewFromNib;
 
 @property (weak, nonatomic) IBOutlet UIButton *homeBtn;
 @property (weak, nonatomic) IBOutlet UIButton *screenshotBtn;

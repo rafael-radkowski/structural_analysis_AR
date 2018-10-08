@@ -22,6 +22,7 @@
 #include "BezierLine.h"
 #include "Ruler.h"
 #include "ARManager.h"
+#import "SceneTemplateView.h"
 
 #include <vector>
 #include <string>
@@ -68,7 +69,7 @@
 
 // MARK: Properties
 @property (nonatomic) bool guided;
-@property (nonatomic, retain) IBOutlet UIView *viewFromNib;
+@property (nonatomic, retain) IBOutlet SceneTemplateView *viewFromNib;
 
 
 @property (weak, nonatomic) IBOutlet UIView *visOptionsBox;

@@ -16,6 +16,9 @@
 #include <stdio.h>
 #include "ARManager.h"
 
+// forward-declaration
+@class SceneTemplateView;
+
 @protocol ARViewController
 - (void) changeTrackingMode:(CGRect)anchorRect;
 - (void)freezePressed:(id)sender freezeBtn:(UIButton*)freezeBtn curtain:(UIView*)curtain;
@@ -24,6 +27,10 @@
 @end
 
 @protocol StructureScene
+
+// Holds the loaded xib defining the UI of the scene
+@property (nonatomic, retain) IBOutlet SceneTemplateView *viewFromNib;
+
 // Initializes the scene 
 - (id)initWithController:(id<ARViewController>)controller;
 
@@ -38,9 +45,6 @@
 
 // Same as the renderer:updateAtTime() call for SceneKit
 - (void) scnRendererUpdateAt:(NSTimeInterval)time;
-
-// Sets the "pause camera"/"resume camera" button
-- (void)setCameraLabelPaused:(bool)isPaused isEnabled:(bool)enabled;
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event;
 - (void)touchesMoved:(NSSet<UITouch *> *) touches withEvent:(UIEvent *)event;

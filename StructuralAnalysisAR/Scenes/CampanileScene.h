@@ -13,6 +13,7 @@
 #include <thread>
 
 #import "StructureScene.h"
+#import "SceneTemplateView.h"
 #include "loadMarker.h"
 #include "BezierLine.h"
 #include "CircleArrow.h"
@@ -61,21 +62,16 @@
 }
 - (void)updateForces;
 
-@property (nonatomic, retain) IBOutlet UIView *viewFromNib;
-@property (weak, nonatomic) IBOutlet UIView *visOptionsBox;
+@property (nonatomic, retain) IBOutlet SceneTemplateView *viewFromNib;
 @property (weak, nonatomic) IBOutlet UISwitch *swayVisSwitch;
 @property (weak, nonatomic) IBOutlet UISwitch *modelVisSwitch;
 @property (weak, nonatomic) IBOutlet UILabel *scaleLabel;
 
-@property (weak, nonatomic) IBOutlet UIButton *homeBtn;
-@property (weak, nonatomic) IBOutlet UIButton *screenshotBtn;
-@property (weak, nonatomic) IBOutlet UIView *screenshotInfoBox;
-@property (weak, nonatomic) IBOutlet UIButton *freezeFrameBtn;
-// Tracking Mode (indoor/outdoor)
-@property (weak, nonatomic) IBOutlet UIButton *changeTrackingBtn;
-- (IBAction)changeTrackingBtnPressed:(id)sender;
-@property (weak, nonatomic) IBOutlet UIView *processingCurtainView;
-@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *processingSpinner;
+@property (weak, nonatomic) IBOutlet UIView *modelVisView;
+@property (weak, nonatomic) IBOutlet UIView *swayVisView;
+@property (weak, nonatomic) IBOutlet UIView *scaleLegendView;
+@property (weak, nonatomic) IBOutlet UIView *bottomBarView;
+
 
 @property (weak, nonatomic) IBOutlet UILabel *sliderLabel;
 @property (weak, nonatomic) IBOutlet UISlider *slider;
@@ -92,9 +88,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *fundFreqLabel;
 - (IBAction)plotBtnPressed:(id)sender;
 
-- (IBAction)homeBtnPressed:(id)sender;
-- (IBAction)screenshotBtnPressed:(id)sender;
-- (IBAction)freezePressed:(id)sender;
 // some visualization switch was toggled
 - (IBAction)visToggled:(id)sender;
 

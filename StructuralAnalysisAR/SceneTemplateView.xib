@@ -14,7 +14,6 @@
             <connections>
                 <outlet property="bottomBarView" destination="amf-Bb-2RO" id="sHY-lk-EN8"/>
                 <outlet property="changeTrackingBtn" destination="5eH-ir-Uwi" id="D0A-VJ-vg7"/>
-                <outlet property="contentView" destination="t0Y-jM-b4p" id="H2Z-v1-y3r"/>
                 <outlet property="homeBtn" destination="wQ3-Gz-oME" id="fBc-ra-fzJ"/>
                 <outlet property="pauseCamBtn" destination="ABn-GI-fcS" id="qcU-Gi-D7f"/>
                 <outlet property="processingCurtainView" destination="12T-0O-mOw" id="wen-bG-vZH"/>

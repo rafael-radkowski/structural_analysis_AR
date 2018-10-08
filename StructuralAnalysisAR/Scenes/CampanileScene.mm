@@ -223,51 +223,25 @@ static const double MOM_OF_INERTIA = 2334;
 //    [campanileExterior.morpher setWeight:weight forTargetAtIndex:0];
 }
 
-- (void)setCameraLabelPaused:(bool)isPaused isEnabled:(bool)enabled {
-    if (isPaused) {
-        [self.freezeFrameBtn setTitle:@"Resume Camera" forState:UIControlStateNormal];
-    }
-    else {
-        [self.freezeFrameBtn setTitle:@"Pause Camera" forState:UIControlStateNormal];
-    }
-    self.freezeFrameBtn.enabled = enabled;
-}
-
 - (void)setupUIWithScene:(SCNView *)scnView screenBounds:(CGRect)screenRect isGuided:(bool)guided {
     [[NSBundle mainBundle] loadNibNamed:@"campanileView" owner:self options: nil];
     self.viewFromNib.frame = screenRect;
     self.viewFromNib.contentMode = UIViewContentModeScaleToFill;
     [scnView addSubview:self.viewFromNib];
     
+    self.viewFromNib.managingParent = managingParent;
+    
+    // Add to vis options box
+    [self.viewFromNib.visOptionsBox addArrangedSubview:self.modelVisView];
+    [self.viewFromNib.visOptionsBox addArrangedSubview:self.swayVisView];
+    [self.viewFromNib.visOptionsBox addArrangedSubview:self.scaleLegendView];
+    
+    // Add custom bottomBarView for this scene to the main one so it is not obscured
+    [self.viewFromNib.bottomBarView addSubview:self.bottomBarView];
+    
+    [self.viewFromNib.contentView insertSubview:self.plotViewBox atIndex:0];
+    
     CGColor* textColor = [UIColor colorWithRed:0.08235 green:0.49412 blue:0.9843 alpha:1.0].CGColor;
-    // Setup home button style
-    self.homeBtn.layer.borderWidth = 1.5;
-    self.homeBtn.imageEdgeInsets = UIEdgeInsetsMake(3, 3, 3, 3);
-    self.homeBtn.layer.borderColor = textColor;
-    self.homeBtn.layer.cornerRadius = 5;
-    
-    // Setup screenshot button style
-    self.screenshotBtn.layer.borderWidth = 1.5;
-    self.screenshotBtn.imageEdgeInsets = UIEdgeInsetsMake(3, 3, 3, 3);
-    self.screenshotBtn.layer.borderColor = textColor;
-    self.screenshotBtn.layer.cornerRadius = 5;
-    
-    // Setup screenshot info box
-    self.screenshotInfoBox.layer.cornerRadius = self.screenshotInfoBox.bounds.size.height / 2;
-    
-    // Setup freeze frame button
-    self.freezeFrameBtn.layer.borderWidth = 1.5;
-    self.freezeFrameBtn.layer.borderColor = textColor;
-    self.freezeFrameBtn.layer.cornerRadius = 5;
-    
-    // Setup change tracking button
-    self.changeTrackingBtn.layer.borderWidth = 1.5;
-    self.changeTrackingBtn.layer.borderColor = textColor;
-    self.changeTrackingBtn.layer.cornerRadius = 5;
-    
-    // Processing curtain view
-    self.processingCurtainView.hidden = YES;
-    self.processingSpinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
     
     // seismic spectral plot image
 //    self.plotImgView.layer.borderWidth = 2;
@@ -420,9 +394,6 @@ static const double MOM_OF_INERTIA = 2334;
     }
 }
 
-- (IBAction)freezePressed:(id)sender {
-    [managingParent freezePressed:sender freezeBtn:self.freezeFrameBtn curtain:self.processingCurtainView];
-}
 
 - (IBAction)visToggled:(id)sender {
     [self setVisibilities];
@@ -447,9 +418,6 @@ static const double MOM_OF_INERTIA = 2334;
                                              }];
 }
 
-- (IBAction)screenshotBtnPressed:(id)sender {
-    return [managingParent screenshotBtnPressed:sender infoBox:self.screenshotInfoBox];
-}
 
 - (IBAction)plotBtnPressed:(id)sender {
     plotVisible = !plotVisible;
@@ -467,15 +435,6 @@ static const double MOM_OF_INERTIA = 2334;
     
     [[SEGAnalytics sharedAnalytics] track:trk_campanile_plot
                                properties:@{ @"visible": [NSNumber numberWithBool:plotVisible]}];
-}
-
-- (IBAction)homeBtnPressed:(id)sender {
-    return [managingParent homeBtnPressed:sender];
-}
-
-- (IBAction)changeTrackingBtnPressed:(id)sender {
-    CGRect frame = [self.changeTrackingBtn.superview convertRect:self.changeTrackingBtn.frame toView:scnView];
-    [managingParent changeTrackingMode:frame];
 }
 
 - (IBAction)sliderChanged:(id)sender {

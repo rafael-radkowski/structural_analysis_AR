@@ -8,6 +8,7 @@
 
 // Must #include openCV stuff before other things
 #import "GameViewController.h"
+#import "SceneTemplateView.h"
 #import "ARView.h"
 #import "SkywalkScene.h"
 #import "TrackingConstants.h"
@@ -115,7 +116,7 @@
         arManager = [structureScene makeStaticTracker];
         int failed = arManager->startCamera();
         tracking_mode = TrackingMode::untracked;
-        [structureScene setCameraLabelPaused:!failed isEnabled:failed];
+        [structureScene.viewFromNib setCameraLabelPaused:!failed isEnabled:failed];
     }
 }
 
@@ -197,7 +198,7 @@
                     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                         [freezeBtn setEnabled:YES];
                         curtain.hidden = YES;
-                        [structureScene setCameraLabelPaused:YES isEnabled:YES];
+                        [structureScene.viewFromNib setCameraLabelPaused:YES isEnabled:YES];
                     }];
                     arManager->stopCamera();
                 }
@@ -208,7 +209,7 @@
     else { // camPaused == true
         int failed = arManager->startCamera();
         camPaused = failed;
-        [structureScene setCameraLabelPaused:failed isEnabled:!failed];
+        [structureScene.viewFromNib setCameraLabelPaused:failed isEnabled:!failed];
         [[SEGAnalytics sharedAnalytics] track:trk_cameraResumed];
     }
     
@@ -251,7 +252,7 @@
     else {
         camPaused = NO;
         bool is_tracking = new_mode != TrackingMode::untracked;
-        [structureScene setCameraLabelPaused:!is_tracking isEnabled:is_tracking];
+        [structureScene.viewFromNib setCameraLabelPaused:!is_tracking isEnabled:is_tracking];
     }
     
     [[SEGAnalytics sharedAnalytics] track:trk_arModeChanged

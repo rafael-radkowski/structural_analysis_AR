@@ -15,7 +15,13 @@ IB_DESIGNABLE
 // Set this when initializing scene so the buttons in this view work
 @property id<ARViewController> managingParent;
 
+// Sets the "pause camera"/"resume camera" button
+- (void)setCameraLabelPaused:(bool)isPaused isEnabled:(bool)enabled;
+
+// 
 @property (strong, nonatomic) IBOutlet UIView *contentView;
+
+
 @property (weak, nonatomic) IBOutlet UIButton *homeBtn;
 @property (weak, nonatomic) IBOutlet UIButton *screenshotBtn;
 @property (weak, nonatomic) IBOutlet UIButton *pauseCamBtn;

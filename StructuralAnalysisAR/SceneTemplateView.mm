@@ -33,6 +33,16 @@
     [self.managingParent changeTrackingMode:frame];
 }
 
+- (void)setCameraLabelPaused:(bool)isPaused isEnabled:(bool)enabled {
+    if (isPaused) {
+        [self.pauseCamBtn setTitle:@"Resume Camera" forState:UIControlStateNormal];
+    }
+    else {
+        [self.pauseCamBtn setTitle:@"Pause Camera" forState:UIControlStateNormal];
+    }
+    self.pauseCamBtn.enabled = enabled;
+}
+
 -(instancetype)initWithCoder:(NSCoder *)aDecoder {
     self = [super initWithCoder:aDecoder];
     if (self) {
@@ -49,10 +59,18 @@
     return self;
 }
 
+
 -(void)customInit {
-    [[NSBundle bundleForClass:[self class]] loadNibNamed:@"SceneTemplateView" owner:self options:nil];
+    NSString* nibName = NSStringFromClass(self.class);
+    NSBundle* bundle = [NSBundle bundleForClass:self.class];
+    UINib* nib = [UINib nibWithNibName:nibName bundle:bundle];
+    self.contentView = [nib instantiateWithOwner:self options:nil][0];
+    self.contentView.frame = self.bounds;
 //    self.contentView = [[NSBundle bundleForClass:[self class]] loadNibNamed:@"SceneTemplateView" owner:self options:nil].firstObject;
-    [self addSubview:self.contentView];
+    self.contentView.translatesAutoresizingMaskIntoConstraints = NO;
+    
+//    [self addSubview:self.contentView];
+    [self insertSubview:self.contentView atIndex:0];
     
     // add constraints so subview fills placeholder view
     [self addConstraint:[self from:self pinTo:self.contentView attribute:NSLayoutAttributeTop]];

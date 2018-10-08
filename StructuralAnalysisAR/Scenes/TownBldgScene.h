@@ -20,7 +20,7 @@
 #include "PeopleVis.h"
 #include "SKCornerNode.h"
 #include "TownCalcs.hpp"
-#include "SceneTemplateView.h"
+#import "SceneTemplateView.h"
 
 @interface TownBldgScene: NSObject <StructureScene> {
     id<ARViewController> managingParent;
@@ -51,6 +51,8 @@
     bool draggingJointBox;
     CGPoint lastDragPt;
 }
+@property (nonatomic, retain) IBOutlet SceneTemplateView *viewFromNib;
+
 @property (weak, nonatomic) IBOutlet UIView *liveLoadView;
 @property (weak, nonatomic) IBOutlet UIView *deadLoadView;
 @property (weak, nonatomic) IBOutlet UIView *rcnForceView;
@@ -58,27 +60,13 @@
 @property (weak, nonatomic) IBOutlet UIView *legendView;
 
 @property (weak, nonatomic) IBOutlet UIView *bottomBarView;
-@property (nonatomic, retain) IBOutlet SceneTemplateView *viewFromNib;
 @property (weak, nonatomic) IBOutlet UIView *visOptionsBox;
 @property (weak, nonatomic) IBOutlet UISwitch *liveLoadSwitch;
 @property (weak, nonatomic) IBOutlet UISwitch *deadLoadSwitch;
 @property (weak, nonatomic) IBOutlet UISwitch *rcnForceSwitch;
 @property (weak, nonatomic) IBOutlet UISwitch *modelSwitch;
 
-@property (weak, nonatomic) IBOutlet UIButton *homeBtn;
-@property (weak, nonatomic) IBOutlet UIButton *screenshotBtn;
-@property (weak, nonatomic) IBOutlet UIView *screenshotInfoBox;
-@property (weak, nonatomic) IBOutlet UIButton *freezeFrameBtn;
-// Tracking Mode (indoor/outdoor)
-@property (weak, nonatomic) IBOutlet UIButton *changeTrackingBtn;
-- (IBAction)changeTrackingBtnPressed:(id)sender;
-@property (weak, nonatomic) IBOutlet UIView *processingCurtainView;
-@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *processingSpinner;
 
-
-- (IBAction)homeBtnPressed:(id)sender;
-- (IBAction)screenshotBtnPressed:(id)sender;
-- (IBAction)freezePressed:(id)sender;
 // some visualization switch was toggled
 - (IBAction)visToggled:(id)sender;
 
