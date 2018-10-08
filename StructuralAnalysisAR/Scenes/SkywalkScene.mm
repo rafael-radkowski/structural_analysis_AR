@@ -177,6 +177,15 @@
     self.viewFromNib.contentMode = UIViewContentModeScaleToFill;
     [scnView addSubview:self.viewFromNib];
     
+    // Let the common buttons call to the managing parent (GameViewController)
+    self.viewFromNib.managingParent = managingParent;
+    
+    // Add to vis options box
+    [self.viewFromNib.visOptionsBox addArrangedSubview:self.liveLoadView];
+    [self.viewFromNib.visOptionsBox addArrangedSubview:self.deadLoadView];
+    [self.viewFromNib.visOptionsBox addArrangedSubview:self.rcnForceView];
+    [self.viewFromNib.visOptionsBox addArrangedSubview:self.rulerSwitchView];
+    
     // Hide visualization toggles switches in guided mode
     if (self.guided) {
         self.visOptionsBox.hidden = YES;
@@ -184,20 +193,6 @@
     }
     
     CGColor* textColor = [UIColor colorWithRed:0.08235 green:0.49412 blue:0.9843 alpha:1.0].CGColor;
-    // Setup home button style
-    self.homeBtn.layer.borderWidth = 1.5;
-    self.homeBtn.imageEdgeInsets = UIEdgeInsetsMake(3, 3, 3, 3);
-    self.homeBtn.layer.borderColor = textColor;
-    self.homeBtn.layer.cornerRadius = 5;
-    
-    // Setup screenshot button style
-    self.screenshotBtn.layer.borderWidth = 1.5;
-    self.screenshotBtn.imageEdgeInsets = UIEdgeInsetsMake(3, 3, 3, 3);
-    self.screenshotBtn.layer.borderColor = textColor;
-    self.screenshotBtn.layer.cornerRadius = 5;
-    
-    // Setup screenshot info box
-    self.screenshotInfoBox.layer.cornerRadius = self.screenshotInfoBox.bounds.size.height / 2;
     
     // Setup instruction box style
     self.instructionBox.layer.borderWidth = 1.5;
@@ -206,19 +201,6 @@
     self.prevBtn.layer.borderColor = self.nextBtn.layer.borderColor = textColor;
     self.prevBtn.layer.cornerRadius = self.nextBtn.layer.cornerRadius = 5;
     self.prevBtn.titleEdgeInsets = self.nextBtn.titleEdgeInsets = UIEdgeInsetsMake(5, 5, 5, 5);
-    
-    // Setup freeze frame button
-    self.freezeFrameBtn.layer.borderWidth = 1.5;
-    self.freezeFrameBtn.layer.borderColor = textColor;
-    self.freezeFrameBtn.layer.cornerRadius = 5;
-    
-    // Setup change tracking mode button
-    self.changeTrackingBtn.layer.borderWidth = 1.5;
-    self.changeTrackingBtn.layer.borderColor = textColor;
-    self.changeTrackingBtn.layer.cornerRadius = 5;
-    
-    self.processingCurtainView.hidden = YES;
-    self.processingSpinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
     
     self.visOptionsBox.layer.borderWidth = 1.5;
     self.visOptionsBox.layer.borderColor = UIColor.grayColor.CGColor;
@@ -360,14 +342,6 @@
     }
 }
 
-- (IBAction)freezePressed:(id)sender {
-    [managingParent freezePressed:sender freezeBtn:self.freezeFrameBtn curtain:self.processingCurtainView];
-}
-
-- (IBAction)screenshotBtnPressed:(id)sender {
-    return [managingParent screenshotBtnPressed:sender infoBox:self.screenshotInfoBox];
-}
-
 - (IBAction)homeBtnPressed:(id)sender {
     return [managingParent homeBtnPressed:sender];
 }
@@ -453,21 +427,6 @@
                                                             }
                                                         }()
                                    }];
-}
-
-- (void)setCameraLabelPaused:(bool)isPaused isEnabled:(bool)enabled {
-    if (isPaused) {
-        [self.freezeFrameBtn setTitle:@"Resume Camera" forState:UIControlStateNormal];
-    }
-    else {
-        [self.freezeFrameBtn setTitle:@"Pause Camera" forState:UIControlStateNormal];
-    }
-    self.freezeFrameBtn.enabled = enabled;
-}
-
-- (IBAction)changeTrackingBtnPressed:(id)sender {
-    CGRect frame = [self.changeTrackingBtn.superview convertRect:self.changeTrackingBtn.frame toView:scnView];
-    [managingParent changeTrackingMode:frame];
 }
 
 

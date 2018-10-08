@@ -71,6 +71,10 @@
 @property (nonatomic) bool guided;
 @property (nonatomic, retain) IBOutlet SceneTemplateView *viewFromNib;
 
+@property (weak, nonatomic) IBOutlet UIView *liveLoadView;
+@property (weak, nonatomic) IBOutlet UIView *deadLoadView;
+@property (weak, nonatomic) IBOutlet UIView *rcnForceView;
+@property (weak, nonatomic) IBOutlet UIView *rulerSwitchView;
 
 @property (weak, nonatomic) IBOutlet UIView *visOptionsBox;
 @property (weak, nonatomic) IBOutlet UISwitch *liveLoadSwitch;
@@ -81,18 +85,9 @@
 @property (weak, nonatomic) IBOutlet UILabel *rcnForceLabel;
 @property (weak, nonatomic) IBOutlet UISwitch *rulerSwitch;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *loadPresetBtn;
-@property (weak, nonatomic) IBOutlet UIButton *homeBtn;
-@property (weak, nonatomic) IBOutlet UIButton *screenshotBtn;
-@property (weak, nonatomic) IBOutlet UIView *screenshotInfoBox;
 @property (weak, nonatomic) IBOutlet UITextView *instructionBox;
 @property (weak, nonatomic) IBOutlet UIButton *prevBtn;
 @property (weak, nonatomic) IBOutlet UIButton *nextBtn;
-@property (weak, nonatomic) IBOutlet UIButton *freezeFrameBtn;
-// Tracking Mode (indoor/outdoor)
-@property (weak, nonatomic) IBOutlet UIButton *changeTrackingBtn;
-// To hide the interface when processing frames
-@property (weak, nonatomic) IBOutlet UIView *processingCurtainView;
-@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *processingSpinner;
 
 @property (weak, nonatomic) IBOutlet UIView *defnsView;
 - (IBAction)defnsPressed:(id)sender;
@@ -105,15 +100,8 @@
 // One of the visualization switches was toggled
 - (IBAction)visSwitchToggled:(id)sender;
 - (IBAction)loadPresetSet:(id)sender;
-- (IBAction)homeBtnPressed:(id)sender;
-- (IBAction)screenshotBtnPressed:(id)sender;
 - (IBAction)prevStepPressed:(id)sender;
 - (IBAction)nextStepPressed:(id)sender;
-- (IBAction)freezePressed:(id)sender;
-- (IBAction)changeTrackingBtnPressed:(id)sender;
-
-// Sets the "pause camera"/"resume camera" button
-- (void)setCameraLabelPaused:(bool)isPaused;
 
 - (void)calculateDeflection:(std::vector<float>&)deflection forValues:(const std::vector<float>&)vals rcnL:(double&)rcnL rcnR:(double&)rcnR beamStarts:(double)beamStart beamEnds:(double)beamEnds loadStarts:(double)loadStart loadEnds:(double)loadEnd loadMagnitude:(double)totalLoad;
 - (void)updateBeamForces;
