@@ -12,6 +12,7 @@
 #import "SkywalkScene.h"
 #import "CampanileScene.h"
 #import "TownBldgScene.h"
+#import "CattScene.h"
 
 #import <Analytics/SEGAnalytics.h>
 #import "TrackingConstants.h"
@@ -69,6 +70,7 @@
 //    [self.btnCampanile sendActionsForControlEvents:UIControlEventTouchUpInside];
 //    [self.btnSkywalk sendActionsForControlEvents:UIControlEventTouchUpInside];
 //    [self.btnTown sendActionsForControlEvents:UIControlEventTouchUpInside];
+    [self.btnCatt sendActionsForControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -98,7 +100,7 @@
         viewController.sceneClass = TownBldgScene.class;
     }
     else if ([segue.identifier isEqualToString:@"cattSegue"]) {
-        viewController.sceneClass = TownBldgScene.class;
+        viewController.sceneClass = CattScene.class;
     }
     // Pass the selected object to the new view controller.
 }
