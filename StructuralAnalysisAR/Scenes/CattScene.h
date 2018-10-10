@@ -20,6 +20,7 @@
 @interface CattScene: NSObject <StructureScene> {
     id<ARViewController> managingParent;
     SCNView* scnView;
+    SKScene* skScene;
     SCNNode* cameraNode;
     
     // truss members
@@ -27,6 +28,8 @@
     
     // point loads
     GrabbableArrow pArrow01, pArrow02, pArrow06, pArrow1, pArrow2, pArrow3, pArrow4, pArrow5;
+    // Reaction forces
+    GrabbableArrow rArrow1, rArrow2, rArrow3;
 }
 
 @property (nonatomic, retain) IBOutlet SceneTemplateView *viewFromNib;

@@ -13,6 +13,7 @@
 
 #include "VuforiaARManager.h"
 #include "StaticARManager.h"
+#include "colorConversion.h"
 
 #import <Analytics/SEGAnalytics.h>
 #import "TrackingConstants.h"
@@ -28,8 +29,9 @@ const static double maxWindSpeed = 100;
     return [self init];
 }
 
-- (SCNNode *)createScene:(SCNView *)the_scnView skScene:(SKScene *)skScene withCamera:(SCNNode *)camera {
+- (SCNNode *)createScene:(SCNView *)the_scnView skScene:(SKScene *)the_skScene withCamera:(SCNNode *)camera {
     scnView = the_scnView;
+    skScene = the_skScene;
     cameraNode = camera;
     SCNNode* rootNode = [SCNNode node];
     
@@ -104,13 +106,31 @@ const static double maxWindSpeed = 100;
     pArrow06.setRotationAxisAngle(GLKVector4Make(0, 0, 1, M_PI / 2));
     pArrow4.setRotationAxisAngle(GLKVector4Make(0, 0, 1, M_PI / 2));
     pArrow5.setRotationAxisAngle(GLKVector4Make(0, 0, 1, M_PI / 2));
+    
+    // Reaction force arrows
+    rArrow1.setPosition(origin);
+    rArrow2.setPosition(origin);
+    rArrow3.setPosition(rightCorner);
+    // point up
+    rArrow1.setRotationAxisAngle(GLKVector4Make(0, 0, 1, M_PI));
+    rArrow3.setRotationAxisAngle(GLKVector4Make(0, 0, 1, M_PI));
+    // point left
+    rArrow2.setRotationAxisAngle(GLKVector4Make(0, 0, 1, -M_PI / 2));
 
-    for (auto arrow : {&pArrow01, &pArrow02, &pArrow06, &pArrow1, &pArrow2, &pArrow3, &pArrow4, &pArrow5}) {
+    for (auto arrow : {&pArrow01, &pArrow02, &pArrow06, &pArrow1, &pArrow2, &pArrow3, &pArrow4, &pArrow5,
+                       &rArrow1, &rArrow2, &rArrow3}) {
         arrow->setMinLength(5);
         arrow->setMaxLength(15);
         arrow->setThickness(2);
         arrow->addAsChild(rootNode);
+        arrow->setInputRange(0, 8);
+        arrow->setScenes(skScene, scnView);
+        arrow->setFormatString(@"%.1f k");
+        arrow->setColor(0.376, 0.188, 0.8196);
     }
+    rArrow1.setColor(0, 1, 0);
+    rArrow2.setColor(0, 1, 0);
+    rArrow3.setColor(0, 1, 0);
     
     return rootNode;
 }
@@ -130,6 +150,10 @@ const static double maxWindSpeed = 100;
 }
 
 - (void)skUpdate {
+    for (auto arrow : {&pArrow01, &pArrow02, &pArrow06, &pArrow1, &pArrow2, &pArrow3, &pArrow4, &pArrow5,
+                       &rArrow1, &rArrow2, &rArrow3}) {
+        arrow->doUpdate();
+    }
 }
 
 
@@ -240,6 +264,11 @@ const static double maxWindSpeed = 100;
     cv::Mat b(10, 1, CV_64F, c_data);
     cv::Mat c(10, 1, CV_64F);
     bool has_solution = cv::solve(A, b, c);
+    assert(has_solution);
+    if (!has_solution) {
+        NSLog(@"No solution to truss member calculations");
+        return;
+    }
     
     double F1 = c.at<double>(0, 0);
     double F2 = c.at<double>(1, 0);
@@ -252,7 +281,45 @@ const static double maxWindSpeed = 100;
     double R2 = c.at<double>(8, 0);
     double R3 = c.at<double>(9, 0);
     
+    // Update arrows with calculated forces
+    pArrow01.setIntensity(load_p01);
+    pArrow02.setIntensity(load_p02);
+    pArrow06.setIntensity(load_p06);
+    pArrow1.setIntensity(load_p1);
+    pArrow2.setIntensity(load_p2);
+    pArrow3.setIntensity(load_p3);
+    pArrow4.setIntensity(load_p4);
+    pArrow5.setIntensity(load_p5);
     
+    rArrow1.setIntensity(R1);
+    rArrow2.setIntensity(R2);
+    rArrow3.setIntensity(R3);
+    
+    // Colors of trusses for showing intensity
+    const float MAX_MAG = 40;
+    auto color_member = [&](Line3d& memb, float val) {
+        // float mag = std::abs(val);
+        // mag = std::min(max_mag, mag);
+        float normalized = val / MAX_MAG;
+        // clamp to [-1, +1]
+        normalized = std::max<float>(-1, std::min<float>(1, normalized));
+        // 0 is green, negative is red, positive is blue
+        float hue = normalized * 120 + 120;
+        hsv color_in;
+        // Have saturation also follow magnitude some
+        color_in.s = std::abs(normalized) * 0.75 + 0.25;
+        color_in.v = 1;
+        color_in.h = hue;
+        rgb color = hsv2rgb(color_in);
+        memb.setColor(color.r, color.g, color.b);
+    };
+    color_member(memb1, F1);
+    color_member(memb2, F2);
+    color_member(memb3, F3);
+    color_member(memb4, F4);
+    color_member(memb5, F5);
+    color_member(memb6, F6);
+    color_member(memb7, F7);
 }
 
 

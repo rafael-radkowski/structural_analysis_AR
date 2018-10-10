@@ -52,6 +52,7 @@
 		0B483C081F4F9063007A1D29 /* ModelIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B483C071F4F9063007A1D29 /* ModelIO.framework */; };
 		0B4F29B11FE0846C0067C439 /* skywalk_south_far.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0B4F29B01FE0846C0067C439 /* skywalk_south_far.jpg */; };
 		0B573972216BF32D00133033 /* cattView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B3E5964216BE5F600027841 /* cattView.xib */; };
+		0B573975216EA00800133033 /* colorConversion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B573973216EA00800133033 /* colorConversion.cpp */; };
 		0B5A92BB2006BA6D00D58422 /* moment_arrow.obj in Resources */ = {isa = PBXBuildFile; fileRef = 0B5A92BA2006BA6D00D58422 /* moment_arrow.obj */; };
 		0B5D638F204F31AD003384C4 /* TownBldgScene.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B5D638E204F31AD003384C4 /* TownBldgScene.mm */; };
 		0B5D6391204F36D4003384C4 /* townBldgView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B5D6390204F36D4003384C4 /* townBldgView.xib */; };
@@ -179,6 +180,8 @@
 		0B483C051F4F9051007A1D29 /* SceneKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SceneKit.framework; path = System/Library/Frameworks/SceneKit.framework; sourceTree = SDKROOT; };
 		0B483C071F4F9063007A1D29 /* ModelIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ModelIO.framework; path = System/Library/Frameworks/ModelIO.framework; sourceTree = SDKROOT; };
 		0B4F29B01FE0846C0067C439 /* skywalk_south_far.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = skywalk_south_far.jpg; path = image_assets/skywalk_south_far.jpg; sourceTree = "<group>"; };
+		0B573973216EA00800133033 /* colorConversion.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = colorConversion.cpp; sourceTree = "<group>"; };
+		0B573974216EA00800133033 /* colorConversion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = colorConversion.h; sourceTree = "<group>"; };
 		0B5A92BA2006BA6D00D58422 /* moment_arrow.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = moment_arrow.obj; sourceTree = "<group>"; };
 		0B5D638D204F31AC003384C4 /* TownBldgScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TownBldgScene.h; sourceTree = "<group>"; };
 		0B5D638E204F31AD003384C4 /* TownBldgScene.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TownBldgScene.mm; sourceTree = "<group>"; };
@@ -492,6 +495,8 @@
 				0B0CBD101FDF4B5800A9B223 /* StaticARManager.mm */,
 				0BD7111420408B5A0095D753 /* Ruler.mm */,
 				0BD7111520408B5A0095D753 /* Ruler.h */,
+				0B573973216EA00800133033 /* colorConversion.cpp */,
+				0B573974216EA00800133033 /* colorConversion.h */,
 			);
 			path = StructuralAnalysisAR;
 			sourceTree = "<group>";
@@ -718,6 +723,7 @@
 				0B03583520054BAA00F75CD2 /* CampanileScene.mm in Sources */,
 				0BB164441F4732DC0053CA3B /* GameViewController.mm in Sources */,
 				0B0358322000167100F75CD2 /* SkywalkScene.mm in Sources */,
+				0B573975216EA00800133033 /* colorConversion.cpp in Sources */,
 				0BAFBB641F7EBAFE007B1FC6 /* SampleApplication3DModel.m in Sources */,
 				0BB1643C1F4732DC0053CA3B /* main.m in Sources */,
 				0B2FEEF6207D5AFD00712595 /* SKArrow.m in Sources */,
