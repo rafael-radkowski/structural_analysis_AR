@@ -198,13 +198,18 @@ const static double maxWindSpeed = 100;
                        &rArrow1, &rArrow2, &rArrow3}) {
         arrow->doUpdate();
     }
+    loadDead.doUpdate();
+    loadSnow.doUpdate();
+    loadWind.doUpdate();
 }
 
 
 // Make various AR Managers
 - (ARManager*)makeStaticTracker {
-    GLKMatrix4 trans_mat = GLKMatrix4MakeTranslation(74, -39, 260);
-    GLKMatrix4 rot_x_mat = GLKMatrix4MakeXRotation(0.3);
+    // GLKMatrix4 trans_mat = GLKMatrix4MakeTranslation(74, -39, 260);
+    // GLKMatrix4 rot_x_mat = GLKMatrix4MakeXRotation(0.3);
+    GLKMatrix4 trans_mat = GLKMatrix4MakeTranslation(30, 0, 170);
+    GLKMatrix4 rot_x_mat = GLKMatrix4MakeXRotation(0.0);
     GLKMatrix4 cameraMatrix = GLKMatrix4Multiply(rot_x_mat, trans_mat);
     return new StaticARManager(scnView, scnView.scene, cameraMatrix, @"catt_target.jpg");
 }
@@ -284,7 +289,6 @@ const static double maxWindSpeed = 100;
     double wind_speed_mph = self.windSlider.value * maxWindSpeed;
     [self.windSpeedLabel setText:[NSString stringWithFormat:@"%.0f mph", wind_speed_mph]];
     
-    // TODO: Should snow_depth be in inches or feet?
     double snow_load = snow_depth_in * (1./12) * 20 * 10;
     double load_p1s = 16.96 * snow_load;
     double load_p2s = 9.167 * snow_load;
@@ -323,13 +327,13 @@ const static double maxWindSpeed = 100;
     double A_data[100] = {
     //           F1      F2      F3      F4      F5      F6      F7      R1      R2      R3
     /* F1 */     0.707,  0,      0,      0,      0.905,  0,      0,      0,     -1,      0,
-    /* F2 */     0.707,  0,      0,      0,      0.915,  0,      0,      1,      0,      0,
+    /* F2 */     0.707,  0,      0,      0,      0.417,  0,      0,      1,      0,      0,
     /* F3 */    -0.707,  0.707,  0,      0,      0,      0.908,  1,      0,      0,      0,
-    /* F4 */    -0.707,  0.707,  0,      0,      0,     -0.416,  0,      0,      0,      0,
+    /* F4 */    -0.707,  0.707,  0,      0,      0,     -0.417,  0,      0,      0,      0,
     /* F5 */     0,     -0.707,  0.707,  0,      0,      0,      0,      0,      0,      0,
     /* F6 */     0,     -0.707, -0.707,  0,      0,      0,      0,      0,      0,      0,
     /* F7 */     0,      0,     -0.707,  0.707, -0.908,  0,     -1,      0,      0,      0,
-    /* R1 */     0,      0,      0.707, -0.707, -0.415,  0,      0,      0,      0,      0,
+    /* R1 */     0,      0,      0.707, -0.707, -0.417,  0,      0,      0,      0,      0,
     /* R2 */     0,      0,      0,     -0.707,  0,     -0.908,  0,      0,      0,      0,
     /* R3 */     0,      0,      0,      0.707,  0,      0.417,  0,      0,      0,      1
     };
