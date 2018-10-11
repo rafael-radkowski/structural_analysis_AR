@@ -16,6 +16,7 @@
 #import "SceneTemplateView.h"
 #include "line3d.h"
 #include "grabbableArrow.h"
+#include "LoadMarker.h"
 
 @interface CattScene: NSObject <StructureScene> {
     id<ARViewController> managingParent;
@@ -30,26 +31,40 @@
     GrabbableArrow pArrow01, pArrow02, pArrow06, pArrow1, pArrow2, pArrow3, pArrow4, pArrow5;
     // Reaction forces
     GrabbableArrow rArrow1, rArrow2, rArrow3;
+
+    // Distributed loads
+    LoadMarker loadDead, loadSnow, loadWind;
 }
 
 @property (nonatomic, retain) IBOutlet SceneTemplateView *viewFromNib;
 
 // vis options items
 @property (weak, nonatomic) IBOutlet UIView *rcnForceView;
+@property (weak, nonatomic) IBOutlet UIView *forceTypeView;
+@property (weak, nonatomic) IBOutlet UIView *deadVisView;
+@property (weak, nonatomic) IBOutlet UIView *snowVisView;
+@property (weak, nonatomic) IBOutlet UIView *windVisView;
 
 @property (weak, nonatomic) IBOutlet UISwitch *rcnForceSwitch;
 @property (weak, nonatomic) IBOutlet UISlider *snowSlider;
 @property (weak, nonatomic) IBOutlet UISlider *windSlider;
+@property (weak, nonatomic) IBOutlet UISegmentedControl *forceTypeToggle;
+@property (weak, nonatomic) IBOutlet UISwitch *deadVisSwitch;
+@property (weak, nonatomic) IBOutlet UISwitch *snowVisSwitch;
+@property (weak, nonatomic) IBOutlet UISwitch *windVisSwitch;
 
 @property (weak, nonatomic) IBOutlet UILabel *snowDepthLabel;
 @property (weak, nonatomic) IBOutlet UILabel *windSpeedLabel;
+
+// something changed to modify the load
 - (IBAction)loadsChanged:(id)sender;
+-(void)updateLoads;
 
 
 // some visualization switch was toggled
 - (IBAction)visToggled:(id)sender;
-
 - (void)setVisibilities;
+
 
 @end
 

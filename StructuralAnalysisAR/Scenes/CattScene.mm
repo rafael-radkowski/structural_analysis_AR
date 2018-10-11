@@ -117,11 +117,13 @@ const static double maxWindSpeed = 100;
     // point left
     rArrow2.setRotationAxisAngle(GLKVector4Make(0, 0, 1, -M_PI / 2));
 
+    float loadThickness = 2;
+
     for (auto arrow : {&pArrow01, &pArrow02, &pArrow06, &pArrow1, &pArrow2, &pArrow3, &pArrow4, &pArrow5,
                        &rArrow1, &rArrow2, &rArrow3}) {
         arrow->setMinLength(5);
         arrow->setMaxLength(15);
-        arrow->setThickness(2);
+        arrow->setThickness(loadThickness);
         arrow->addAsChild(rootNode);
         arrow->setInputRange(0, 8);
         arrow->setScenes(skScene, scnView);
@@ -131,6 +133,43 @@ const static double maxWindSpeed = 100;
     rArrow1.setColor(0, 1, 0);
     rArrow2.setColor(0, 1, 0);
     rArrow3.setColor(0, 1, 0);
+
+    // Distributed loads
+    loadDead = LoadMarker(5);
+    loadSnow = LoadMarker(5);
+    loadWind = LoadMarker(5);
+
+    float dist_load_gap = 2;
+    float dead_load_height = 10;
+    loadDead.setPosition(GLKVector3Make(origin.x, origin.y + 24.75 + dist_load_gap, origin.z));
+    loadDead.setInputRange(0, 0.325);
+    loadDead.setMinHeight(5);
+    loadDead.setMaxHeight(dead_load_height);
+    loadDead.setEnds(0, rightCorner.x - origin.x);
+    loadDead.setThickness(loadThickness);
+    loadDead.addAsChild(rootNode);
+    loadDead.setScenes(skScene, scnView);
+
+    loadSnow.setPosition(GLKVector3Make(origin.x, origin.y + 24.75 + dist_load_gap + dead_load_height, origin.z));
+    loadSnow.setInputRange(0, 0.5);
+    loadSnow.setMinHeight(5);
+    loadSnow.setMaxHeight(15);
+    loadSnow.setEnds(0, rightCorner.x - origin.x);
+    loadSnow.setThickness(loadThickness);
+    loadSnow.addAsChild(rootNode);
+    loadSnow.setScenes(skScene, scnView);
+
+    loadWind.setOrientation(GLKQuaternionMakeWithAngleAndAxis(M_PI / 4, 0, 0, 1));
+    loadWind.setPosition(GLKVector3Make(origin.x - dist_load_gap*std::cos(M_PI/4),
+                                        origin.y + dist_load_gap*std::sin(M_PI/4),
+                                        origin.z));
+    loadWind.setInputRange(0, 0.5);
+    loadWind.setMinHeight(5);
+    loadWind.setMaxHeight(15);
+    loadWind.setEnds(0, 35);
+    loadWind.setThickness(loadThickness);
+    loadWind.addAsChild(rootNode);
+    loadWind.setScenes(skScene, scnView);
     
     return rootNode;
 }
@@ -145,8 +184,13 @@ const static double maxWindSpeed = 100;
     self.viewFromNib.managingParent = managingParent;
     
     [self.viewFromNib.visOptionsBox addArrangedSubview:self.rcnForceView];
+    [self.viewFromNib.visOptionsBox addArrangedSubview:self.forceTypeView];
+    [self.viewFromNib.visOptionsBox addArrangedSubview:self.deadVisView];
+    [self.viewFromNib.visOptionsBox addArrangedSubview:self.snowVisView];
+    [self.viewFromNib.visOptionsBox addArrangedSubview:self.windVisView];
     
     [self setVisibilities];
+    [self updateLoads];
 }
 
 - (void)skUpdate {
@@ -205,9 +249,35 @@ const static double maxWindSpeed = 100;
 }
 
 - (void)setVisibilities {
+    bool point_loads_hidden = [self.forceTypeToggle selectedSegmentIndex] != 0;
+    bool distributed_loads_hidden = !point_loads_hidden;
+    
+    for (auto arrow : {&pArrow01, &pArrow02, &pArrow06, &pArrow1, &pArrow2, &pArrow3, &pArrow4, &pArrow5}) {
+        arrow->setHidden(point_loads_hidden);
+    }
+    
+    bool reaction_force_hidden = !self.rcnForceSwitch.on;
+
+    for (auto arrow : {&rArrow1, &rArrow2, &rArrow3}) {
+        arrow->setHidden(reaction_force_hidden);
+    }
+
+    loadDead.setHidden(distributed_loads_hidden || !self.deadVisSwitch.on);
+    loadSnow.setHidden(distributed_loads_hidden || !self.snowVisSwitch.on);
+    loadWind.setHidden(distributed_loads_hidden || !self.windVisSwitch.on);
+    
+    // Disable distributed load visibility switches if not active
+    [self.deadVisSwitch setEnabled:!distributed_loads_hidden];
+    [self.snowVisSwitch setEnabled:!distributed_loads_hidden];
+    [self.windVisSwitch setEnabled:!distributed_loads_hidden];
+
 }
 
 - (IBAction)loadsChanged:(id)sender {
+    [self updateLoads];
+}
+
+-(void)updateLoads {
     double snow_depth_in = self.snowSlider.value * maxSnowDepth;
     [self.snowDepthLabel setText:[NSString stringWithFormat:@"%.0f in.", snow_depth_in]];
     
@@ -245,6 +315,10 @@ const static double maxWindSpeed = 100;
     double load_p4 = (load_wind1 + load_wind2) * 17.5 / 1000.;
     double load_p5 = (load_wind1 + load_wind2) * 6.47 / 1000.;
     double load_p06 = (load_wind1 + load_wind2) * 11.03 / 1000.;
+
+    loadSnow.setLoad(snow_load / 1000);
+    loadDead.setLoad(dead_load / 1000);
+    loadWind.setLoad((load_wind1 + load_wind2) / 1000);
     
     double A_data[100] = {
     //           F1      F2      F3      F4      F5      F6      F7      R1      R2      R3
@@ -298,8 +372,6 @@ const static double maxWindSpeed = 100;
     // Colors of trusses for showing intensity
     const float MAX_MAG = 40;
     auto color_member = [&](Line3d& memb, float val) {
-        // float mag = std::abs(val);
-        // mag = std::min(max_mag, mag);
         float normalized = val / MAX_MAG;
         // clamp to [-1, +1]
         normalized = std::max<float>(-1, std::min<float>(1, normalized));
