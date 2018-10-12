@@ -17,6 +17,7 @@
 #include "line3d.h"
 #include "grabbableArrow.h"
 #include "LoadMarker.h"
+#include "Overlaylabel.h"
 
 @interface CattScene: NSObject <StructureScene> {
     id<ARViewController> managingParent;
@@ -34,6 +35,11 @@
 
     // Distributed loads
     LoadMarker loadDead, loadSnow, loadWind;
+    
+    // Labels for truss members
+    OverlayLabel labelM1, labelM2, labelM3, labelM4, labelM5, labelM6, labelM7;
+    std::vector<OverlayLabel> membLabels;
+    std::vector<SCNNode*> labelEmpties;
 }
 
 @property (nonatomic, retain) IBOutlet SceneTemplateView *viewFromNib;

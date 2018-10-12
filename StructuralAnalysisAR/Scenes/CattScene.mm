@@ -74,6 +74,33 @@ const static double maxWindSpeed = 100;
         memb->addAsChild(rootNode);
         memb->setThickness(2);
     }
+
+    // Place labels for truss members
+    labelEmpties.resize(7);
+    membLabels.resize(7);
+    for (int i = 0; i < 7; ++i) {
+        labelEmpties[i] = [SCNNode node];
+        membLabels[i].setScenes(skScene, scnView);
+        membLabels[i].setObject(labelEmpties[i]);
+        [rootNode addChildNode:labelEmpties[i]];
+    }
+    auto moveLabel = [&](GLKVector3 p1, GLKVector3 p2, int idx) {
+        auto pos = GLKVector3Divide(
+            GLKVector3Add(p1, p2),
+            GLKVector3Make(2, 2, 2)
+        );
+        labelEmpties[idx].position = SCNVector3FromGLKVector3(pos);
+        membLabels[idx].markPosDirty();
+    };
+    moveLabel(origin, pt1, 0);
+    moveLabel(pt1, pt2, 1);
+    moveLabel(pt2, pt3, 2);
+    moveLabel(pt3, rightCorner, 3);
+    moveLabel(origin, pt3, 4);
+    moveLabel(pt1, rightCorner, 5);
+    moveLabel(pt1, pt3, 6);
+    membLabels[4].setCenter(0.2, 1);
+    membLabels[5].setCenter(0.8, 1);
     
     
     // Joint indicators
@@ -197,6 +224,9 @@ const static double maxWindSpeed = 100;
     for (auto arrow : {&pArrow01, &pArrow02, &pArrow06, &pArrow1, &pArrow2, &pArrow3, &pArrow4, &pArrow5,
                        &rArrow1, &rArrow2, &rArrow3}) {
         arrow->doUpdate();
+    }
+    for (auto& label : membLabels) {
+        label.doUpdate();
     }
     loadDead.doUpdate();
     loadSnow.doUpdate();
@@ -358,6 +388,15 @@ const static double maxWindSpeed = 100;
     double R1 = c.at<double>(7, 0);
     double R2 = c.at<double>(8, 0);
     double R3 = c.at<double>(9, 0);
+    
+    NSString* formatString = @"%.0f k";
+    membLabels[0].setText([NSString stringWithFormat:formatString, F1]);
+    membLabels[1].setText([NSString stringWithFormat:formatString, F2]);
+    membLabels[2].setText([NSString stringWithFormat:formatString, F3]);
+    membLabels[3].setText([NSString stringWithFormat:formatString, F4]);
+    membLabels[4].setText([NSString stringWithFormat:formatString, F5]);
+    membLabels[5].setText([NSString stringWithFormat:formatString, F6]);
+    membLabels[6].setText([NSString stringWithFormat:formatString, F7]);
     
     // Update arrows with calculated forces
     pArrow01.setIntensity(load_p01);
