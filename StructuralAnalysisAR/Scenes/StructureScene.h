@@ -46,10 +46,10 @@
 // Same as the renderer:updateAtTime() call for SceneKit
 - (void) scnRendererUpdateAt:(NSTimeInterval)time;
 
-- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event;
-- (void)touchesMoved:(NSSet<UITouch *> *) touches withEvent:(UIEvent *)event;
-- (void)touchesEnded:(NSSet<UITouch *> *) touches withEvent:(UIEvent *)event;
-- (void)touchesCancelled:(NSSet<UITouch *> *) touches withEvent:(UIEvent *)event;
+- (void)touchesBegan:(CGPoint)p farHitIs:(GLKVector3)farClipHit;
+- (void)touchesMoved:(CGPoint)p farHitIs:(GLKVector3)farClipHit;
+- (void)touchesEnded;
+- (void)touchesCancelled;
 
 // Instantiate various ARManager types
 - (ARManager*)makeStaticTracker;

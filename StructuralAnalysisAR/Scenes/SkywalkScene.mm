@@ -603,23 +603,8 @@
 
 // Touch handling
 
-- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    
-    //    NSAssert(touches.count == 1, @"number of touches != 1");
-    
-    //    CGPoint p = [[touches anyObject] locationInView:scnView];
-    // Use bounding boxes to increase the area that can be touched
-    //    NSDictionary* hitOptions = @{
-    //                                 SCNHitTestBoundingBoxOnlyKey: @YES
-    //                                 };
-    //    NSArray *hitResults = [scnView hitTest:p options:hitOptions];
-    CGPoint p = [[touches anyObject] locationInView:scnView];
-    GLKVector3 farClipHit = SCNVector3ToGLKVector3([scnView unprojectPoint:SCNVector3Make(p.x, p.y, 1.0)]);
-    //    GLKVector3 cameraPos = SCNVector3ToGLKVector3(cameraNode.position);
-    //    GLKVector3  touchRay = GLKVector3Normalize(GLKVector3Subtract(farClipHit, cameraPos));
-    
+- (void)touchesBegan:(CGPoint)p farHitIs:(GLKVector3)farClipHit {
     peopleLoad.touchBegan(SCNVector3ToGLKVector3(cameraNode.position), farClipHit);
-    //    }
     if (peopleLoad.draggingMode() != LoadMarker::none) {
         activeScenario = SCENARIO_VARIABLE;
         self.loadPresetBtn.selectedSegmentIndex = SCENARIO_VARIABLE;
@@ -628,12 +613,7 @@
 }
 
 
-- (void)touchesMoved:(NSSet<UITouch *> *) touches withEvent:(UIEvent *)event {
-    //    NSAssert(touches.count == 1, @"number of touches != 1");
-    //    printf("%lu touches\n", touches.count);
-    
-    CGPoint p = [[touches anyObject] locationInView:scnView];
-    GLKVector3 farClipHit = SCNVector3ToGLKVector3([scnView unprojectPoint:SCNVector3Make(p.x, p.y, 1.0)]);
+- (void)touchesMoved:(CGPoint)p farHitIs:(GLKVector3)farClipHit {
     GLKVector3 cameraPos = SCNVector3ToGLKVector3(cameraNode.position);
     GLKVector3  touchRay = GLKVector3Normalize(GLKVector3Subtract(farClipHit, cameraPos));
     
@@ -660,7 +640,7 @@
     //    self.sliderControl.value = dragValue;
 }
 
-- (void)touchesEnded:(NSSet<UITouch *> *) touches withEvent:(UIEvent *)event {
+- (void)touchesEnded {
     if (activeScenario == SCENARIO_VARIABLE) {
         if (peopleLoad.draggingMode() != LoadMarker::none && peopleLoad.draggingMode() != LoadMarker::horizontally) {
             [SCNTransaction begin];
@@ -679,7 +659,7 @@
                                                  }];
     }
 }
-- (void)touchesCancelled:(NSSet<UITouch *> *) touches withEvent:(UIEvent *)event {
+- (void)touchesCancelled {
     if (activeScenario == SCENARIO_VARIABLE) {
         peopleLoad.touchCancelled();
     }

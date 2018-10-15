@@ -53,6 +53,7 @@
 		0B4F29B11FE0846C0067C439 /* skywalk_south_far.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0B4F29B01FE0846C0067C439 /* skywalk_south_far.jpg */; };
 		0B573972216BF32D00133033 /* cattView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B3E5964216BE5F600027841 /* cattView.xib */; };
 		0B573975216EA00800133033 /* colorConversion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B573973216EA00800133033 /* colorConversion.cpp */; };
+		0B5739772171692C00133033 /* catt_target2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0B5739762171692C00133033 /* catt_target2.jpg */; };
 		0B5A92BB2006BA6D00D58422 /* moment_arrow.obj in Resources */ = {isa = PBXBuildFile; fileRef = 0B5A92BA2006BA6D00D58422 /* moment_arrow.obj */; };
 		0B5D638F204F31AD003384C4 /* TownBldgScene.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B5D638E204F31AD003384C4 /* TownBldgScene.mm */; };
 		0B5D6391204F36D4003384C4 /* townBldgView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B5D6390204F36D4003384C4 /* townBldgView.xib */; };
@@ -182,6 +183,7 @@
 		0B4F29B01FE0846C0067C439 /* skywalk_south_far.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = skywalk_south_far.jpg; path = image_assets/skywalk_south_far.jpg; sourceTree = "<group>"; };
 		0B573973216EA00800133033 /* colorConversion.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = colorConversion.cpp; sourceTree = "<group>"; };
 		0B573974216EA00800133033 /* colorConversion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = colorConversion.h; sourceTree = "<group>"; };
+		0B5739762171692C00133033 /* catt_target2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = catt_target2.jpg; path = image_assets/catt_target2.jpg; sourceTree = "<group>"; };
 		0B5A92BA2006BA6D00D58422 /* moment_arrow.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = moment_arrow.obj; sourceTree = "<group>"; };
 		0B5D638D204F31AC003384C4 /* TownBldgScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TownBldgScene.h; sourceTree = "<group>"; };
 		0B5D638E204F31AD003384C4 /* TownBldgScene.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TownBldgScene.mm; sourceTree = "<group>"; };
@@ -339,6 +341,7 @@
 				0B2AAB841FD87D4100DD477B /* skywalk_sunny_1920.png */,
 				0B0CBD0E1FDB40C800A9B223 /* skywalk_1920_back.png */,
 				0B04D3062162C0B500EBAEAA /* catt_target.jpg */,
+				0B5739762171692C00133033 /* catt_target2.jpg */,
 				0B2AB2AD208932CC00A2BCF6 /* semicircle.png */,
 				0B5D639520506AD0003384C4 /* arrow.png */,
 				0B2FEEF3207BD80A00712595 /* grip.png */,
@@ -663,6 +666,7 @@
 				0B0CBD0F1FDB40C800A9B223 /* skywalk_1920_back.png in Resources */,
 				0BD710F92034B2820095D753 /* campanile_1920_model_cutout.png in Resources */,
 				0B41E99A1F72BC04001DB823 /* home_blue.png in Resources */,
+				0B5739772171692C00133033 /* catt_target2.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

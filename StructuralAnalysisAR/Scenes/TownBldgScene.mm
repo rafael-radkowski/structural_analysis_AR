@@ -380,10 +380,7 @@ constexpr static float ocPlnPosY = -7.5;
     return pointSkScene;
 }
 
-- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    CGPoint p = [[touches anyObject] locationInView:scnView];
-    GLKVector3 farClipHit = SCNVector3ToGLKVector3([scnView unprojectPoint:SCNVector3Make(p.x, p.y, 1.0)]);
-    
+- (void)touchesBegan:(CGPoint)p farHitIs:(GLKVector3)farClipHit {
     // ------ 3D Touch Handling ------ //
     liveLoad.touchBegan(SCNVector3ToGLKVector3(cameraNode.position), farClipHit);
     sideLoad.touchBegan(SCNVector3ToGLKVector3(cameraNode.position), farClipHit);
@@ -396,10 +393,8 @@ constexpr static float ocPlnPosY = -7.5;
     }
 }
 
-- (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+- (void)touchesMoved:(CGPoint)p farHitIs:(GLKVector3)farClipHit {
     // ------ 3D Touch Handling ------ //
-    CGPoint p = [[touches anyObject] locationInView:scnView];
-    GLKVector3 farClipHit = SCNVector3ToGLKVector3([scnView unprojectPoint:SCNVector3Make(p.x, p.y, 1.0)]);
     GLKVector3 cameraPos = SCNVector3ToGLKVector3(cameraNode.position);
     GLKVector3  touchRay = GLKVector3Normalize(GLKVector3Subtract(farClipHit, cameraPos));
     
@@ -447,14 +442,14 @@ constexpr static float ocPlnPosY = -7.5;
     }
 }
 
-- (void)touchesCancelled:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+- (void)touchesCancelled {
     liveLoad.touchCancelled();
     sideLoad.touchCancelled();
     
     draggingJointBox = false;
 }
 
-- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+- (void)touchesEnded {
     if (liveLoad.draggingMode() != LoadMarker::none) {
         [SCNTransaction begin];
         [SCNTransaction setAnimationDuration:0.5];

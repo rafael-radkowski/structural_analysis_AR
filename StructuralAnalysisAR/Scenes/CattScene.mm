@@ -20,7 +20,8 @@
 
 // Constants
 const static double maxSnowDepth = 25;
-const static double maxWindSpeed = 100;
+const static double maxWindSpeed = 150;
+const static double dead_load = 325;
 
 @implementation CattScene
 
@@ -162,14 +163,14 @@ const static double maxWindSpeed = 100;
     rArrow3.setColor(0, 1, 0);
 
     // Distributed loads
-    loadDead = LoadMarker(5);
-    loadSnow = LoadMarker(5);
+    loadDead = LoadMarker(5, false, 1, 3);
+    loadSnow = LoadMarker(5, false, 1, 3);
     loadWind = LoadMarker(5);
 
     float dist_load_gap = 2;
     float dead_load_height = 10;
     loadDead.setPosition(GLKVector3Make(origin.x, origin.y + 24.75 + dist_load_gap, origin.z));
-    loadDead.setInputRange(0, 0.325);
+    loadDead.setInputRange(0, dead_load / 1000);
     loadDead.setMinHeight(5);
     loadDead.setMaxHeight(dead_load_height);
     loadDead.setEnds(0, rightCorner.x - origin.x);
@@ -177,8 +178,10 @@ const static double maxWindSpeed = 100;
     loadDead.addAsChild(rootNode);
     loadDead.setScenes(skScene, scnView);
 
+    float load_input_max = 0.5;
+    
     loadSnow.setPosition(GLKVector3Make(origin.x, origin.y + 24.75 + dist_load_gap + dead_load_height, origin.z));
-    loadSnow.setInputRange(0, 0.5);
+    loadSnow.setInputRange(0, load_input_max);
     loadSnow.setMinHeight(5);
     loadSnow.setMaxHeight(15);
     loadSnow.setEnds(0, rightCorner.x - origin.x);
@@ -190,7 +193,7 @@ const static double maxWindSpeed = 100;
     loadWind.setPosition(GLKVector3Make(origin.x - dist_load_gap*std::cos(M_PI/4),
                                         origin.y + dist_load_gap*std::sin(M_PI/4),
                                         origin.z));
-    loadWind.setInputRange(0, 0.5);
+    loadWind.setInputRange(0, load_input_max);
     loadWind.setMinHeight(5);
     loadWind.setMaxHeight(15);
     loadWind.setEnds(0, 35);
@@ -236,12 +239,14 @@ const static double maxWindSpeed = 100;
 
 // Make various AR Managers
 - (ARManager*)makeStaticTracker {
-    // GLKMatrix4 trans_mat = GLKMatrix4MakeTranslation(74, -39, 260);
-    // GLKMatrix4 rot_x_mat = GLKMatrix4MakeXRotation(0.3);
-    GLKMatrix4 trans_mat = GLKMatrix4MakeTranslation(30, 0, 170);
-    GLKMatrix4 rot_x_mat = GLKMatrix4MakeXRotation(0.0);
-    GLKMatrix4 cameraMatrix = GLKMatrix4Multiply(rot_x_mat, trans_mat);
-    return new StaticARManager(scnView, scnView.scene, cameraMatrix, @"catt_target.jpg");
+    GLKMatrix4 trans_mat = GLKMatrix4MakeTranslation(24, -3, 170);
+    GLKMatrix4 rot_x_mat = GLKMatrix4MakeXRotation(0.65);
+    GLKMatrix4 rot_y_mat = GLKMatrix4MakeYRotation(0.15);
+//    GLKMatrix4 trans_mat = GLKMatrix4MakeTranslation(30, 0, 170);
+//    GLKMatrix4 rot_x_mat = GLKMatrix4MakeXRotation(0.0);
+    GLKMatrix4 rot_mat = GLKMatrix4Multiply(rot_y_mat, rot_x_mat);
+    GLKMatrix4 cameraMatrix = GLKMatrix4Multiply(rot_mat, trans_mat);
+    return new StaticARManager(scnView, scnView.scene, cameraMatrix, @"catt_target2.jpg");
 }
 
 - (ARManager*)makeIndoorTracker {
@@ -256,23 +261,41 @@ const static double maxWindSpeed = 100;
     return new cvARManager(scnView, scnView.scene, cvStructure_t::campanile, rotMat);
 }
 
-- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    CGPoint p = [[touches anyObject] locationInView:scnView];
-    GLKVector3 farClipHit = SCNVector3ToGLKVector3([scnView unprojectPoint:SCNVector3Make(p.x, p.y, 1.0)]);
+- (void)touchesBegan:(CGPoint)p farHitIs:(GLKVector3)farClipHit {
+    GLKVector3 cameraPos = SCNVector3ToGLKVector3(cameraNode.position);
+    loadSnow.touchBegan(cameraPos, farClipHit);
+    loadWind.touchBegan(cameraPos, farClipHit);
 }
 
-- (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    
-    CGPoint p = [[touches anyObject] locationInView:scnView];
-    GLKVector3 farClipHit = SCNVector3ToGLKVector3([scnView unprojectPoint:SCNVector3Make(p.x, p.y, 1.0)]);
+- (void)touchesMoved:(CGPoint)p farHitIs:(GLKVector3)farClipHit {
     GLKVector3 cameraPos = SCNVector3ToGLKVector3(cameraNode.position);
     GLKVector3  touchRay = GLKVector3Normalize(GLKVector3Subtract(farClipHit, cameraPos));
+
+    if (loadSnow.draggingMode() & LoadMarker::vertically) {
+        double dragValue = 1000 * loadSnow.getDragValue(cameraPos, touchRay);
+        double snow_depth_in = dragValue * (12./200);
+        [self.snowSlider setValue:(snow_depth_in / maxSnowDepth)];
+        [self updateLoads];
+    }
+    if (loadWind.draggingMode() & LoadMarker::vertically) {
+        double dragValue = 1000 * loadWind.getDragValue(cameraPos, touchRay);
+        double c = 0.00256 * 0.915 * 0.85 * std::cos(M_PI/4) * 0.85;
+        double v2 = dragValue / c;
+        double v = std::sqrt(v2);
+        [self.windSlider setValue:v / maxWindSpeed];
+        [self updateLoads];
+    }
+
 }
 
-- (void)touchesCancelled:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+- (void)touchesCancelled {
+    loadSnow.touchCancelled();
+    loadWind.touchCancelled();
 }
 
-- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+- (void)touchesEnded {
+    loadSnow.touchEnded();
+    loadWind.touchEnded();
 }
 
 - (void)scnRendererUpdateAt:(NSTimeInterval)time {
@@ -319,7 +342,7 @@ const static double maxWindSpeed = 100;
     double wind_speed_mph = self.windSlider.value * maxWindSpeed;
     [self.windSpeedLabel setText:[NSString stringWithFormat:@"%.0f mph", wind_speed_mph]];
     
-    double snow_load = snow_depth_in * (1./12) * 20 * 10;
+    double snow_load = snow_depth_in * (200./12);
     double load_p1s = 16.96 * snow_load;
     double load_p2s = 9.167 * snow_load;
     double load_p3s = 16.96 * snow_load;
@@ -327,7 +350,6 @@ const static double maxWindSpeed = 100;
     double load_p02s = 7.792 * snow_load;
     
     // dead loads
-    double dead_load = 325;
     double load_p1d = 16.96 * dead_load;
     double load_p2d = 9.167 * dead_load;
     double load_p3d = 16.96 * dead_load;

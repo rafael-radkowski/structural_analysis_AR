@@ -297,17 +297,12 @@ static const double MOM_OF_INERTIA = 2334;
     return new cvARManager(scnView, scnView.scene, cvStructure_t::campanile, rotMat);
 }
 
-- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    CGPoint p = [[touches anyObject] locationInView:scnView];
-    GLKVector3 farClipHit = SCNVector3ToGLKVector3([scnView unprojectPoint:SCNVector3Make(p.x, p.y, 1.0)]);
-
+- (void)touchesBegan:(CGPoint)p farHitIs:(GLKVector3)farClipHit {
     windwardSideLoad.touchBegan(SCNVector3ToGLKVector3(cameraNode.position), farClipHit);
 }
 
-- (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+- (void)touchesMoved:(CGPoint)p farHitIs:(GLKVector3)farClipHit {
     
-    CGPoint p = [[touches anyObject] locationInView:scnView];
-    GLKVector3 farClipHit = SCNVector3ToGLKVector3([scnView unprojectPoint:SCNVector3Make(p.x, p.y, 1.0)]);
     GLKVector3 cameraPos = SCNVector3ToGLKVector3(cameraNode.position);
     GLKVector3  touchRay = GLKVector3Normalize(GLKVector3Subtract(farClipHit, cameraPos));
 
@@ -327,11 +322,11 @@ static const double MOM_OF_INERTIA = 2334;
     }
 }
 
-- (void)touchesCancelled:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+- (void)touchesCancelled {
     windwardSideLoad.touchCancelled();
 }
 
-- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+- (void)touchesEnded {
     // Dragging when touch ended
     if (windwardSideLoad.draggingMode() & LoadMarker::vertically) {
         [[SEGAnalytics sharedAnalytics] track:trk_campanile_loadSetTouch

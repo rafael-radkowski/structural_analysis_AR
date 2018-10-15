@@ -414,18 +414,28 @@
 // Touch handling
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    [structureScene touchesBegan:touches withEvent:event];
+    SCNView *scnView = (SCNView *)self.view;
+
+    CGPoint p = [[touches anyObject] locationInView:scnView];
+    GLKVector3 farClipHit = SCNVector3ToGLKVector3([scnView unprojectPoint:SCNVector3Make(p.x, p.y, 1.0)]);
+
+    [structureScene touchesBegan:p farHitIs:farClipHit];
 }
 
 - (void)touchesMoved:(NSSet<UITouch *> *) touches withEvent:(UIEvent *)event {
-    [structureScene touchesMoved:touches withEvent:event];
+    SCNView *scnView = (SCNView *)self.view;
+
+    CGPoint p = [[touches anyObject] locationInView:scnView];
+    GLKVector3 farClipHit = SCNVector3ToGLKVector3([scnView unprojectPoint:SCNVector3Make(p.x, p.y, 1.0)]);
+
+    [structureScene touchesMoved:p farHitIs:farClipHit];
 }
 
 - (void)touchesEnded:(NSSet<UITouch *> *) touches withEvent:(UIEvent *)event {
-    [structureScene touchesEnded:touches withEvent:event];
+    [structureScene touchesEnded];
 }
 - (void)touchesCancelled:(NSSet<UITouch *> *) touches withEvent:(UIEvent *)event {
-    [structureScene touchesCancelled:touches withEvent:event];
+    [structureScene touchesCancelled];
 }
 
 
