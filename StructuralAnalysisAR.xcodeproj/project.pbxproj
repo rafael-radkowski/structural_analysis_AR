@@ -12,7 +12,6 @@
 		0B03583520054BAA00F75CD2 /* CampanileScene.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B03583320054BAA00F75CD2 /* CampanileScene.mm */; };
 		0B03583720055ABB00F75CD2 /* campanileView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B03583620055ABB00F75CD2 /* campanileView.xib */; };
 		0B04D305215ECC5300EBAEAA /* CattScene.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B04D303215ECC5300EBAEAA /* CattScene.mm */; };
-		0B04D3072162C0B500EBAEAA /* catt_target.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0B04D3062162C0B500EBAEAA /* catt_target.jpg */; };
 		0B04D30F2165103600EBAEAA /* SceneTemplateView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B04D30E2165103600EBAEAA /* SceneTemplateView.mm */; };
 		0B04D3112165109A00EBAEAA /* SceneTemplateView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B04D3102165109A00EBAEAA /* SceneTemplateView.xib */; };
 		0B0BEE6E1F87EFD4008BC076 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B0BEE6D1F87EFD4008BC076 /* GLKit.framework */; };
@@ -54,6 +53,8 @@
 		0B573972216BF32D00133033 /* cattView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B3E5964216BE5F600027841 /* cattView.xib */; };
 		0B573975216EA00800133033 /* colorConversion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B573973216EA00800133033 /* colorConversion.cpp */; };
 		0B5739772171692C00133033 /* catt_target2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0B5739762171692C00133033 /* catt_target2.jpg */; };
+		0B57397A21750B8800133033 /* catt_hall.dat in Resources */ = {isa = PBXBuildFile; fileRef = 0B57397821750B8800133033 /* catt_hall.dat */; };
+		0B57397B21750B8800133033 /* catt_hall.xml in Resources */ = {isa = PBXBuildFile; fileRef = 0B57397921750B8800133033 /* catt_hall.xml */; };
 		0B5A92BB2006BA6D00D58422 /* moment_arrow.obj in Resources */ = {isa = PBXBuildFile; fileRef = 0B5A92BA2006BA6D00D58422 /* moment_arrow.obj */; };
 		0B5D638F204F31AD003384C4 /* TownBldgScene.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B5D638E204F31AD003384C4 /* TownBldgScene.mm */; };
 		0B5D6391204F36D4003384C4 /* townBldgView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B5D6390204F36D4003384C4 /* townBldgView.xib */; };
@@ -129,7 +130,6 @@
 		0B03583620055ABB00F75CD2 /* campanileView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = campanileView.xib; sourceTree = "<group>"; };
 		0B04D303215ECC5300EBAEAA /* CattScene.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = CattScene.mm; sourceTree = "<group>"; };
 		0B04D304215ECC5300EBAEAA /* CattScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CattScene.h; sourceTree = "<group>"; };
-		0B04D3062162C0B500EBAEAA /* catt_target.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = catt_target.jpg; path = image_assets/catt_target.jpg; sourceTree = "<group>"; };
 		0B04D30D2165103600EBAEAA /* SceneTemplateView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SceneTemplateView.h; sourceTree = "<group>"; };
 		0B04D30E2165103600EBAEAA /* SceneTemplateView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SceneTemplateView.mm; sourceTree = "<group>"; };
 		0B04D3102165109A00EBAEAA /* SceneTemplateView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SceneTemplateView.xib; sourceTree = "<group>"; };
@@ -184,6 +184,8 @@
 		0B573973216EA00800133033 /* colorConversion.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = colorConversion.cpp; sourceTree = "<group>"; };
 		0B573974216EA00800133033 /* colorConversion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = colorConversion.h; sourceTree = "<group>"; };
 		0B5739762171692C00133033 /* catt_target2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = catt_target2.jpg; path = image_assets/catt_target2.jpg; sourceTree = "<group>"; };
+		0B57397821750B8800133033 /* catt_hall.dat */ = {isa = PBXFileReference; lastKnownFileType = file; name = catt_hall.dat; path = image_assets/catt_hall.dat; sourceTree = "<group>"; };
+		0B57397921750B8800133033 /* catt_hall.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = catt_hall.xml; path = image_assets/catt_hall.xml; sourceTree = "<group>"; };
 		0B5A92BA2006BA6D00D58422 /* moment_arrow.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = moment_arrow.obj; sourceTree = "<group>"; };
 		0B5D638D204F31AC003384C4 /* TownBldgScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TownBldgScene.h; sourceTree = "<group>"; };
 		0B5D638E204F31AD003384C4 /* TownBldgScene.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TownBldgScene.mm; sourceTree = "<group>"; };
@@ -340,7 +342,6 @@
 				0B6E6A9C1FCF7EB500EE7950 /* cutout_skywalk_3840x2160.png */,
 				0B2AAB841FD87D4100DD477B /* skywalk_sunny_1920.png */,
 				0B0CBD0E1FDB40C800A9B223 /* skywalk_1920_back.png */,
-				0B04D3062162C0B500EBAEAA /* catt_target.jpg */,
 				0B5739762171692C00133033 /* catt_target2.jpg */,
 				0B2AB2AD208932CC00A2BCF6 /* semicircle.png */,
 				0B5D639520506AD0003384C4 /* arrow.png */,
@@ -350,6 +351,8 @@
 				0B4F29B01FE0846C0067C439 /* skywalk_south_far.jpg */,
 				0BD038A41F97B38F004B65F6 /* low_clearance_sign.dat */,
 				0BD038A51F97B38F004B65F6 /* low_clearance_sign.xml */,
+				0B57397821750B8800133033 /* catt_hall.dat */,
+				0B57397921750B8800133033 /* catt_hall.xml */,
 				0B5F39E31F844CEF004870DE /* skywalk_far.dat */,
 				0B5F39E41F844CEF004870DE /* skywalk_far.xml */,
 				0B2FEEED207BD3E600712595 /* town.dat */,
@@ -632,7 +635,6 @@
 				0B2ACE1F2018F95900230D67 /* isuofficallogo_light.png in Resources */,
 				0B2FEEF0207BD3E700712595 /* town.xml in Resources */,
 				0BD038A61F97B38F004B65F6 /* low_clearance_sign.dat in Resources */,
-				0B04D3072162C0B500EBAEAA /* catt_target.jpg in Resources */,
 				0BD710F72029169B0095D753 /* campanile.xml in Resources */,
 				0B5F39E51F844CEF004870DE /* skywalk_far.dat in Resources */,
 				0BD71111203F48F70095D753 /* screenshot_blue.png in Resources */,
@@ -640,12 +642,14 @@
 				0B36C09B201BD28600D7B346 /* campanile_exterior.obj in Resources */,
 				0BDE98E31FBE521C003673F4 /* cutout_skywalk_1280x720.png in Resources */,
 				0BDF88E61F4B3BAE0014BFB7 /* testScene.scn in Resources */,
+				0B57397B21750B8800133033 /* catt_hall.xml in Resources */,
 				0BD711222049E08F0095D753 /* 0.05.png in Resources */,
 				0BD038A71F97B38F004B65F6 /* low_clearance_sign.xml in Resources */,
 				0B5D639B20586584003384C4 /* town_static.png in Resources */,
 				0B2FEEEF207BD3E700712595 /* town.dat in Resources */,
 				0B483BFB1F4DDB6F007A1D29 /* skywalk.jpg in Resources */,
 				0B483C001F4F8AF9007A1D29 /* arrow_base.obj in Resources */,
+				0B57397A21750B8800133033 /* catt_hall.dat in Resources */,
 				0B2ACE212019259900230D67 /* campanile_static.JPG in Resources */,
 				0B36C09C201BD28600D7B346 /* campanile_interior.obj in Resources */,
 				0B2AB2A820877F9000A2BCF6 /* town_model.obj in Resources */,

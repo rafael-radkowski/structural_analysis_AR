@@ -250,15 +250,19 @@ const static double dead_load = 325;
 }
 
 - (ARManager*)makeIndoorTracker {
-    GLKMatrix4 translation_mat = GLKMatrix4MakeTranslation(0, 50, 0);
+//    GLKMatrix4 translation_mat = GLKMatrix4MakeTranslation(0, 50, 0);
+//    GLKMatrix4 rot_x_mat = GLKMatrix4MakeXRotation(0.2);
+    GLKMatrix4 trans_mat = GLKMatrix4MakeTranslation(25, 0, 5);
     GLKMatrix4 rot_x_mat = GLKMatrix4MakeXRotation(0.2);
-    GLKMatrix4 transform_mat = GLKMatrix4Multiply(rot_x_mat, translation_mat);
+    GLKMatrix4 rot_y_mat = GLKMatrix4MakeYRotation(0.2);
+    GLKMatrix4 rot_mat = GLKMatrix4Multiply(rot_y_mat, rot_x_mat);
+    GLKMatrix4 transform_mat = GLKMatrix4Multiply(rot_mat, trans_mat);
     return new VuforiaARManager((ARView*)scnView, scnView.scene, UIInterfaceOrientationLandscapeRight, @"catt_hall.xml", transform_mat);
 }
 
 - (ARManager*)makeOutdoorTracker {
     GLKMatrix4 rotMat = GLKMatrix4MakeYRotation(0.0);
-    return new cvARManager(scnView, scnView.scene, cvStructure_t::campanile, rotMat);
+    return new cvARManager(scnView, scnView.scene, cvStructure_t::catt, rotMat);
 }
 
 - (void)touchesBegan:(CGPoint)p farHitIs:(GLKVector3)farClipHit {

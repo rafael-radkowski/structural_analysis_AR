@@ -36,14 +36,27 @@ Vec<T,3> pointAngleToLine(Vec<T,2> origin, Vec<T,2> angle) {
     
 }
 
-MaskedImage::MaskedImage(const Mat img, int edge_threshold, float min_length, Vec2f line_angle, Vec2f line_origin, float angle_deviation, float mask_size, std::ostream& log)
+MaskedImage::MaskedImage(const Mat img,
+                         int edge_threshold,
+                         int hough_threshold,
+                         int hough_min_line_length,
+                         int hough_max_line_gap,
+                         float min_length,
+                         Vec2f line_angle,
+                         Vec2f line_origin,
+                         float angle_deviation,
+                         float mask_size,
+                         std::ostream& log)
     : log(log)
     , orig_img(img)
     , mask_size(mask_size)
     , line_angle(line_angle)
     , min_length(min_length)
     , angle_deviation(angle_deviation * (M_PI / 180.))
-    , edge_threshold(edge_threshold) {
+    , edge_threshold(edge_threshold)
+    , hough_threshold(hough_threshold)
+    , hough_min_line_length(hough_min_line_length)
+    , hough_max_line_gap(hough_max_line_gap) {
         ref_line_eqn = pointAngleToLine(line_origin, line_angle);
 }
 
@@ -209,7 +222,7 @@ std::vector<Vec4i> MaskedImage::findLines(bool probabilistic) {
     if (probabilistic) {
         // HoughLinesP(gray_img, lines, 1, 1 * CV_PI/180, 50, 90, 20);
         // HoughLinesP(gray_img, lines, 1, 1 * CV_PI/180, 200, 50, 300);
-        HoughLinesP(gray_img, lines, 1, 1 * CV_PI/180, 100, 50, 300);
+        HoughLinesP(gray_img, lines, 1, 1 * CV_PI/180, hough_threshold, hough_min_line_length, hough_max_line_gap);
     }
     else {
         std::vector<Vec2f> lines_full;

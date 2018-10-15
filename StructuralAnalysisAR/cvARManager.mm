@@ -161,6 +161,9 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure,
             model_width = 200;
 #endif
             mask_properties.edge_threshold = 80;
+            mask_properties.hough_threshold = 100;
+            mask_properties.hough_min_line_length = 50;
+            mask_properties.hough_max_line_gap = 300;
             mask_properties.min_length = 0.6;
             mask_properties.line_angle = cv::Vec2f(1, 0);
             mask_properties.line_origin = cv::Vec2f(0, 0);
@@ -171,6 +174,9 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure,
             bgImage = [UIImage imageNamed:@"campanile_1920_model_cutout.png"];
             model_width = 295; // calculated from campanile being 104px wide in image, and 16ft across
             mask_properties.edge_threshold = 130;
+            mask_properties.hough_threshold = 100;
+            mask_properties.hough_min_line_length = 50;
+            mask_properties.hough_max_line_gap = 300;
             mask_properties.min_length = 0.15;
             mask_properties.line_angle = cv::Vec2f(0, 1);
             mask_properties.line_origin = cv::Vec2f(10000, 0);
@@ -181,12 +187,26 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure,
             bgImage = [UIImage imageNamed:@"town_ref_flat_eq.png"];
             model_width = 115.92; // 4 panels = 630, 38.035ft
             mask_properties.edge_threshold = 130;
+            mask_properties.hough_threshold = 100;
+            mask_properties.hough_min_line_length = 50;
+            mask_properties.hough_max_line_gap = 300;
             mask_properties.min_length = 0.15;
             mask_properties.line_angle = cv::Vec2f(0, -1);
             mask_properties.line_origin = cv::Vec2f(0, 0);
             mask_properties.mask_width = 0.5;
             mask_properties.equalize_hist = true;
             break;
+        case catt:
+            mask_properties.edge_threshold = 200;
+            mask_properties.hough_threshold = 200;
+            mask_properties.hough_min_line_length = 80;
+            mask_properties.hough_max_line_gap = 30;
+            mask_properties.min_length = 0.14;
+            mask_properties.line_angle = cv::Vec2f(0, -1);
+            mask_properties.line_origin = cv::Vec2f(0, 0);
+            mask_properties.mask_width = 0.37;
+            mask_properties.equalize_hist = true;
+
     }
 //    MaskedImage masked(cvMatFromUIImage(bgImage), mask_properties.edge_threshold, mask_properties.min_length, mask_properties.line_angle, mask_properties.line_origin, 15, mask_properties.mask_width);
 //    cv::Mat cropped = masked.getCropped();
@@ -435,7 +455,16 @@ void cvARManager::performTracking() {
         }
     }
     
-    MaskedImage masked(frame, mask_properties.edge_threshold, mask_properties.min_length, mask_properties.line_angle, mask_properties.line_origin, 15, mask_properties.mask_width);
+    MaskedImage masked(frame,
+                       mask_properties.edge_threshold,
+                       mask_properties.hough_threshold,
+                       mask_properties.hough_min_line_length,
+                       mask_properties.hough_max_line_gap,
+                       mask_properties.min_length,
+                       mask_properties.line_angle,
+                       mask_properties.line_origin,
+                       15,
+                       mask_properties.mask_width);
     cv::Mat cropped = masked.getCropped();
     cv::cvtColor(cropped, cropped, CV_BGR2GRAY);
     if (mask_properties.equalize_hist) {

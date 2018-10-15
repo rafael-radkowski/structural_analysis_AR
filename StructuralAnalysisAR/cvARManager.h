@@ -46,7 +46,8 @@
 typedef enum cvStructure {
     skywalk,
     campanile,
-    town
+    town,
+    catt
 } cvStructure_t;
 
 class cvARManager : public ARManager {
@@ -92,6 +93,9 @@ private:
     std::vector<cv::Point3f> model_pts_3d;
     struct MaskProperties {
         float edge_threshold;
+        int hough_threshold;
+        int hough_min_line_length;
+        int hough_max_line_gap;
         float min_length;
         cv::Vec2f line_angle;
         cv::Vec2f line_origin;

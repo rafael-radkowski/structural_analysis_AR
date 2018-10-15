@@ -7,7 +7,17 @@ class MaskedImage {
 public:
     // line_angle and line_origin define what to compare the detected lines against
     // The mask will grow in the direction to the left of the vector. e.g. to grow it downward, line_angle should be (-1,0)
-    MaskedImage(const cv::Mat img, int edge_threshold, float min_length, cv::Vec2f line_angle, cv::Vec2f line_origin, float angle_deviation, float mask_size, std::ostream& log = std::cout);
+    MaskedImage(const cv::Mat img,
+                int edge_threshold,
+                int hough_threshold,
+                int hough_min_line_length,
+                int hough_max_line_gap,
+                float min_length,
+                cv::Vec2f line_angle,
+                cv::Vec2f line_origin,
+                float angle_deviation,
+                float mask_size,
+                std::ostream& log = std::cout);
     cv::Mat getCropped();
 
     std::vector<cv::Vec4i> findLines(bool probabilistic);
@@ -34,6 +44,10 @@ private:
 
     float min_length, angle_deviation;
     int edge_threshold;
+
+    int hough_threshold;
+    int hough_min_line_length;
+    int hough_max_line_gap;
 
     cv::Rect crop_window;
 };
