@@ -38,7 +38,7 @@ GLKMatrix4 CVMat4ToGLKMat4(const cv::Mat& cvMat);
     callbackFunc(image);
 }
 @end
-static cv::Mat test_img;
+//static cv::Mat test_img;
 cvARManager::cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure, GLKMatrix4 pose_transform)
 : scene(scene)
 , currentTexture(0)
@@ -198,7 +198,7 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure,
             break;
         case catt:
             bgImage = [UIImage imageNamed:@"catt_ref_bweq.png"];
-            model_width = 23.84; // From measuring Catt 2nd floor blueprint
+            model_width = 45; // From measuring Catt 2nd floor blueprint
             mask_properties.edge_threshold = 160;
             mask_properties.hough_threshold = 100;
             mask_properties.hough_min_line_length = 50;
@@ -208,12 +208,12 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure,
             mask_properties.line_origin = cv::Vec2f(0, 0);
             mask_properties.mask_width = 0.4;
             mask_properties.equalize_hist = true;
-
+            break;
     }
 //    MaskedImage masked(cvMatFromUIImage(bgImage), mask_properties.edge_threshold, mask_properties.min_length, mask_properties.line_angle, mask_properties.line_origin, 15, mask_properties.mask_width);
 //    cv::Mat cropped = masked.getCropped();
     cv::Mat ref_img = cvMatFromUIImage(bgImage);
-    test_img = cvMatFromUIImage([UIImage imageNamed:@"0.png"]);
+//    test_img = cvMatFromUIImage([UIImage imageNamed:@"16.png"]);
     
 //    NSData* imageData = UIImagePNGRepresentation(UIImageFromCVMat(cropped));
 //    NSFileManager *fileManager = [NSFileManager defaultManager];//create instance of NSFileManager
@@ -225,11 +225,12 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure,
     matcher = ImageMatcher(ref_img, 6000, 0.8, 0.98, 4.0, std::cout);
 
 
-    const float model_height = (model_width * ((double)video_height / video_width));
+    const float model_height = (model_width * ((double)bgImage.size.height / bgImage.size.width));
     const std::vector<cv::KeyPoint>& model_keypoints = matcher.getRefKeypoints();
     model_pts_3d.resize(model_keypoints.size());
     float model_x_offset = 0;
     float model_y_offset = 0;
+    float model_z_offset = 0;
     float model_rotation_offset = 0.0;
     if (structure == skywalk) {
         model_x_offset = -7;
@@ -244,15 +245,16 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure,
         model_y_offset = -8.5;
     }
     else if (structure == catt) {
-        model_x_offset = 0;
-        model_y_offset = 0;
+        model_x_offset = 25;
+        model_y_offset = 20;
+        model_z_offset = -10;
     }
     float cos_angle = std::cos(model_rotation_offset);
     float sin_angle = std::sin(model_rotation_offset);
     for (size_t i = 0; i < model_keypoints.size(); ++i) {
         auto model_pt = model_keypoints[i].pt;
-        float unrotated_x = model_pt.x * (model_width / video_width) - (model_width / 2);
-        float unrotated_y = model_pt.y * (model_height / video_height) - (model_height / 2);
+        float unrotated_x = model_pt.x * (model_width / bgImage.size.width) - (model_width / 2);
+        float unrotated_y = model_pt.y * (model_height / bgImage.size.height) - (model_height / 2);
         // rotate
         model_pts_3d[i].x = unrotated_x * cos_angle - unrotated_y * sin_angle;
         model_pts_3d[i].y = unrotated_x * sin_angle + unrotated_y * cos_angle;
@@ -260,7 +262,7 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure,
         model_pts_3d[i].x += model_x_offset;
         model_pts_3d[i].y += model_y_offset;
         
-        model_pts_3d[i].z = 0;
+        model_pts_3d[i].z = model_z_offset;
     }
     
     cameraMatrix = GLKMatrix4Make(
@@ -319,11 +321,11 @@ void cvARManager::saveImg() {
 }
 
 void cvARManager::doFrame(int n_avg, std::function<void(CB_STATE)> cb_func) {
-//    saveImg();
+    saveImg();
     captured_frames.clear();
     most_inliers = 0;
-//    frames_to_capture = n_avg;
-        frames_to_capture = 1;
+    frames_to_capture = n_avg;
+//  frames_to_capture = 1;
     frame_callback = cb_func;
 
     
@@ -397,7 +399,7 @@ bool cvARManager::isTracked() {
 
 void cvARManager::processImage(cv::Mat& image) {
 //    cv::Mat overdrawn(image.size(), image.type());
-    image = test_img.clone();
+//    image = test_img.clone();
 
     if (saveNext) {
         static int img_idx = 0;
