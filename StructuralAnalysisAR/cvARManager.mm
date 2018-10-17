@@ -38,7 +38,7 @@ GLKMatrix4 CVMat4ToGLKMat4(const cv::Mat& cvMat);
     callbackFunc(image);
 }
 @end
-//static cv::Mat test_img;
+static cv::Mat test_img;
 cvARManager::cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure, GLKMatrix4 pose_transform)
 : scene(scene)
 , currentTexture(0)
@@ -197,21 +197,23 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure,
             mask_properties.equalize_hist = true;
             break;
         case catt:
-            mask_properties.edge_threshold = 200;
-            mask_properties.hough_threshold = 200;
-            mask_properties.hough_min_line_length = 80;
-            mask_properties.hough_max_line_gap = 30;
-            mask_properties.min_length = 0.14;
+            bgImage = [UIImage imageNamed:@"catt_ref_bweq.png"];
+            model_width = 23.84; // From measuring Catt 2nd floor blueprint
+            mask_properties.edge_threshold = 160;
+            mask_properties.hough_threshold = 100;
+            mask_properties.hough_min_line_length = 50;
+            mask_properties.hough_max_line_gap = 300;
+            mask_properties.min_length = 0.15;
             mask_properties.line_angle = cv::Vec2f(0, -1);
             mask_properties.line_origin = cv::Vec2f(0, 0);
-            mask_properties.mask_width = 0.37;
+            mask_properties.mask_width = 0.4;
             mask_properties.equalize_hist = true;
 
     }
 //    MaskedImage masked(cvMatFromUIImage(bgImage), mask_properties.edge_threshold, mask_properties.min_length, mask_properties.line_angle, mask_properties.line_origin, 15, mask_properties.mask_width);
 //    cv::Mat cropped = masked.getCropped();
     cv::Mat ref_img = cvMatFromUIImage(bgImage);
-//    test_img = cvMatFromUIImage([UIImage imageNamed:@"9.png"]);
+    test_img = cvMatFromUIImage([UIImage imageNamed:@"0.png"]);
     
 //    NSData* imageData = UIImagePNGRepresentation(UIImageFromCVMat(cropped));
 //    NSFileManager *fileManager = [NSFileManager defaultManager];//create instance of NSFileManager
@@ -240,6 +242,10 @@ cvARManager::cvARManager(UIView* view, SCNScene* scene, cvStructure_t structure,
     else if (structure == town) {
         model_x_offset = 38;
         model_y_offset = -8.5;
+    }
+    else if (structure == catt) {
+        model_x_offset = 0;
+        model_y_offset = 0;
     }
     float cos_angle = std::cos(model_rotation_offset);
     float sin_angle = std::sin(model_rotation_offset);
@@ -313,7 +319,7 @@ void cvARManager::saveImg() {
 }
 
 void cvARManager::doFrame(int n_avg, std::function<void(CB_STATE)> cb_func) {
-    saveImg();
+//    saveImg();
     captured_frames.clear();
     most_inliers = 0;
 //    frames_to_capture = n_avg;
@@ -391,7 +397,7 @@ bool cvARManager::isTracked() {
 
 void cvARManager::processImage(cv::Mat& image) {
 //    cv::Mat overdrawn(image.size(), image.type());
-//    image = test_img.clone();
+    image = test_img.clone();
 
     if (saveNext) {
         static int img_idx = 0;
