@@ -51,6 +51,8 @@
 @property (weak, nonatomic) IBOutlet UIView *snowVisView;
 @property (weak, nonatomic) IBOutlet UIView *windVisView;
 
+@property (weak, nonatomic) IBOutlet UIView *bottomBarView;
+
 @property (weak, nonatomic) IBOutlet UISwitch *rcnForceSwitch;
 @property (weak, nonatomic) IBOutlet UISlider *snowSlider;
 @property (weak, nonatomic) IBOutlet UISlider *windSlider;

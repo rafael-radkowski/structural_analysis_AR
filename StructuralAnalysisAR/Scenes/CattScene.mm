@@ -219,6 +219,9 @@ const static double dead_load = 325;
     [self.viewFromNib.visOptionsBox addArrangedSubview:self.snowVisView];
     [self.viewFromNib.visOptionsBox addArrangedSubview:self.windVisView];
     
+    // Put bottom bar into the contentView of SceneTemplateView, so the processing curtain is still above it
+    [self.viewFromNib.contentView insertSubview:self.bottomBarView aboveSubview:self.viewFromNib.bottomBarView];
+    
     [self setVisibilities];
     [self updateLoads];
 }

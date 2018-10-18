@@ -4,6 +4,7 @@
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -11,6 +12,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CattScene">
             <connections>
+                <outlet property="bottomBarView" destination="aYd-4c-Hga" id="Rxo-Ni-0Fl"/>
                 <outlet property="deadVisSwitch" destination="gRM-oi-6CW" id="Wzp-Bm-aWJ"/>
                 <outlet property="deadVisView" destination="fnd-RV-0Cv" id="gDd-as-1sF"/>
                 <outlet property="forceTypeToggle" destination="SJH-Zg-pqQ" id="c4A-hF-uye"/>

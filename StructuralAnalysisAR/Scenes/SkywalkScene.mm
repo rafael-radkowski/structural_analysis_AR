@@ -186,6 +186,11 @@
     [self.viewFromNib.visOptionsBox addArrangedSubview:self.rcnForceView];
     [self.viewFromNib.visOptionsBox addArrangedSubview:self.rulerSwitchView];
     
+    // Put bottom bar into the contentView of SceneTemplateView, so the processing curtain is still above it
+    [self.viewFromNib.contentView insertSubview:self.bottomBarView aboveSubview:self.viewFromNib.bottomBarView];
+    // Make sure definitions box is behind bottom bar
+    [self.viewFromNib.contentView insertSubview:self.defnsView belowSubview:self.viewFromNib.bottomBarView];
+    
     // Hide visualization toggles switches in guided mode
     if (self.guided) {
         self.visOptionsBox.hidden = YES;

@@ -89,6 +89,8 @@
 @property (weak, nonatomic) IBOutlet UIButton *prevBtn;
 @property (weak, nonatomic) IBOutlet UIButton *nextBtn;
 
+@property (weak, nonatomic) IBOutlet UIView *bottomBarView;
+
 @property (weak, nonatomic) IBOutlet UIView *defnsView;
 - (IBAction)defnsPressed:(id)sender;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *defnsHeight;

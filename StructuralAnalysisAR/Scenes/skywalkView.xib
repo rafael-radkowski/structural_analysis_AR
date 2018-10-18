@@ -11,6 +11,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SkywalkScene">
             <connections>
+                <outlet property="bottomBarView" destination="36Q-fD-OQO" id="kzb-9J-VNT"/>
                 <outlet property="deadLoadLabel" destination="Etl-2u-hJc" id="WdX-Rs-t9K"/>
                 <outlet property="deadLoadSwitch" destination="H19-hC-7p2" id="PFL-Ak-pyZ"/>
                 <outlet property="deadLoadView" destination="Zg4-29-Kar" id="1cS-ex-cyL"/>

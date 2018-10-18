@@ -236,10 +236,10 @@ static const double MOM_OF_INERTIA = 2334;
     [self.viewFromNib.visOptionsBox addArrangedSubview:self.swayVisView];
     [self.viewFromNib.visOptionsBox addArrangedSubview:self.scaleLegendView];
     
-    // Add custom bottomBarView for this scene to the main one so it is not obscured
-    [self.viewFromNib.bottomBarView addSubview:self.bottomBarView];
-    
-    [self.viewFromNib.contentView insertSubview:self.plotViewBox atIndex:0];
+    // Put bottom bar into the contentView of SceneTemplateView, so the processing curtain is still above it
+    [self.viewFromNib.contentView insertSubview:self.bottomBarView aboveSubview:self.viewFromNib.bottomBarView];
+    // Make sure spectral plot is behind bottombarview
+    [self.viewFromNib.contentView insertSubview:self.plotViewBox belowSubview:self.viewFromNib.bottomBarView];
     
     CGColor* textColor = [UIColor colorWithRed:0.08235 green:0.49412 blue:0.9843 alpha:1.0].CGColor;
     
