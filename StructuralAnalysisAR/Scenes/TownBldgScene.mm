@@ -109,46 +109,11 @@ constexpr static float ocPlnPosY = -7.5;
     
     
     // ---------------- 2D joints ---------------- //
-    
     float jointBoxWidth = 300;
     float jointBoxHeight = 585;
-    jointBox = [SKShapeNode shapeNodeWithRect:CGRectMake(0, 0, jointBoxWidth, jointBoxHeight)];
-    jointBox.strokeColor = [UIColor colorWithWhite:0.2 alpha:1.0];
-    jointBox.fillColor = [UIColor colorWithWhite:0.8 alpha:0.5];
+    jointBox = [[SKInfoBox alloc] initWithTitle:@"Fixed Joints" withSize:CGSizeMake(jointBoxWidth, jointBoxHeight) titleSize:40];
+    
     jointBox.position = CGPointMake(scnView.frame.size.width - jointBoxWidth - 50, scnView.frame.size.height - jointBoxHeight - 50);
-    jointBox.zPosition = -1; // Don't cover other nodes
-    // Dark background behind title
-    float titleBoxHeight = 40;
-    SKShapeNode* jointBoxTitleBg = [SKShapeNode shapeNodeWithRect:CGRectMake(0, 0, jointBoxWidth, titleBoxHeight)];
-    jointBoxTitleBg.fillColor = [UIColor colorWithWhite:0.45 alpha:1.0];
-    jointBoxTitleBg.strokeColor = [UIColor colorWithWhite:0.0 alpha:0.0]; // no stroke
-    jointBoxTitleBg.position = CGPointMake(0, jointBoxHeight - titleBoxHeight);
-    jointBoxTitleBg.zPosition = 1;
-    [jointBox addChild:jointBoxTitleBg];
-    // make title for joint box
-    SKLabelNode* jointBoxTitle = [SKLabelNode labelNodeWithFontNamed:@"Helvetica"];
-    jointBoxTitle.text = @"Fixed Joints";
-    jointBoxTitle.fontColor = [UIColor blackColor];
-    jointBoxTitle.fontSize = titleBoxHeight - 5;
-    jointBoxTitle.verticalAlignmentMode = SKLabelVerticalAlignmentModeCenter;
-    jointBoxTitle.position = CGPointMake(150, titleBoxHeight / 2);
-    jointBoxTitle.zPosition = 1;
-    [jointBoxTitleBg addChild:jointBoxTitle];
-    // Grip indicator
-    SKSpriteNode* gripper = [SKSpriteNode spriteNodeWithImageNamed:@"grip.png"];
-    gripper.anchorPoint = CGPointMake(0, 0.5);
-    float gripHeight = titleBoxHeight - 6;
-    [gripper scaleToSize:CGSizeMake(gripHeight * 2. / 5, gripHeight)];
-    gripper.position = CGPointMake(5, titleBoxHeight / 2);
-    [jointBoxTitleBg addChild:gripper];
-    gripper.zPosition = 2;
-    // make underline for title
-    CGPoint titlePoints[2] = {CGPointMake(0, 0), CGPointMake(jointBoxWidth, 0)};
-    SKShapeNode* titleUnderline = [SKShapeNode shapeNodeWithPoints:titlePoints count:2];
-    titleUnderline.strokeColor = [UIColor blackColor];
-    titleUnderline.lineWidth = 2;
-    titleUnderline.position = CGPointMake(0, jointBoxHeight - titleBoxHeight);
-    [jointBox addChild:titleUnderline];
     
     // Fixed joint corners
     cornerB = [[SKCornerNode alloc] init];
@@ -381,16 +346,16 @@ constexpr static float ocPlnPosY = -7.5;
 }
 
 - (void)touchesBegan:(CGPoint)p farHitIs:(GLKVector3)farClipHit {
-    // ------ 3D Touch Handling ------ //
-    liveLoad.touchBegan(SCNVector3ToGLKVector3(cameraNode.position), farClipHit);
-    sideLoad.touchBegan(SCNVector3ToGLKVector3(cameraNode.position), farClipHit);
-    
     // ------ 2D Touch Handling ------ //
     CGPoint pointSkScene = [self convertTouchToSKScene:p];
-    if ([jointBox containsPoint:pointSkScene]) {
-        draggingJointBox = true;
-        lastDragPt = pointSkScene;
+    BOOL on_box = [jointBox touchBegan:pointSkScene];
+    
+    // ------ 3D Touch Handling ------ //
+    if (!on_box) {
+        liveLoad.touchBegan(SCNVector3ToGLKVector3(cameraNode.position), farClipHit);
+        sideLoad.touchBegan(SCNVector3ToGLKVector3(cameraNode.position), farClipHit);
     }
+    
 }
 
 - (void)touchesMoved:(CGPoint)p farHitIs:(GLKVector3)farClipHit {
@@ -430,23 +395,18 @@ constexpr static float ocPlnPosY = -7.5;
     
     // ------ 2D Touch Handling ------ //
     CGPoint pointSkScene = [self convertTouchToSKScene:p];
-    if (draggingJointBox) {
-        CGPoint moved = CGPointMake(pointSkScene.x - lastDragPt.x, pointSkScene.y - lastDragPt.y);
-        CGPoint newPos = CGPointMake(jointBox.position.x + moved.x, jointBox.position.y + moved.y);
-        // keep box within scene
-        newPos.x = std::min<double>(std::max<double>(0., newPos.x), skScene.size.width - jointBox.frame.size.width);
-        newPos.y = std::min<double>(std::max<double>(self.bottomBarView.frame.size.height, newPos.y), skScene.size.height - jointBox.frame.size.height);
-        // blah testing stuff
-        jointBox.position = newPos;
-        lastDragPt = pointSkScene;
-    }
+    CGRect skBounds = CGRectMake(0,
+                                 self.bottomBarView.frame.size.height,
+                                 skScene.size.width,
+                                 skScene.size.height - self.bottomBarView.frame.size.height);
+    [jointBox touchMoved:pointSkScene limitTo:skBounds];
 }
 
 - (void)touchesCancelled {
     liveLoad.touchCancelled();
     sideLoad.touchCancelled();
     
-    draggingJointBox = false;
+    [jointBox touchCancelled];
 }
 
 - (void)touchesEnded {
@@ -482,7 +442,7 @@ constexpr static float ocPlnPosY = -7.5;
     liveLoad.touchEnded();
     sideLoad.touchEnded();
     
-    draggingJointBox = false;
+    [jointBox touchEnded];
 }
 
 - (IBAction)visToggled:(id)sender {

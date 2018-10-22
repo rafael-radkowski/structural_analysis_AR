@@ -75,33 +75,6 @@ const static double dead_load = 325;
         memb->addAsChild(rootNode);
         memb->setThickness(2);
     }
-
-    // Place labels for truss members
-    labelEmpties.resize(7);
-    membLabels.resize(7);
-    for (int i = 0; i < 7; ++i) {
-        labelEmpties[i] = [SCNNode node];
-        membLabels[i].setScenes(skScene, scnView);
-        membLabels[i].setObject(labelEmpties[i]);
-        [rootNode addChildNode:labelEmpties[i]];
-    }
-    auto moveLabel = [&](GLKVector3 p1, GLKVector3 p2, int idx) {
-        auto pos = GLKVector3Divide(
-            GLKVector3Add(p1, p2),
-            GLKVector3Make(2, 2, 2)
-        );
-        labelEmpties[idx].position = SCNVector3FromGLKVector3(pos);
-        membLabels[idx].markPosDirty();
-    };
-    moveLabel(origin, pt1, 0);
-    moveLabel(pt1, pt2, 1);
-    moveLabel(pt2, pt3, 2);
-    moveLabel(pt3, rightCorner, 3);
-    moveLabel(origin, pt3, 4);
-    moveLabel(pt1, rightCorner, 5);
-    moveLabel(pt1, pt3, 6);
-    membLabels[4].setCenter(0.2, 1);
-    membLabels[5].setCenter(0.8, 1);
     
     
     // Joint indicators
@@ -201,6 +174,63 @@ const static double dead_load = 325;
     loadWind.addAsChild(rootNode);
     loadWind.setScenes(skScene, scnView);
     
+    // Forces Box
+    int forcesBoxWidth = 250;
+    int forcesBoxHeight = 380;
+    int forcesTitleSize = 35;
+    int padding = 10;
+    
+    forcesBox = [[SKInfoBox alloc] initWithTitle:@"Member Forces" withSize:CGSizeMake(forcesBoxWidth, forcesBoxHeight) titleSize:forcesTitleSize];
+    forcesBox.position = CGPointMake(scnView.frame.size.width - forcesBoxWidth - 20, scnView.frame.size.height - forcesBoxHeight - 150);
+    
+    SKSpriteNode* memberKey = [SKSpriteNode spriteNodeWithImageNamed:@"catt_member_key.png"];
+    // Place key image to fill box width with 10px padding
+    memberKey.anchorPoint = CGPointMake(0, 1);
+    float keySize = memberKey.frame.size.width;
+    float keyScale = (forcesBoxWidth - (2 * padding)) / keySize;
+    memberKey.xScale = memberKey.yScale = keyScale;
+    memberKey.position = CGPointMake(padding, forcesBoxHeight - forcesTitleSize - padding);
+    [forcesBox addChild:memberKey];
+    
+    membLabels.resize(7);
+    membValues.resize(7);
+    float labelHeight = 30;
+    float labelsStart = forcesBoxHeight - forcesTitleSize - padding - memberKey.frame.size.height - padding;
+    for (int i = 0; i < 7; ++i) {
+        // text label to hold value of truss force
+        membLabels[i] = [SKLabelNode labelNodeWithFontNamed:@"Helvetica"];
+        // "A", or "B", etc. corresponding to memberKey
+        SKLabelNode* membTitleLabel = [SKLabelNode labelNodeWithFontNamed:@"Helvetica"];
+        membTitleLabel.text = [NSString stringWithFormat:@"%c:", 'A'+i];
+        
+        // formatting, alignment, etc.
+        membTitleLabel.horizontalAlignmentMode = SKLabelHorizontalAlignmentModeLeft;
+        membLabels[i].horizontalAlignmentMode = SKLabelHorizontalAlignmentModeRight;
+        membLabels[i].fontSize = membTitleLabel.fontSize = labelHeight - 5;
+        membLabels[i].fontColor = membTitleLabel.fontColor = [UIColor blackColor];
+        membLabels[i].verticalAlignmentMode = membTitleLabel.verticalAlignmentMode = SKLabelVerticalAlignmentModeTop;
+        
+        // position
+        membLabels[i].position = CGPointMake(forcesBoxWidth - padding, labelsStart - i*labelHeight);
+        membTitleLabel.position = CGPointMake(padding, labelsStart - i*labelHeight);
+        
+        // create shading on every other row for readability
+        if (i % 2 == 0) {
+            SKShapeNode* shadeBox = [SKShapeNode shapeNodeWithRect:CGRectMake(0, 0, forcesBoxWidth, labelHeight)];
+            // Not ideal, just eyeballed to get at 5px offset
+            shadeBox.position = CGPointMake(0, labelsStart - (i+1)*labelHeight + 5);
+            shadeBox.fillColor = [UIColor colorWithWhite:0.7 alpha:0.7];
+            shadeBox.strokeColor = [UIColor colorWithWhite:0 alpha:0];
+            shadeBox.zPosition = -1;
+            [forcesBox addChild:shadeBox];
+        }
+        
+        [forcesBox addChild:membLabels[i]];
+        [forcesBox addChild:membTitleLabel];
+    }
+    
+    [skScene addChild:forcesBox];
+    
     return rootNode;
 }
 
@@ -231,9 +261,15 @@ const static double dead_load = 325;
                        &rArrow1, &rArrow2, &rArrow3}) {
         arrow->doUpdate();
     }
-    for (auto& label : membLabels) {
-        label.doUpdate();
+    
+    
+    if (membValuesUpdated) {
+        for (int i = 0; i < 7; ++i) {
+            membLabels[i].text = [NSString stringWithFormat:@"%.1f kip", membValues[i]];
+        }
+        membValuesUpdated = false;
     }
+
     loadDead.doUpdate();
     loadSnow.doUpdate();
     loadWind.doUpdate();
@@ -268,10 +304,25 @@ const static double dead_load = 325;
     return new cvARManager(scnView, scnView.scene, cvStructure_t::catt, rotMat);
 }
 
+- (CGPoint)convertTouchToSKScene:(CGPoint)scnViewPt {
+    // touch point in SkScene.view coordinate system
+    CGPoint pointSkView = [scnView convertPoint:scnViewPt toView:skScene.view];
+    // touch point in skScene coordinate system
+    CGPoint pointSkScene = [skScene convertPointFromView:pointSkView];
+    return pointSkScene;
+}
+
 - (void)touchesBegan:(CGPoint)p farHitIs:(GLKVector3)farClipHit {
-    GLKVector3 cameraPos = SCNVector3ToGLKVector3(cameraNode.position);
-    loadSnow.touchBegan(cameraPos, farClipHit);
-    loadWind.touchBegan(cameraPos, farClipHit);
+    // ------ 2D Touch Handling ------ //
+    CGPoint pointSkScene = [self convertTouchToSKScene:p];
+    BOOL on_box = [forcesBox touchBegan:pointSkScene];
+    
+    // ------ 3D Touch Handling ------ //
+    if (!on_box) {
+        GLKVector3 cameraPos = SCNVector3ToGLKVector3(cameraNode.position);
+        loadSnow.touchBegan(cameraPos, farClipHit);
+        loadWind.touchBegan(cameraPos, farClipHit);
+    }
 }
 
 - (void)touchesMoved:(CGPoint)p farHitIs:(GLKVector3)farClipHit {
@@ -286,23 +337,34 @@ const static double dead_load = 325;
     }
     if (loadWind.draggingMode() & LoadMarker::vertically) {
         double dragValue = 1000 * loadWind.getDragValue(cameraPos, touchRay);
-        double c = 0.00256 * 0.915 * 0.85 * std::cos(M_PI/4) * 0.85;
+        double c = 0.00256 * 0.915 * 0.85 * 10 * std::cos(M_PI/4) * 0.85;
         double v2 = dragValue / c;
         double v = std::sqrt(v2);
         [self.windSlider setValue:v / maxWindSpeed];
         [self updateLoads];
     }
 
+    // ------ 2D Touch Handling ------ //
+    CGPoint pointSkScene = [self convertTouchToSKScene:p];
+    CGRect skBounds = CGRectMake(0,
+                                 self.bottomBarView.frame.size.height,
+                                 skScene.size.width,
+                                 skScene.size.height - self.bottomBarView.frame.size.height);
+    [forcesBox touchMoved:pointSkScene limitTo:skBounds];
 }
 
 - (void)touchesCancelled {
     loadSnow.touchCancelled();
     loadWind.touchCancelled();
+    
+    [forcesBox touchCancelled];
 }
 
 - (void)touchesEnded {
     loadSnow.touchEnded();
     loadWind.touchEnded();
+    
+    [forcesBox touchEnded];
 }
 
 - (void)scnRendererUpdateAt:(NSTimeInterval)time {
@@ -372,7 +434,7 @@ const static double dead_load = 325;
     double load_p02 = (load_p02s + load_p02d) / 1000.;
     
     // wind loads
-    double qz = 0.00256 * 0.915 * 1.0 * 0.35 * wind_speed_mph * wind_speed_mph;
+    double qz = 0.00256 * 0.915 * 1.0 * 0.85 * 10 * wind_speed_mph * wind_speed_mph;
     double load_wind1 = qz * 0.85 * 0.4 * std::cos(M_PI / 4);
     double load_wind2 = qz * 0.85 * 0.6 * std::cos(M_PI / 4);
     double load_p4 = (load_wind1 + load_wind2) * 17.5 / 1000.;
@@ -418,14 +480,11 @@ const static double dead_load = 325;
     double R2 = c.at<double>(8, 0);
     double R3 = c.at<double>(9, 0);
     
-    NSString* formatString = @"%.0f k";
-    membLabels[0].setText([NSString stringWithFormat:formatString, F1]);
-    membLabels[1].setText([NSString stringWithFormat:formatString, F2]);
-    membLabels[2].setText([NSString stringWithFormat:formatString, F3]);
-    membLabels[3].setText([NSString stringWithFormat:formatString, F4]);
-    membLabels[4].setText([NSString stringWithFormat:formatString, F5]);
-    membLabels[5].setText([NSString stringWithFormat:formatString, F6]);
-    membLabels[6].setText([NSString stringWithFormat:formatString, F7]);
+    for (int i = 0; i < 7; ++i) {
+        membValues[i] = c.at<double>(i, 0);
+    }
+    membValuesUpdated = true;
+    
     
     // Update arrows with calculated forces
     pArrow01.setIntensity(load_p01);

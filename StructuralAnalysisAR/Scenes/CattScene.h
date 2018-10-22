@@ -17,7 +17,8 @@
 #include "line3d.h"
 #include "grabbableArrow.h"
 #include "LoadMarker.h"
-#include "Overlaylabel.h"
+#include "OverlayLabel.h"
+#import "SKInfoBox.h"
 
 @interface CattScene: NSObject <StructureScene> {
     id<ARViewController> managingParent;
@@ -36,10 +37,14 @@
     // Distributed loads
     LoadMarker loadDead, loadSnow, loadWind;
     
-    // Labels for truss members
-    OverlayLabel labelM1, labelM2, labelM3, labelM4, labelM5, labelM6, labelM7;
-    std::vector<OverlayLabel> membLabels;
-    std::vector<SCNNode*> labelEmpties;
+    // Labels in side box showing values on truss members
+    std::vector<SKLabelNode*> membLabels;
+    // values for the truss members
+    std::vector<float> membValues;
+    // Whether membValues was updated, so we can update the labels in the skUpdate callback
+    std::atomic<bool> membValuesUpdated;
+    
+    SKInfoBox* forcesBox;
 }
 
 @property (nonatomic, retain) IBOutlet SceneTemplateView *viewFromNib;
@@ -73,6 +78,8 @@
 - (IBAction)visToggled:(id)sender;
 - (void)setVisibilities;
 
+// convert a point in scnView coordinate system to skScene coordinate system
+- (CGPoint)convertTouchToSKScene:(CGPoint)scnViewPt;
 
 @end
 

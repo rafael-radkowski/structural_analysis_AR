@@ -50,6 +50,8 @@
 		0B483C061F4F9051007A1D29 /* SceneKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B483C051F4F9051007A1D29 /* SceneKit.framework */; };
 		0B483C081F4F9063007A1D29 /* ModelIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B483C071F4F9063007A1D29 /* ModelIO.framework */; };
 		0B4F29B11FE0846C0067C439 /* skywalk_south_far.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0B4F29B01FE0846C0067C439 /* skywalk_south_far.jpg */; };
+		0B553996217A6F4600DB9FC5 /* SKInfoBox.m in Sources */ = {isa = PBXBuildFile; fileRef = 0B553995217A6F4600DB9FC5 /* SKInfoBox.m */; };
+		0B553999217A91EB00DB9FC5 /* catt_member_key.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B553998217A91EA00DB9FC5 /* catt_member_key.png */; };
 		0B573972216BF32D00133033 /* cattView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B3E5964216BE5F600027841 /* cattView.xib */; };
 		0B573975216EA00800133033 /* colorConversion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0B573973216EA00800133033 /* colorConversion.cpp */; };
 		0B5739772171692C00133033 /* catt_target2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0B5739762171692C00133033 /* catt_target2.jpg */; };
@@ -182,6 +184,9 @@
 		0B483C051F4F9051007A1D29 /* SceneKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SceneKit.framework; path = System/Library/Frameworks/SceneKit.framework; sourceTree = SDKROOT; };
 		0B483C071F4F9063007A1D29 /* ModelIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ModelIO.framework; path = System/Library/Frameworks/ModelIO.framework; sourceTree = SDKROOT; };
 		0B4F29B01FE0846C0067C439 /* skywalk_south_far.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = skywalk_south_far.jpg; path = image_assets/skywalk_south_far.jpg; sourceTree = "<group>"; };
+		0B553995217A6F4600DB9FC5 /* SKInfoBox.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SKInfoBox.m; sourceTree = "<group>"; };
+		0B553997217A6F5200DB9FC5 /* SKInfoBox.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SKInfoBox.h; sourceTree = "<group>"; };
+		0B553998217A91EA00DB9FC5 /* catt_member_key.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = catt_member_key.png; path = image_assets/catt_member_key.png; sourceTree = "<group>"; };
 		0B573973216EA00800133033 /* colorConversion.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = colorConversion.cpp; sourceTree = "<group>"; };
 		0B573974216EA00800133033 /* colorConversion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = colorConversion.h; sourceTree = "<group>"; };
 		0B5739762171692C00133033 /* catt_target2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = catt_target2.jpg; path = image_assets/catt_target2.jpg; sourceTree = "<group>"; };
@@ -346,6 +351,7 @@
 				0B0CBD0E1FDB40C800A9B223 /* skywalk_1920_back.png */,
 				0B5739762171692C00133033 /* catt_target2.jpg */,
 				0B57397C2177B7A000133033 /* catt_ref_bweq.png */,
+				0B553998217A91EA00DB9FC5 /* catt_member_key.png */,
 				0B2AB2AD208932CC00A2BCF6 /* semicircle.png */,
 				0B5D639520506AD0003384C4 /* arrow.png */,
 				0B2FEEF3207BD80A00712595 /* grip.png */,
@@ -484,6 +490,8 @@
 				0BDE98DB1FBE4D42003673F4 /* ImageMatcher.cpp */,
 				0BDE98DD1FBE4D42003673F4 /* MaskedImage.hpp */,
 				0BDE98DE1FBE4D42003673F4 /* MaskedImage.cpp */,
+				0B553995217A6F4600DB9FC5 /* SKInfoBox.m */,
+				0B553997217A6F5200DB9FC5 /* SKInfoBox.h */,
 				0B15735A1F5621C9004CE1BE /* LoadMarker.h */,
 				0B1573591F5621C9004CE1BE /* LoadMarker.mm */,
 				0BAD78741F66C622003CAE93 /* PeopleVis.h */,
@@ -629,6 +637,7 @@
 				0BB1644C1F4732DC0053CA3B /* LaunchScreen.storyboard in Resources */,
 				0B5D6391204F36D4003384C4 /* townBldgView.xib in Resources */,
 				0BD711272049E08F0095D753 /* 0.5.png in Resources */,
+				0B553999217A91EB00DB9FC5 /* catt_member_key.png in Resources */,
 				0BD710F52029169B0095D753 /* campanile.dat in Resources */,
 				0BB164491F4732DC0053CA3B /* Assets.xcassets in Resources */,
 				0BD711262049E08F0095D753 /* 3.0.png in Resources */,
@@ -726,6 +735,7 @@
 				0BE42D261F688DDA00937359 /* BezierLine.mm in Sources */,
 				0B79A12E1F7ABA5300632CE4 /* OverlayLabel.mm in Sources */,
 				0BB1643F1F4732DC0053CA3B /* AppDelegate.m in Sources */,
+				0B553996217A6F4600DB9FC5 /* SKInfoBox.m in Sources */,
 				0B5D6399205719B4003384C4 /* TownCalcs.cpp in Sources */,
 				0B03582E2000128B00F75CD2 /* StructureScene.mm in Sources */,
 				0BF451712141BE84004C58FC /* LoginViewController.m in Sources */,

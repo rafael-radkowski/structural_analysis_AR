@@ -17,6 +17,7 @@
 #include "BezierLine.h"
 #include "CircleArrow.h"
 #include "CircleArrow.h"
+#include "SKInfoBox.h"
 #include "PeopleVis.h"
 #include "SKCornerNode.h"
 #include "TownCalcs.hpp"
@@ -34,7 +35,7 @@
     SCNNode* sideOcclPlane;
 
     SKCornerNode* cornerB, *cornerE;
-    SKShapeNode* jointBox;
+    SKInfoBox* jointBox;
     
     LoadMarker liveLoad;
     LoadMarker deadLoad;

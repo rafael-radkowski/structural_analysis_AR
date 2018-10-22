@@ -59,7 +59,6 @@
 
 - (void) setTrackingMode:(enum TrackingMode)new_mode;
 - (void)freezePressed:(id)sender freezeBtn:(UIButton*)freezeBtn curtain:(UIView*)curtain;
-
 // override
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event;
 - (void)touchesMoved:(NSSet<UITouch *> *) touches withEvent:(UIEvent *)event;
