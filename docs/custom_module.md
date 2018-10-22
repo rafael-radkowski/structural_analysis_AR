@@ -67,3 +67,7 @@ TODO
 
 ## Linking in custom scene
 Once a new StructureScene subclass has been created, the only thing left to do is add a button on the "Main" storyboard, add a segue for your module to GameViewController, and modify `MainPageViewController::prepareForSegue` to set your class as the `viewController.sceneClass` before seguing.
+
+1. Add a button on the homepage for it in `Main.storyboard`
+2. Add a "Present Modally" segue from the button to GameViewController
+3. in `MainPageViewController::prepareForSegue`, add another case for your new segue that sets the `viewController.sceneClass` to your new class.
