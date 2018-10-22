@@ -11,6 +11,7 @@
 
 #include <vector>
 #include <thread>
+#include <atomic>
 
 #import "StructureScene.h"
 #import "SceneTemplateView.h"

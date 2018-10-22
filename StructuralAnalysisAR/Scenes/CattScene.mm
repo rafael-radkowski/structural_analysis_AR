@@ -141,22 +141,24 @@ const static double dead_load = 325;
     loadWind = LoadMarker(5);
 
     float dist_load_gap = 2;
-    float dead_load_height = 10;
+    float load_input_max = 0.5;
+    float load_min_height = 5;
+    float load_max_height = 17.5;
+    
     loadDead.setPosition(GLKVector3Make(origin.x, origin.y + 24.75 + dist_load_gap, origin.z));
-    loadDead.setInputRange(0, dead_load / 1000);
-    loadDead.setMinHeight(5);
-    loadDead.setMaxHeight(dead_load_height);
+    loadDead.setInputRange(0, load_input_max);
+    loadDead.setMinHeight(load_min_height);
+    loadDead.setMaxHeight(load_max_height);
     loadDead.setEnds(0, rightCorner.x - origin.x);
     loadDead.setThickness(loadThickness);
     loadDead.addAsChild(rootNode);
     loadDead.setScenes(skScene, scnView);
 
-    float load_input_max = 0.5;
-    
+    float dead_load_height = ((dead_load / 1000) / load_input_max) * (load_max_height - load_min_height) + load_min_height;
     loadSnow.setPosition(GLKVector3Make(origin.x, origin.y + 24.75 + dist_load_gap + dead_load_height, origin.z));
     loadSnow.setInputRange(0, load_input_max);
-    loadSnow.setMinHeight(5);
-    loadSnow.setMaxHeight(15);
+    loadSnow.setMinHeight(load_min_height);
+    loadSnow.setMaxHeight(load_max_height);
     loadSnow.setEnds(0, rightCorner.x - origin.x);
     loadSnow.setThickness(loadThickness);
     loadSnow.addAsChild(rootNode);
@@ -167,8 +169,8 @@ const static double dead_load = 325;
                                         origin.y + dist_load_gap*std::sin(M_PI/4),
                                         origin.z));
     loadWind.setInputRange(0, load_input_max);
-    loadWind.setMinHeight(5);
-    loadWind.setMaxHeight(15);
+    loadWind.setMinHeight(load_min_height);
+    loadWind.setMaxHeight(load_max_height);
     loadWind.setEnds(0, 35);
     loadWind.setThickness(loadThickness);
     loadWind.addAsChild(rootNode);
@@ -176,7 +178,7 @@ const static double dead_load = 325;
     
     // Forces Box
     int forcesBoxWidth = 250;
-    int forcesBoxHeight = 380;
+    int forcesBoxHeight = 385;
     int forcesTitleSize = 35;
     int padding = 10;
     
