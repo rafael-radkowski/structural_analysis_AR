@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="mXk-Tm-aYp">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="mXk-Tm-aYp">
     <device id="ipad9_7" orientation="landscape">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -90,32 +90,39 @@
                                     <constraint firstAttribute="width" constant="281" id="S0y-pY-aQZ"/>
                                 </constraints>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="iStructAR" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7Ts-Uw-9To">
-                                <rect key="frame" x="283" y="28" width="458" height="55"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="StructAR" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7Ts-Uw-9To">
+                                <rect key="frame" x="397" y="65" width="230" height="55"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="458" id="036-re-oeg"/>
+                                    <constraint firstAttribute="width" constant="230" id="036-re-oeg"/>
                                     <constraint firstAttribute="height" constant="55" id="g5c-iJ-PX4"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" name=".SFUIDisplay-Light" family=".SF UI Display" pointSize="45"/>
+                                <fontDescription key="fontDescription" name=".SFUIDisplay-Light" family=".SF UI Display" pointSize="58"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="iStructAR logo transparent.png" translatesAutoresizingMaskIntoConstraints="NO" id="HFd-r5-gov">
+                                <rect key="frame" x="357" y="63.5" width="58" height="58"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="58" id="Nol-RS-wiH"/>
+                                    <constraint firstAttribute="width" secondItem="HFd-r5-gov" secondAttribute="height" multiplier="1:1" id="voc-9D-XIq"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="Lbb-nN-uRn" secondAttribute="trailing" id="1ST-Cc-wi2"/>
                             <constraint firstAttribute="trailing" secondItem="Lbb-nN-uRn" secondAttribute="trailing" id="9fZ-q8-9oE"/>
                             <constraint firstItem="OF5-L5-cTT" firstAttribute="top" secondItem="Lbb-nN-uRn" secondAttribute="bottom" constant="-15" id="9mC-qi-Geg"/>
                             <constraint firstAttribute="trailing" secondItem="29k-L1-L8N" secondAttribute="trailing" id="AxL-2H-40h"/>
                             <constraint firstItem="7Ts-Uw-9To" firstAttribute="centerX" secondItem="XPL-Kj-Yfd" secondAttribute="centerX" id="Czh-uA-ShQ"/>
                             <constraint firstItem="29k-L1-L8N" firstAttribute="leading" secondItem="XPL-Kj-Yfd" secondAttribute="leading" id="GGL-6W-v2Z"/>
-                            <constraint firstItem="OF5-L5-cTT" firstAttribute="top" secondItem="Lbb-nN-uRn" secondAttribute="bottom" constant="-15" id="Hbo-pl-2Q5"/>
                             <constraint firstItem="1WY-OJ-Cd5" firstAttribute="leading" secondItem="XPL-Kj-Yfd" secondAttribute="leading" constant="232" id="MEw-Y9-I0r"/>
+                            <constraint firstItem="HFd-r5-gov" firstAttribute="centerY" secondItem="7Ts-Uw-9To" secondAttribute="centerY" id="OM8-Jh-KQv"/>
                             <constraint firstItem="29k-L1-L8N" firstAttribute="top" secondItem="9mz-Z1-1nZ" secondAttribute="bottom" id="OOj-4R-SsA"/>
                             <constraint firstItem="1WY-OJ-Cd5" firstAttribute="top" secondItem="9mz-Z1-1nZ" secondAttribute="bottom" constant="290" id="Op9-9O-fzn"/>
+                            <constraint firstItem="7Ts-Uw-9To" firstAttribute="leading" secondItem="HFd-r5-gov" secondAttribute="trailing" constant="-18" id="U8N-iM-oEA"/>
                             <constraint firstItem="dMh-ux-lqq" firstAttribute="centerY" secondItem="XPL-Kj-Yfd" secondAttribute="centerY" id="XRs-5S-kdZ"/>
                             <constraint firstItem="OF5-L5-cTT" firstAttribute="top" secondItem="29k-L1-L8N" secondAttribute="bottom" id="ddC-cN-jLN"/>
-                            <constraint firstItem="7Ts-Uw-9To" firstAttribute="top" secondItem="9mz-Z1-1nZ" secondAttribute="bottom" constant="8" id="fho-7b-kJZ"/>
+                            <constraint firstItem="7Ts-Uw-9To" firstAttribute="top" secondItem="9mz-Z1-1nZ" secondAttribute="bottom" constant="45" id="fho-7b-kJZ"/>
                             <constraint firstItem="dMh-ux-lqq" firstAttribute="centerX" secondItem="XPL-Kj-Yfd" secondAttribute="centerX" id="v4n-2V-eTK"/>
                         </constraints>
                     </view>
@@ -148,19 +155,19 @@
                                 <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" ambiguous="YES" image="isuofficallogo_light.png" translatesAutoresizingMaskIntoConstraints="NO" id="KMG-Rr-LoE">
+                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" image="isuofficallogo_light.png" translatesAutoresizingMaskIntoConstraints="NO" id="KMG-Rr-LoE">
                                 <rect key="frame" x="743" y="718" width="281" height="65"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="281" id="OEx-bY-A7p"/>
                                 </constraints>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="iStructAR" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hW7-tc-FtM">
-                                <rect key="frame" x="283" y="28" width="458" height="55"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="StructAR" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hW7-tc-FtM">
+                                <rect key="frame" x="397" y="65" width="230" height="55"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="458" id="3q9-9x-wJ7"/>
+                                    <constraint firstAttribute="width" constant="230" id="3q9-9x-wJ7"/>
                                     <constraint firstAttribute="height" constant="55" id="n11-XF-MnA"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" name=".SFUIDisplay-Light" family=".SF UI Display" pointSize="45"/>
+                                <fontDescription key="fontDescription" name=".SFUIDisplay-Light" family=".SF UI Display" pointSize="58"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -178,7 +185,7 @@
                                 </connections>
                             </textField>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please enter your participant ID" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="37P-ij-H0f">
-                                <rect key="frame" x="392" y="191" width="241" height="21"/>
+                                <rect key="frame" x="391.5" y="191" width="241" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -194,18 +201,29 @@
                                     <action selector="loginButtonUp:" destination="mXk-Tm-aYp" eventType="touchUpInside" id="zPK-bK-JpX"/>
                                 </connections>
                             </button>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="iStructAR logo transparent.png" translatesAutoresizingMaskIntoConstraints="NO" id="FTi-JB-Ah3">
+                                <rect key="frame" x="357" y="63.5" width="58" height="58"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="FTi-JB-Ah3" secondAttribute="height" multiplier="1:1" id="AdD-np-rvL"/>
+                                    <constraint firstAttribute="height" constant="58" id="VKn-db-jkg"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="iVS-bP-Z0L" firstAttribute="top" secondItem="KMG-Rr-LoE" secondAttribute="bottom" constant="-15" id="1xY-1S-frr"/>
                             <constraint firstItem="mMn-ea-TeM" firstAttribute="top" secondItem="Dop-EW-MLW" secondAttribute="bottom" constant="200" id="7mI-sy-IOa"/>
+                            <constraint firstItem="FTi-JB-Ah3" firstAttribute="centerY" secondItem="hW7-tc-FtM" secondAttribute="centerY" id="EO3-L6-FIn"/>
                             <constraint firstItem="pkq-53-OeQ" firstAttribute="centerX" secondItem="mMn-ea-TeM" secondAttribute="centerX" id="JhZ-x6-j66"/>
                             <constraint firstItem="mMn-ea-TeM" firstAttribute="top" secondItem="37P-ij-H0f" secondAttribute="bottom" constant="8" id="TIY-KT-8SG"/>
                             <constraint firstItem="hW7-tc-FtM" firstAttribute="centerX" secondItem="kYX-hC-xF4" secondAttribute="centerX" id="WLY-WI-wu1"/>
+                            <constraint firstItem="FTi-JB-Ah3" firstAttribute="width" secondItem="FTi-JB-Ah3" secondAttribute="height" multiplier="1:1" id="hBA-xU-Wtt"/>
                             <constraint firstItem="pkq-53-OeQ" firstAttribute="top" secondItem="mMn-ea-TeM" secondAttribute="bottom" constant="8" id="hWG-ho-LUy"/>
+                            <constraint firstAttribute="trailing" secondItem="KMG-Rr-LoE" secondAttribute="trailing" id="kTa-JP-weF"/>
                             <constraint firstItem="37P-ij-H0f" firstAttribute="centerX" secondItem="mMn-ea-TeM" secondAttribute="centerX" id="mBd-Hu-eyS"/>
-                            <constraint firstItem="hW7-tc-FtM" firstAttribute="top" secondItem="Dop-EW-MLW" secondAttribute="bottom" constant="8" id="nQp-Sv-F6c"/>
+                            <constraint firstItem="hW7-tc-FtM" firstAttribute="top" secondItem="Dop-EW-MLW" secondAttribute="bottom" constant="45" id="nQp-Sv-F6c"/>
                             <constraint firstItem="mMn-ea-TeM" firstAttribute="centerX" secondItem="kYX-hC-xF4" secondAttribute="centerX" id="wb5-ck-T9e"/>
+                            <constraint firstItem="hW7-tc-FtM" firstAttribute="leading" secondItem="FTi-JB-Ah3" secondAttribute="trailing" constant="-18" id="xJD-Km-tbo"/>
                         </constraints>
                     </view>
                     <connections>
@@ -238,6 +256,7 @@
     </scenes>
     <resources>
         <image name="campanile_stock_cropped.jpg" width="1696" height="1272"/>
+        <image name="iStructAR logo transparent.png" width="600" height="600"/>
         <image name="isuofficallogo_light.png" width="784" height="65"/>
     </resources>
     <inferredMetricsTieBreakers>

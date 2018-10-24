@@ -68,6 +68,7 @@
 		0B5F39DE1F843975004870DE /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 0B5F39DD1F843975004870DE /* Shaders.metal */; };
 		0B5F39E51F844CEF004870DE /* skywalk_far.dat in Resources */ = {isa = PBXBuildFile; fileRef = 0B5F39E31F844CEF004870DE /* skywalk_far.dat */; };
 		0B5F39E61F844CEF004870DE /* skywalk_far.xml in Resources */ = {isa = PBXBuildFile; fileRef = 0B5F39E41F844CEF004870DE /* skywalk_far.xml */; };
+		0B61CCF72180E49700213266 /* iStructAR logo transparent.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B61CCF62180E49700213266 /* iStructAR logo transparent.png */; };
 		0B6E6A9D1FCF7EB500EE7950 /* cutout_skywalk_3840x2160.png in Resources */ = {isa = PBXBuildFile; fileRef = 0B6E6A9C1FCF7EB500EE7950 /* cutout_skywalk_3840x2160.png */; };
 		0B79A12E1F7ABA5300632CE4 /* OverlayLabel.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0B79A12C1F7ABA5300632CE4 /* OverlayLabel.mm */; };
 		0B99FF611F47A79D00431996 /* skywalkView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0B99FF601F47A79D00431996 /* skywalkView.xib */; };
@@ -206,6 +207,7 @@
 		0B5F39DD1F843975004870DE /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
 		0B5F39E31F844CEF004870DE /* skywalk_far.dat */ = {isa = PBXFileReference; lastKnownFileType = file; name = skywalk_far.dat; path = image_assets/skywalk_far.dat; sourceTree = "<group>"; };
 		0B5F39E41F844CEF004870DE /* skywalk_far.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = skywalk_far.xml; path = image_assets/skywalk_far.xml; sourceTree = "<group>"; };
+		0B61CCF62180E49700213266 /* iStructAR logo transparent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "iStructAR logo transparent.png"; path = "image_assets/iStructAR logo transparent.png"; sourceTree = "<group>"; };
 		0B6E6A9C1FCF7EB500EE7950 /* cutout_skywalk_3840x2160.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = cutout_skywalk_3840x2160.png; path = image_assets/cutout_skywalk_3840x2160.png; sourceTree = "<group>"; };
 		0B79A12C1F7ABA5300632CE4 /* OverlayLabel.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OverlayLabel.mm; sourceTree = "<group>"; };
 		0B79A12D1F7ABA5300632CE4 /* OverlayLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverlayLabel.h; sourceTree = "<group>"; };
@@ -375,6 +377,7 @@
 				0B2ACE1E2018F95800230D67 /* isuofficallogo_light.png */,
 				0B2ACE1C2018F8F000230D67 /* campanile_stock_cropped.jpg */,
 				0B2ACE202019259900230D67 /* campanile_static.JPG */,
+				0B61CCF62180E49700213266 /* iStructAR logo transparent.png */,
 			);
 			name = image_assets;
 			sourceTree = "<group>";
@@ -638,6 +641,7 @@
 				0B5D6391204F36D4003384C4 /* townBldgView.xib in Resources */,
 				0BD711272049E08F0095D753 /* 0.5.png in Resources */,
 				0B553999217A91EB00DB9FC5 /* catt_member_key.png in Resources */,
+				0B61CCF72180E49700213266 /* iStructAR logo transparent.png in Resources */,
 				0BD710F52029169B0095D753 /* campanile.dat in Resources */,
 				0BB164491F4732DC0053CA3B /* Assets.xcassets in Resources */,
 				0BD711262049E08F0095D753 /* 3.0.png in Resources */,
