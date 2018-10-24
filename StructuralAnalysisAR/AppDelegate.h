@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 // Define LOGIN_VIEW_SKIP to skip forcing log in and user analytics
-#define LOGIN_VIEW_SKIP
+//#define LOGIN_VIEW_SKIP
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate> {
 };

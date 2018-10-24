@@ -70,7 +70,7 @@
 //    [self.btnCampanile sendActionsForControlEvents:UIControlEventTouchUpInside];
 //    [self.btnSkywalk sendActionsForControlEvents:UIControlEventTouchUpInside];
 //    [self.btnTown sendActionsForControlEvents:UIControlEventTouchUpInside];
-    [self.btnCatt sendActionsForControlEvents:UIControlEventTouchUpInside];
+//    [self.btnCatt sendActionsForControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)didReceiveMemoryWarning {

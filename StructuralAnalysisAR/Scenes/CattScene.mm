@@ -503,18 +503,18 @@ const static double dead_load = 325;
     rArrow3.setIntensity(R3);
     
     // Colors of trusses for showing intensity
-    const float MAX_MAG = 40;
+    const float MAX_MAG = 50;
     auto color_member = [&](Line3d& memb, float val) {
         float normalized = val / MAX_MAG;
         // clamp to [-1, +1]
         normalized = std::max<float>(-1, std::min<float>(1, normalized));
-        // 0 is green, negative is red, positive is blue
-        float hue = normalized * 120 + 120;
         hsv color_in;
+        // 0 negative is red, positive is blue
+        color_in.h = normalized < 0 ? 0 : 220;
         // Have saturation also follow magnitude some
         color_in.s = std::abs(normalized) * 0.75 + 0.25;
         color_in.v = 1;
-        color_in.h = hue;
+        
         rgb color = hsv2rgb(color_in);
         memb.setColor(color.r, color.g, color.b);
     };
