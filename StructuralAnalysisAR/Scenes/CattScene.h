@@ -70,9 +70,11 @@
 @property (weak, nonatomic) IBOutlet UILabel *snowDepthLabel;
 @property (weak, nonatomic) IBOutlet UILabel *windSpeedLabel;
 
-// something changed to modify the load
+// slider changed to modify the load
 - (IBAction)loadsChanged:(id)sender;
 -(void)updateLoads;
+// Slider was released. Only used for analytics
+- (IBAction)sliderReleased:(id)sender;
 
 
 // some visualization switch was toggled

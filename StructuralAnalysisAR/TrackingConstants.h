@@ -31,4 +31,7 @@ extern NSString* const trk_campanile_scenarioSet;
 
 extern NSString* const trk_town_loadSetTouch;
 
+extern NSString* const trk_catt_loadSetTouch;
+extern NSString* const trk_catt_loadSetSlider;
+
 #endif /* TrackingEvents_h */

@@ -70,6 +70,7 @@
                             </constraints>
                             <connections>
                                 <action selector="loadsChanged:" destination="-1" eventType="valueChanged" id="iyq-s2-JMi"/>
+                                <action selector="sliderReleased:" destination="-1" eventType="touchUpInside" id="F3t-vi-Ik9"/>
                             </connections>
                         </slider>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Snow" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eMQ-rM-YGi">
@@ -103,6 +104,7 @@
                             </constraints>
                             <connections>
                                 <action selector="loadsChanged:" destination="-1" eventType="valueChanged" id="eqD-0f-T2j"/>
+                                <action selector="sliderReleased:" destination="-1" eventType="touchUpInside" id="hFm-ib-MAd"/>
                             </connections>
                         </slider>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Wind" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YAC-DP-St9">

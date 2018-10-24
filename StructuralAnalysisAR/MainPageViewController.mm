@@ -107,6 +107,7 @@
 
 - (IBAction)backToHomepage:(UIStoryboardSegue*)unwindSegue {
     // Do things here?
+    [[SEGAnalytics sharedAnalytics] track:trk_visitHome];
 }
 
 - (BOOL)shouldAutorotate

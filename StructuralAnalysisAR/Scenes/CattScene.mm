@@ -363,6 +363,23 @@ const static double dead_load = 325;
 }
 
 - (void)touchesEnded {
+    if (loadWind.draggingMode() & LoadMarker::vertically) {
+        [[SEGAnalytics sharedAnalytics]
+         track:trk_catt_loadSetTouch
+         properties:@{ @"values": @{
+                               @"windSpeed": [NSNumber numberWithFloat:self.windSlider.value * maxWindSpeed]
+                               }
+                       }];
+     }
+    if (loadSnow.draggingMode() & LoadMarker::vertically) {
+        [[SEGAnalytics sharedAnalytics]
+         track:trk_catt_loadSetTouch
+         properties:@{ @"values": @{
+                               @"snowDepth": [NSNumber numberWithFloat:self.snowSlider.value * maxSnowDepth]
+                               }
+                       }];
+    }
+    
     loadSnow.touchEnded();
     loadWind.touchEnded();
     
@@ -400,6 +417,35 @@ const static double dead_load = 325;
     [self.snowVisSwitch setEnabled:!distributed_loads_hidden];
     [self.windVisSwitch setEnabled:!distributed_loads_hidden];
 
+    [[SEGAnalytics sharedAnalytics] track:trk_setVisibilities
+                               properties:@{ @"scene": NSStringFromClass(self.class),
+                                             @"items": @{
+                                                     @"distributed": [NSNumber numberWithBool:point_loads_hidden],
+                                                     @"deadLoad": [NSNumber numberWithBool:self.deadVisSwitch.on],
+                                                     @"snowLoad": [NSNumber numberWithBool:self.snowVisSwitch.on],
+                                                     @"windLoad": [NSNumber numberWithBool:self.windVisSwitch.on],
+                                                     @"rcnForce": [NSNumber numberWithBool:self.rcnForceSwitch.on]
+                                                     }
+                                             }];
+}
+
+- (IBAction)sliderReleased:(id)sender {
+    if (sender == self.snowSlider) {
+        [[SEGAnalytics sharedAnalytics]
+         track:trk_catt_loadSetSlider
+         properties:@{ @"values": @{
+                                     @"snowDepth": [NSNumber numberWithFloat:self.snowSlider.value * maxSnowDepth]
+                                 }
+                     }];
+    }
+    else if (sender == self.windSlider) {
+        [[SEGAnalytics sharedAnalytics]
+         track:trk_catt_loadSetSlider
+       properties:@{ @"values": @{
+                                 @"windSpeed": [NSNumber numberWithFloat:self.windSlider.value * maxWindSpeed]
+                                 }
+                 }];
+    }
 }
 
 - (IBAction)loadsChanged:(id)sender {

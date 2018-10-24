@@ -31,3 +31,5 @@ NSString* const trk_campanile_scenarioSet = @"campanile_scenarioSet";
 
 NSString* const trk_town_loadSetTouch = @"town_loadSetTouch";
 
+NSString* const trk_catt_loadSetTouch = @"catt_loadSetTouch";
+NSString* const trk_catt_loadSetSlider = @"catt_loadSetSlider";
