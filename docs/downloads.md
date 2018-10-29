@@ -3,7 +3,7 @@ layout: page
 title: Downloads
 ---
 # Structural Analysis AR
-<a href="itms-services://?action=download-manifest&url=https://github.com/rafael-radkowski/structural_analysis_AR/releases/download/beta_1_5/manifest.plist" class="link-btn">Install version 1.5 (Skywalk, Campanile, Town, & Catt)</a>
+<a href="itms-services://?action=download-manifest&url=https://github.com/rafael-radkowski/structural_analysis_AR/releases/download/beta_1_5_1/manifest.plist" class="link-btn">Install version 1.5.1 (Skywalk, Campanile, Town, & Catt)</a>
 
 ## Images for indoor augmented reality
 - [Skywalk Image](./skywalk_south_far_cropped.jpg)
