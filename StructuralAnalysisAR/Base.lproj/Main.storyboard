@@ -151,9 +151,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFill" fixedFrame="YES" image="campanile_stock_cropped.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="K1Y-Uf-KEo">
-                                <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFill" image="campanile_stock_cropped.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="K1Y-Uf-KEo">
+                                <rect key="frame" x="0.0" y="20" width="1024" height="748"/>
                             </imageView>
                             <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" image="isuofficallogo_light.png" translatesAutoresizingMaskIntoConstraints="NO" id="KMG-Rr-LoE">
                                 <rect key="frame" x="743" y="718" width="281" height="65"/>
@@ -212,13 +211,17 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="iVS-bP-Z0L" firstAttribute="top" secondItem="KMG-Rr-LoE" secondAttribute="bottom" constant="-15" id="1xY-1S-frr"/>
+                            <constraint firstItem="iVS-bP-Z0L" firstAttribute="top" secondItem="K1Y-Uf-KEo" secondAttribute="bottom" id="3k8-wF-iXV"/>
                             <constraint firstItem="mMn-ea-TeM" firstAttribute="top" secondItem="Dop-EW-MLW" secondAttribute="bottom" constant="200" id="7mI-sy-IOa"/>
                             <constraint firstItem="FTi-JB-Ah3" firstAttribute="centerY" secondItem="hW7-tc-FtM" secondAttribute="centerY" id="EO3-L6-FIn"/>
+                            <constraint firstItem="K1Y-Uf-KEo" firstAttribute="leading" secondItem="kYX-hC-xF4" secondAttribute="leading" id="IBY-Qt-wgr"/>
+                            <constraint firstAttribute="trailing" secondItem="K1Y-Uf-KEo" secondAttribute="trailing" id="JMO-0a-nIf"/>
                             <constraint firstItem="pkq-53-OeQ" firstAttribute="centerX" secondItem="mMn-ea-TeM" secondAttribute="centerX" id="JhZ-x6-j66"/>
                             <constraint firstItem="mMn-ea-TeM" firstAttribute="top" secondItem="37P-ij-H0f" secondAttribute="bottom" constant="8" id="TIY-KT-8SG"/>
                             <constraint firstItem="hW7-tc-FtM" firstAttribute="centerX" secondItem="kYX-hC-xF4" secondAttribute="centerX" id="WLY-WI-wu1"/>
                             <constraint firstItem="FTi-JB-Ah3" firstAttribute="width" secondItem="FTi-JB-Ah3" secondAttribute="height" multiplier="1:1" id="hBA-xU-Wtt"/>
                             <constraint firstItem="pkq-53-OeQ" firstAttribute="top" secondItem="mMn-ea-TeM" secondAttribute="bottom" constant="8" id="hWG-ho-LUy"/>
+                            <constraint firstItem="K1Y-Uf-KEo" firstAttribute="top" secondItem="Dop-EW-MLW" secondAttribute="bottom" id="kPH-am-I16"/>
                             <constraint firstAttribute="trailing" secondItem="KMG-Rr-LoE" secondAttribute="trailing" id="kTa-JP-weF"/>
                             <constraint firstItem="37P-ij-H0f" firstAttribute="centerX" secondItem="mMn-ea-TeM" secondAttribute="centerX" id="mBd-Hu-eyS"/>
                             <constraint firstItem="hW7-tc-FtM" firstAttribute="top" secondItem="Dop-EW-MLW" secondAttribute="bottom" constant="45" id="nQp-Sv-F6c"/>
