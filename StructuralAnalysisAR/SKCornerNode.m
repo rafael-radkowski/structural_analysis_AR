@@ -162,8 +162,8 @@
     [moment1 setIntensity:moment_force1];
     [moment2 setIntensity:moment_force2];
     
-    labelM1.text = [NSString stringWithFormat:@"%.1f k", fabs(moment_force1)];
-    labelM2.text = [NSString stringWithFormat:@"%.1f k", fabs(moment_force2)];
+    labelM1.text = [NSString stringWithFormat:@"%.1f k-ft", fabs(moment_force1)];
+    labelM2.text = [NSString stringWithFormat:@"%.1f k-ft", fabs(moment_force2)];
 }
 
 -(void)setInputRangeF:(float)_min max:(float)_max {

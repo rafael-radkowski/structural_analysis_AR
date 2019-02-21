@@ -481,7 +481,7 @@ static const double MOM_OF_INERTIA = 2334;
     double shear = (16./1000) * (h1*(ww1/2 + ww2/2 + wl));
     double moment = (16./1000) *
         (h1_2/2 * (ww1 + wl) +
-         h1_2/2 * (ww2 - ww1));
+         h1_2/3 * (ww2 - ww1));
 
     // Update indicators
     shearArrow.setIntensity(shear);

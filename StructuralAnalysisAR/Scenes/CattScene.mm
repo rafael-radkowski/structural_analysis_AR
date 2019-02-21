@@ -460,16 +460,16 @@ const static double dead_load = 325;
     [self.windSpeedLabel setText:[NSString stringWithFormat:@"%.0f mph", wind_speed_mph]];
     
     double snow_load = snow_depth_in * (200./12);
-    double load_p1s = 16.96 * snow_load;
+    double load_p1s = 12.375 * snow_load;
     double load_p2s = 9.167 * snow_load;
-    double load_p3s = 16.96 * snow_load;
+    double load_p3s = 12.375 * snow_load;
     double load_p01s = 7.792 * snow_load;
     double load_p02s = 7.792 * snow_load;
     
     // dead loads
-    double load_p1d = 16.96 * dead_load;
+    double load_p1d = 12.375 * dead_load;
     double load_p2d = 9.167 * dead_load;
-    double load_p3d = 16.96 * dead_load;
+    double load_p3d = 12.375 * dead_load;
     double load_p01d = 7.792 * dead_load;
     double load_p02d = 7.792 * dead_load;
     
