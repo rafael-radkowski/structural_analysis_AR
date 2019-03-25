@@ -10,7 +10,3 @@ title: Downloads
 - [Campanile Image](./campanile_static.jpg)
 - [Town Building Image](./town_vuforia_cropped_cntrst.jpg)
 - [Catt Hall Image](./catt_vuforia.jpg)
-
-## iStructures App
-A related app, also created at ISU.
-<a href="itms-services://?action=download-manifest&url=https://github.com/rafael-radkowski/structural_analysis_AR/releases/download/beta_1_0/manifest_istructures.plist" class="link-btn">Install iStructures App</a>
